@@ -1,4 +1,4 @@
-package com.sb.solution.web;
+package com.sb.solutions.web;
 
 
 import com.sb.solutions.api.user.entity.User;

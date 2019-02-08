@@ -1,8 +1,9 @@
-package com.cp.solution.web.user.controller;
+package com.sb.solutions.web.user.controller;
 
-import com.cp.solution.api.user.entity.User;
-import com.cp.solution.api.user.service.UserService;
-import com.cp.solution.core.dto.RestResponseDto;
+
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.dto.RestResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
