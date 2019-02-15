@@ -38,8 +38,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
@@ -54,10 +52,4 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
-
-
-
-
-
-
 }
