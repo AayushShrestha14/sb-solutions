@@ -4,16 +4,13 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -47,8 +44,8 @@ public class BranchController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableBranch(@RequestBody Branch branch, Pageable pageable) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(branch, pageable));
+    public ResponseEntity<?> getPageableBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(branchService.findAllPageable(branch, new CustomPageable().pageable(page, size)));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")

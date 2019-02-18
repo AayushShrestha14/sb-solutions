@@ -22,6 +22,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+/*
 
     @ExceptionHandler(value = {ApiException.class, NullPointerException.class, ConstraintViolationException.class, SQLException.class,
             ResponseStatusException.class, EntityNotFoundException.class, IllegalArgumentException.class, SQLIntegrityConstraintViolationException.class, DataIntegrityViolationException.class, Exception.class})
@@ -47,6 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(restResponseDto, HttpStatus.valueOf(restResponseDto.getCode()));
     }
+*/
 
     public void constraintValidation(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
