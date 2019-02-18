@@ -2,13 +2,11 @@ package com.sb.solutions.web.document.controller;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.service.DocumentService;
+import com.sb.solutions.api.document.validator.DocumentValidator;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -17,39 +15,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final DocumentValidator documentValidator;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public ResponseEntity<?> addDocument(@RequestBody Document document) {
-        if(documentService.exists(document)){
-            return new RestResponseDto().failureModel("Document of name "+document.getName()+" already exists");
-        }
-        else {
-            return new RestResponseDto().successModel(documentService.save(document));
-        }
+    if(documentValidator.isValid(document).equals("Valid")) {
+        return new RestResponseDto().successModel(documentService.save(document));
+    }else{
+        return new RestResponseDto().failureModel(documentValidator.isValid(document));
+    }
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @PostMapping(value = "/edit")
     public ResponseEntity<?> editDocument(@RequestBody Document document) {
-        if(documentService.exists(document)){
+        if (documentService.findOne(document.getId())!=null) {
             return new RestResponseDto().successModel(documentService.update(document));
-        }
-        else{
+        } else {
             return new RestResponseDto().failureModel("Document doesn't exit");
         }
     }
 
-    @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
+    @PostMapping(value = "/changeStatus")
     public ResponseEntity<?> changeStatus(@RequestBody Document document) {
-        if(documentService.exists(document)){
+        if (documentService.findOne(document.getId())!=null) {
             return new RestResponseDto().successModel(documentService.changeStatus(document));
-        }
-        else{
+        } else {
             return new RestResponseDto().failureModel("Document doesn't exit");
         }
 
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(documentService.findAll());
     }

@@ -4,6 +4,8 @@ import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.repository.DocumentRepository;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,19 +28,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
-        Document doc = documentRepository.findByName(document.getName());
-        /*if (null != doc) {
-            doc.setStatus(document.getStatus());
-            doc.setUrl(document.getUrl());
-            doc.setUserType(document.getUserType());
-            return documentRepository.save(doc);
-        }*/
-        /*
-         new document save
-         by default document status will be active
-          */
         document.setStatus(Status.ACTIVE);
         return documentRepository.save(document);
+    }
+
+    @Override
+    public Page<Document> findAllPageable(Document document, Pageable pageable) {
+        return documentRepository.findAll(pageable);
     }
 
     @Override
@@ -62,13 +58,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public boolean exists(Document document) {
-        Document doc = documentRepository.findByName(document.getName());
-        if(doc==null) {
-            return  false;
-        }
-        else{
-            return true;
-        }
+    public Document findByName(Document document) {
+        return documentRepository.findByName(document.getName());
     }
+
 }
