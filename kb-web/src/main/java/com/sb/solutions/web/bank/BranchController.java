@@ -4,6 +4,8 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +41,19 @@ public class BranchController {
         }
     }
 
-
-    @RequestMapping(method = RequestMethod.POST,path="/get")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
+    @RequestMapping(method = RequestMethod.POST, path = "/get")
     public ResponseEntity<?> getPageableBranch(@RequestBody Branch branch, Pageable pageable) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(branch,pageable));
+        return new RestResponseDto().successModel(branchService.findAllPageable(branch, pageable));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
+    public ResponseEntity<?> getBranchStatusCount() {
+        return new RestResponseDto().successModel(branchService.branchStatusCount());
     }
 
 }
