@@ -43,7 +43,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public Page<Branch> findAllPageable(Branch branch,Pageable pageable) {
-        return branchRepository.findAll(pageable);
+        return branchRepository.branchFilter(branch.getName()==null?"":branch.getName(),pageable);
     }
 
     @Override
