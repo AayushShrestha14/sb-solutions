@@ -18,14 +18,9 @@ public class DocumentValidator {
         if (StringUtils.isEmpty(document.getName())) {
             return "Document name field is empty";
         }
-        if (StringUtils.isEmpty(document.getUrl())){
-            return "Document url field is empty";
+        if (!StringUtils.isEmpty(documentService.findByName(document))) {
+            return "Document Already exits in DB";
         }
-        if (StringUtils.isEmpty(documentService.findByName(document))) {
-            return "Valid";
-        }
-        else{
-            return "Document of name " + document.getName() + " exists";
-        }
+        return null;
     }
 }

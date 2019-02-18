@@ -6,6 +6,7 @@ import com.sb.solutions.api.document.validator.DocumentValidator;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,7 +20,7 @@ public class DocumentController {
 
     @PostMapping(value = "/add")
     public ResponseEntity<?> addDocument(@RequestBody Document document) {
-    if(documentValidator.isValid(document).equals("Valid")) {
+    if(StringUtils.isEmpty(documentValidator.isValid(document))) {
         return new RestResponseDto().successModel(documentService.save(document));
     }else{
         return new RestResponseDto().failureModel(documentValidator.isValid(document));
