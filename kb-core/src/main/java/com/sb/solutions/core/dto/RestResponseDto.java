@@ -1,5 +1,6 @@
 package com.sb.solutions.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sb.solutions.core.exception.ResponseStatus;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,8 @@ public class RestResponseDto {
     private String message;
     private Object detail;
     private ResponseStatus responseStatus;
+    @JsonIgnore
+    private int code;
 
     public ResponseEntity successModel(Object o) {
         RestResponseDto r = new RestResponseDto();
