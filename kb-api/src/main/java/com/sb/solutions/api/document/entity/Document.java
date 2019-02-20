@@ -1,6 +1,5 @@
 package com.sb.solutions.api.document.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.enums.UserType;
@@ -25,7 +24,6 @@ public class Document extends AbstractBaseEntity<Long> {
 
     private UserType userType;
 
-    @JsonIgnore
     private Status status;
 
 }
