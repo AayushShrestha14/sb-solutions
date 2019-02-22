@@ -1,4 +1,4 @@
-package com.sb.solutions.api.document.validator;
+/*package com.sb.solutions.api.document.validator;
 
 
 import com.sb.solutions.api.document.entity.Document;
@@ -23,4 +23,4 @@ public class DocumentValidator {
         }
         return null;
     }
-}
+}*/

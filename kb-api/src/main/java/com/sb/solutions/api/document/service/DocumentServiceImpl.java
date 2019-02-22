@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,7 +33,11 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
-        document.setStatus(Status.ACTIVE);
+        document.setLastModified(new Date());
+        if(document.getId()==null){
+            document.setStatus(Status.ACTIVE);
+        }
+        //document.setVersion(document.getVersion()+1);
         return documentRepository.save(document);
     }
 
@@ -41,10 +47,6 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
 
-    @Override
-    public Document findByName(Document document) {
-        return documentRepository.findByName(document.getName());
-    }
 
 
 }

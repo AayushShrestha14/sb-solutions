@@ -2,16 +2,16 @@ package com.sb.solutions.web.document.controller;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.service.DocumentService;
-import com.sb.solutions.api.document.validator.DocumentValidator;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import javax.validation.Valid;
 
 
 @RestController
@@ -20,34 +20,18 @@ import org.springframework.web.bind.annotation.*;
 public class DocumentController {
 
     private final DocumentService documentService;
-    private final DocumentValidator documentValidator;
-
-    @PostMapping(value = "/add")
-    public ResponseEntity<?> addDocument(@RequestBody Document document) {
-    if(StringUtils.isEmpty(documentValidator.isValid(document))) {
-        return new RestResponseDto().successModel(documentService.save(document));
-    }else{
-        return new RestResponseDto().failureModel(documentValidator.isValid(document));
-    }
-    }
-
-    @PostMapping(value = "/edit")
-    public ResponseEntity<?> editDocument(@RequestBody Document document) {
-            if (documentService.findOne(document.getId())!=null) {
-                return new RestResponseDto().successModel(documentService.save(document));
-            } else {
-                return new RestResponseDto().failureModel("Document doesn't exit");
-            }
-    }
-
-    @PostMapping(value = "/changeStatus")
-    public ResponseEntity<?> changeStatus(@RequestBody Document document) {
-        if (documentService.findOne(document.getId())!=null) {
-            return new RestResponseDto().successModel(documentService.save(document));
-        } else {
-            return new RestResponseDto().failureModel("Document doesn't exit");
+    private final GlobalExceptionHandler globalExceptionHandler;
+    @PostMapping
+    public ResponseEntity<?> addDocument(@Valid @RequestBody Document document, BindingResult bindingResult) {
+        globalExceptionHandler.constraintValidation(bindingResult);
+        Document doc = documentService.save(document);
+        //if(StringUtils.isEmpty(documentValidator.isValid(document))) {
+        if(doc != null){
+            return new RestResponseDto().successModel(doc);
+        }else{
+            return new RestResponseDto().failureModel("Error Occurred");
+            //return new RestResponseDto().failureModel(documentValidator.isValid(document));
         }
-
     }
 
     @ApiImplicitParams({
