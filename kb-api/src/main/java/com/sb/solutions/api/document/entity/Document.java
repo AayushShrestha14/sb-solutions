@@ -5,9 +5,10 @@ import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -20,6 +21,9 @@ public class Document extends AbstractBaseEntity<Long> {
 
     @Column(nullable = false)
     private String url;
+
+    @ManyToMany
+    private Collection<LoanCycle> loanCycle;
 
     private Status status;
 

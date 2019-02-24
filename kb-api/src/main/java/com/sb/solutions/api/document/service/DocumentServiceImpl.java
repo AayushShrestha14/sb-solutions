@@ -1,6 +1,7 @@
 package com.sb.solutions.api.document.service;
 
 import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -37,13 +38,16 @@ public class DocumentServiceImpl implements DocumentService {
         if(document.getId()==null){
             document.setStatus(Status.ACTIVE);
         }
-        //document.setVersion(document.getVersion()+1);
         return documentRepository.save(document);
     }
 
     @Override
     public Page<Document> findAllPageable(Document document, Pageable pageable) {
         return documentRepository.documentFilter(document.getName()==null?"":document.getName(),pageable);
+    }
+    @Override
+    public Page<Document> getByCycle(LoanCycle loanCycle, Pageable pageable){
+        return documentRepository.findByLoanCycle(loanCycle,pageable);
     }
 
 

@@ -37,7 +37,7 @@ public class AbstractBaseEntity<PK extends Serializable> extends AbstractPersist
     @Column(nullable = false)
     private Date lastModified;
 
-    @Version
-    private int version;
+    //@Version
+    //private int version;
 
 }
