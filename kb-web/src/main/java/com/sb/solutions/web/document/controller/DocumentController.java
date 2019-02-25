@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.Collection;
 
 
 @RestController
@@ -54,8 +55,8 @@ public class DocumentController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value="/list")
-    public ResponseEntity<?> getByCycle(@RequestBody LoanCycle loanCycle, @RequestParam("page") int page, @RequestParam("size") int size){
-        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycle,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getByCycle(@RequestBody Collection<LoanCycle> loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size){
+        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycleList,new CustomPageable().pageable(page, size)));
 
     }
     @GetMapping(value="lifeCycle")
