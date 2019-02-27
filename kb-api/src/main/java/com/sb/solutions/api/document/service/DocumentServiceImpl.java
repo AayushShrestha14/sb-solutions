@@ -48,10 +48,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
     @Override
     public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable){
-        return documentRepository.findByLoanCycleIn(loanCycleList,pageable);
+        return documentRepository.findByLoanCycleNotIn(loanCycleList,pageable);
     }
 
-
+    @Override
+    public int getCount(LoanCycle loanCycle) {
+        return documentRepository.countByLoanCycle(loanCycle);
+    }
 
 
 }

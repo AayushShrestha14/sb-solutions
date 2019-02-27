@@ -10,4 +10,5 @@ import java.util.Collection;
 
 public interface DocumentService extends BaseService<Document> {
      Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable);
+     int getCount(LoanCycle loanCycle);
 }

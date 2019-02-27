@@ -63,4 +63,9 @@ public class DocumentController {
     public ResponseEntity<?> getLifeCycle(){
         return new RestResponseDto().successModel(loanCycleService.findAll());
     }
+
+    @PostMapping(value="getCount")
+    public ResponseEntity<?> getCount(@RequestBody LoanCycle loanCycle){
+        return new RestResponseDto().successModel(documentService.getCount(loanCycle));
+    }
 }

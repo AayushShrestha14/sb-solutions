@@ -1,4 +1,4 @@
-package com.sb.solutions.api.document.entity;
+package com.sb.solutions.api.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,13 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanCycle {
+public class UserType {
     @Id
     @GeneratedValue
     private long id;
-    private String cycle;
-    private String level;
-    @ManyToMany(mappedBy = "loanCycle",cascade = CascadeType.ALL)
+    private String userType;
     @JsonIgnore
-    private Collection<Document> documents;
+    @ManyToMany(mappedBy = "userType",cascade = CascadeType.ALL)
+    private Collection<User> users;
 
 }

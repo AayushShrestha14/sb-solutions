@@ -14,6 +14,7 @@ import java.util.Collection;
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "select b from Document b where b.name like concat(:name,'%')")
     Page<Document> documentFilter(@Param("name")String name, Pageable pageable);
-    Page<Document> findByLoanCycleIn(@Param("loanCycleList") Collection<LoanCycle> loanCycleList, Pageable pageable);
+    Page<Document> findByLoanCycleNotIn(@Param("loanCycleList") Collection<LoanCycle> loanCycleList, Pageable pageable);
+    int countByLoanCycle(LoanCycle loanCycle);
 
 }

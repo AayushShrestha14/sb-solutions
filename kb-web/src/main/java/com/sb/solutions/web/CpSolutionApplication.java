@@ -47,8 +47,14 @@ public class CpSolutionApplication {
             User user = new User();
             user.setName("SPADMIN");
             user.setUserName("SPADMIN");
+            user.setEmail("email");
+            user.setPassword("password");
             user.setStatus(Status.ACTIVE);
-            user.setUserType(UserType.SUPERADMIN);
+            user.setAccountNo("123");
+            user.setAssociatedId(1);
+            user.setSignatureImage("sign");
+            user.setProfilePicture("profile");
+            //user.setUserType(UserType.SUPERADMIN);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
             userRepository.save(user);
