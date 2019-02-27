@@ -1,13 +1,18 @@
 package com.sb.solutions.api.document.service;
 
 import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,48 +28,33 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document findOne(Long id) {
-        return documentRepository.getOne(id);
+        try {
+            return documentRepository.findById(id).get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public Document save(Document document) {
-        document.setStatus(Status.ACTIVE);
+        document.setLastModified(new Date());
+        if (document.getId() == null) {
+            document.setStatus(Status.ACTIVE);
+        }
         return documentRepository.save(document);
     }
 
     @Override
     public Page<Document> findAllPageable(Object t, Pageable pageable) {
-        return null;
-    }
-
-//    @Override
-//    public Page<Document> findAllPageable(Document document, Pageable pageable) {
-//        return documentRepository.findAll(pageable);
-//    }
-
-    @Override
-    public Document update(Document document) {
-        Document doc = documentRepository.findByName(document.getName());
-        doc.setName(document.getName());
-        doc.setUrl(document.getUrl());
-        return documentRepository.save(doc);
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(t, SearchDto.class);
+        return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
-    public Document changeStatus(Document document) {
-        Document doc = documentRepository.findByName(document.getName());
-        if (doc.getStatus().equals(Status.ACTIVE)) {
-            doc.setStatus(Status.INACTIVE);
-        } else {
-            doc.setStatus(Status.ACTIVE);
-        }
-        return documentRepository.save(doc);
-
+    public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable) {
+        return documentRepository.findByLoanCycleIn(loanCycleList, pageable);
     }
 
-    @Override
-    public Document findByName(Document document) {
-        return documentRepository.findByName(document.getName());
-    }
 
 }

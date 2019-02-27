@@ -1,15 +1,14 @@
 package com.sb.solutions.api.document.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -23,9 +22,9 @@ public class Document extends AbstractBaseEntity<Long> {
     @Column(nullable = false)
     private String url;
 
-    private UserType userType;
+    @ManyToMany
+    private Collection<LoanCycle> loanCycle;
 
-    @JsonIgnore
     private Status status;
 
 }
