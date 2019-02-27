@@ -33,9 +33,14 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<Document> findAllPageable(Document document, Pageable pageable) {
-        return documentRepository.findAll(pageable);
+    public Page<Document> findAllPageable(Object t, Pageable pageable) {
+        return null;
     }
+
+//    @Override
+//    public Page<Document> findAllPageable(Document document, Pageable pageable) {
+//        return documentRepository.findAll(pageable);
+//    }
 
     @Override
     public Document update(Document document) {
