@@ -1,6 +1,7 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.entity.UserType;
 import com.sb.solutions.api.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,7 +68,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findAllPageable(User user,Pageable pageable) {
-        return userRepository.findAll(pageable);
+        return userRepository.userFilter(user.getName()==null?"":user.getName(),pageable);
+    }
+
+    @Override
+    public Page<User> findByUserType(Collection<UserType> userTypes, Pageable pageable){
+        return  userRepository.findByUserTypeIn(userTypes,pageable);
     }
 
 }

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -47,8 +46,8 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.documentFilter(document.getName()==null?"":document.getName(),pageable);
     }
     @Override
-    public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable){
-        return documentRepository.findByLoanCycleNotIn(loanCycleList,pageable);
+    public Page<Document> getByCycleNotContaining(LoanCycle loanCycleList, Pageable pageable){
+        return documentRepository.findByLoanCycleNotContaining(loanCycleList,pageable);
     }
 
     @Override

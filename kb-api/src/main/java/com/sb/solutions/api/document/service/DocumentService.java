@@ -6,9 +6,8 @@ import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.core.service.BaseService;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
 
 public interface DocumentService extends BaseService<Document> {
-     Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable);
+     Page<Document> getByCycleNotContaining(LoanCycle loanCycleList, Pageable pageable);
      int getCount(LoanCycle loanCycle);
 }
