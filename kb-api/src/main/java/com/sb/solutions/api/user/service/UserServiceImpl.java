@@ -3,6 +3,7 @@ package com.sb.solutions.api.user.service;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.entity.UserType;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,7 +64,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        user.setLastModified(new Date());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getId()==null){
+            user.setStatus(Status.ACTIVE);
+        }
         return userRepository.save(user);
     }
 
