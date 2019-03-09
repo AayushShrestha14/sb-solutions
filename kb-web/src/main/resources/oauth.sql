@@ -1,4 +1,4 @@
-CREATE TABLE `oauth_access_token` (
+CREATE TABLE if not exists `oauth_access_token` (
   `token_id` varchar(256) DEFAULT NULL,
   `token` blob,
   `authentication_id` varchar(256) DEFAULT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE `oauth_access_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `oauth_refresh_token` (
+CREATE TABLE if not exists `oauth_refresh_token` (
   `token_id` varchar(256) DEFAULT NULL,
   `token` blob,
   `authentication` blob
