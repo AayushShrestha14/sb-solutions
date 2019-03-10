@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -26,7 +28,7 @@ import java.util.Date;
 @ComponentScan("com.sb.solutions")
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
-public class CpSolutionApplication {
+public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     UserRepository userRepository;
 
@@ -40,7 +42,10 @@ public class CpSolutionApplication {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
 
-
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(CpSolutionApplication.class);
+    }
     @PostConstruct
     public void initialize() {
         if (userRepository.findAll().isEmpty()) {

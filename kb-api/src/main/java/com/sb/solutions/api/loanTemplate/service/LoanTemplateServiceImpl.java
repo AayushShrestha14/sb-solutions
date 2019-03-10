@@ -37,6 +37,7 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
         loanTemplate.setLastModified(new Date());
         if (loanTemplate.getId() == null) {
             loanTemplate.setStatus(Status.ACTIVE);
+
         }
         return loanTemplateRepository.save(loanTemplate);
     }
