@@ -19,3 +19,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getUsersByUserName(String username);
     Page<User> findByUserTypeIn(Collection<UserType> userTypes, Pageable pageable);
 }
+

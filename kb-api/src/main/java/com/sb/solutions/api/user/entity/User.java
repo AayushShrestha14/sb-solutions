@@ -7,10 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import java.util.Collection;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -29,10 +27,13 @@ public class User extends AbstractBaseEntity<Long> {
     private String password;
     private Status status;
     @ManyToMany
-    private Collection<UserType> userType;
+    private Set<UserType> userType;
     private String accountNo;
     private long associatedId;
     private String signatureImage;
     private String profilePicture;
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Set<FingerPrint> fingerPrint;
 
 }

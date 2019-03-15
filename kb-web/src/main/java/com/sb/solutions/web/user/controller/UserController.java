@@ -10,12 +10,11 @@ import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Collection;
+
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -35,6 +34,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
+        System.out.println("here");
         return new RestResponseDto().successModel(userService.save(user));
     }
     @ApiImplicitParams({
@@ -60,6 +60,10 @@ public class UserController {
     @GetMapping(value = "listUserType")
     public  ResponseEntity<?> getUserTypeList(){
         return new RestResponseDto().successModel(userTypeService.findAll());
+    }
+    @PostMapping(value = "checkFingerPrint")
+    public  ResponseEntity<?> checkFingerPrint(@RequestBody MultipartFile file){
+        return new RestResponseDto().successModel(userService.getUserByFingerPrint(file));
     }
 
 

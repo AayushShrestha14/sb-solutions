@@ -9,6 +9,7 @@ CREATE TABLE if not exists `oauth_access_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+
 CREATE TABLE if not exists `oauth_refresh_token` (
   `token_id` varchar(256) DEFAULT NULL,
   `token` blob,
