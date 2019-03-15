@@ -3,8 +3,6 @@ package com.sb.solutions.api.user.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
@@ -30,7 +28,6 @@ public class User extends BaseEntity<Long> {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(name = "user_type")

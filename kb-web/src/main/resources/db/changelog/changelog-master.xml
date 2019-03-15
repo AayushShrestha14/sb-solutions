@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
   <changeSet id="2-create-hibernate_sequence" author="msucil">
-    <createTable tableName="document">
+    <createTable tableName="hibernate_sequence">
       <column name="next_val" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -133,7 +133,7 @@
     </createTable>
   </changeSet>
   <changeSet id="2-create-loan-cycle" author="msucil">
-    <createTable tableName="document">
+    <createTable tableName="loan_cycle">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -153,13 +153,17 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
+
   <changeSet id="2-create-document-loan-cycle" author="msucil">
-    <createTable tableName="document">
+    <createTable tableName="document_loan_cycle">
       <column name="document_id" type="BIGINT">
-        <constraints nullable=" false"/>
+        <constraints nullable="false"/>
       </column>
-      <column name="loan_cycle_id" type="BIGINT"/>
+      <column name="loan_cycle_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
+
     <addForeignKeyConstraint baseColumnNames="document_id"
       baseTableName="document_loan_cycle"
       constraintName="fk_document_loan_cycle_document_id"
@@ -170,9 +174,10 @@
     <addForeignKeyConstraint baseColumnNames="loan_cycle_id"
       baseTableName="document_loan_cycle"
       constraintName="fk_document_loan_cycle_loan_cycle_id"
-      onDelete="CASCADE"
+      onDelete="SET NULL"
       onUpdate="CASCADE"
       referencedColumnNames="id"
       referencedTableName="loan_cycle"/>
   </changeSet>
+
 </databaseChangeLog>

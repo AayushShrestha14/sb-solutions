@@ -29,5 +29,4 @@ public class Document extends BaseEntity<Long> {
     private Collection<LoanCycle> loanCycle;
 
     private Status status;
-
 }

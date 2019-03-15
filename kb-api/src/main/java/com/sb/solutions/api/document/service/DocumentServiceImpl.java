@@ -20,6 +20,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
 
+
     @Override
     public List<Document> findAll() {
         return documentRepository.findAll();
