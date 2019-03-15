@@ -3,6 +3,7 @@ package com.sb.solutions.api.document.entity;
 import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -24,6 +25,7 @@ public class Document extends BaseEntity<Long> {
     private String url;
 
     @ManyToMany
+    @JoinTable(name = "document_loan_cycle")
     private Collection<LoanCycle> loanCycle;
 
     private Status status;

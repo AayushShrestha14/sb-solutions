@@ -33,6 +33,4 @@ public class UserController {
         userService.save(user);
         return new ResponseEntity<>(userService.getAuthenticated(), HttpStatus.OK);
     }
-
-
 }

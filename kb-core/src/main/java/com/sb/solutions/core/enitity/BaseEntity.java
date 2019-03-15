@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -35,7 +36,7 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
     @Column(name = "last_modified_at", nullable = false)
     private Date lastModifiedAt;
 
-    //@Version
-    //private int version;
+    @Version
+    private int version;
 
 }
