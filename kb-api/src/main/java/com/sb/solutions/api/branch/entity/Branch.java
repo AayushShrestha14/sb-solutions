@@ -1,5 +1,6 @@
 package com.sb.solutions.api.branch.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -21,8 +22,9 @@ public class Branch extends BaseEntity<Long> {
 
     @NotNull(message = "Name should not be null")
     private String name;
+
+    @Column(name = "branch_code")
     private String branchCode;
     private String address;
     private Status status;
-
 }

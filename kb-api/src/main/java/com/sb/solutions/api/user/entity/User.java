@@ -34,7 +34,6 @@ public class User extends BaseEntity<Long> {
     private Status status;
 
     @Column(name = "user_type")
-    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     @Column(name = "associated_id")

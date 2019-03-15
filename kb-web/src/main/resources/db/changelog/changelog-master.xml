@@ -2,53 +2,51 @@
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 
   <changeSet id="2-create-oauth-token-table" author="msucil">
     <createTable tableName="oauth_access_token">
       <column name="token_id" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="token" type="BLOB">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="authentication_id" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="user_name" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="client_id" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="authentication" type="BLOB">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="refresh_token" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
     </createTable>
 
     <createTable tableName="oauth_refresh_token">
       <column name="token_id" type="VARCHAR(256)">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="token" type="BLOB">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
       <column name="authentication" type="BLOB">
-        <constraints nullable="true" />
+        <constraints nullable="true"/>
       </column>
     </createTable>
   </changeSet>
-  
+
   <changeSet id="2-create-user-table" author="msucil">
     <createTable tableName="user">
       <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true" />
+        <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="username" type="VARCHAR(256)">
         <constraints nullable=" false"
@@ -60,20 +58,45 @@
       <column name="password" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="status" type="VARCHAR(256)">
-        <constraints nullable="false" />
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
       </column>
       <column name="user_type" type="VARCHAR(256)">
-        <constraints nullable="false" />
+        <constraints nullable="false"/>
       </column>
       <column name="associated_id" type="BIGINT"/>
-      <column name="created_at" type="DATE" >
+      <column name="created_at" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="last_modified_at" type="DATE" >
+      <column name="last_modified_at" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="version" type="INT" defaultValueNumeric="0" />
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="2-create-branch" author="msucil">
+    <createTable tableName="branch">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="name" type="VARCHAR(256)">
+        <constraints nullable=" false"
+          unique="true"
+          uniqueConstraintName="udx_branch_name"
+        />
+      </column>
+      <column name="branch_code" type="VARCHAR(256)"/>
+      <column name="address" type="VARCHAR(256)"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
 </databaseChangeLog>
