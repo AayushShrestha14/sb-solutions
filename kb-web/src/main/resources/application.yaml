@@ -1,0 +1,26 @@
+server:
+  port: 8086
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://localhost:3306/ttt
+    username: root
+    password:
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  queries:
+      users-query: select user_name, password, status from user where user_name=?
+      roles-query: select u.user_name, u.status from user u where u.user_name=?
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
