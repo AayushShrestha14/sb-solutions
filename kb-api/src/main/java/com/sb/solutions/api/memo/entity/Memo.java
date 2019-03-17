@@ -24,17 +24,14 @@ public class Memo extends BaseEntity<Long> {
     @Column(nullable = false)
     private String subject;
 
-    @Column(nullable = false)
     @NotNull
     @OneToOne
     private User sentBy;
 
-    @Column(nullable = false)
     @NotNull
     @OneToMany
     private Set<User> sentTo;
 
-    @Column(nullable = false)
     @NotNull
     @OneToMany()
     private Set<User> cc;
@@ -49,7 +46,6 @@ public class Memo extends BaseEntity<Long> {
     @Column(nullable = false)
     private Stage stage = Stage.UNDER_REVIEW;
 
-    @Column(nullable = false)
     @OneToOne
     private MemoType type;
 }

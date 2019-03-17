@@ -24,7 +24,6 @@ public class MemoType extends BaseEntity<Long> {
 
     @Column(nullable = false, unique = true)
     @NotNull
-    @UniqueElements
     private String name;
 
     @Column(nullable = false)

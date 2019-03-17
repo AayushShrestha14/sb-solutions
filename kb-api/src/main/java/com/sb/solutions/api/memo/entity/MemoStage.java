@@ -33,7 +33,6 @@ public class MemoStage extends BaseEntity<Long> {
     @NotNull
     private User sentTo;
 
-    @Enumerated(value = EnumType.STRING)
     @NotNull
     @NotEmpty
     @Column(name = "stage", nullable = false)
