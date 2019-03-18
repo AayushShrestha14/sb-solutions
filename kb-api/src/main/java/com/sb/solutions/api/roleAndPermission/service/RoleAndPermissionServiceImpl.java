@@ -52,7 +52,9 @@ public class RoleAndPermissionServiceImpl implements  RoleAndPermissionService{
     }
 
     @Override
-    public Page<Role> findAllPageable(Role role, Pageable pageable) {
+    public Page<Role> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+
 }
