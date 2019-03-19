@@ -42,8 +42,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<Document> findAllPageable(Document document, Pageable pageable) {
-        return documentRepository.documentFilter(document.getName()==null?"":document.getName(),pageable);
+    public Page<Document> findAllPageable(Object document, Pageable pageable) {
+        Document documentMapping = (Document) document;
+        return documentRepository.documentFilter(documentMapping.getName()==null?"":documentMapping.getName(),pageable);
     }
     @Override
     public Page<Document> getByCycleNotContaining(LoanCycle loanCycleList, Pageable pageable){

@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/document")
+@RequestMapping(value = "/v1/document")
 public class DocumentController {
 
     private final DocumentService documentService;

@@ -10,6 +10,7 @@ import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +33,8 @@ public class UserController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody User user) {
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveUser(@RequestBody User user, MultipartFile profile) {
         System.out.println("here");
         return new RestResponseDto().successModel(userService.save(user));
     }

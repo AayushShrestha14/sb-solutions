@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/approvallimit")
+@RequestMapping(value = "/v1/approvallimit")
 public class ApprovalLimitController {
     private final ApprovalLimitService approvalLimitService;
     private final GlobalExceptionHandler globalExceptionHandler;

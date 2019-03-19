@@ -28,7 +28,7 @@ public class UserTypeServiceImpl implements UserTypeService {
     }
 
     @Override
-    public Page<UserType> findAllPageable(UserType userType, Pageable pageable) {
+    public Page<UserType> findAllPageable(Object userType, Pageable pageable) {
         return userTypeRepository.findAll(pageable);
     }
 }

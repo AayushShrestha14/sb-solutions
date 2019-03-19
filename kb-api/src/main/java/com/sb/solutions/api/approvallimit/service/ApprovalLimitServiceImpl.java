@@ -34,7 +34,8 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     }
 
     @Override
-    public Page<ApprovalLimit> findAllPageable(ApprovalLimit approvalLimit, Pageable pageable) {
+    public Page<ApprovalLimit> findAllPageable(Object approvalLimit, Pageable pageable) {
+
         return approvalLimitRepository.approvalLimitFilter(pageable);
     }
 

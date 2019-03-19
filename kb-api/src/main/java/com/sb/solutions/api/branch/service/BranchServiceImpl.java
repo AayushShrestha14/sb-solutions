@@ -2,7 +2,9 @@ package com.sb.solutions.api.branch.service;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,8 +44,10 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public Page<Branch> findAllPageable(Branch branch,Pageable pageable) {
-        return branchRepository.branchFilter(branch.getName()==null?"":branch.getName(),pageable);
+    public Page<Branch> findAllPageable(Object object,Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return branchRepository.branchFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

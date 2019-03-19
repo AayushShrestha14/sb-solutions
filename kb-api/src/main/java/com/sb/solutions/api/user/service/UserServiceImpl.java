@@ -80,8 +80,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findAllPageable(User user,Pageable pageable) {
-        return userRepository.userFilter(user.getName()==null?"":user.getName(),pageable);
+    public Page<User> findAllPageable(Object user,Pageable pageable) {
+        User userMapped = (User) user;
+        return userRepository.userFilter(userMapped.getName()==null?"":userMapped.getName(),pageable);
     }
 
     @Override
