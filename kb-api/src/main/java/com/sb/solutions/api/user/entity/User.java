@@ -34,5 +34,5 @@ public class User extends BaseEntity<Long> {
     private UserType userType;
 
     @Column(name = "associated_id")
-    private long associateId;
+    private long associateId = 0;
 }

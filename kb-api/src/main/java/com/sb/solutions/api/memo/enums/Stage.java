@@ -1,8 +1,8 @@
-package com.sb.solutions.core.enums;
+package com.sb.solutions.api.memo.enums;
 
 public enum Stage {
     UNDER_REVIEW("Under Review"), APPROVED("Approved"), REJECTED("Rejected"),
-    FORWARD("Forward"), BACKWARD("Backward"), RECEIVED("Received"), SENT("Sent");
+    FORWARD("Forward"), BACKWARD("Backward"), SENT("Sent"), DRAFT("Draft"), DELETE("Delete");
 
     private final String value;
 

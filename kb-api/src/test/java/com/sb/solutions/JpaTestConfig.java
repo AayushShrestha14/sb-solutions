@@ -4,9 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -15,7 +13,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @EnableJpaRepositories
 @Configuration
 @EntityScan("com.sb.solutions.api.*.entity.**")
-public class BaseTestConfig {
+public class JpaTestConfig {
 
     @Autowired
     private Environment env;

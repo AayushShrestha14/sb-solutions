@@ -9,20 +9,13 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import com.sb.solutions.BaseTestConfig;
+import com.sb.solutions.BaseJpaTest;
 import com.sb.solutions.api.memo.entity.MemoType;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
-@ContextConfiguration(classes = BaseTestConfig.class)
-public class MemoTypeRepositoryTest {
+public class MemoTypeRepositoryTest extends BaseJpaTest {
 
     @Autowired
     private TestEntityManager entityManager;
