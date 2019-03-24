@@ -1,7 +1,7 @@
 package com.sb.solutions.web.basicInfo.controller;
 
-import com.sb.solutions.api.customer.entity.Customer;
-import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.basicInfo.customer.entity.Customer;
+import com.sb.solutions.api.basicInfo.customer.service.CustomerService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

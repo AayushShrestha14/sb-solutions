@@ -1,8 +1,8 @@
-package com.sb.solutions.api.customer.service;
+package com.sb.solutions.api.basicInfo.customer.service;
 
-import com.sb.solutions.api.customer.entity.Customer;
-import com.sb.solutions.api.customer.repository.CustomerRepository;
-import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
+import com.sb.solutions.api.basicInfo.customer.entity.Customer;
+import com.sb.solutions.api.basicInfo.customer.repository.CustomerRepository;
+import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +32,6 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer save(Customer customer) {
         Date date = new Date();
         customer.setLastModified(date);
-        customer.getCustomerFather().setLastModified(date);
-        customer.getCustomerGrandFather().setLastModified(date);
-        customer.getCustomerSpouse().setLastModified(date);
         if(customer.getCustomerRelatives().size()<=0){
             customer.setCustomerRelatives(null);
         }else {

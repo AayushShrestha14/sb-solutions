@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import java.util.Collection;
 
 
@@ -33,8 +35,8 @@ public class UserController {
     }
 
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUser(@RequestBody User user, MultipartFile profile) {
+    @PostMapping
+    public ResponseEntity<?> saveUser(@RequestBody User user) {
         System.out.println("here");
         return new RestResponseDto().successModel(userService.save(user));
     }
