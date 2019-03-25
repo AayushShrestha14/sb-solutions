@@ -11,4 +11,6 @@ public interface MemoTypeService extends BaseService<MemoType> {
     List<MemoType> findByStatus(Status status);
 
     List<MemoType> saveAll(List<MemoType> types);
+
+    void delete(MemoType type);
 }

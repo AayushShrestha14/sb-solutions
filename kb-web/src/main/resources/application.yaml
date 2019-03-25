@@ -1,5 +1,7 @@
 server:
   port: 8086
+  compression:
+    enabled: true
 spring:
   jpa:
     hibernate:
