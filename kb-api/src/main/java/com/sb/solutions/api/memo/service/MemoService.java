@@ -5,4 +5,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface MemoService extends BaseService<Memo> {
     void delete(Memo memo);
+
+    void deleteById(long id);
 }

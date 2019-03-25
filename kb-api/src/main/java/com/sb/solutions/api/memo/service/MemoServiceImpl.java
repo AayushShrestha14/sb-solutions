@@ -58,4 +58,12 @@ public class MemoServiceImpl implements MemoService {
         memo.setStatus(Status.DELETED);
         repository.save(memo);
     }
+
+    @Override
+    public void deleteById(long id) {
+        final Memo memo = repository.getOne(id);
+        memo.setStatus(Status.DELETED);
+
+        repository.save(memo);
+    }
 }
