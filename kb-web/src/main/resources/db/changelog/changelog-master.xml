@@ -191,7 +191,7 @@
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true"/>
       </column>
-      <column name="name" type="VARCHAR">
+      <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
       <column name="status" type="INT">
@@ -204,7 +204,7 @@
       <column name="last_modified_at" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="version" type="INT"/>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
 
@@ -213,7 +213,7 @@
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
-      <column name="subject" type="VARCHAR">
+      <column name="subject" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
       <column name="sent_by" type="BIGINT">
@@ -245,12 +245,8 @@
       <column name="last_modified_at" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="version" type="INT"/>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
-  </changeSet>
-
-  <changeSet id="3-add-foreign-key-to-memo-table" author="">
-
   </changeSet>
 
   <changeSet id="3-create-memo-cc-user-table" author="msucil">
@@ -273,8 +269,8 @@
       referencedTableName="memo" referencedColumnNames="id"/>
   </changeSet>
 
-  <changeSet id="3-create-memo-cc-user-table" author="msucil">
-    <createTable tableName="memo_bcc_table">
+  <changeSet id="3-create-memo-bcc-user-table" author="msucil">
+    <createTable tableName="memo_bcc_user">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true"/>
       </column>
@@ -323,7 +319,7 @@
       <column name="last_modified_at" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="version" type="INT"/>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
 </databaseChangeLog>
