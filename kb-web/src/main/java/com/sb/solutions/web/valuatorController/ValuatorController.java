@@ -3,13 +3,11 @@ package com.sb.solutions.web.valuatorController;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.service.ValuatorService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class ValuatorController {
     private final ValuatorService valuatorService;
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody Valuator valuator) {
+    public ResponseEntity<?> saveValuator(@RequestBody Valuator valuator) {
         return new RestResponseDto().successModel(valuatorService.save(valuator));
     }
     @ApiImplicitParams({
@@ -33,7 +31,7 @@ public class ValuatorController {
     }
 
     @GetMapping("/get/statusCount")
-    public ResponseEntity<?> getBranchStatusCount() {
+    public ResponseEntity<?> getValuatorStatusCount() {
         return new RestResponseDto().successModel(valuatorService.valuatorStatusCount());
     }
 }
