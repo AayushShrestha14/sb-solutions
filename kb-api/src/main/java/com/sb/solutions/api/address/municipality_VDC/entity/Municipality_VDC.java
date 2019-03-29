@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Municipality_VDC {
     @Id
+    @GeneratedValue
     private long id;
     private String name;
     @ManyToOne

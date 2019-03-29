@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class District {
     @Id
+    @GeneratedValue
     private long id;
     private String name;
     @ManyToOne
