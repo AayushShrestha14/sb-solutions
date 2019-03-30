@@ -5,4 +5,4 @@ stages:
 
 build:
   stage: build
-  script: ./mvnw package
+  script: ./mvnw clean package

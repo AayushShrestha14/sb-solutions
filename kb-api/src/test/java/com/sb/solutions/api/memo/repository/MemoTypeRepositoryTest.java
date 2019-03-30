@@ -48,7 +48,7 @@ public class MemoTypeRepositoryTest extends BaseJpaTest {
     public void testFindAllShouldReturnTwoRecords(){
         List<MemoType> memoTypes = repository.findAll();
 
-        assertThat(memoTypes, hasSize(2));
+        assertThat(memoTypes, hasSize(3));
     }
 
     @Test
