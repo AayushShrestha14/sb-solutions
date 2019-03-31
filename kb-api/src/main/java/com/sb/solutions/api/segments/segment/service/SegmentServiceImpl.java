@@ -2,11 +2,13 @@ package com.sb.solutions.api.segments.segment.service;
 
 import com.sb.solutions.api.segments.segment.entity.Segment;
 import com.sb.solutions.api.segments.segment.repository.SegmentRepository;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,10 @@ public class SegmentServiceImpl implements SegmentService {
 
     @Override
     public Segment save(Segment segment) {
+        segment.setLastModified(new Date());
+        if(segment.getId()==0){
+            segment.setStatus(Status.ACTIVE);
+        }
         return segmentRepository.save(segment);
     }
 

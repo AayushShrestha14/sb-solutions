@@ -2,11 +2,13 @@ package com.sb.solutions.api.segments.subSegment.service;
 
 import com.sb.solutions.api.segments.subSegment.entity.SubSegment;
 import com.sb.solutions.api.segments.subSegment.repository.SubSegmentRepository;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,10 @@ public class SubSegmentServiceImpl implements SubSegmentService {
 
     @Override
     public SubSegment save(SubSegment subSegment) {
+        subSegment.setLastModified(new Date());
+        if(subSegment.getId()==null){
+            subSegment.setStatus(Status.ACTIVE);
+        }
         return subSegmentRepository.save(subSegment);
     }
 
