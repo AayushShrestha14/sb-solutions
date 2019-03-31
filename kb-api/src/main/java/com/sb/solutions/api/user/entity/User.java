@@ -1,6 +1,5 @@
 package com.sb.solutions.api.user.entity;
 
-
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
@@ -27,9 +26,10 @@ public class User extends AbstractBaseEntity<Long> {
     private String password;
     private Status status;
     private UserType userType;
-    private long associateId;
 
     @OneToOne
     private Role role;
+    private long associateId;
+
 
 }

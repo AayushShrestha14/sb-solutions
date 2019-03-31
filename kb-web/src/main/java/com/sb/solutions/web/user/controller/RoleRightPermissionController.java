@@ -26,27 +26,16 @@ public class RoleRightPermissionController {
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
 
-//    @RequestMapping(method = RequestMethod.POST)
-//    public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody RolePermissionRights rpr, BindingResult bindingResult) {
-//        globalExceptionHandler.constraintValidation(bindingResult);
-//        RolePermissionRights r = rolePermissionRightService.save(rpr);
-//        if (r == null) {
-//            return new RestResponseDto().failureModel("Error Occurs");
-//        } else {
-//            return new RestResponseDto().successModel(r);
-//        }
-//    }
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         rolePermissionRightService.saveList(rpr);
 
-            return new RestResponseDto().successModel(null);
+        return new RestResponseDto().successModel(null);
 
     }
 
-    @RequestMapping(method = RequestMethod.GET,path="/{id}")
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<?> getRolePermission(@PathVariable Long id) {
 
         return new RestResponseDto().successModel(rolePermissionRightService.getByRoleId(id));
