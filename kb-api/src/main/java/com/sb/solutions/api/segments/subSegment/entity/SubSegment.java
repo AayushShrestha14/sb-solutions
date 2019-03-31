@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -19,7 +17,8 @@ public class SubSegment extends AbstractBaseEntity<Long> {
     private String subSegmentName;
 
     private boolean isFunded;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "segment_id", nullable = false)
     private Segment segment;
 
     private Status status;
