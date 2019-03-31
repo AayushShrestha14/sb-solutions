@@ -18,7 +18,6 @@ public class SectorController {
 
     @PostMapping
     public ResponseEntity<?> saveSector(@RequestBody Sector sector) {
-        System.out.println(sector.toString());
         return new RestResponseDto().successModel(sectorService.save(sector));
     }
     @ApiImplicitParams({

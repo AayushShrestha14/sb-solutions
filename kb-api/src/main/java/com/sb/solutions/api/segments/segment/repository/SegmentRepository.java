@@ -11,11 +11,11 @@ import java.util.Map;
 
 public interface SegmentRepository extends JpaRepository<Segment,Long> {
     @Query(value = "select\n" +
-            "  (select  count(id) from valuator where status=1) active,\n" +
-            "(select  count(id) from valuator where status=0) inactive,\n" +
-            "(select  count(id) from valuator) valuators\n",nativeQuery = true)
+            "  (select  count(id) from Segment where status=1) active,\n" +
+            "(select  count(id) from Segment where status=0) inactive,\n" +
+            "(select  count(id) from Segment) segments\n",nativeQuery = true)
     Map<Object,Object> segmentStatusCount();
 
-    @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")
-    Page<Segment> segmentFilter(@Param("name")String name, Pageable pageable);
+    @Query(value = "select s from Segment s where s.segmentName like concat(:segmentName,'%')")
+    Page<Segment> segmentFilter(@Param("segmentName")String segmentName, Pageable pageable);
 }
