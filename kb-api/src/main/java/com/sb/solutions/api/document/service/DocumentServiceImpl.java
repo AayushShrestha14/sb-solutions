@@ -3,12 +3,15 @@ package com.sb.solutions.api.document.service;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Document findOne(Long id) {
         try {
             return documentRepository.findById(id).get();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -35,19 +38,22 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document save(Document document) {
         document.setLastModified(new Date());
-        if(document.getId()==null){
+        if (document.getId() == null) {
             document.setStatus(Status.ACTIVE);
         }
         return documentRepository.save(document);
     }
 
     @Override
-    public Page<Document> findAllPageable(Object document, Pageable pageable) {
-        Document documentMapping = (Document) document;
-        return documentRepository.documentFilter(documentMapping.getName()==null?"":documentMapping.getName(),pageable);
+    public Page<Document> findAllPageable(Object t, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(t, SearchDto.class);
+        return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
+
+
     @Override
-    public Page<Document> getByCycleNotContaining(LoanCycle loanCycleList, Pageable pageable){
+    public Page<Document> getByCycleNotContaining(LoanCycle loanCycleList, Pageable pageable) {
         return documentRepository.findByLoanCycleNotContaining(loanCycleList,pageable);
     }
 
@@ -55,6 +61,4 @@ public class DocumentServiceImpl implements DocumentService {
     public int getCount(LoanCycle loanCycle) {
         return documentRepository.countByLoanCycle(loanCycle);
     }
-
-
 }

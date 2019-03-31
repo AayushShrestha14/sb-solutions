@@ -2,12 +2,11 @@ package com.sb.solutions.api.user.service;
 
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
-import com.sb.solutions.api.user.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.enums.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -20,24 +19,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 @Service
 public class UserServiceImpl implements UserService {
+    private UserRepository userRepository;
+    private FingerPrintRepository fingerPrintRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
 
-    private final UserRepository userRepository;
-    private final FingerPrintRepository fingerPrintRepository;
-
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
-
-
-    public UserServiceImpl(UserRepository userRepository, FingerPrintRepository fingerPrintRepository) {
-        this.fingerPrintRepository=fingerPrintRepository;
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -71,31 +68,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setLastModified(new Date());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(user.getId()==null){
             user.setStatus(Status.ACTIVE);
         }
         return userRepository.save(user);
+
     }
 
     @Override
-    public Page<User> findAllPageable(Object user,Pageable pageable) {
-        User userMapped = (User) user;
-        return userRepository.userFilter(userMapped.getName()==null?"":userMapped.getName(),pageable);
-    }
-
-    @Override
-    public Page<User> findByRole(Collection<Role> roles, Pageable pageable){
+    public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
         return  userRepository.findByRoleIn(roles,pageable);
     }
+
     @Override
-    public User getUserByFingerPrint(MultipartFile file){
+    public User getUserByFingerPrint(MultipartFile file) {
         byte[] correctImage;
         byte[] candidateImage;
         Set<String> fingersPrint = fingerPrintRepository.getAllPath();
         long id = 0;
-        for( String path: fingersPrint) {
+        for (String path : fingersPrint) {
             try {
                 correctImage = Files.readAllBytes(Paths.get(path));
                 candidateImage = file.getBytes();
@@ -103,7 +97,7 @@ public class UserServiceImpl implements UserService {
                 FingerprintTemplate candidate = new FingerprintTemplate().dpi(500).create(candidateImage);
                 double score = new FingerprintMatcher().index(correct).match(candidate);
                 double threshold = 100;
-                if(score >= threshold){
+                if (score >= threshold) {
                     id = fingerPrintRepository.findByPath(path).getUser_id();
                     break;
                 }
@@ -112,6 +106,13 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userRepository.findById(id).get();
+
+    }
+
+    @Override
+    public Page<User> findAllPageable(Object user, Pageable pageable) {
+        User userMapped = (User) user;
+        return userRepository.userFilter(userMapped.getName()==null?"":userMapped.getName(),pageable);
 
     }
 

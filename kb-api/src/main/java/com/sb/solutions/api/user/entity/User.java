@@ -1,6 +1,6 @@
 package com.sb.solutions.api.user.entity;
 
-
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class User extends AbstractBaseEntity<Long> {
     @Column(nullable = false)
     private String password;
     private Status status;
-    @ManyToMany
-    private Set<Role> role;
+    @OneToOne
+    private Role role;
     private String accountNo;
     private long associatedId;
     private String signatureImage;
@@ -35,5 +35,7 @@ public class User extends AbstractBaseEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Set<FingerPrint> fingerPrint;
+
+
 
 }

@@ -1,15 +1,16 @@
 package com.sb.solutions.web.user.controller;
 
 
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.entity.Role;
 import com.sb.solutions.api.user.service.UserService;
-import com.sb.solutions.api.user.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,13 +25,16 @@ import java.util.Collection;
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
  */
-@AllArgsConstructor
 @RestController
 @RequestMapping("/v1/user")
 public class UserController {
     private UserService userService;
     private RoleService roleService;
-
+    @Autowired
+    public UserController (UserService userService,RoleService roleService){
+        this.userService= userService;
+        this.roleService= roleService;
+    }
     private String signaturePath;
     private String profiePath;
     @GetMapping(path = "/authenticated")
