@@ -30,7 +30,7 @@ public class SegmentServiceImpl implements SegmentService {
     @Override
     public Segment save(Segment segment) {
         segment.setLastModified(new Date());
-        if(segment.getId()==0){
+        if(segment.getId()==null){
             segment.setStatus(Status.ACTIVE);
         }
         return segmentRepository.save(segment);
