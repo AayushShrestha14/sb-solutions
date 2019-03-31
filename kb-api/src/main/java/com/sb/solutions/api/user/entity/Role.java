@@ -12,13 +12,13 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserType {
+public class Role {
     @Id
     @GeneratedValue
     private long id;
     private String userType;
     @JsonIgnore
-    @ManyToMany(mappedBy = "userType",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "role",cascade = CascadeType.ALL)
     private Collection<User> users;
 
 }

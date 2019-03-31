@@ -27,7 +27,7 @@ public class User extends AbstractBaseEntity<Long> {
     private String password;
     private Status status;
     @ManyToMany
-    private Set<UserType> userType;
+    private Set<Role> role;
     private String accountNo;
     private long associatedId;
     private String signatureImage;

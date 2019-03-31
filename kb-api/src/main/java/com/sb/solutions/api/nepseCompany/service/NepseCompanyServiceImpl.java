@@ -45,4 +45,22 @@ public class NepseCompanyServiceImpl implements  NepseCompanyService{
     public Map<Object, Object> nepseStatusCount() {
         return nepseCompanyRepository.nepseCompanyStatusCount();
     }
+
+    @Override
+    public void saveList(List<NepseCompany> nepseCompanyList) {
+        inactivePreviousCompanies();
+        for(NepseCompany nepseCompany : nepseCompanyList){
+            nepseCompany.setStatus(Status.ACTIVE);
+            nepseCompanyRepository.save(nepseCompany);
+        }
+
+    }
+
+    private void inactivePreviousCompanies() {
+        List<NepseCompany> nepseCompanies = nepseCompanyRepository.findByStatus(Status.ACTIVE);
+        for (NepseCompany nepseCompany : nepseCompanies) {
+            nepseCompany.setStatus(Status.INACTIVE);
+            nepseCompanyRepository.save(nepseCompany);
+        }
+    }
 }

@@ -2,8 +2,8 @@ package com.sb.solutions.api.user.service;
 
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
+import com.sb.solutions.api.user.entity.Role;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.entity.UserType;
 import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.enums.Status;
@@ -86,8 +86,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findByUserType(Collection<UserType> userTypes, Pageable pageable){
-        return  userRepository.findByUserTypeIn(userTypes,pageable);
+    public Page<User> findByRole(Collection<Role> roles, Pageable pageable){
+        return  userRepository.findByRoleIn(roles,pageable);
     }
     @Override
     public User getUserByFingerPrint(MultipartFile file){

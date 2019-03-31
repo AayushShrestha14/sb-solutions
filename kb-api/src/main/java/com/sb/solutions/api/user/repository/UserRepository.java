@@ -1,7 +1,7 @@
 package com.sb.solutions.api.user.repository;
 
+import com.sb.solutions.api.user.entity.Role;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.entity.UserType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select b from User b where b.name like concat(:name,'%')")
     Page<User> userFilter(@Param("name")String name, Pageable pageable);
     User getUsersByUserName(String username);
-    Page<User> findByUserTypeIn(Collection<UserType> userTypes, Pageable pageable);
+    Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
 }
 
