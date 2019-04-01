@@ -5,6 +5,7 @@ import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.service.DocumentService;
 import com.sb.solutions.api.document.service.LoanCycleService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,8 +45,8 @@ public class DocumentController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody Document document, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(documentService.findAllPageable(document,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(documentService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({

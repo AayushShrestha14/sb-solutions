@@ -2,8 +2,10 @@ package com.sb.solutions.api.company.service;
 
 import com.sb.solutions.api.company.entity.Company;
 import com.sb.solutions.api.company.repository.CompanyRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,10 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Page<Company> findAllPageable(Object company, Pageable pageable) {
-        Company companyMapped = (Company) company;
-        return companyRepository.companyFilter(companyMapped.getCompanyName()==null?"":companyMapped.getCompanyName(),pageable);
+    public Page<Company> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return companyRepository.companyFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

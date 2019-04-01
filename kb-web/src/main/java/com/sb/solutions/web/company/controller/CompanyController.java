@@ -3,6 +3,7 @@ package com.sb.solutions.web.company.controller;
 import com.sb.solutions.api.company.entity.Company;
 import com.sb.solutions.api.company.service.CompanyService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,8 +29,8 @@ public class CompanyController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAllPage(@RequestBody Company company, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(companyService.findAllPageable(company,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAllPage(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(companyService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @GetMapping("/get/statusCount")

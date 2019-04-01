@@ -22,7 +22,7 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
     Map<Object,Object> branchStatusCount();
 
 
-    @Query(value = "select b from Branch b where b.name like  concat(:name,'%') or b.address like  concat(:name,'%')")
+    @Query(value = "select b from Branch b where b.name like concat(:name,'%')")
     Page<Branch> branchFilter(@Param("name")String name, Pageable pageable);
 
 }

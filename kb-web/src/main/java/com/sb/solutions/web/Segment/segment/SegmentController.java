@@ -3,6 +3,7 @@ package com.sb.solutions.web.Segment.segment;
 import com.sb.solutions.api.segments.segment.entity.Segment;
 import com.sb.solutions.api.segments.segment.service.SegmentService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,8 +27,8 @@ public class SegmentController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAllPage(@RequestBody Segment segment, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(segmentService.findAllPageable(segment,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAllPage(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(segmentService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
     @GetMapping(value = "/getList")
     public ResponseEntity<?> getAllList() {

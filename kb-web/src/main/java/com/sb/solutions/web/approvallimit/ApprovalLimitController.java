@@ -3,6 +3,7 @@ package com.sb.solutions.web.approvallimit;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,8 +37,8 @@ public class ApprovalLimitController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody ApprovalLimit approvalLimit, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(approvalLimitService.findAllPageable(approvalLimit,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(approvalLimitService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
 }

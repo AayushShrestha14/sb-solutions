@@ -7,6 +7,7 @@ import com.sb.solutions.api.address.municipality_VDC.service.Municipality_VDCSer
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.address.province.service.ProvinceService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -58,8 +59,8 @@ public class AddressController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/getDistrict")
-    public ResponseEntity<?> getDistrictPage(@RequestBody District district, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(districtService.findAllPageable(district,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getDistrictPage(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(districtService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -68,8 +69,8 @@ public class AddressController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/getProvince")
-    public ResponseEntity<?> getProvincePage(@RequestBody Province province, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(provinceService.findAllPageable(province,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getProvincePage(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(provinceService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -78,8 +79,8 @@ public class AddressController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/getMunicipalityVdc")
-    public ResponseEntity<?> getMunicipalityVdcPage(@RequestBody Municipality_VDC municipality_vdc, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(municipality_vdcService.findAllPageable(municipality_vdc,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getMunicipalityVdcPage(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(municipality_vdcService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @PostMapping(value="/districtByProvince")

@@ -2,8 +2,10 @@ package com.sb.solutions.api.segments.segment.service;
 
 import com.sb.solutions.api.segments.segment.entity.Segment;
 import com.sb.solutions.api.segments.segment.repository.SegmentRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +39,10 @@ public class SegmentServiceImpl implements SegmentService {
     }
 
     @Override
-    public Page<Segment> findAllPageable(Object segment, Pageable pageable) {
-        Segment segmentMapped = (Segment) segment;
-        return segmentRepository.segmentFilter(segmentMapped.getSegmentName()==null?"":segmentMapped.getSegmentName(),pageable);
+    public Page<Segment> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return segmentRepository.segmentFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

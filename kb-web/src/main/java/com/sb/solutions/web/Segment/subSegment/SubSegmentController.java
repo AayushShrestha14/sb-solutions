@@ -4,6 +4,7 @@ import com.sb.solutions.api.segments.subSegment.entity.SubSegment;
 import com.sb.solutions.api.segments.subSegment.repository.SubSegmentRepository;
 import com.sb.solutions.api.segments.subSegment.service.SubSegmentService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,8 +28,8 @@ public class SubSegmentController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody SubSegment subSegment, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(subSegmentSetvice.findAllPageable(subSegment,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(subSegmentSetvice.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @GetMapping("/get/statusCount")

@@ -13,7 +13,7 @@ public interface SubSegmentRepository extends JpaRepository<SubSegment,Long> {
     @Query(value = "select\n" +
             "  (select  count(id) from Sub_Segment where status=1) active,\n" +
             "(select  count(id) from Sub_Segment where status=0) inactive,\n" +
-            "(select  count(id) from Sub_Segment) segments\n",nativeQuery = true)
+            "(select  count(id) from Sub_Segment) subSegments\n",nativeQuery = true)
     Map<Object,Object> subSegmentStatusCount();
 
     @Query(value = "select s from SubSegment s where s.subSegmentName like concat(:subSegmentName,'%')")

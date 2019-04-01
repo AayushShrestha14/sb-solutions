@@ -3,7 +3,9 @@ package com.sb.solutions.api.address.district.service;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.district.repository.DistrictRepository;
 import com.sb.solutions.api.address.province.entity.Province;
+import com.sb.solutions.core.dto.SearchDto;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,10 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
-    public Page<District> findAllPageable(Object district, Pageable pageable) {
-        District districtMapped = (District) district;
-        return districtRepository.districtFilter(districtMapped.getName()==null?"":districtMapped.getName(),pageable);
+    public Page<District> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return districtRepository.districtFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

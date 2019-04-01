@@ -2,8 +2,10 @@ package com.sb.solutions.api.valuator.service;
 
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.repository.ValuatorRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +39,10 @@ public class ValuatorServiceImpl implements ValuatorService {
     }
 
     @Override
-    public Page<Valuator> findAllPageable(Object valuator, Pageable pageable) {
-        Valuator valuatorMapped = (Valuator) valuator;
-        return valuatorRepository.valuatorFilter(valuatorMapped.getName()==null?"":valuatorMapped.getName(),pageable);
+    public Page<Valuator> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return valuatorRepository.valuatorFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.sb.solutions.web.valuatorController;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.service.ValuatorService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,8 +27,8 @@ public class ValuatorController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody Valuator valuator, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(valuatorService.findAllPageable(valuator,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(valuatorService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
     @GetMapping("/get/statusCount")

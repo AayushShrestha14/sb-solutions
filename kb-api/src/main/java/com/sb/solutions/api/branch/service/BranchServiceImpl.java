@@ -53,6 +53,6 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Map<Object,Object> branchStatusCount(){
         System.out.println(branchRepository.branchStatusCount());
-   return branchRepository.branchStatusCount();
+        return branchRepository.branchStatusCount();
     }
 }

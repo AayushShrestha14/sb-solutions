@@ -6,7 +6,9 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -110,9 +112,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findAllPageable(Object user, Pageable pageable) {
-        User userMapped = (User) user;
-        return userRepository.userFilter(userMapped.getName()==null?"":userMapped.getName(),pageable);
+    public Page<User> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return userRepository.userFilter(s.getName()==null?"":s.getName(),pageable);
 
     }
 

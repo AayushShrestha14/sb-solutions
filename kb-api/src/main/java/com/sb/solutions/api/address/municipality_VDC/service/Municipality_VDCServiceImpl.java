@@ -3,7 +3,9 @@ package com.sb.solutions.api.address.municipality_VDC.service;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipality_VDC.entity.Municipality_VDC;
 import com.sb.solutions.api.address.municipality_VDC.repository.Municipality_VDCRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,10 @@ public class Municipality_VDCServiceImpl implements Municipality_VDCService {
     }
 
     @Override
-    public Page<Municipality_VDC> findAllPageable(Object municipality_vdc, Pageable pageable) {
-        Municipality_VDC municipality_vdcMapped = (Municipality_VDC) municipality_vdc;
-        return municipality_vdcRepository.municipalityVdcFilter(municipality_vdcMapped.getName()==null?"":municipality_vdcMapped.getName(),pageable);
+    public Page<Municipality_VDC> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return municipality_vdcRepository.municipalityVdcFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override

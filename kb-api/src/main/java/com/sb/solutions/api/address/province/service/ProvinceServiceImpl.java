@@ -2,7 +2,9 @@ package com.sb.solutions.api.address.province.service;
 
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.address.province.repository.ProvinceRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,8 +32,9 @@ public class ProvinceServiceImpl implements ProvinceService {
     }
 
     @Override
-    public Page<Province> findAllPageable(Object province, Pageable pageable) {
-        Province provinceMapped = (Province) province;
-        return provinceRepository.provinceFilter(provinceMapped.getName()==null?"":provinceMapped.getName(),pageable);
+    public Page<Province> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return provinceRepository.provinceFilter(s.getName()==null?"":s.getName(),pageable);
     }
 }
