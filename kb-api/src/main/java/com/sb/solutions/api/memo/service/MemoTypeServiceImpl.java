@@ -37,6 +37,14 @@ public class MemoTypeServiceImpl implements MemoTypeService {
     }
 
     @Override
+    public void deleteById(long id) {
+        final MemoType memoType = repository.getOne(id);
+        memoType.setStatus(Status.DELETED);
+
+        repository.save(memoType);
+    }
+
+    @Override
     public List<MemoType> findAll() {
         return repository.findAll();
     }

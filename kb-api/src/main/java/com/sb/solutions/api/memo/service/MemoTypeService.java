@@ -13,4 +13,6 @@ public interface MemoTypeService extends BaseService<MemoType> {
     List<MemoType> saveAll(List<MemoType> types);
 
     void delete(MemoType type);
+
+    void deleteById(long id);
 }

@@ -6,19 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.memo.service.MemoTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 
 @RestController
 @RequestMapping(MemoTypeController.URL)
@@ -50,19 +47,16 @@ public class MemoTypeController {
         return new RestResponseDto().successModel(savedMemo);
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page",
-            dataType = "integer",
-            paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size",
-            dataType = "integer",
-            paramType = "query",
-            value = "Number of records per page.")})
     @GetMapping
-    public ResponseEntity<?> getPageableBranch(@RequestBody MemoType type,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<?> getAll() {
         return new RestResponseDto()
-            .successModel(service.findAllPageable(type, new CustomPageable().pageable(page, size)));
+            .successModel(service.findAll());
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id) {
+        service.deleteById(id);
+
+        return  ResponseEntity.ok().build();
     }
 }

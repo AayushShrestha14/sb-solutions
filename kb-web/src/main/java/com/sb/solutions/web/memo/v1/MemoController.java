@@ -68,7 +68,7 @@ public class MemoController {
             paramType = "query",
             value = "Number of records per page.")})
     @GetMapping
-    public ResponseEntity<?> getPageableBranch(@RequestBody Memo memo,
+    public ResponseEntity<?> getPageable(@RequestBody Memo memo,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(service.findAllPageable(memo, new CustomPageable().pageable(page, size)));
