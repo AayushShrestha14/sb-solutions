@@ -82,7 +82,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
 
         tokenServices.setTokenStore(tokenStore());
         tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(90000);
+        tokenServices.setAccessTokenValiditySeconds(9000000);
         return tokenServices;
     }
 

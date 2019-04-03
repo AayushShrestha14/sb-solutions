@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,13 +47,23 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
 
     @Override
     public void saveList(List<RolePermissionRights> rolePermissionRightsList) {
-        Long id = null;
+        List<RolePermissionRights> rolePermissionRightsList1 = new ArrayList<>();
+
         for (RolePermissionRights r : rolePermissionRightsList) {
-            id = r.getRole() == null ? null : r.getRole().getId();
+            if (r.isDel()) {
+
+                if (r.getId() != null) {
+                    try {
+                        rolePermissionRightRepository.deleteById(r.getId() == null ? 0 : r.getId());
+                    } catch (Exception e) {
+                    }
+                }
+                rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(), r.getPermission().getId());
+            } else {
+                rolePermissionRightsList1.add(r);
+            }
 
         }
-        System.out.println(id);
-       // rolePermissionRightRepository.deleteRolePermissionRightsByRole(id);
-        rolePermissionRightRepository.saveAll(rolePermissionRightsList);
+        rolePermissionRightRepository.saveAll(rolePermissionRightsList1);
     }
 }

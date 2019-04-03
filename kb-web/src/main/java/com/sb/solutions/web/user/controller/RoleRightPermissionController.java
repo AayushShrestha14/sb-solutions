@@ -1,6 +1,7 @@
 package com.sb.solutions.web.user.controller;
 
 import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
+import com.sb.solutions.api.rolePermissionRight.service.RightService;
 import com.sb.solutions.api.rolePermissionRight.service.RolePermissionRightService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
@@ -24,13 +25,15 @@ public class RoleRightPermissionController {
     RolePermissionRightService rolePermissionRightService;
 
     @Autowired
+    RightService rightService;
+
+    @Autowired
     GlobalExceptionHandler globalExceptionHandler;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         rolePermissionRightService.saveList(rpr);
-
         return new RestResponseDto().successModel(null);
 
     }
@@ -39,5 +42,11 @@ public class RoleRightPermissionController {
     public ResponseEntity<?> getRolePermission(@PathVariable Long id) {
 
         return new RestResponseDto().successModel(rolePermissionRightService.getByRoleId(id));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/rights")
+    public ResponseEntity<?> getRights() {
+
+        return new RestResponseDto().successModel(rightService.getAll());
     }
 }
