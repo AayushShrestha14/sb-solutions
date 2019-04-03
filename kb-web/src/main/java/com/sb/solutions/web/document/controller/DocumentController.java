@@ -49,23 +49,19 @@ public class DocumentController {
         return new RestResponseDto().successModel(documentService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+
     @PostMapping(value="/list")
-    public ResponseEntity<?> getByCycleNotContaining(@RequestBody LoanCycle loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size){
-        return  new RestResponseDto().successModel(documentService.getByCycleNotContaining(loanCycleList,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getByCycleNotContaining(@RequestBody LoanCycle loanCycleList){
+        return  new RestResponseDto().successModel(documentService.getByCycleNotContaining(loanCycleList));
 
     }
-    @GetMapping(value="lifeCycle")
+    @GetMapping(value="/lifeCycle")
     public ResponseEntity<?> getLifeCycle(){
         return new RestResponseDto().successModel(loanCycleService.findAll());
     }
 
-    @PostMapping(value="getCount")
-    public ResponseEntity<?> getCount(@RequestBody LoanCycle loanCycle){
-        return new RestResponseDto().successModel(documentService.getCount(loanCycle));
+    @GetMapping(value="/get/statusCount")
+    public ResponseEntity<?> getCount(){
+        return new RestResponseDto().successModel(documentService.documentStatusCount());
     }
 }

@@ -47,12 +47,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         System.out.println("here");
-        /*if(!profiePath.equals(null)) {
+        if(profiePath != null) {
             user.setProfilePicture(profiePath);
         }
-        if(!signaturePath.equals(null)) {
+        if(signaturePath != null) {
             user.setSignatureImage(signaturePath);
-        }*/
+        }
         user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
@@ -65,7 +65,7 @@ public class UserController {
 
         try {
             byte[] bytes = multipartFile.getBytes();
-            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\signature" + multipartFile.getOriginalFilename());
+            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\signature\\" + multipartFile.getOriginalFilename());
             signaturePath = path.toString();
             Files.write(path, bytes);
             return new RestResponseDto().successModel("Uploaded");
@@ -84,7 +84,7 @@ public class UserController {
 
         try {
             byte[] bytes = multipartFile.getBytes();
-            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\profile" + multipartFile.getOriginalFilename());
+            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\profile\\" + multipartFile.getOriginalFilename());
             profiePath = path.toString();
             Files.write(path, bytes);
             return new RestResponseDto().successModel("Uploaded");
