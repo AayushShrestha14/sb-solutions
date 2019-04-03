@@ -6,7 +6,6 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
-import io.micrometer.core.instrument.search.Search;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +52,11 @@ public class BranchController {
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
+        return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
 
 }

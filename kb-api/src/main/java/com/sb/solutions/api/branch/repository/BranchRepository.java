@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,5 +25,8 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
 
     @Query(value = "select b from Branch b where b.name like  concat(:name,'%') or b.address like  concat(:name,'%')")
     Page<Branch> branchFilter(@Param("name")String name, Pageable pageable);
+
+    @Query(value = "select b from Branch b where b.name like  concat(:name,'%') or b.address like  concat(:name,'%')")
+    List<Branch> branchCsvFilter(@Param("name")String name);
 
 }

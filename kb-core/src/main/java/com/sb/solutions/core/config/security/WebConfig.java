@@ -1,5 +1,6 @@
 package com.sb.solutions.core.config.security;
 
+import com.sb.solutions.core.constant.FilePath;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,8 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String myExternalFilePath = "file:///var/images/";
-        // String myExternalFilePath = "file:///E:/images/";
+        String myExternalFilePath = "file:///" + FilePath.getOSPath() + "/images/";
         registry.addResourceHandler("/images/**")
                 .addResourceLocations(myExternalFilePath)
                 .setCachePeriod(3600)
