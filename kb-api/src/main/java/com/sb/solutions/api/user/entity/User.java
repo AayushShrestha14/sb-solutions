@@ -1,5 +1,6 @@
 package com.sb.solutions.api.user.entity;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
@@ -29,7 +30,9 @@ public class User extends AbstractBaseEntity<Long> {
     @OneToOne
     private Role role;
     private String accountNo;
-    private long associatedId;
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
     private String signatureImage;
     private String profilePicture;
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)

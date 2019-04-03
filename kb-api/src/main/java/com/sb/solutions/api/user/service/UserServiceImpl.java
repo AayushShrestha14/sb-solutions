@@ -70,9 +70,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        /*user.setPassword(passwordEncoder.encode(user.getPassword()));*/
         user.setLastModified(new Date());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(user.getId()==null){
             user.setStatus(Status.ACTIVE);
         }

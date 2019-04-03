@@ -56,16 +56,17 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             user.setPassword("password");
             user.setStatus(Status.ACTIVE);
             user.setAccountNo("123");
-            user.setAssociatedId(1);
+            /*user.setBranch(1);*/
             user.setSignatureImage("sign");
             user.setProfilePicture("profile");
             //user.setRole(Role.SUPERADMIN);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
+            user.toString();
             userRepository.save(user);
             ClassPathResource schemaResource = new ClassPathResource("oauth.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
+            /*populator.execute(dataSource);*/
         }
     }
 
