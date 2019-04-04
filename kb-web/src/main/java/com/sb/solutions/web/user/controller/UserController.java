@@ -57,7 +57,7 @@ public class UserController {
         return new RestResponseDto().successModel(userService.save(user));
     }
     @PostMapping(value = "/uploadSignature")
-    public ResponseEntity<?> saveUserSignature(@RequestBody MultipartFile multipartFile) {
+    public ResponseEntity<?> saveUserSignature(@RequestParam("file") MultipartFile multipartFile) {
 
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/uploadProfile")
-    public ResponseEntity<?> saveUserProfile(@RequestBody MultipartFile multipartFile) {
+    public ResponseEntity<?> saveUserProfile(@RequestParam("file") MultipartFile multipartFile) {
         if (multipartFile==null) {
             return new RestResponseDto().failureModel("Select Profile Image");
         }
