@@ -49,9 +49,11 @@ public class UserController {
         System.out.println("here");
         if(profiePath != null) {
             user.setProfilePicture(profiePath);
+            profiePath=null;
         }
         if(signaturePath != null) {
             user.setSignatureImage(signaturePath);
+            signaturePath=null;
         }
         user.toString();
         return new RestResponseDto().successModel(userService.save(user));
