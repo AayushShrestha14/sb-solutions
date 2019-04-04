@@ -17,7 +17,9 @@ public class LoanCycle {
     @GeneratedValue
     private long id;
     private String cycle;
+    private String level;
     @ManyToMany(mappedBy = "loanCycle",cascade = CascadeType.ALL)
     @JsonIgnore
     private Collection<Document> documents;
+
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -51,10 +52,20 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
+
     @Override
-    public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable) {
-        return documentRepository.findByLoanCycleIn(loanCycleList, pageable);
+    public List<Document> getByCycleNotContaining(LoanCycle loanCycleList) {
+        return documentRepository.findByLoanCycleNotContaining(loanCycleList);
     }
 
+    @Override
+    public Map<Object, Object> documentStatusCount() {
+        return documentRepository.documentStatusCount();
+    }
 
+    @Override
+    public String saveList(List<Document> documents) {
+        documentRepository.saveAll(documents);
+        return "Success";
+    }
 }

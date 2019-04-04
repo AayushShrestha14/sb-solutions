@@ -53,6 +53,10 @@ public class BranchController {
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
     }
+    @GetMapping(value = "/getList")
+    public ResponseEntity<?> getBranch() {
+        return new RestResponseDto().successModel(branchService.findAll());
+    }
 
     @RequestMapping(method = RequestMethod.POST, path = "/csv")
     public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
