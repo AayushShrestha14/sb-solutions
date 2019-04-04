@@ -11,5 +11,5 @@ import java.util.Map;
 public interface DocumentService extends BaseService<Document> {
      List<Document> getByCycleNotContaining(LoanCycle loanCycleList);
      Map<Object,Object> documentStatusCount();
-     String saveList(List<Document> documents);
+     String saveList(List<Long> ids,LoanCycle loanCycle);
 }
