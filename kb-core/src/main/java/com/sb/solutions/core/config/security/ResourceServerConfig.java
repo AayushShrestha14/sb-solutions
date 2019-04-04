@@ -33,7 +33,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
-                .antMatchers("/v1/*").permitAll().and()
+                .antMatchers("/v1/**")
+                .permitAll()
+                //.authenticated()
+                .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout")).logoutSuccessUrl("/api/language")
         ;

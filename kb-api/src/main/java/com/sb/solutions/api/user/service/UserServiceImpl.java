@@ -1,8 +1,14 @@
 package com.sb.solutions.api.user.service;
 
+import com.machinezoo.sourceafis.FingerprintMatcher;
+import com.machinezoo.sourceafis.FingerprintTemplate;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -10,20 +16,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 @Service
 public class UserServiceImpl implements UserService {
-
-
-    private final UserRepository userRepository;
-
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private FingerPrintRepository fingerPrintRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -60,13 +70,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        /*user.setPassword(passwordEncoder.encode(user.getPassword()));*/
+        user.setLastModified(new Date());
+        if(user.getId()==null){
+            user.setStatus(Status.ACTIVE);
+        }
         return userRepository.save(user);
+
     }
 
     @Override
-    public Page<User> findAllPageable(User user,Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
+        return  userRepository.findByRoleIn(roles,pageable);
+    }
+
+    @Override
+    public User getUserByFingerPrint(MultipartFile file) {
+        byte[] correctImage;
+        byte[] candidateImage;
+        Set<String> fingersPrint = fingerPrintRepository.getAllPath();
+        long id = 0;
+        for (String path : fingersPrint) {
+            try {
+                correctImage = Files.readAllBytes(Paths.get(path));
+                candidateImage = file.getBytes();
+                FingerprintTemplate correct = new FingerprintTemplate().dpi(500).create(correctImage);
+                FingerprintTemplate candidate = new FingerprintTemplate().dpi(500).create(candidateImage);
+                double score = new FingerprintMatcher().index(correct).match(candidate);
+                double threshold = 100;
+                if (score >= threshold) {
+                    id = fingerPrintRepository.findByPath(path).getUser_id();
+                    break;
+                }
+            } catch (IOException e) {
+                System.out.println("File not found");
+            }
+        }
+        return userRepository.findById(id).get();
+
+    }
+
+    @Override
+    public Page<User> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        return userRepository.userFilter(s.getName()==null?"":s.getName(),pageable);
+
     }
 
 }

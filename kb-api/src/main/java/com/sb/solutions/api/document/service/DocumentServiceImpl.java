@@ -3,8 +3,10 @@ package com.sb.solutions.api.document.service;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Document findOne(Long id) {
         try {
             return documentRepository.findById(id).get();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -36,22 +39,33 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document save(Document document) {
         document.setLastModified(new Date());
-        if(document.getId()==null){
+        if (document.getId() == null) {
             document.setStatus(Status.ACTIVE);
         }
         return documentRepository.save(document);
     }
 
     @Override
-    public Page<Document> findAllPageable(Document document, Pageable pageable) {
-        return documentRepository.documentFilter(document.getName()==null?"":document.getName(),pageable);
+    public Page<Document> findAllPageable(Object t, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(t, SearchDto.class);
+        return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
+
+
     @Override
-    public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable){
-        return documentRepository.findByLoanCycleIn(loanCycleList,pageable);
+    public List<Document> getByCycleNotContaining(LoanCycle loanCycleList) {
+        return documentRepository.findByLoanCycleNotContaining(loanCycleList);
     }
 
+    @Override
+    public Map<Object, Object> documentStatusCount() {
+        return documentRepository.documentStatusCount();
+    }
 
-
-
+    @Override
+    public String saveList(List<Document> documents) {
+        documentRepository.saveAll(documents);
+        return "Success";
+    }
 }
