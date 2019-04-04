@@ -73,7 +73,6 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             role.setStatus(Status.ACTIVE);
             role.setLastModified(new Date());
             roleRepository.save(role);
-            role = roleRepository.getOne(id);
             user.setRole(role);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
