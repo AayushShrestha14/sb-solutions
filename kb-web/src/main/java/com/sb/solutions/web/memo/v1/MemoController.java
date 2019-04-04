@@ -102,4 +102,9 @@ public class MemoController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        return new RestResponseDto().successModel(service.findAll());
+    }
 }

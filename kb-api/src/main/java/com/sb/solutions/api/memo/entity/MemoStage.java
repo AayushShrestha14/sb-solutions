@@ -2,8 +2,9 @@ package com.sb.solutions.api.memo.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.api.memo.enums.Stage;
@@ -18,28 +19,29 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class MemoStage extends BaseEntity<Long> {
 
-    @OneToOne
-    @NotNull
+    @ManyToOne
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "memo_id")
     private Memo memo;
 
     @OneToOne
     @NotNull
+    @JoinColumn(name = "sent_by")
     private User sentBy;
 
     @OneToOne
     @NotNull
+    @JoinColumn(name = "sent_to")
     private User sentTo;
 
     @NotNull
-    @NotEmpty
     @Column(name = "stage", nullable = false)
     private Stage stage;
 
     @Column(name = "note", nullable = false)
     @NotNull
-    @NotEmpty
     private String note;
 }

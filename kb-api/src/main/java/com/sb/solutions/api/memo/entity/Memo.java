@@ -4,11 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.api.user.entity.User;
@@ -23,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class Memo extends BaseEntity<Long> {
 
     @Column(nullable = false)
@@ -32,18 +36,25 @@ public class Memo extends BaseEntity<Long> {
 
     @NotNull
     @OneToOne
+    @JoinColumn(name = "sent_by")
     private User sentBy;
 
     @NotNull
     @OneToOne
+    @JoinColumn(name = "sent_to")
     private User sentTo;
 
     @ManyToMany
-    @JoinTable(name = "memo_cc_user")
+    @JoinTable(name = "memo_cc_user",
+        joinColumns = {@JoinColumn(name = "memo_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+    )
     private Set<User> cc;
 
     @ManyToMany
-    @JoinTable(name = "memo_bcc_user")
+    @JoinTable(name = "memo_bcc_user",
+        joinColumns = {@JoinColumn(name = "memo_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private Set<User> bcc;
 
     @Column(nullable = false)
@@ -57,9 +68,13 @@ public class Memo extends BaseEntity<Long> {
     private Stage stage = Stage.DRAFT;
 
     @OneToOne
+    @JoinColumn(name = "memo_type_id")
+    @NotNull
     private MemoType type;
 
     @OneToMany
     @NotNull
-    private Set<MemoStage> memoStage = new HashSet<>();
+    @Cascade(value = CascadeType.ALL)
+    @JoinColumn(name = "memo_id")
+    private Set<MemoStage> stages = new HashSet<>();
 }
