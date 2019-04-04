@@ -7,12 +7,12 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -36,6 +36,9 @@ public class AbstractBaseEntity<PK extends Serializable> extends AbstractPersist
     @LastModifiedDate
     @Column(nullable = false)
     private Date lastModified;
+
+
+
 
     //@Version
     //private int version;

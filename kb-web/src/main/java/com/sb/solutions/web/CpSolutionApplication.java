@@ -3,6 +3,7 @@ package com.sb.solutions.web;
 
 import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.enums.Status;
@@ -38,6 +39,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     BaseHttpRepo baseHttpRepo;
 
+
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
@@ -55,26 +57,33 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CpSolutionApplication.class);
     }
+
     @PostConstruct
     public void initialize() {
         if (userRepository.findAll().isEmpty()) {
+            ClassPathResource schemaResource = new ClassPathResource("patch.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
+            Role role = new Role();
+            role.setId(1L);
             User user = new User();
             user.setName("SPADMIN");
             user.setUserName("SPADMIN");
             user.setStatus(Status.ACTIVE);
             user.setUserType(UserType.SUPERADMIN);
+            user.setRole(role);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
             userRepository.save(user);
 
 
-            ClassPathResource schemaResource = new ClassPathResource("oauth.sql");
-            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
+            schemaResource = new ClassPathResource("oauth.sql");
+            populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
         }
-        if(baseHttpRepo.findAll().isEmpty()){
+        if (baseHttpRepo.findAll().isEmpty()) {
             BaseHttp baseHttp = new BaseHttp();
-            baseHttp.setBaseUrl("http://localhost:"+port+"/");
+            baseHttp.setBaseUrl("http://localhost:" + port + "/");
             baseHttp.setFlag(1);
             baseHttpRepo.save(baseHttp);
         }

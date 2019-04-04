@@ -2,6 +2,8 @@ package com.sb.solutions.api.rolePermissionRight.service;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -19,6 +22,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public List<Role> findAll() {
@@ -32,7 +38,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role save(Role role) {
+        User u = userService.getAuthenticated();
         role.setLastModified(new Date());
+        if (role.getId() == null) {
+            role.setCreatedBy(u);
+        } else {
+            role.setLastModifiedBy(u);
+        }
+        role.setRoleName(role.getRoleName().toUpperCase());
         return roleRepository.save(role);
     }
 
@@ -40,4 +53,18 @@ public class RoleServiceImpl implements RoleService {
     public Page<Role> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public Map<Object, Object> roleStatusCount() {
+        return roleRepository.roleStatusCount();
+    }
+
+    @Override
+    public List<Role> activeRole() {
+        User u = userService.getAuthenticated();
+        Role r = u.getRole();
+        return roleRepository.activeRole(r.getId());
+    }
+
+
 }

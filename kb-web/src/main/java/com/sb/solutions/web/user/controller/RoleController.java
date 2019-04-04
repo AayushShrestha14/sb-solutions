@@ -1,7 +1,9 @@
 package com.sb.solutions.web.user.controller;
 
+import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.ws.rs.Produces;
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -22,10 +26,13 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+
+
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
 
     @RequestMapping(method = RequestMethod.POST)
+
     public ResponseEntity<?> saveRole(@Valid @RequestBody Role role, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         Role r = roleService.save(role);
@@ -37,10 +44,21 @@ public class RoleController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Produces("application/json")
     public ResponseEntity<?> getRole() {
         return new RestResponseDto().successModel(roleService.findAll());
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
+    public ResponseEntity<?> getBranchStatusCount() {
+        return new RestResponseDto().successModel(roleService.roleStatusCount());
+    }
+
+    @RequestMapping(method = RequestMethod.GET,path="/active")
+    public ResponseEntity<?> getActiveRole() {
+        return new RestResponseDto().successModel(roleService.activeRole());
+    }
 
 
 }

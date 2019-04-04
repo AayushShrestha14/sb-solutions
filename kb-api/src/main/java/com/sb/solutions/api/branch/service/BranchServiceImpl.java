@@ -46,7 +46,7 @@ public class BranchServiceImpl implements BranchService {
         if (branch.getId() == null) {
             branch.setStatus(Status.ACTIVE);
         }
-        branch.setBranchCode(branch.getBranchCode().toUpperCase());
+        branch.setBranchCode(branch.getBranchCode() == null ? null : branch.getBranchCode().toUpperCase());
         return branchRepository.save(branch);
     }
 
@@ -72,6 +72,6 @@ public class BranchServiceImpl implements BranchService {
         header.put("address", "Address");
         header.put("branchCode", "Branch Code");
         String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return  baseHttpService.getBaseUrl()+url;
+        return baseHttpService.getBaseUrl() + url;
     }
 }

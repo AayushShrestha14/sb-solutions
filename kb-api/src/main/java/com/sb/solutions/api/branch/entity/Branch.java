@@ -5,6 +5,7 @@ import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Where(clause = "status <> 2")
 public class Branch extends AbstractBaseEntity<Long> {
     @NotNull(message = "Name should not be null")
     private String name;
