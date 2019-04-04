@@ -68,6 +68,11 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             user.setStatus(Status.ACTIVE);
             Role role = new Role();
             long id =1;
+            role.setId(id);
+            role.setRoleName("SUPERADMIN");
+            role.setStatus(Status.ACTIVE);
+            role.setLastModified(new Date());
+            roleRepository.save(role);
             role = roleRepository.getOne(id);
             user.setRole(role);
             user.setLastModified(new Date());
