@@ -1,19 +1,19 @@
 package com.sb.solutions.web.user.controller;
 
-import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
-import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
-import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -25,7 +25,6 @@ public class RoleController {
 
     @Autowired
     RoleService roleService;
-
 
 
     @Autowired
@@ -55,7 +54,7 @@ public class RoleController {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
     }
 
-    @RequestMapping(method = RequestMethod.GET,path="/active")
+    @RequestMapping(method = RequestMethod.GET, path = "/active")
     public ResponseEntity<?> getActiveRole() {
         return new RestResponseDto().successModel(roleService.activeRole());
     }

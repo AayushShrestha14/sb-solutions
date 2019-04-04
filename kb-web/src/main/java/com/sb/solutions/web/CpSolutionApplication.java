@@ -70,7 +70,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             user.setName("SPADMIN");
             user.setUserName("SPADMIN");
             user.setStatus(Status.ACTIVE);
-            user.setUserType(UserType.SUPERADMIN);
+
             user.setRole(role);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
