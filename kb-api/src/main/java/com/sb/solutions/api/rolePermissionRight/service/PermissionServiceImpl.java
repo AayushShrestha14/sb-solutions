@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Permission save(Permission permission) {
+        permission.setLastModified(new Date());
         return permissionRepository.save(permission);
     }
 

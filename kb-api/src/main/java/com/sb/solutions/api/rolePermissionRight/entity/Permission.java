@@ -1,5 +1,6 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
 
+import com.sb.solutions.core.enitity.AbstractBaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,10 +17,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Permission {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class Permission extends AbstractBaseEntity<Long> {
+
+    @Transient
     private Long id;
     @Column(unique = true, nullable = false)
     private String permissionName;

@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -14,10 +16,9 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubNav {
+public class SubNav extends AbstractBaseEntity<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Transient
     private Long id;
     @Column(unique = true, nullable = false)
     private String subNavName;

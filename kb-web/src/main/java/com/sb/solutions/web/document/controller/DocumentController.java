@@ -65,8 +65,12 @@ public class DocumentController {
     public ResponseEntity<?> getCount(){
         return new RestResponseDto().successModel(documentService.documentStatusCount());
     }
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)")})
     @PostMapping(value="/saveList")
-    public ResponseEntity<?> saveList(@RequestBody List<Document> documentList){
-        return new RestResponseDto().successModel(documentService.saveList(documentList));
+    public ResponseEntity<?> saveList(@RequestBody List<Long> integers,@RequestParam("loanCycleId") long loanCycleId){
+        LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
+        return new RestResponseDto().successModel(documentService.saveList(integers,loanCycle));
     }
 }
