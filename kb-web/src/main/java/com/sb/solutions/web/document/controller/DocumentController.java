@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.Collection;
 
@@ -31,10 +32,10 @@ public class DocumentController {
         globalExceptionHandler.constraintValidation(bindingResult);
 
         Document doc = documentService.save(document);
-        if(doc != null){
+        if (doc != null) {
 
             return new RestResponseDto().successModel(doc);
-        }else{
+        } else {
             return new RestResponseDto().failureModel("Error Occurred");
         }
     }
@@ -46,7 +47,7 @@ public class DocumentController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
     public ResponseEntity<?> getAll(@RequestBody Document document, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(documentService.findAllPageable(document,new CustomPageable().pageable(page, size)));
+        return new RestResponseDto().successModel(documentService.findAllPageable(document, new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -54,13 +55,14 @@ public class DocumentController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @PostMapping(value="/list")
-    public ResponseEntity<?> getByCycle(@RequestBody Collection<LoanCycle> loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size){
-        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycleList,new CustomPageable().pageable(page, size)));
+    @PostMapping(value = "/list")
+    public ResponseEntity<?> getByCycle(@RequestBody Collection<LoanCycle> loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(documentService.getByCycle(loanCycleList, new CustomPageable().pageable(page, size)));
 
     }
-    @GetMapping(value="lifeCycle")
-    public ResponseEntity<?> getLifeCycle(){
+
+    @GetMapping(value = "lifeCycle")
+    public ResponseEntity<?> getLifeCycle() {
         return new RestResponseDto().successModel(loanCycleService.findAll());
     }
 }

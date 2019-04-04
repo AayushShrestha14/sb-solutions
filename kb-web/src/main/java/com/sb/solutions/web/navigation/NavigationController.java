@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/nav")
 public class NavigationController {
+
     @Autowired
     RolePermissionRightService rolePermissionRightService;
 
