@@ -124,6 +124,10 @@ public class UserController {
         return new RestResponseDto().successModel(userService.getUserByFingerPrint(file));
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
+    public ResponseEntity<?> getUserStatusCount() {
+        return new RestResponseDto().successModel(userService.userStatusCount());
+    }
 
 
 }

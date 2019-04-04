@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -24,5 +25,6 @@ public interface UserService extends BaseService<User> {
     Page<User> findByRole(Collection<Role> roles, Pageable pageable);
 
     User getUserByFingerPrint(MultipartFile file);
+    Map<Object,Object> userStatusCount();
 
 }

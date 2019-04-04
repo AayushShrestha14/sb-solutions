@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 12/31/2018
@@ -18,5 +19,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> userFilter(@Param("name")String name, Pageable pageable);
     User getUsersByUserName(String username);
     Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
+    @Query(value = "select\n" +
+            "  (select  count(id) from user where status=1) active,\n" +
+            "(select  count(id) from user where status=0) inactive,\n" +
+            "(select  count(id) from user) users\n",nativeQuery = true)
+    Map<Object,Object> userStatusCount();
 }
 
