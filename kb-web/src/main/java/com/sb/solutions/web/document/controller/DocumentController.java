@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -63,5 +64,9 @@ public class DocumentController {
     @GetMapping(value="/get/getStatusCount")
     public ResponseEntity<?> getCount(){
         return new RestResponseDto().successModel(documentService.documentStatusCount());
+    }
+    @PostMapping(value="/saveList")
+    public ResponseEntity<?> saveList(@RequestBody List<Document> documentList){
+        return new RestResponseDto().successModel(documentService.saveList(documentList));
     }
 }

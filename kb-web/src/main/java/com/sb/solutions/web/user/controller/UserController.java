@@ -77,8 +77,7 @@ public class UserController {
 
     @PostMapping(value = "/uploadProfile")
     public ResponseEntity<?> saveUserProfile(@RequestBody MultipartFile multipartFile) {
-
-        if (multipartFile.isEmpty()) {
+        if (multipartFile==null) {
             return new RestResponseDto().failureModel("Select Profile Image");
         }
 

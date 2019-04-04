@@ -62,4 +62,10 @@ public class DocumentServiceImpl implements DocumentService {
     public Map<Object, Object> documentStatusCount() {
         return documentRepository.documentStatusCount();
     }
+
+    @Override
+    public String saveList(List<Document> documents) {
+        documentRepository.saveAll(documents);
+        return "Success";
+    }
 }

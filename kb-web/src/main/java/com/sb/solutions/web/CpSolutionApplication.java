@@ -1,6 +1,8 @@
 package com.sb.solutions.web;
 
 
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.enums.Status;
@@ -31,6 +33,8 @@ import java.util.Date;
 public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -52,21 +56,18 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             User user = new User();
             user.setName("SPADMIN");
             user.setUserName("SPADMIN");
-            user.setEmail("email");
-            user.setPassword("password");
             user.setStatus(Status.ACTIVE);
-            user.setAccountNo("123");
-            /*user.setBranch(1);*/
-            user.setSignatureImage("sign");
-            user.setProfilePicture("profile");
-            //user.setRole(Role.SUPERADMIN);
+            Role role = new Role();
+            long id =1;
+            role = roleRepository.getOne(id);
+            user.setRole(role);
             user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
-            user.toString();
             userRepository.save(user);
             ClassPathResource schemaResource = new ClassPathResource("oauth.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            /*populator.execute(dataSource);*/
+            populator.execute(dataSource);
+
         }
     }
 
