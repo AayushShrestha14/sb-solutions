@@ -2,12 +2,15 @@ package com.sb.solutions.api.user.service;
 
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
+import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.csv.CsvMaker;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
     private FingerPrintRepository fingerPrintRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    BaseHttpService baseHttpService;
 
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -114,6 +117,21 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.findById(id).get();
 
+    }
+
+    @Override
+    public String csv(SearchDto searchDto) {
+        CsvMaker csvMaker = new CsvMaker();
+        List branchList = userRepository.userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        Map<String, String> header = new LinkedHashMap<>();
+        header.put("name", " Name");
+        header.put("email", "Email");
+        header.put("branch,name", "Branch name");
+        header.put("branch,address", "Branch Address");
+        header.put("role,roleName", "Role");
+        header.put("status", "Status");
+        String url = csvMaker.csv("user", header, branchList, UploadDir.branchCsv);
+        return  baseHttpService.getBaseUrl()+url;
     }
 
     @Override
