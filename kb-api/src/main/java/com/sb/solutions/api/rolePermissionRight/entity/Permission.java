@@ -30,5 +30,5 @@ public class Permission {
 
     @OneToMany
     private List<SubNav> subNavs;
-
 }
+
