@@ -9,6 +9,7 @@ import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -30,9 +31,13 @@ import java.util.Set;
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 @Service
+
 public class UserServiceImpl implements UserService {
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private FingerPrintRepository fingerPrintRepository;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
 
@@ -70,9 +75,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        /*user.setPassword(passwordEncoder.encode(user.getPassword()));*/
+        System.out.println(user.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setLastModified(new Date());
-        if(user.getId()==null){
+        if (user.getId() == null) {
             user.setStatus(Status.ACTIVE);
         }
         return userRepository.save(user);
@@ -81,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
-        return  userRepository.findByRoleIn(roles,pageable);
+        return userRepository.findByRoleIn(roles, pageable);
     }
 
     @Override
@@ -113,8 +119,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return userRepository.userFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
 
     }
 

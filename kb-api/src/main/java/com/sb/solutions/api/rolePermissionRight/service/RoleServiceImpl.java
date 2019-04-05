@@ -60,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> activeRole() {
+    public List<Map<Object,Object>>  activeRole() {
         User u = userService.getAuthenticated();
         Role r = u.getRole();
         return roleRepository.activeRole(r.getId());
