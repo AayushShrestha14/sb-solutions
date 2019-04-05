@@ -1,5 +1,6 @@
 package com.sb.solutions.api.user.repository;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 12/31/2018
@@ -24,5 +26,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "(select  count(id) from user where status=0) inactive,\n" +
             "(select  count(id) from user) users\n",nativeQuery = true)
     Map<Object,Object> userStatusCount();
+
+    @Query(value = "select b from User b where b.name like concat(:name,'%')")
+    List<User> userCsvFilter(@Param("name")String name);
 }
 

@@ -2,13 +2,18 @@ package com.sb.solutions.api.user.service;
 
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
+import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.csv.CsvMaker;
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -27,15 +32,14 @@ import java.util.*;
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private FingerPrintRepository fingerPrintRepository;
     private BCryptPasswordEncoder passwordEncoder;
+    BaseHttpService baseHttpService;
 
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<User> findAll() {
@@ -67,9 +71,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        /*user.setPassword(passwordEncoder.encode(user.getPassword()));*/
+        System.out.println(user.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setLastModified(new Date());
-        if(user.getId()==null){
+        if (user.getId() == null) {
             user.setStatus(Status.ACTIVE);
         }
         return userRepository.save(user);
@@ -78,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
-        return  userRepository.findByRoleIn(roles,pageable);
+        return userRepository.findByRoleIn(roles, pageable);
     }
 
     @Override
@@ -113,10 +118,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String csv(SearchDto searchDto) {
+        CsvMaker csvMaker = new CsvMaker();
+        List branchList = userRepository.userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        Map<String, String> header = new LinkedHashMap<>();
+        header.put("name", " Name");
+        header.put("email", "Email");
+        header.put("branch,name", "Branch name");
+        header.put("branch,address", "Branch Address");
+        header.put("role,roleName", "Role");
+        header.put("status", "Status");
+        String url = csvMaker.csv("user", header, branchList, UploadDir.branchCsv);
+        return  baseHttpService.getBaseUrl()+url;
+    }
+
+    @Override
     public Page<User> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return userRepository.userFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
 
     }
 

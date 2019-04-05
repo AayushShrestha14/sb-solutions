@@ -129,5 +129,9 @@ public class UserController {
         return new RestResponseDto().successModel(userService.userStatusCount());
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
+        return new RestResponseDto().successModel((userService.csv(searchDto)));
+    }
 
 }
