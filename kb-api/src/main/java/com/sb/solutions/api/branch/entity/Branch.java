@@ -29,8 +29,5 @@ public class Branch extends AbstractBaseEntity<Long> {
     private String branchCode;
     private String address;
     private Status status;
-    @JsonIgnore
-    @OneToMany(mappedBy = "branch")
-    private List<User> users;
 
 }

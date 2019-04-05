@@ -30,7 +30,7 @@ public class User extends AbstractBaseEntity<Long> {
     @OneToOne
     private Role role;
     private String accountNo;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
     private String signatureImage;

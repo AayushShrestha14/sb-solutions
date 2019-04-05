@@ -72,10 +72,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         System.out.println(user.getPassword());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setLastModified(new Date());
         if (user.getId() == null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);
+        }else{
+            user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
         return userRepository.save(user);
 
