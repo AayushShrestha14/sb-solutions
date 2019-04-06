@@ -2,11 +2,13 @@ package com.sb.solutions.api.memo.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString.Exclude;
 
 @Entity
 @Data
@@ -22,8 +25,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class MemoStage extends BaseEntity<Long> {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
+    @Exclude
+    @JsonIgnore
     @JoinColumn(name = "memo_id")
     private Memo memo;
 

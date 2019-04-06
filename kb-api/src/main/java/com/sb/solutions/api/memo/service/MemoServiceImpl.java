@@ -41,8 +41,7 @@ public class MemoServiceImpl implements MemoService {
             memoStage.setStage(Stage.DRAFT);
             memoStage.setNote("Saved as Draft");
 
-            memoStage.setMemo(memo);
-            memo.getStages().add(memoStage);
+            memo.addMemoStage(memoStage);
         }
 
         return repository.save(memo);

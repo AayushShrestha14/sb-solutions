@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -72,9 +73,18 @@ public class Memo extends BaseEntity<Long> {
     @NotNull
     private MemoType type;
 
-    @OneToMany
+    @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY, orphanRemoval = true)
     @NotNull
     @Cascade(value = CascadeType.ALL)
-    @JoinColumn(name = "memo_id")
     private Set<MemoStage> stages = new HashSet<>();
+
+    public void addMemoStage(MemoStage memoStage) {
+        stages.add(memoStage);
+        memoStage.setMemo(this);
+    }
+
+    public void removeMemoStage(MemoStage memoStage) {
+        stages.remove(memoStage);
+        memoStage.setMemo(null);
+    }
 }
