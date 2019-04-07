@@ -33,7 +33,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public Branch save(Branch branch) {
-        branch.setLastModified(new Date());
+        branch.setLastModifiedAt(new Date());
         if(branch.getId()==null){
             branch.setStatus(Status.ACTIVE);
         }

@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/user")
 public class UserController {
 
+    final UserService userService;
+
     @Autowired
-    UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
@@ -33,6 +37,4 @@ public class UserController {
         userService.save(user);
         return new ResponseEntity<>(userService.getAuthenticated(), HttpStatus.OK);
     }
-
-
 }

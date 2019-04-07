@@ -15,5 +15,4 @@ public interface UserService extends BaseService<User> {
     User getByUsername(String username);
 
     User save(User user);
-
 }
