@@ -49,4 +49,9 @@ public class MemoStage extends BaseEntity<Long> {
     @Column(name = "note", nullable = false)
     @NotNull
     private String note;
+
+    @Override
+    protected void setId(Long id) {
+        super.setId(id);
+    }
 }

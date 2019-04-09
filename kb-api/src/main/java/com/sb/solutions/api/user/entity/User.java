@@ -35,4 +35,9 @@ public class User extends BaseEntity<Long> {
 
     @Column(name = "associated_id")
     private long associateId = 0;
+
+    @Override
+    protected void setId(Long id) {
+        super.setId(id);
+    }
 }

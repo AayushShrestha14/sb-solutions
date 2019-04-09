@@ -87,4 +87,8 @@ public class Memo extends BaseEntity<Long> {
         stages.remove(memoStage);
         memoStage.setMemo(null);
     }
+
+    public void setId(long id) {
+        super.setId(id);
+    }
 }
