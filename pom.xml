@@ -36,6 +36,10 @@
     </sonar.jacoco.reportPaths>
 
     <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+    <surfire.report.plugin.version>2.22.1</surfire.report.plugin.version>
+
+    <spotbug.version>3.1.12</spotbug.version>
+    <spotbug.maven.plugin.version>3.1.11</spotbug.maven.plugin.version>
   </properties>
 
   <dependencies>
@@ -115,6 +119,13 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-report-plugin</artifactId>
+      <version>${surfire.report.plugin.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -127,14 +138,6 @@
           <!-- Force alphabetical order to have a reproducible build -->
           <runOrder>alphabetical</runOrder>
         </configuration>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -165,6 +168,30 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbug.maven.plugin.version}</version>
+        <dependencies>
+          <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+          <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs</artifactId>
+            <version>${spotbug.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${surfire.report.plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
