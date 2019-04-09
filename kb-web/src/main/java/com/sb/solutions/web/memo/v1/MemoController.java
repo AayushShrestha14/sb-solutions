@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.memo.entity.Memo;
+import com.sb.solutions.api.memo.entity.MemoStage;
 import com.sb.solutions.api.memo.service.MemoService;
+import com.sb.solutions.api.memo.service.MemoStageService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
@@ -35,11 +37,15 @@ public class MemoController {
 
     private final MemoService service;
 
+    private final MemoStageService stageService;
+
     private final GlobalExceptionHandler exceptionHandler;
 
     public MemoController(@Autowired MemoService service,
+        @Autowired MemoStageService stageService,
         @Autowired GlobalExceptionHandler exceptionHandler) {
         this.service = service;
+        this.stageService = stageService;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -106,5 +112,26 @@ public class MemoController {
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(service.findAll());
+    }
+
+    @GetMapping("/{id}/stages")
+    public ResponseEntity<?> getMemoStagesByMemo(@PathVariable long id) {
+        return new RestResponseDto().successModel(service.findOne(id));
+    }
+
+    @PostMapping("/{id}/stages")
+    public ResponseEntity<?> saveMemoStageForMemo(@PathVariable long id,
+        @RequestBody MemoStage stage,
+        BindingResult bindingResult) {
+        exceptionHandler.constraintValidation(bindingResult);
+
+        final MemoStage saved = stageService.save(stage);
+
+        if (null == saved) {
+            return new RestResponseDto()
+                .failureModel("Error occurred while saving Memo " + stage);
+        }
+
+        return new RestResponseDto().successModel(saved);
     }
 }
