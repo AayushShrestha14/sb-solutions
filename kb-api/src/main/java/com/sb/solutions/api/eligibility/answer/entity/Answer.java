@@ -1,5 +1,6 @@
 package com.sb.solutions.api.eligibility.answer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class Answer extends BaseEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "question_id")
+    @JsonIgnore
     private Question question;
 
 }
