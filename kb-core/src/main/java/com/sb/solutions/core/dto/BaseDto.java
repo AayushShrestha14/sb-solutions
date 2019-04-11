@@ -5,13 +5,17 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public abstract class BaseDto {
+public abstract class BaseDto<PK> {
 
-    private long id;
+    private PK id;
 
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     private Date lastModifiedAt;
 
     private int version;
+
+    public boolean isNew() {
+        return null == id;
+    }
 }

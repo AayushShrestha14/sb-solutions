@@ -4,12 +4,14 @@ import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.core.dto.BaseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StageDto extends BaseDto {
+@EqualsAndHashCode(callSuper = true)
+public class StageDto extends BaseDto<Long> {
 
     private MemoUserDto sentBy;
 

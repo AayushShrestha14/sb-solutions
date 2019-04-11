@@ -28,7 +28,7 @@ public class MemoType extends BaseEntity<Long> {
     private Status status = Status.ACTIVE;
 
     @Override
-    protected void setId(Long id) {
+    public void setId(Long id) {
         super.setId(id);
     }
 }

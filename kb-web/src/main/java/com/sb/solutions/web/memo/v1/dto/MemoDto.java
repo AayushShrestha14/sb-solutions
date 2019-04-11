@@ -9,12 +9,14 @@ import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemoDto extends BaseDto {
+@EqualsAndHashCode(callSuper = true)
+public class MemoDto extends BaseDto<Long> {
 
     @NotNull
     private String subject;

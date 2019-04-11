@@ -84,7 +84,7 @@ public class MemoMapperTest {
         memo.setSentTo(sentTo);
         memo.setType(type);
         memo.addStage(stage);
-        memo.setId(1);
+        memo.setId(1L);
 
         final Memo entity = mapper.mapDtoToEntity(memo);
         entity.setId(memo.getId());

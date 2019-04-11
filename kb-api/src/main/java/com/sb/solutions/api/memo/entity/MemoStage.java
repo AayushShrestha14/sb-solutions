@@ -22,7 +22,7 @@ import lombok.ToString.Exclude;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class MemoStage extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
