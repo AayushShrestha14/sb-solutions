@@ -11,11 +11,7 @@ public abstract class BaseDto<PK> {
 
     private Date createdAt = new Date();
 
-    private Date lastModifiedAt;
+    private Date lastModifiedAt = new Date();
 
     private int version;
-
-    public boolean isNew() {
-        return null == id;
-    }
 }

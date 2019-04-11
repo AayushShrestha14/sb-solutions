@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.memo.entity.Memo;
-import com.sb.solutions.api.memo.entity.MemoStage;
 import com.sb.solutions.api.memo.service.MemoService;
 import com.sb.solutions.api.memo.service.MemoStageService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.web.memo.v1.dto.MemoDto;
+import com.sb.solutions.web.memo.v1.mapper.MemoMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
@@ -39,29 +41,33 @@ public class MemoController {
 
     private final MemoStageService stageService;
 
+    private final MemoMapper mapper;
+
     private final GlobalExceptionHandler exceptionHandler;
 
     public MemoController(@Autowired MemoService service,
         @Autowired MemoStageService stageService,
-        @Autowired GlobalExceptionHandler exceptionHandler) {
+        @Autowired GlobalExceptionHandler exceptionHandler,
+        @Autowired MemoMapper mapper) {
         this.service = service;
         this.stageService = stageService;
         this.exceptionHandler = exceptionHandler;
+        this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody Memo memo, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody MemoDto dto, BindingResult bindingResult) {
         exceptionHandler.constraintValidation(bindingResult);
 
-        final Memo savedMemo = service.save(memo);
+        final Memo savedMemo = service.save(mapper.mapDtoToEntity(dto));
 
         if (null == savedMemo) {
-            logger.error("Error while saving memo {}", memo);
+            logger.error("Error while saving memo {}", dto);
             return new RestResponseDto()
-                .failureModel("Error occurred while saving Memo " + memo);
+                .failureModel("Error occurred while saving Memo " + dto);
         }
 
-        return new RestResponseDto().successModel(savedMemo);
+        return new RestResponseDto().successModel(mapper.mapEntityToDto(savedMemo));
     }
 
     @ApiImplicitParams({
@@ -82,24 +88,22 @@ public class MemoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable long id) {
-        final Memo memo = service.findOne(id);
-
-        return new RestResponseDto().successModel(memo);
+        return new RestResponseDto().successModel(mapper.mapEntityToDto(service.findOne(id)));
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable long id, @RequestBody Memo memo,
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable long id, @RequestBody MemoDto dto,
         BindingResult bindingResult) {
         exceptionHandler.constraintValidation(bindingResult);
 
-        final Memo savedMemo = service.save(memo);
+        final Memo savedMemo = service.save(mapper.mapDtoToEntity(dto));
 
         if (null == savedMemo) {
             return new RestResponseDto()
-                .failureModel("Error occurred while saving Memo " + memo);
+                .failureModel("Error occurred while saving Memo " + dto);
         }
 
-        return new RestResponseDto().successModel(savedMemo);
+        return new RestResponseDto().successModel(mapper.mapEntityToDto(savedMemo));
     }
 
     @DeleteMapping("/{id}")
@@ -111,27 +115,6 @@ public class MemoController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
-        return new RestResponseDto().successModel(service.findAll());
-    }
-
-    @GetMapping("/{id}/stages")
-    public ResponseEntity<?> getMemoStagesByMemo(@PathVariable long id) {
-        return new RestResponseDto().successModel(service.findOne(id));
-    }
-
-    @PostMapping("/{id}/stages")
-    public ResponseEntity<?> saveMemoStageForMemo(@PathVariable long id,
-        @RequestBody MemoStage stage,
-        BindingResult bindingResult) {
-        exceptionHandler.constraintValidation(bindingResult);
-
-        final MemoStage saved = stageService.save(stage);
-
-        if (null == saved) {
-            return new RestResponseDto()
-                .failureModel("Error occurred while saving Memo " + stage);
-        }
-
-        return new RestResponseDto().successModel(saved);
+        return new RestResponseDto().successModel(mapper.mapEntitiesToDtos(service.findAll()));
     }
 }

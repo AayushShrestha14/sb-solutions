@@ -8,9 +8,9 @@ import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.dto.BaseMapper;
 import com.sb.solutions.web.memo.v1.dto.MemoDto;
-import com.sb.solutions.web.memo.v1.dto.StageDto;
 import com.sb.solutions.web.memo.v1.dto.MemoTypeDto;
 import com.sb.solutions.web.memo.v1.dto.MemoUserDto;
+import com.sb.solutions.web.memo.v1.dto.StageDto;
 
 @Mapper(componentModel = BaseMapper.SPRING_MODEL)
 public abstract class MemoMapper extends BaseMapper<Memo, MemoDto> {

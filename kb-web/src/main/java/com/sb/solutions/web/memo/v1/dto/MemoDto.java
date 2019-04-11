@@ -32,9 +32,9 @@ public class MemoDto extends BaseDto<Long> {
 
     private Set<MemoUserDto> bcc;
 
-    private Status status;
+    private Status status = Status.ACTIVE;
 
-    private Stage stage;
+    private Stage stage = Stage.DRAFT;
 
     private MemoTypeDto type;
 

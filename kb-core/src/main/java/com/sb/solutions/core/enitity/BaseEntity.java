@@ -39,4 +39,8 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
     @Version
     private int version;
 
+    @Override
+    public void setId(PK id) {
+        super.setId(id);
+    }
 }
