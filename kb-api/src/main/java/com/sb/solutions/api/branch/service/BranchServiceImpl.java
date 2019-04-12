@@ -42,8 +42,8 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public Branch save(Branch branch) {
-        branch.setLastModified(new Date());
-        if (branch.getId() == null) {
+        branch.setLastModifiedAt(new Date());
+        if(branch.getId()==null){
             branch.setStatus(Status.ACTIVE);
         }
         branch.setBranchCode(branch.getBranchCode().toUpperCase());

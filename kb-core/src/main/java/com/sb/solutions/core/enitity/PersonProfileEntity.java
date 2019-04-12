@@ -11,11 +11,12 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PersonProfileEntity extends AbstractBaseEntity<Long> {
+public class PersonProfileEntity extends BaseEntity<Long> {
 
     private String firstName;
     private String middleName;
     private String lastName;
+
     @Email
     @Column(unique = true)
     private String email;

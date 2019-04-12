@@ -1,6 +1,10 @@
 package com.sb.solutions.web;
 
 
+import java.util.Date;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
@@ -16,14 +20,13 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import java.util.Date;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.UserType;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -70,9 +73,9 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             user.setName("SPADMIN");
             user.setUserName("SPADMIN");
             user.setStatus(Status.ACTIVE);
+            user.setLastModifiedAt(new Date());
             user.setEmail("admin@admin.com");
             user.setRole(role);
-            user.setLastModified(new Date());
             user.setPassword(passwordEncoder.encode("admin1234"));
             userRepository.save(user);
 

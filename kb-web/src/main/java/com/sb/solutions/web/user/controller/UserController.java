@@ -29,6 +29,9 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/v1/user")
 public class UserController {
+
+    final UserService userService;
+
     private UserService userService;
     private RoleService roleService;
     @Autowired

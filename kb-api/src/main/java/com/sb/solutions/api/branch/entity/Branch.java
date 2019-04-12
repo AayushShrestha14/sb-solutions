@@ -1,19 +1,14 @@
 package com.sb.solutions.api.branch.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -23,11 +18,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Branch extends AbstractBaseEntity<Long> {
+public class Branch extends BaseEntity<Long> {
+
     @NotNull(message = "Name should not be null")
     private String name;
+
+    @Column(name = "branch_code")
     private String branchCode;
     private String address;
     private Status status;
-
 }

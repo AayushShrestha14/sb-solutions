@@ -3,6 +3,11 @@ package com.sb.solutions.api.user.entity;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.AbstractBaseEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +23,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends AbstractBaseEntity<Long> {
+public class User extends BaseEntity<Long> {
+
     private String name;
-    @Column(unique = true, nullable = false)
+
+    @Column(name = "username", unique = true, nullable = false)
     private String userName;
     @Column(unique = true, nullable = false)
     private String email;
