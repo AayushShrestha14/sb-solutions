@@ -2,7 +2,7 @@ package com.sb.solutions.api.user.entity;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

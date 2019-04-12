@@ -1,6 +1,6 @@
 package com.sb.solutions.api.basicInfo.customerRelative.entity;
 
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerRelative extends AbstractBaseEntity<Long> {
+public class CustomerRelative extends BaseEntity<Long> {
     private String customerRelation;
     private String customerRelativeName;
     private String citizenshipNumber;

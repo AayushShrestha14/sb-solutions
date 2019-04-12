@@ -1,7 +1,8 @@
 package com.sb.solutions.api.basicInfo.customer.entity;
 
 import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer extends AbstractBaseEntity<Long> {
+public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
     private String customerId;

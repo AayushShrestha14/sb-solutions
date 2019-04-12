@@ -1,6 +1,6 @@
 package com.sb.solutions.api.loanTemplate.entity;
 
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanTemplate extends AbstractBaseEntity<Long> {
+public class LoanTemplate extends BaseEntity<Long> {
 
     @NotNull
     private String name;

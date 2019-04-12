@@ -1,6 +1,6 @@
 package com.sb.solutions.api.companyInfo.legalStatus.entity;
 
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LegalStatus extends AbstractBaseEntity<Long> {
+public class LegalStatus extends BaseEntity<Long> {
 
     private String companyName;
 

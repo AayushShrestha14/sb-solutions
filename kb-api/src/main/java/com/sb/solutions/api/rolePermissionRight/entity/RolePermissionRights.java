@@ -1,7 +1,7 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class RolePermissionRights extends AbstractBaseEntity<Long> {
+public class RolePermissionRights extends BaseEntity<Long> {
 
     @Transient
     private Long id;

@@ -2,7 +2,7 @@ package com.sb.solutions.api.sector.subsector.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.sector.sector.entity.Sector;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubSector  extends AbstractBaseEntity<Long> {
+public class SubSector  extends BaseEntity<Long> {
 
     private String subSectorName;
 

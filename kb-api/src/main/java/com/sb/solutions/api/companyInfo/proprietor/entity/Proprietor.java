@@ -1,6 +1,6 @@
 package com.sb.solutions.api.companyInfo.proprietor.entity;
 
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Proprietor extends AbstractBaseEntity<Long> {
+public class Proprietor extends BaseEntity<Long> {
 
     private String name;
 

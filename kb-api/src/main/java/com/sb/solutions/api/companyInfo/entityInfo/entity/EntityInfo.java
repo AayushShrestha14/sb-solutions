@@ -5,7 +5,7 @@ import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
 import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EntityInfo extends AbstractBaseEntity<Long> {
+public class EntityInfo extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private LegalStatus legalStatus;
     @OneToOne(cascade = CascadeType.ALL)

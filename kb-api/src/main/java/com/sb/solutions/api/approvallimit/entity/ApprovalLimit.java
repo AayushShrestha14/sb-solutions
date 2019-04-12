@@ -3,7 +3,7 @@ package com.sb.solutions.api.approvallimit.entity;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApprovalLimit extends AbstractBaseEntity<Long> {
+public class ApprovalLimit extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     private double amount;

@@ -30,9 +30,7 @@ import java.util.Collection;
 @RequestMapping("/v1/user")
 public class UserController {
 
-    final UserService userService;
-
-    private UserService userService;
+    private final UserService userService;
     private RoleService roleService;
     @Autowired
     public UserController (UserService userService,RoleService roleService){

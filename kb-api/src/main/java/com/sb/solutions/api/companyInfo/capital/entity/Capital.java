@@ -1,6 +1,6 @@
 package com.sb.solutions.api.companyInfo.capital.entity;
 
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Capital extends AbstractBaseEntity<Long> {
+public class Capital extends BaseEntity<Long> {
 
     private double authorizedCapital;
 

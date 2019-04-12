@@ -1,7 +1,7 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
 
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role extends AbstractBaseEntity<Long> {
+public class Role extends BaseEntity<Long> {
 
     @Transient
     private Long id;

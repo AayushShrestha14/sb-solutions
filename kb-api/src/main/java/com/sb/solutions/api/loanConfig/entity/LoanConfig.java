@@ -1,7 +1,7 @@
 package com.sb.solutions.api.loanConfig.entity;
 
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
-import com.sb.solutions.core.enitity.AbstractBaseEntity;
+import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanConfig extends AbstractBaseEntity<Long> {
+public class LoanConfig extends BaseEntity<Long> {
 
     @NotNull(message="name should not be null")
     private String name;
