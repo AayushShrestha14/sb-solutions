@@ -33,12 +33,12 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer save(Customer customer) {
         Date date = new Date();
-        customer.setLastModified(date);
+        customer.setLastModifiedAt(date);
         if(customer.getCustomerRelatives().size()<=0){
             customer.setCustomerRelatives(null);
         }else {
             for (CustomerRelative relative : customer.getCustomerRelatives()) {
-                relative.setLastModified(date);
+                relative.setLastModifiedAt(date);
             }
         }
         return customerRepository.save(customer);

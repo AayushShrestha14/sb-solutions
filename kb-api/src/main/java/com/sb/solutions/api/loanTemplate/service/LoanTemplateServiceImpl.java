@@ -34,7 +34,7 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
 
     @Override
     public LoanTemplate save(LoanTemplate loanTemplate) {
-        loanTemplate.setLastModified(new Date());
+        loanTemplate.setLastModifiedAt(new Date());
         if (loanTemplate.getId() == null) {
             loanTemplate.setStatus(Status.ACTIVE);
 

@@ -39,7 +39,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role save(Role role) {
         User u = userService.getAuthenticated();
-        role.setLastModified(new Date());
+        role.setLastModifiedAt(new Date());
         if (role.getId() == null) {
             role.setCreatedBy(u);
         } else {

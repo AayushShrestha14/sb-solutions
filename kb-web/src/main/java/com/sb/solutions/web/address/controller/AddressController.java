@@ -2,8 +2,8 @@ package com.sb.solutions.web.address.controller;
 
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.district.service.DistrictService;
-import com.sb.solutions.api.address.municipality_VDC.entity.Municipality_VDC;
-import com.sb.solutions.api.address.municipality_VDC.service.Municipality_VDCService;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.address.province.service.ProvinceService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AddressController {
     private final DistrictService districtService;
     private final ProvinceService provinceService;
-    private final Municipality_VDCService municipality_vdcService;
+    private final MunicipalityVdcService municipality_vdcService;
 
     @GetMapping("/province")
     public ResponseEntity<?> getProvince(){
@@ -49,7 +49,7 @@ public class AddressController {
     }
 
     @PostMapping("/municipalityVdc")
-    public ResponseEntity<?> saveMunicipality_VDC(@RequestBody Municipality_VDC municipality_vdc) {
+    public ResponseEntity<?> saveMunicipality_VDC(@RequestBody MunicipalityVdc municipality_vdc) {
         return new RestResponseDto().successModel(municipality_vdcService.save(municipality_vdc));
     }
 

@@ -1,4 +1,4 @@
-package com.sb.solutions.api.address.municipality_VDC.entity;
+package com.sb.solutions.api.address.municipalityVdc.entity;
 
 import com.sb.solutions.api.address.district.entity.District;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Municipality_VDC {
+public class MunicipalityVdc {
     @Id
     @GeneratedValue
     private long id;

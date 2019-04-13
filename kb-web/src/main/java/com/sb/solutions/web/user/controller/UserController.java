@@ -8,6 +8,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -32,10 +33,12 @@ public class UserController {
 
     private final UserService userService;
     private RoleService roleService;
+    private UploadFile uploadFile;
     @Autowired
-    public UserController (UserService userService,RoleService roleService){
-        this.userService= userService;
-        this.roleService= roleService;
+    public UserController (UserService userService,RoleService roleService, UploadFile uploadFile){
+        this.userService = userService;
+        this.roleService = roleService;
+        this.uploadFile = uploadFile;
     }
     private String signaturePath=null;
     private String profiePath=null;
@@ -59,41 +62,9 @@ public class UserController {
         user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
-    @PostMapping(value = "/uploadSignature")
-    public ResponseEntity<?> saveUserSignature(@RequestParam("file") MultipartFile multipartFile) {
-
-        if (multipartFile.isEmpty()) {
-            return new RestResponseDto().failureModel("Select Signature Image");
-        }
-
-        try {
-            byte[] bytes = multipartFile.getBytes();
-            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\signature\\" + multipartFile.getOriginalFilename());
-            signaturePath = path.toString();
-            Files.write(path, bytes);
-            return new RestResponseDto().successModel("Uploaded");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new RestResponseDto().failureModel("Upload Unsuccessful");
-        }
-    }
-
-    @PostMapping(value = "/uploadProfile")
-    public ResponseEntity<?> saveUserProfile(@RequestParam("file") MultipartFile multipartFile) {
-        if (multipartFile==null) {
-            return new RestResponseDto().failureModel("Select Profile Image");
-        }
-
-        try {
-            byte[] bytes = multipartFile.getBytes();
-            Path path = Paths.get("C:\\Users\\GOAT\\Desktop\\Images\\profile\\" + multipartFile.getOriginalFilename());
-            profiePath = path.toString();
-            Files.write(path, bytes);
-            return new RestResponseDto().successModel("Uploaded");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new RestResponseDto().failureModel("Upload Unsuccessful");
-        }
+    @PostMapping(value = "/uploadFile")
+    public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type) {
+        return uploadFile.uploadFile(multipartFile,type);
     }
 
     @ApiImplicitParams({

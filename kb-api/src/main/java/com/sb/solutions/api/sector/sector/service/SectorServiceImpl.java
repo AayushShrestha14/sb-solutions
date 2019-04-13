@@ -35,7 +35,7 @@ public class SectorServiceImpl implements SectorService {
 
     @Override
     public Sector save(Sector sector) {
-        sector.setLastModified(new Date());
+        sector.setLastModifiedAt(new Date());
         if(sector.getId()==null){
             sector.setStatus(Status.ACTIVE);
         }

@@ -36,7 +36,7 @@ public class LoanConfigServiceImpl implements LoanConfigService {
 
     @Override
     public LoanConfig save(LoanConfig loanConfig) {
-        loanConfig.setLastModified(new Date());
+        loanConfig.setLastModifiedAt(new Date());
         if(loanConfig.getId()==null){
             loanConfig.setStatus(Status.ACTIVE);
         }

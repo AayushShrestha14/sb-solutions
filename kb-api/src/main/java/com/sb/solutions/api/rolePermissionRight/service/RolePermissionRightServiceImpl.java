@@ -31,7 +31,7 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
 
     @Override
     public RolePermissionRights save(RolePermissionRights rolePermissionRights) {
-        rolePermissionRights.setLastModified(new Date());
+        rolePermissionRights.setLastModifiedAt(new Date());
         return rolePermissionRightRepository.save(rolePermissionRights);
     }
 

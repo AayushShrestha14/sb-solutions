@@ -1,8 +1,8 @@
-package com.sb.solutions.api.address.municipality_VDC.service;
+package com.sb.solutions.api.address.municipalityVdc.service;
 
 import com.sb.solutions.api.address.district.entity.District;
-import com.sb.solutions.api.address.municipality_VDC.entity.Municipality_VDC;
-import com.sb.solutions.api.address.municipality_VDC.repository.Municipality_VDCRepository;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.municipalityVdc.repository.MunicipalityVdcRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -14,32 +14,32 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class Municipality_VDCServiceImpl implements Municipality_VDCService {
-    private final Municipality_VDCRepository municipality_vdcRepository;
+public class MunicipalityVdcServiceImpl implements MunicipalityVdcService {
+    private final MunicipalityVdcRepository municipality_vdcRepository;
     @Override
-    public List<Municipality_VDC> findAll() {
+    public List<MunicipalityVdc> findAll() {
         return municipality_vdcRepository.findAll();
     }
 
     @Override
-    public Municipality_VDC findOne(Long id) {
+    public MunicipalityVdc findOne(Long id) {
         return municipality_vdcRepository.getOne(id);
     }
 
     @Override
-    public Municipality_VDC save(Municipality_VDC municipality_vdc) {
+    public MunicipalityVdc save(MunicipalityVdc municipality_vdc) {
         return municipality_vdcRepository.save(municipality_vdc);
     }
 
     @Override
-    public Page<Municipality_VDC> findAllPageable(Object object, Pageable pageable) {
+    public Page<MunicipalityVdc> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object,SearchDto.class);
         return municipality_vdcRepository.municipalityVdcFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
     @Override
-    public List<Municipality_VDC> findAllByDistrict(District district) {
+    public List<MunicipalityVdc> findAllByDistrict(District district) {
         return municipality_vdcRepository.findAllByDistrict(district);
     }
 }

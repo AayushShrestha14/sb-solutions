@@ -31,7 +31,7 @@ public class SubSectorServiceImpl implements SubSectorService {
 
     @Override
     public SubSector save(SubSector subSector) {
-        subSector.setLastModified(new Date());
+        subSector.setLastModifiedAt(new Date());
         if(subSector.getId()==null){
             subSector.setStatus(Status.ACTIVE);
         }

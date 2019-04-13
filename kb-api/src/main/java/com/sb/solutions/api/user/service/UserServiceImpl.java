@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         System.out.println(user.getPassword());
-        user.setLastModified(new Date());
+        user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);

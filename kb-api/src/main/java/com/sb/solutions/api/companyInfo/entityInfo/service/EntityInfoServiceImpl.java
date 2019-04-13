@@ -30,22 +30,22 @@ public class EntityInfoServiceImpl implements  EntityInfoService {
     @Override
     public EntityInfo save(EntityInfo entityInfo) {
         Date date = new Date();
-        entityInfo.setLastModified(date);
-        entityInfo.getCapital().setLastModified(date);
-        entityInfo.getLegalStatus().setLastModified(date);
-        entityInfo.getSwot().setLastModified(date);
+        entityInfo.setLastModifiedAt(date);
+        entityInfo.getCapital().setLastModifiedAt(date);
+        entityInfo.getLegalStatus().setLastModifiedAt(date);
+        entityInfo.getSwot().setLastModifiedAt(date);
         if(entityInfo.getManagementTeamList().size()<=0){
             entityInfo.setManagementTeamList(null);
         }else {
             for (ManagementTeam managementTeam : entityInfo.getManagementTeamList()) {
-                managementTeam.setLastModified(date);
+                managementTeam.setLastModifiedAt(date);
             }
         }
         if(entityInfo.getProprietorsList().size()<=0){
             entityInfo.setProprietorsList(null);
         }else{
             for(Proprietor proprietor : entityInfo.getProprietorsList()){
-                proprietor.setLastModified(date);
+                proprietor.setLastModifiedAt(date);
             }
         }
         return entityInfoRepository.save(entityInfo);

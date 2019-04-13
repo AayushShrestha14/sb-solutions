@@ -31,7 +31,7 @@ public class ValuatorServiceImpl implements ValuatorService {
 
     @Override
     public Valuator save(Valuator valuator) {
-        valuator.setLastModified(new Date());
+        valuator.setLastModifiedAt(new Date());
         if(valuator.getId()==null){
             valuator.setStatus(Status.ACTIVE);
         }

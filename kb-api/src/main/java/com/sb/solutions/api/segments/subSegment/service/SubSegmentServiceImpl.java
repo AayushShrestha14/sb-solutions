@@ -31,7 +31,7 @@ public class SubSegmentServiceImpl implements SubSegmentService {
 
     @Override
     public SubSegment save(SubSegment subSegment) {
-        subSegment.setLastModified(new Date());
+        subSegment.setLastModifiedAt(new Date());
         if(subSegment.getId()==null){
             subSegment.setStatus(Status.ACTIVE);
         }

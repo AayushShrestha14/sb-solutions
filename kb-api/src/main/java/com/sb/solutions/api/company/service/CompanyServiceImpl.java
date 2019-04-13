@@ -30,7 +30,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Company save(Company company) {
-        company.setLastModified(new Date());
+        company.setLastModifiedAt(new Date());
         if(company.getId()==null){
             company.setStatus(Status.ACTIVE);
         }

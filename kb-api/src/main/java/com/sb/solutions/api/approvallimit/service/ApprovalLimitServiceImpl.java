@@ -30,7 +30,7 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
 
     @Override
     public ApprovalLimit save(ApprovalLimit approvalLimit) {
-        approvalLimit.setLastModified(new Date());
+        approvalLimit.setLastModifiedAt(new Date());
         return approvalLimitRepository.save(approvalLimit);
 
     }

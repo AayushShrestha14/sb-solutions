@@ -30,7 +30,7 @@ public class NepseCompanyServiceImpl implements  NepseCompanyService{
 
     @Override
     public NepseCompany save(NepseCompany nepseCompany) {
-        nepseCompany.setLastModified(new Date());
+        nepseCompany.setLastModifiedAt(new Date());
         if(nepseCompany.getId()==null){
             nepseCompany.setStatus(Status.ACTIVE);
         }

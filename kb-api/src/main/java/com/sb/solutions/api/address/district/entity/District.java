@@ -1,7 +1,7 @@
 package com.sb.solutions.api.address.district.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.address.municipality_VDC.entity.Municipality_VDC;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,5 +24,5 @@ public class District {
     private Province province;
     @JsonIgnore
     @OneToMany(mappedBy = "district")
-    private Set<Municipality_VDC> municipalityVdcs;
+    private Set<MunicipalityVdc> municipalityVdcs;
 }
