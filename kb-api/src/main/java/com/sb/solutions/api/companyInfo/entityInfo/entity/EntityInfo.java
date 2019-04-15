@@ -23,6 +23,7 @@ public class EntityInfo extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private Capital capital;
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "swot_id", referencedColumnName = "id")
     private Swot swot;
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "entityInfo_id", referencedColumnName = "id")

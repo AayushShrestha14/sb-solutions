@@ -50,8 +50,8 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
         List<RolePermissionRights> rolePermissionRightsList1 = new ArrayList<>();
 
         for (RolePermissionRights r : rolePermissionRightsList) {
+            r.setLastModifiedAt(new Date());
             if (r.isDel()) {
-
                 if (r.getId() != null) {
                     try {
                         rolePermissionRightRepository.deleteById(r.getId() == null ? 0 : r.getId());
