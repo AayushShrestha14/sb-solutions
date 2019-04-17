@@ -1,16 +1,19 @@
 package com.sb.solutions.api.memo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.memo.entity.Memo;
 import com.sb.solutions.api.memo.entity.MemoStage;
 import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.api.memo.repository.MemoRepository;
+import com.sb.solutions.api.memo.repository.specification.MemoSpecBuilder;
 import com.sb.solutions.core.enums.Status;
 
 @Service
@@ -64,5 +67,13 @@ public class MemoServiceImpl implements MemoService {
         memo.setStatus(Status.DELETED);
 
         repository.save(memo);
+    }
+
+    @Override
+    public Page<Memo> findPageable(Map<String, String> filterParams, Pageable pageable) {
+        final MemoSpecBuilder builder = new MemoSpecBuilder(filterParams);
+        final Specification<Memo> spec = builder.build();
+
+        return repository.findAll(spec, pageable);
     }
 }

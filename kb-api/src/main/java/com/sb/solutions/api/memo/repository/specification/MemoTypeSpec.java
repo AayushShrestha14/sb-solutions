@@ -1,4 +1,4 @@
-package com.sb.solutions.api.memo.service.criteria;
+package com.sb.solutions.api.memo.repository.specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.core.enums.Status;
 
-public class MemoTypeCriteria implements Specification<MemoType> {
+public class MemoTypeSpec implements Specification<MemoType> {
 
     private final String propertyName;
     private final String propertyValue;
@@ -20,7 +20,7 @@ public class MemoTypeCriteria implements Specification<MemoType> {
     private static final String FILTER_BY_CREATED_AT = "createdAt";
     private static final String FILTER_BY_LAST_MODIFIED_AT = "lastModifiedAt";
 
-    MemoTypeCriteria(String propertyName, String propertyValue) {
+    MemoTypeSpec(String propertyName, String propertyValue) {
         this.propertyName = propertyName;
         this.propertyValue = propertyValue;
     }

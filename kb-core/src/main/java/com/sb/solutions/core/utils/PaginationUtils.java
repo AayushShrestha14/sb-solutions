@@ -14,6 +14,9 @@ import org.springframework.data.domain.Pageable;
 
 public class PaginationUtils {
 
+    public static final int DEFAULT_PAGE = 1;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+
     public static final String PAGE = "page";
     public static final String SIZE = "size";
     public static final String SORT_BY = "sortBy";

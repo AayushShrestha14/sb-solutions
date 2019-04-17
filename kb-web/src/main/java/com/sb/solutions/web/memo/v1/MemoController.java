@@ -1,10 +1,14 @@
 package com.sb.solutions.web.memo.v1;
 
+import java.util.Map;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,8 +29,6 @@ import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.memo.v1.dto.MemoDto;
 import com.sb.solutions.web.memo.v1.mapper.MemoMapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 
 @RestController
 @RequestMapping(MemoController.URL)
@@ -65,20 +67,20 @@ public class MemoController {
         return new RestResponseDto().successModel(mapper.mapEntityToDto(savedMemo));
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page",
-            dataType = "integer",
-            paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size",
-            dataType = "integer",
-            paramType = "query",
-            value = "Number of records per page.")})
     @GetMapping
-    public ResponseEntity<?> getPageable(@RequestBody Memo memo,
+    public ResponseEntity<?> getPageable(
+        @RequestParam(required = false) Map<String, String> requestParams,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto()
-            .successModel(service.findAllPageable(memo, new PaginationUtils().pageable(page, size)));
+
+        final Pageable pageable = PaginationUtils.pageable(page, size);
+        final Map<String, String> filters = PaginationUtils
+            .excludePageableProperties(requestParams);
+
+        final Page<Memo> memos = service.findPageable(filters, pageable);
+        final Page<MemoDto> dtos = new PageImpl<>(mapper.mapEntitiesToDtos(memos.getContent()),
+            pageable, memos.getTotalElements());
+
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")

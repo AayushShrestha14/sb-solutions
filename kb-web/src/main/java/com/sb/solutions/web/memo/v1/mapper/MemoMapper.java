@@ -1,6 +1,7 @@
 package com.sb.solutions.web.memo.v1.mapper;
 
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 import com.sb.solutions.api.memo.entity.Memo;
 import com.sb.solutions.api.memo.entity.MemoStage;
@@ -12,6 +13,7 @@ import com.sb.solutions.web.memo.v1.dto.MemoTypeDto;
 import com.sb.solutions.web.memo.v1.dto.MemoUserDto;
 import com.sb.solutions.web.memo.v1.dto.StageDto;
 
+@Component
 @Mapper(componentModel = BaseMapper.SPRING_MODEL)
 public abstract class MemoMapper extends BaseMapper<Memo, MemoDto> {
 

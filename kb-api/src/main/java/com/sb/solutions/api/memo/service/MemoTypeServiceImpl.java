@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.memo.repository.MemoTypeRepository;
-import com.sb.solutions.api.memo.service.criteria.MemoTypeCriteriaBuilder;
+import com.sb.solutions.api.memo.repository.specification.MemoTypeSpecBuilder;
 import com.sb.solutions.core.enums.Status;
 
 @Service
@@ -49,8 +49,8 @@ public class MemoTypeServiceImpl implements MemoTypeService {
 
     @Override
     public Page<MemoType> findPageable(Map<String, String> filterParams, Pageable pageable) {
-        MemoTypeCriteriaBuilder builder = new MemoTypeCriteriaBuilder(filterParams);
-        Specification<MemoType> spec = builder.build();
+        final MemoTypeSpecBuilder builder = new MemoTypeSpecBuilder(filterParams);
+        final Specification<MemoType> spec = builder.build();
         return repository.findAll(spec, pageable);
     }
 
