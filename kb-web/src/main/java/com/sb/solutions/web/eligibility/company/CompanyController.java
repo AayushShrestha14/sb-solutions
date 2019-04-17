@@ -13,12 +13,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RestController(value = "/v1")
+@RestController
+@RequestMapping("/v1/companies")
 @AllArgsConstructor
 public class CompanyController {
 
@@ -26,7 +28,7 @@ public class CompanyController {
 
     private final GlobalExceptionHandler globalExceptionHandler;
 
-    @PostMapping(path = "/admin/companies")
+    @PostMapping
     final public ResponseEntity<?> addCompany(@Valid @RequestBody Company company, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         final Company savedCompany = companyService.save(company);
@@ -39,9 +41,10 @@ public class CompanyController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @GetMapping(path = "/companies")
+    @GetMapping
     final public ResponseEntity<?> getCompanies(@RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(companyService
                 .findAllPageable(null, new CustomPageable().pageable(page, size)));
     }
+
 }

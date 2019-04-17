@@ -11,14 +11,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/v1/companies/{companyId}/schemes")
 @AllArgsConstructor
 public class SchemeController {
 
@@ -26,8 +29,9 @@ public class SchemeController {
 
     private final GlobalExceptionHandler globalExceptionHandler;
 
-    @PostMapping(path = "/v1/admin/schemes")
-    final public ResponseEntity<?> addScheme(@Valid @RequestBody Scheme scheme, BindingResult bindingResult) {
+    @PostMapping
+    final public ResponseEntity<?> addScheme(@Valid @RequestBody Scheme scheme
+            , @PathVariable Long companyId, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         final Scheme savedScheme = schemeService.save(scheme);
         if (savedScheme == null) return new RestResponseDto().failureModel("Oops! Something went wrong");
@@ -39,10 +43,11 @@ public class SchemeController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @GetMapping(path = "/v1/schemes")
-    final public ResponseEntity<?> getSchemes(@RequestParam("page") int page, @RequestParam("size") int size) {
+    @GetMapping
+    final public ResponseEntity<?> getSchemes(@RequestParam("page") int page, @RequestParam("size") int size
+    , @PathVariable Long companyId) {
         return new RestResponseDto().successModel(schemeService.
-                findAllPageable(null, new CustomPageable().pageable(page, size)));
+                findAllPageable(companyId, new CustomPageable().pageable(page, size)));
     }
 
 }

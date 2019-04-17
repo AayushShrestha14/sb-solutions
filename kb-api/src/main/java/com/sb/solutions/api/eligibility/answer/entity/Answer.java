@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -17,8 +19,10 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class Answer extends BaseEntity<Long> {
 
+    @NotNull(message = "Description is required.")
     private String description;
 
+    @Min(1)
     private long points;
 
     @ManyToOne

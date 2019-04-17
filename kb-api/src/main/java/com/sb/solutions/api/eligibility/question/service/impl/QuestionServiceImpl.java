@@ -59,7 +59,7 @@ public class QuestionServiceImpl implements QuestionService {
                     .map(Answer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
-        Scheme scheme = savedQuestions.stream().map(Question::getScheme).distinct().findAny().get();
+        Scheme scheme = savedQuestions.stream().map(Question::getScheme).distinct().findAny().orElse(null);
         scheme.setTotalPoints(savedQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
         schemeService.save(scheme);
         return savedQuestions;
@@ -68,5 +68,19 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> findBySchemeId(Long schemeId) {
         return questionRepository.findBySchemeId(schemeId);
+    }
+
+    @Override
+    public Question update(Question question) {
+        final List<Answer> answers = new ArrayList<>();
+        answers.addAll(question.getAnswers());
+        question.getAnswers().removeAll(question.getAnswers());
+        final Question updatedQuestion = questionRepository.save(question);
+        answers.forEach(answer -> answer.setQuestion(updatedQuestion));
+        final List<Answer> updatedAnswers = answerService.update(answers, updatedQuestion);
+        updatedQuestion.setMaximumPoints(updatedAnswers.stream().map(Answer::getPoints)
+                .max(Comparator.comparing(Long::valueOf)).orElse(0L));
+        updatedQuestion.setAnswers(updatedAnswers);
+        return questionRepository.save(updatedQuestion);
     }
 }

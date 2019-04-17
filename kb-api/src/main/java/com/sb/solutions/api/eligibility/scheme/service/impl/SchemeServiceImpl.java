@@ -35,4 +35,9 @@ public class SchemeServiceImpl implements SchemeService {
     public Page<Scheme> findAllPageable(Scheme scheme, Pageable pageable) {
         return schemeRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<Scheme> findAllPageable(Long companyId, Pageable pageable) {
+        return schemeRepository.findAllByCompanyId(companyId, pageable);
+    }
 }

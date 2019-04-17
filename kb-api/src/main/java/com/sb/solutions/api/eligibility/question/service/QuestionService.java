@@ -11,4 +11,5 @@ public interface QuestionService extends BaseService<Question> {
 
     List<Question> findBySchemeId(Long schemeId);
 
+    Question update(Question question);
 }
