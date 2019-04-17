@@ -1,7 +1,8 @@
 package com.sb.solutions.api.document.entity;
 
 import java.util.Collection;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -16,10 +17,8 @@ import lombok.NoArgsConstructor;
 public class LoanCycle extends BaseEntity<Long> {
 
     private String cycle;
-    @ManyToMany
-    @JoinTable(name = "document_loan_cycle",
-            joinColumns = {@JoinColumn(name = "document_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "loan_cycle_id", referencedColumnName = "id")})
+
+    @ManyToMany(mappedBy = "loanCycle")
     @JsonIgnore
     private Collection<Document> documents;
 }

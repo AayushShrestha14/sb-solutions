@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.memo.entity.Memo;
 import com.sb.solutions.api.memo.service.MemoService;
-import com.sb.solutions.api.memo.service.MemoStageService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.memo.v1.dto.MemoDto;
 import com.sb.solutions.web.memo.v1.mapper.MemoMapper;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,24 +32,20 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping(MemoController.URL)
 public class MemoController {
 
-    static final String URL = "v1/memos";
+    static final String URL = "/v1/memos";
 
     private static final Logger logger = LoggerFactory.getLogger(MemoController.class);
 
     private final MemoService service;
-
-    private final MemoStageService stageService;
 
     private final MemoMapper mapper;
 
     private final GlobalExceptionHandler exceptionHandler;
 
     public MemoController(@Autowired MemoService service,
-        @Autowired MemoStageService stageService,
         @Autowired GlobalExceptionHandler exceptionHandler,
         @Autowired MemoMapper mapper) {
         this.service = service;
-        this.stageService = stageService;
         this.exceptionHandler = exceptionHandler;
         this.mapper = mapper;
     }
@@ -83,7 +78,7 @@ public class MemoController {
     public ResponseEntity<?> getPageable(@RequestBody Memo memo,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(service.findAllPageable(memo, new CustomPageable().pageable(page, size)));
+            .successModel(service.findAllPageable(memo, new PaginationUtils().pageable(page, size)));
     }
 
     @GetMapping("/{id}")

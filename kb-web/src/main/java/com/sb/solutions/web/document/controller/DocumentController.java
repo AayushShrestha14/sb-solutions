@@ -6,7 +6,7 @@ import com.sb.solutions.api.document.service.DocumentService;
 import com.sb.solutions.api.document.service.LoanCycleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -46,7 +46,8 @@ public class DocumentController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
     public ResponseEntity<?> getAll(@RequestBody Document document, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(documentService.findAllPageable(document,new CustomPageable().pageable(page, size)));
+        return new RestResponseDto().successModel(documentService.findAllPageable(document, PaginationUtils
+            .pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -56,7 +57,8 @@ public class DocumentController {
                     value = "Number of records per page.")})
     @PostMapping(value="/list")
     public ResponseEntity<?> getByCycle(@RequestBody Collection<LoanCycle> loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size){
-        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycleList,new CustomPageable().pageable(page, size)));
+        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycleList, PaginationUtils
+            .pageable(page, size)));
 
     }
     @GetMapping(value="lifeCycle")

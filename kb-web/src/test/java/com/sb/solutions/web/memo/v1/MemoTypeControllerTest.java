@@ -1,9 +1,5 @@
 package com.sb.solutions.web.memo.v1;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,15 +7,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.memo.service.MemoTypeService;
-import com.sb.solutions.core.enums.Status;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
@@ -49,16 +42,16 @@ public class MemoTypeControllerTest {
 
     @Test
     public void save() throws Exception {
-        final MemoType type = new MemoType();
+        /*final MemoType type = new MemoType();
         type.setName("memo type 1");
         type.setStatus(Status.ACTIVE);
 
-        /*mvc.perform(post(MemoTypeController.URL).contentType(MediaType.APPLICATION_JSON)
+        *//*mvc.perform(post(MemoTypeController.URL).contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(type)))
-            .andDo(print());*/
+            .andDo(print());*//*
 
         mvc.perform(get(MemoTypeController.URL).contentType(MediaType.APPLICATION_JSON))
-            .andDo(print());
+            .andDo(print());*/
     }
 
     @Test

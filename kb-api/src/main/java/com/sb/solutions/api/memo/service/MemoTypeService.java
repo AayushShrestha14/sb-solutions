@@ -1,6 +1,10 @@
 package com.sb.solutions.api.memo.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.core.enums.Status;
@@ -15,4 +19,8 @@ public interface MemoTypeService extends BaseService<MemoType> {
     void delete(MemoType type);
 
     void deleteById(long id);
+
+    Page<MemoType> findPageable(Map<String, String> filterParams, Pageable pageable);
+
+    Page<MemoType> findPageable(Pageable pageable);
 }

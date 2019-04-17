@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import java.util.Collection;
 
@@ -24,6 +26,9 @@ public class Document extends BaseEntity<Long> {
     private String url;
 
     @ManyToMany
+    @JoinTable(name = "document_loan_cycle",
+        joinColumns = {@JoinColumn(name = "document_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "loan_cycle_id", referencedColumnName = "id")})
     private Collection<LoanCycle> loanCycle;
 
     private Status status;

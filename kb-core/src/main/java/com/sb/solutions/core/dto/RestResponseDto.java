@@ -1,7 +1,10 @@
 package com.sb.solutions.core.dto;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,6 +37,14 @@ public class RestResponseDto {
         r.setMessage("SUCCESS");
         r.setResponseStatus(ResponseStatus.SUCCESS);
         return new ResponseEntity(r, HttpStatus.OK);
+    }
+
+    public ResponseEntity validationFailed(List<ObjectError> errors) {
+        RestResponseDto r = new RestResponseDto();
+        r.setResponseStatus(ResponseStatus.BAD_REQUEST);
+        r.setDetail(errors);
+
+        return new ResponseEntity(r, HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity failureModel(String message) {

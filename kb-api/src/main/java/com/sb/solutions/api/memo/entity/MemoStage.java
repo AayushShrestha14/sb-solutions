@@ -8,7 +8,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -28,7 +27,6 @@ public class MemoStage extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @Exclude
-    @JsonIgnore
     @JoinColumn(name = "memo_id")
     private Memo memo;
 
