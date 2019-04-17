@@ -18,7 +18,6 @@ import java.util.Set;
 public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
-    private String customerId;
     private String accountNo;
     private String province;
     private String district;
