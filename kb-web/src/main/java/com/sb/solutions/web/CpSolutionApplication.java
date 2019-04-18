@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import com.sb.solutions.api.address.district.service.DistrictService;
+import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
+import com.sb.solutions.api.address.province.service.ProvinceService;
 import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
@@ -54,6 +57,15 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    ProvinceService provinceService;
+
+    @Autowired
+    DistrictService districtService;
+
+    @Autowired
+    MunicipalityVdcService municipalityVdcService;
+
     public static void main(String[] args) {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
@@ -85,7 +97,30 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             schemaResource = new ClassPathResource("oauth.sql");
             populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
+
+            schemaResource = new ClassPathResource("oauth.sql");
+            populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
         }
+
+        if(provinceService.findAll().isEmpty()){
+            ClassPathResource schemaResource = new ClassPathResource("province.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
+        }
+
+        if(districtService.findAll().isEmpty()){
+            ClassPathResource schemaResource = new ClassPathResource("district.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
+        }
+
+        if(municipalityVdcService.findAll().isEmpty()){
+            ClassPathResource schemaResource = new ClassPathResource("municipalityVdc.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
+        }
+
         if (baseHttpRepo.findAll().isEmpty()) {
             BaseHttp baseHttp = new BaseHttp();
             baseHttp.setBaseUrl("http://localhost:" + port + "/");
