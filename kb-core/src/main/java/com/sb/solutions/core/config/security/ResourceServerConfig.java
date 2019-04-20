@@ -56,7 +56,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         for (Map<String, Object> map : mapList) {
             if (map.get("api_url") != null)
                 http.authorizeRequests().
-                        antMatchers(map.get("api_url").toString()).hasAuthority(map.get("role_name").toString());
+                        antMatchers(map.get("api_url").toString()).hasAnyAuthority(map.get("role_name").toString());
         }
     }
 
