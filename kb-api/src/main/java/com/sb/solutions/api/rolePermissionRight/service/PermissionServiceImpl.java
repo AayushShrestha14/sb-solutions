@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -35,5 +36,10 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Page<Permission> findAllPageable(Object t, Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public  List<Map<String,Object>> permsRight(String permName, String role) {
+        return permissionRepository.permsRight(permName,role);
     }
 }
