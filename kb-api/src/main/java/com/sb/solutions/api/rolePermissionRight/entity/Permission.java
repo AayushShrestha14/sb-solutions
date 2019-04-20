@@ -30,5 +30,7 @@ public class Permission {
 
     @OneToMany
     private List<SubNav> subNavs;
+    @OneToMany
+    private List<UrlApi> apiList;
 }
 

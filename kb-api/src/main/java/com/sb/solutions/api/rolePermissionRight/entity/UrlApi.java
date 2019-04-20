@@ -1,0 +1,24 @@
+package com.sb.solutions.api.rolePermissionRight.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+/**
+ * @author Rujan Maharjan on 4/19/2019
+ */
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UrlApi {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Column(unique = true, nullable = false)
+    private String apiUrl;
+}
