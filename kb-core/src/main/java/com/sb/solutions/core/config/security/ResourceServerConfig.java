@@ -2,6 +2,7 @@ package com.sb.solutions.core.config.security;
 
 import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Configuration
 @EnableResourceServer
+
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -40,6 +42,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
+                .antMatchers("/v1/**").hasAuthority("admin")
                 .antMatchers("/v1/**")
                 .authenticated()
                 .and()
@@ -51,8 +54,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void restrictUrl(HttpSecurity http) throws Exception {
         List<Map<String, Object>> mapList = roleAndPermissionDao.getRole();
         for (Map<String, Object> map : mapList) {
-            http.authorizeRequests().
-                    antMatchers(map.get("api_url").toString()).hasAuthority(map.get("role_name").toString());
+            if (map.get("api_url") != null)
+                http.authorizeRequests().
+                        antMatchers(map.get("api_url").toString()).hasAuthority(map.get("role_name").toString());
         }
     }
 

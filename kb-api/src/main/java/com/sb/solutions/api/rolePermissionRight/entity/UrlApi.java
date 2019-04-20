@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Rujan Maharjan on 4/19/2019
@@ -19,6 +20,11 @@ public class UrlApi {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String apiUrl;
+    @NotNull
+    private String type;
+
+    @Transient
+    private boolean checked;
 }

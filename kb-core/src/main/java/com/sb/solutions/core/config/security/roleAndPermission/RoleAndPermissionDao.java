@@ -24,11 +24,11 @@ public class RoleAndPermissionDao {
 
     public List<Map<String,Object>> getRole(){
         Map<String,Object> map = new HashMap<>();
-        String query = "select r.role_name,p.permission_name,urlapi.api_url from role r\n" +
-                "  join role_permission_rights rpr on r.id=rpr.role_id\n" +
-                "  join permission p on p.id=rpr.permission_id\n" +
-                "join permission_api_list apl on apl.permission_id=p.id\n" +
-                "join url_api urlapi on urlapi.id = apl.api_list_id";
+        String query = "select ua.api_url,ifnull(r.role_name,'SPADMIN') role_name  from url_api ua\n" +
+                " left join role_permission_rights_api_rights apirights\n" +
+                " on apirights.api_rights_id = ua.id\n" +
+                "left join role_permission_rights rpr on rpr.id= apirights.role_permission_rights_id\n" +
+                "left join role r on rpr.role_id = r.id;";
 
         List<Map<String,Object>> mapList = namedParameterJdbcTemplate.queryForList(query,map);
         return mapList;

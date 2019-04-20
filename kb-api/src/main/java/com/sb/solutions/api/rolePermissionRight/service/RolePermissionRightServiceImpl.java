@@ -1,7 +1,9 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
 import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
+import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
 import com.sb.solutions.api.rolePermissionRight.repository.RolePermissionRightRepository;
+import com.sb.solutions.api.rolePermissionRight.repository.UrlApiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,11 @@ import java.util.List;
 public class RolePermissionRightServiceImpl implements RolePermissionRightService {
     @Autowired
     RolePermissionRightRepository rolePermissionRightRepository;
+    @Autowired
+    UrlApiRepository urlApiRepository;
+
+//    @Autowired
+//    RefreshConfiguration refreshConfiguration;
 
     @Override
     public List<RolePermissionRights> findAll() {
@@ -50,6 +57,15 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
         List<RolePermissionRights> rolePermissionRightsList1 = new ArrayList<>();
 
         for (RolePermissionRights r : rolePermissionRightsList) {
+            List<UrlApi> tempUrlApis = new ArrayList<>();
+            for (UrlApi urlApi : r.getApiRights()) {
+                if (!urlApi.isChecked()) {
+                    urlApiRepository.deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(), urlApi.getId());
+                } else {
+                    tempUrlApis.add(urlApi);
+                }
+            }
+
             r.setLastModifiedAt(new Date());
             if (r.isDel()) {
                 if (r.getId() != null) {
@@ -60,10 +76,15 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
                 }
                 rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(), r.getPermission().getId());
             } else {
+                r.getApiRights().clear();
+
+                r.setApiRights(tempUrlApis);
                 rolePermissionRightsList1.add(r);
             }
 
+
         }
+        //refreshConfiguration.refreshAll();
         rolePermissionRightRepository.saveAll(rolePermissionRightsList1);
     }
 }

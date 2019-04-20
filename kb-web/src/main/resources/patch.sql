@@ -13,9 +13,9 @@ INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, 'Company', 'fa fa-user', '/home/company', 24, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (12,  'SubSector', 'fa fa-user', '/home/subSector', 51, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-user', '/home/document', 55, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Ui', 'fa fa-user', '/home/ui', 60, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (15,  'Template', 'fa fa-user', '/home/template', 61, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (16,  'Loan', 'fa fa-user', '/home/loan', 62, 1);
+-- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Ui', 'fa fa-user', '/home/ui', 60, 1);
+-- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (15,  'Template', 'fa fa-user', '/home/template', 61, 1);
+-- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (16,  'Loan', 'fa fa-user', '/home/loan', 62, 1);
 
 
 

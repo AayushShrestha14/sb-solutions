@@ -1,143 +1,166 @@
 
+truncate Table url_api;
+truncate Table permission_api_list;
+
 
 -- ************************BRANCH*******************************************
-INSERT INTO url_api (id,api_url) values (1,'/v1/branch');
-INSERT INTO url_api (id,api_url) values (2,'/v1/branch/get');
-INSERT INTO url_api (id,api_url) values (3,'/v1/branch/csv');
-INSERT INTO url_api (id,api_url) values (4,'/v1/branch/get/statusCount');
-INSERT INTO url_api (id,api_url) values (5,'/v1/branch/getList');
+INSERT INTO url_api (id,api_url,type) values (1,'/v1/branch','ADD BRANCH');
+INSERT INTO url_api (id,api_url,type) values (2,'/v1/branch','EDIT BRANCH');
+INSERT INTO url_api (id,api_url,type) values (3,'/v1/branch/csv','DOWNLOAD CSV');
+INSERT INTO url_api (id,api_url,type) values (4,'/v1/branch/get','VIEW BRANCH');
 
 INSERT INTO permission_api_list(permission_id, api_list_id) values (1,1);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (1,2);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (1,3);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (1,4);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (1,5);
+
 
 -- ************************BRANCH*******************************************
 
 -- ************************APPROVAL LIMIT*******************************************
-INSERT INTO url_api (id,api_url) values (6,'/v1/approvallimit');
-INSERT INTO url_api (id,api_url) values (7,'/v1/approvallimit/get');
+INSERT INTO url_api (id,api_url,type) values (5,'/v1/approvallimit','ADD APPROVAL LIMIT');
+INSERT INTO url_api (id,api_url,type) values (6,'/v1/approvallimit/get','VIEW APPROVAL LIMIT');
+INSERT INTO url_api (id,api_url,type) values (34,'/v1/approvallimit/get','DOWNLOAD CSV');
 
+INSERT INTO permission_api_list(permission_id, api_list_id) values (7,5);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (7,6);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (7,7);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (7,34);
 
 -- ************************APPROVAL LIMIT*******************************************
 
 
 -- ************************COMPANY*******************************************
-INSERT INTO url_api (id,api_url) values (8,'/v1/company');
-INSERT INTO url_api (id,api_url) values (9,'/v1/company/get');
-INSERT INTO url_api (id,api_url) values (14,'/v1/company/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (7,'/v1/company','ADD COMPANY');
+INSERT INTO url_api (id,api_url,type) values (8,'/v1/company/get','VIEW COMPANY');
+INSERT INTO url_api (id,api_url,type) values (9,'/v1/company/get/statusCount','VIEW STATUS');
 
+INSERT INTO permission_api_list(permission_id, api_list_id) values (11,7);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (11,8);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (11,9);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (11,14);
 
 -- ************************COMPANY*******************************************
 
 -- ************************NEPSE*******************************************
-INSERT INTO url_api (id,api_url) values (10,'/v1/nepseCompany');
-INSERT INTO url_api (id,api_url) values (11,'/v1/nepseCompany/get');
-INSERT INTO url_api (id,api_url) values (12,'/v1/nepseCompany/bulk');
-INSERT INTO url_api (id,api_url) values (13,'/v1/nepseCompany/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (10,'/v1/nepseCompany','ADD NEPSE');
+INSERT INTO url_api (id,api_url,type) values (11,'/v1/nepseCompany/get','VIEW NEPSE');
 
 INSERT INTO permission_api_list(permission_id, api_list_id) values (8,10);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (8,11);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (8,12);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (8,13);
 
 -- ************************NEPSE*******************************************
 
 
 -- ************************USER*******************************************
-INSERT INTO url_api (id,api_url) values (15,'/v1/user');
-INSERT INTO url_api (id,api_url) values (16,'/v1/user/get');
-INSERT INTO url_api (id,api_url) values (17,'v1/user/authenticated');
-INSERT INTO url_api (id,api_url) values (18,'/v1/user/csv');
-INSERT INTO url_api (id,api_url) values (19,'/v1/user/uploadFile');
-INSERT INTO url_api (id,api_url) values (20,'/v1/user/checkFingerPrint');
-INSERT INTO url_api (id,api_url) values (21,'/v1/user/get/statusCount');
-INSERT INTO url_api (id,api_url) values (22,'/v1/user/listByRole');
-INSERT INTO url_api (id,api_url) values (23,'/v1/user/listRole');
+INSERT INTO url_api (id,api_url,type) values (12,'/v1/user','ADD USER');
 
+INSERT INTO url_api (id,api_url,type) values (30,'','DOWNLOAD CSV');
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,15);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,16);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,17);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,18);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,19);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,20);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,21);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,22);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (6,23);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (6,12);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (6,30);
+
 
 -- ************************USER*******************************************
 
 -- ************************SEGMENT*******************************************
-INSERT INTO url_api (id,api_url) values (24,'/v1/segment');
-INSERT INTO url_api (id,api_url) values (25,'/v1/segment/get');
-INSERT INTO url_api (id,api_url) values (26,'/v1/segment/getList');
-INSERT INTO url_api (id,api_url) values (27,'/v1/segment/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (13,'/v1/segment','ADD SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (14,'/v1/segment/get','VIEW SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (15,'/v1/segment','EDIT SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (31,'','DOWNLOAD CSV');
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (9,24);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (9,25);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (9,26);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (9,27);
+
+INSERT INTO permission_api_list(permission_id, api_list_id) values (9,13);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (9,14);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (9,15);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (9,31);
 
 -- ************************SEGMENT*******************************************
 
 
 -- ************************SUB-SEGMENT*******************************************
-INSERT INTO url_api (id,api_url) values (28,'/v1/subSegment');
-INSERT INTO url_api (id,api_url) values (29,'v1/subSegment/get');
-INSERT INTO url_api (id,api_url) values (30,'/v1/subSegment/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (16,'/v1/subSegment','ADD SUB-SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (17,'/v1/subSegment','EDIT SUB-SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (18,'v1/subSegment/get','VIEW SUB-SEGMENT');
+INSERT INTO url_api (id,api_url,type) values (32,'/get','DOWNLOAD CSV');
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (10,28);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (10,29);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (10,30);
+
+INSERT INTO permission_api_list(permission_id, api_list_id) values (10,16);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (10,17);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (10,18);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (10,32);
 
 -- ************************SUB-SEGMENT*******************************************
 
 -- ************************SECTOR*******************************************
-INSERT INTO url_api (id,api_url) values (31,'/v1/sector');
-INSERT INTO url_api (id,api_url) values (32,'/v1/sector/get');
-INSERT INTO url_api (id,api_url) values (33,'/v1/sector/get/statusCount');
-INSERT INTO url_api (id,api_url) values (34,'/v1/sector/getList');
+INSERT INTO url_api (id,api_url,type) values (19,'/v1/sector','ADD SECTOR');
+INSERT INTO url_api (id,api_url,type) values (20,'/v1/sector','EDIT SECTOR');
+INSERT INTO url_api (id,api_url,type) values (21,'/v1/sector/get','VIEW SECTOR');
+INSERT INTO url_api (id,api_url,type) values (33,'/get','DOWNLOAD CSV');
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (5,31);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (5,32);
+
+INSERT INTO permission_api_list(permission_id, api_list_id) values (5,19);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (5,20);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (5,21);
 INSERT INTO permission_api_list(permission_id, api_list_id) values (5,33);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (5,34);
+
+
 
 -- ************************SECTOR*******************************************
 
 
 -- ************************SUB-SECTOR*******************************************
-INSERT INTO url_api (id,api_url) values (35,'/v1/subSector');
-INSERT INTO url_api (id,api_url) values (36,'/v1/subSector/get');
-INSERT INTO url_api (id,api_url) values (37,'/v1/subSector/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (22,'/v1/subSector','ADD SUB-SECTOR');
+INSERT INTO url_api (id,api_url,type) values (23,'/v1/subSector','EDIT SUB-SECTOR');
+INSERT INTO url_api (id,api_url,type) values (24,'/v1/subSector/get','VIEW SUB-SECTOR');
+INSERT INTO url_api (id,api_url,type) values (25,'/v1/subSector/csv','DOWNLOAD CSV');
 
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (12,35);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (12,36);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (12,37);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (12,22);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (12,23);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (12,24);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (12,25);
 
 
 -- ************************SUB-SECTOR*******************************************
 
 
 -- ************************VALUATOR*******************************************
-INSERT INTO url_api (id,api_url) values (38,'/v1/valuator');
-INSERT INTO url_api (id,api_url) values (39,'/v1/valuator/get');
-INSERT INTO url_api (id,api_url) values (40,'/v1/valuator/get/statusCount');
+INSERT INTO url_api (id,api_url,type) values (26,'/v1/valuator','ADD VALUATOR');
+INSERT INTO url_api (id,api_url,type) values (27,'/v1/valuator','EDIT VALUATOR');
+INSERT INTO url_api (id,api_url,type) values (28,'/v1/valuator/get','VIEW VALUATOR');
+INSERT INTO url_api (id,api_url,type) values (29,'/v1/valuator/csv','DOWNLOAD CSV');
 
 
-INSERT INTO permission_api_list(permission_id, api_list_id) values (4,38);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (4,39);
-INSERT INTO permission_api_list(permission_id, api_list_id) values (4,40);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (4,26);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (4,27);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (4,28);
+INSERT INTO permission_api_list(permission_id, api_list_id) values (4,29);
+
 
 
 -- ************************VALUATOR*******************************************
+
+-- ************************DEFAULT ADMIN*******************************************
+
+-- ************************BRANCH MAP*******************************************
+INSERT INTO role_permission_rights_api_rights values (1,1);
+INSERT INTO role_permission_rights_api_rights values (1,2);
+INSERT INTO role_permission_rights_api_rights values (1,3);
+INSERT INTO role_permission_rights_api_rights values (1,4);
+-- ************************BRANCH MAP*******************************************
+
+-- ************************APPROVAL LIMIT MAP*******************************************
+INSERT INTO role_permission_rights_api_rights values (7,5);
+INSERT INTO role_permission_rights_api_rights values (7,6);
+INSERT INTO role_permission_rights_api_rights values (7,34);
+
+-- ************************APPROVAL LIMIT MAP*******************************************
+
+
+-- ************************DEFAULT ADMIN*******************************************
+
+
+
+
+
 
 

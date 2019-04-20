@@ -31,7 +31,7 @@ public class RolePermissionRights extends BaseEntity<Long> {
     private Permission permission;
 
     @ManyToMany
-    private List<Rights> rights;
+    private List<UrlApi> apiRights;
 
     @Transient
     private boolean del;
