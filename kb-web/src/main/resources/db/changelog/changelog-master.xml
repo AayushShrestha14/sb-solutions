@@ -230,12 +230,6 @@
             </column>
             <column name="type" type="VARCHAR(256)"/>
             <column name="checked" type="boolean"/>
-            <column name="permission_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_url_api_permission_id"
-                             referencedTableName="permission"
-                             referencedColumnNames="id"/>
-            </column>
         </createTable>
     </changeSet>
 
@@ -1053,5 +1047,30 @@
                                  constraintName="fk_proprietor_entity_info_id"
                                  referencedTableName="entity_info"
                                  referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="5-create-permission-api-list" author="david">
+        <createTable tableName="permission_api_list">
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="api_list_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="permission_id"
+                                 baseTableName="permission_api_list"
+                                 constraintName="fk_permission_api_list_permission_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="permission"/>
+        <addForeignKeyConstraint baseColumnNames="api_list_id"
+                                 baseTableName="permission_api_list"
+                                 constraintName="fk_permission_api_list_api_list_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="url_api"/>
     </changeSet>
 </databaseChangeLog>
