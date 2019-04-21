@@ -1,10 +1,6 @@
 package com.sb.solutions.web;
 
 
-import java.util.Date;
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import com.sb.solutions.api.address.district.service.DistrictService;
 import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
 import com.sb.solutions.api.address.province.service.ProvinceService;
@@ -14,7 +10,6 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -28,10 +23,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.enums.UserType;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.util.Date;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -100,19 +94,19 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
         }
 
-        if(provinceService.findAll().isEmpty()){
+        if (provinceService.findAll().isEmpty()) {
             ClassPathResource schemaResource = new ClassPathResource("province.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
         }
 
-        if(districtService.findAll().isEmpty()){
+        if (districtService.findAll().isEmpty()) {
             ClassPathResource schemaResource = new ClassPathResource("district.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
         }
 
-        if(municipalityVdcService.findAll().isEmpty()){
+        if (municipalityVdcService.findAll().isEmpty()) {
             ClassPathResource schemaResource = new ClassPathResource("municipalityVdc.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);

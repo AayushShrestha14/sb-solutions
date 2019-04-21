@@ -30,6 +30,7 @@ public class RoleRightPermissionController {
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
 
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
