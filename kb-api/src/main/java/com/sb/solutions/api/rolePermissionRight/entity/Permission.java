@@ -3,6 +3,7 @@ package com.sb.solutions.api.rolePermissionRight.entity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -28,10 +29,10 @@ public class Permission {
     private Long orders;
     private Status status = Status.ACTIVE;
 
-    @OneToMany
+    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SubNav> subNavs;
 
-    @OneToMany
+    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UrlApi> apiList;
 }
 

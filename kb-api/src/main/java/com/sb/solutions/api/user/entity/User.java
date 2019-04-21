@@ -11,6 +11,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity<Long> {
 
     private String name;
@@ -35,6 +37,7 @@ public class User extends BaseEntity<Long> {
     private String password;
     private Status status;
     @OneToOne
+    @JoinColumn(name = "role_id")
     private Role role;
     private String accountNo;
     @OneToOne
@@ -42,9 +45,6 @@ public class User extends BaseEntity<Long> {
     private Branch branch;
     private String signatureImage;
     private String profilePicture;
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Set<FingerPrint> fingerPrint;
 
 
 

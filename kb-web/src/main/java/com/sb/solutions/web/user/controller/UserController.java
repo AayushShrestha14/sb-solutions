@@ -91,10 +91,7 @@ public class UserController {
     public  ResponseEntity<?> getRoleList(){
         return new RestResponseDto().successModel(roleService.findAll());
     }
-    @PostMapping(value = "checkFingerPrint")
-    public  ResponseEntity<?> checkFingerPrint(@RequestBody MultipartFile file){
-        return new RestResponseDto().successModel(userService.getUserByFingerPrint(file));
-    }
+    
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
     public ResponseEntity<?> getUserStatusCount() {

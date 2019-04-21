@@ -6,7 +6,6 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +24,6 @@ public interface UserService extends BaseService<User> {
     User save(User user);
     Page<User> findByRole(Collection<Role> roles, Pageable pageable);
 
-    User getUserByFingerPrint(MultipartFile file);
     Map<Object,Object> userStatusCount();
     String csv(SearchDto searchDto);
 

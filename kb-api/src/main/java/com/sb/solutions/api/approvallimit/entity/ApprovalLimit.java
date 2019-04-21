@@ -6,6 +6,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.OneToOne;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class ApprovalLimit extends BaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 

@@ -5,7 +5,6 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.repository.FingerPrintRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
@@ -13,7 +12,6 @@ import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -35,7 +33,6 @@ import java.util.*;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-    private FingerPrintRepository fingerPrintRepository;
     private BCryptPasswordEncoder passwordEncoder;
     BaseHttpService baseHttpService;
 
@@ -88,31 +85,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByRoleIn(roles, pageable);
     }
 
-    @Override
-    public User getUserByFingerPrint(MultipartFile file) {
-        byte[] correctImage;
-        byte[] candidateImage;
-        Set<String> fingersPrint = fingerPrintRepository.getAllPath();
-        long id = 0;
-        for (String path : fingersPrint) {
-            try {
-                correctImage = Files.readAllBytes(Paths.get(path));
-                candidateImage = file.getBytes();
-                FingerprintTemplate correct = new FingerprintTemplate().dpi(500).create(correctImage);
-                FingerprintTemplate candidate = new FingerprintTemplate().dpi(500).create(candidateImage);
-                double score = new FingerprintMatcher().index(correct).match(candidate);
-                double threshold = 100;
-                if (score >= threshold) {
-                    id = fingerPrintRepository.findByPath(path).getUser_id();
-                    break;
-                }
-            } catch (IOException e) {
-                System.out.println("File not found");
-            }
-        }
-        return userRepository.findById(id).get();
 
-    }
 
     @Override
     public Map<Object, Object> userStatusCount() {
