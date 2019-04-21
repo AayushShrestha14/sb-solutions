@@ -49,9 +49,9 @@ public class UploadFile {
             String imagePath = url + strDate + multipartFile.getOriginalFilename();
             path = Paths.get(imagePath);
             Files.write(path, bytes);
+            System.out.println(imagePath);
             return new RestResponseDto().successModel(imagePath);
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return new RestResponseDto().failureModel("Fail");
         }

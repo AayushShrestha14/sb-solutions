@@ -314,6 +314,29 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
+    <changeSet id="4-create-nepse_company" author="david">
+        <createTable tableName="nepse_company">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount_per_unit" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
 
     <changeSet id="5-create-base_http" author="david">
         <createTable tableName="base_http">
@@ -343,9 +366,7 @@
             <column name="status" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="template_view" type="VARCHAR2(4000)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="template_view" type="VARCHAR2(4000)"/>
             <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
@@ -481,6 +502,9 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
             <column name="is_fundable" type="boolean"/>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
@@ -528,7 +552,7 @@
             <column name="cycle" type="VARCHAR(256)">
                 <constraints nullable=" false"/>
             </column>
-            <column name="level" type="VARCHAR(256)"/>
+            <column name="level" type="VARCHAR2(1000)"/>
             <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
@@ -537,6 +561,31 @@
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
+    </changeSet>
+    <changeSet id="5-create-document-loan-cycle" author="msucil">
+        <createTable tableName="document_loan_cycle">
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loan_cycle_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="document_id"
+                                 baseTableName="document_loan_cycle"
+                                 constraintName="fk_document_loan_cycle_document_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="document"/>
+        <addForeignKeyConstraint baseColumnNames="loan_cycle_id"
+                                 baseTableName="document_loan_cycle"
+                                 constraintName="fk_document_loan_cycle_loan_cycle_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_cycle"/>
     </changeSet>
 
     <changeSet id="5-create-loan-config-template-list" author="david">
@@ -656,9 +705,9 @@
                              referencedColumnNames="id"
                 />
             </column>
-            <column name="authority_id" type="BIGINT">
+            <column name="authorities_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_approval-limit_authority_id"
+                             foreignKeyName="fk_approval-limit_authorities_id"
                              referencedTableName="role"
                              referencedColumnNames="id"
                 />
@@ -971,31 +1020,7 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="5-create-document-loan-cycle" author="msucil">
-        <createTable tableName="document_loan_cycle">
-            <column name="document_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="loan_cycle_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="document_id"
-                                 baseTableName="document_loan_cycle"
-                                 constraintName="fk_document_loan_cycle_document_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="document"/>
-        <addForeignKeyConstraint baseColumnNames="loan_cycle_id"
-                                 baseTableName="document_loan_cycle"
-                                 constraintName="fk_document_loan_cycle_loan_cycle_id"
-                                 onDelete="RESTRICT"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="loan_cycle"/>
-    </changeSet>
     <changeSet id="5-create-proprietor" author="david">
         <createTable tableName="proprietor">
             <column name="id" type="BIGINT" autoIncrement="true">

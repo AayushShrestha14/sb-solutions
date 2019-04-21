@@ -19,8 +19,5 @@ public class LoanCycle extends BaseEntity<Long> {
 
     private String cycle;
     private String level;
-    @ManyToMany(mappedBy = "loanCycle",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Collection<Document> documents;
 
 }
