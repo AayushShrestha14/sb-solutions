@@ -10,4 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kb-core</artifactId>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
+
+
+
+    </dependencies>
+
 </project>

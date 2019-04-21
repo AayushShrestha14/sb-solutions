@@ -1,3 +1,5 @@
+truncate table role_permission_rights_api_rights;
+-- ************************BRANCH*******************************************
 INSERT INTO url_api (id,api_url,type) values (1,'/v1/branch','ADD BRANCH');
 INSERT INTO url_api (id,api_url,type) values (2,'/v1/branch','EDIT BRANCH');
 INSERT INTO url_api (id,api_url,type) values (3,'/v1/branch/csv','DOWNLOAD CSV');
@@ -219,3 +221,10 @@ INSERT INTO role_permission_rights_api_rights values (4,29);
 -- ************************VALUATOR*******************************************
 
 -- ************************DEFAULT ADMIN*******************************************
+
+
+
+
+
+
+

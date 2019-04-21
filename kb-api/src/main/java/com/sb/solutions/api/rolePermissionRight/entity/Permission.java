@@ -29,10 +29,10 @@ public class Permission {
     private Long orders;
     private Status status = Status.ACTIVE;
 
-    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany
     private List<SubNav> subNavs;
 
-    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany
     private List<UrlApi> apiList;
 }
 

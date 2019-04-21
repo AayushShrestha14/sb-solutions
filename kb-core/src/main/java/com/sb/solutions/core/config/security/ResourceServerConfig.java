@@ -3,6 +3,7 @@ package com.sb.solutions.core.config.security;
 import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -29,6 +30,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Override
+    @RefreshScope
     public void configure(HttpSecurity http) throws Exception {
         restrictUrl(http);
         http
@@ -43,6 +45,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
                 .antMatchers("/v1/**").hasAuthority("admin")
+                .antMatchers("/actuator/**").hasAuthority("admin")
                 .antMatchers("/v1/**")
                 .authenticated()
                 .and()
@@ -52,6 +55,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     public void restrictUrl(HttpSecurity http) throws Exception {
+        System.out.println("refreshed");
         List<Map<String, Object>> mapList = roleAndPermissionDao.getRole();
         for (Map<String, Object> map : mapList) {
             if (map.get("api_url") != null)

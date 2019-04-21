@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PersonProfileEntity extends BaseEntity<Long> {
 
     private String firstName;

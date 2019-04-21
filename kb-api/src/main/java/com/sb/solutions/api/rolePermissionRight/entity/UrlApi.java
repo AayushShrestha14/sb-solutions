@@ -26,9 +26,5 @@ public class UrlApi {
     private String type;
     @Transient
     private boolean checked;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "permission_api_list",
-            joinColumns = {@JoinColumn(name = "permission_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "api_list_id", referencedColumnName = "id")})
-    private Permission permission;
+
 }

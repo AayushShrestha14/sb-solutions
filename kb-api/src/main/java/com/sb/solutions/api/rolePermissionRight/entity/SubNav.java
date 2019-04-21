@@ -1,9 +1,6 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
-
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -24,9 +21,7 @@ public class SubNav {
     private String subNavName;
     private String frontUrl;
     private String faIcon;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "permission_id")
-    private Permission permission;
+
 
 
 }

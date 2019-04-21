@@ -2,7 +2,6 @@ package com.sb.solutions.api.basicInfo.customer.entity;
 
 import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
