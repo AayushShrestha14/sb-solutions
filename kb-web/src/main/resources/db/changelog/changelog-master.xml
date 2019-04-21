@@ -229,14 +229,45 @@
                 <constraints nullable="false"/>
             </column>
             <column name="type" type="VARCHAR(256)"/>
-            <column name="checked" type="boolean"/>
-            <column name="permission_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_url_api_permission_id"
-                             referencedTableName="permission"
-                             referencedColumnNames="id"/>
-            </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="5-permission-api-list" author="rujan">
+        <createTable tableName="permission_api_list">
+            <column name="permission_id" type="BIGINT">
+
+            </column>
+            <column name="api_list_id" type="BIGINT">
+                <constraints unique="true"></constraints>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="permission_id"
+                                 baseTableName="permission_api_list"
+                                 constraintName="fk_permission_api_list_permission_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="permission"/>
+    </changeSet>
+
+    <changeSet id="5-permission-sub-navs" author="rujan">
+        <createTable tableName="permission_sub_navs">
+            <column name="permission_id" type="BIGINT">
+
+            </column>
+            <column name="sub_navs_id" type="BIGINT">
+                <constraints unique="true"></constraints>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="permission_id"
+                                 baseTableName="permission_sub_navs"
+                                 constraintName="fk_permission_sub_navs_permission_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sub_nav"/>
     </changeSet>
 
     <changeSet id="5-create-role-permission-rights" author="david">

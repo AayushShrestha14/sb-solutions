@@ -26,7 +26,5 @@ public class UrlApi {
     private String type;
     @Transient
     private boolean checked;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "permission_id")
-    private Permission permission;
+
 }
