@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ttt
     username: root
-    password:
+    password: root
 
   jackson:
     serialization:

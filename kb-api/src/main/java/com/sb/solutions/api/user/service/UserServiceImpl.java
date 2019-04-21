@@ -1,8 +1,14 @@
 package com.sb.solutions.api.user.service;
 
+import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -11,24 +17,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
+    BaseHttpService baseHttpService;
 
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
-
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<User> findAll() {
@@ -60,13 +61,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        System.out.println(user.getPassword());
+        user.setLastModifiedAt(new Date());
+        if (user.getId() == null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setStatus(Status.ACTIVE);
+        }else{
+            user.setPassword(userRepository.getOne(user.getId()).getPassword());
+        }
         return userRepository.save(user);
+
     }
 
     @Override
-    public Page<User> findAllPageable(User user,Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
+        return userRepository.findByRoleIn(roles, pageable);
+    }
+
+
+    @Override
+    public Map<Object, Object> userStatusCount() {
+        return userRepository.userStatusCount();
+    }
+
+
+
+    @Override
+    public Page<User> findAllPageable(User object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
+
     }
 
 }

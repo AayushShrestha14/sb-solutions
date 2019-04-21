@@ -1,15 +1,14 @@
 package com.sb.solutions.core.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
 public interface BaseService<T> {
-
     /**
      * @return
      */
@@ -31,7 +30,7 @@ public interface BaseService<T> {
      * @param t
      * @return
      */
-    Page<T> findAllPageable(T t, Pageable pageable);
+    Page<T> findAllPageable(T t,Pageable pageable);
 
 
 }

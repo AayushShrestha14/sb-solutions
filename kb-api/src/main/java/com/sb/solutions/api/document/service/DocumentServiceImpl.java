@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.sb.solutions.core.dto.SearchDto;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,9 +47,11 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<Document> findAllPageable(Document document, Pageable pageable) {
+    public Page<Document> findAllPageable(Document object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return documentRepository
-            .documentFilter(document.getName() == null ? "" : document.getName(), pageable);
+            .documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

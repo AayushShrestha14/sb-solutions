@@ -2,7 +2,9 @@ package com.sb.solutions.api.document.service;
 
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.LoanCycleRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,8 +39,10 @@ public class LoanCycleServiceImpl implements LoanCycleService {
     }
 
     @Override
-    public Page<LoanCycle> findAllPageable(LoanCycle loanCycle, Pageable pageable) {
-        return loanCycleRepository.loanCycleFilter(loanCycle.getCycle()==null?"":loanCycle.getCycle(),pageable);
+    public Page<LoanCycle> findAllPageable(LoanCycle object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return loanCycleRepository.loanCycleFilter(s.getName()==null?"":s.getName(),pageable);
     }
 
 
