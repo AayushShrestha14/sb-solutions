@@ -64,6 +64,7 @@ public class UserController {
     }
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type) {
+        System.out.println();
         return uploadFile.uploadFile(multipartFile,type);
     }
 

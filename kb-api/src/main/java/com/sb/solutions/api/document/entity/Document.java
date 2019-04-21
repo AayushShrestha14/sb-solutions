@@ -7,10 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Data
@@ -26,7 +25,10 @@ public class Document extends BaseEntity<Long> {
     private String url;
 
     @ManyToMany
-    private Collection<LoanCycle> loanCycle;
+    @JoinTable(name = "document_loan_cycle",
+            joinColumns = {@JoinColumn(name = "document_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "loan_cycle_id", referencedColumnName = "id")})
+    private Set<LoanCycle> loanCycle;
 
     private Status status;
 }

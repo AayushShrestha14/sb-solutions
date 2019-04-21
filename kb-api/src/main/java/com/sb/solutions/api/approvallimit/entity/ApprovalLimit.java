@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -27,6 +28,7 @@ public class ApprovalLimit extends BaseEntity<Long> {
     @OneToOne
     private LoanConfig loanCategory;
     @OneToOne
+    @JoinColumn(name = "authorities_id")
     private Role authorities;
 
 
