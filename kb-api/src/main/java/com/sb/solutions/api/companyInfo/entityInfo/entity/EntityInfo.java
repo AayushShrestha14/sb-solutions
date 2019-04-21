@@ -8,6 +8,7 @@ import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class EntityInfo extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private LegalStatus legalStatus;
