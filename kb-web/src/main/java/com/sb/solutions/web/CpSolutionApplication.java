@@ -75,7 +75,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         return builder.sources(CpSolutionApplication.class);
     }
 
-    /*@PostConstruct
+    @PostConstruct
     public void initialize() {
         if (userRepository.findAll().isEmpty()) {
             ClassPathResource schemaResource = new ClassPathResource("patch.sql");
@@ -124,7 +124,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             baseHttp.setFlag(1);
             baseHttpRepo.save(baseHttp);
         }
-    }*/
+    }
 
 
 }
