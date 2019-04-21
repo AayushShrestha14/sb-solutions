@@ -91,6 +91,9 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             schemaResource = new ClassPathResource("oauth.sql");
             populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
+            schemaResource = new ClassPathResource("permissionApi.sql");
+            populator = new ResourceDatabasePopulator(schemaResource);
+            populator.execute(dataSource);
 
         }
 
