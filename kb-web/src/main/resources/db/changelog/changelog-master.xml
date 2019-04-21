@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="4-create-hibernate_sequence" author="msucil">
+    <changeSet id="5-create-hibernate_sequence" author="msucil">
         <createTable tableName="hibernate_sequence">
             <column name="next_val" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -12,13 +12,13 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-populate-hibernate_sequence" author="msucil">
+    <changeSet id="5-populate-hibernate_sequence" author="msucil">
         <insert tableName="hibernate_sequence">
             <column name="next_val" valueNumeric="1"/>
         </insert>
     </changeSet>
 
-    <changeSet id="4-create-oauth-token-table" author="msucil">
+    <changeSet id="5-create-oauth-token-table" author="msucil">
         <createTable tableName="oauth_access_token">
             <column name="token_id" type="VARCHAR(256)">
                 <constraints nullable="true"/>
@@ -58,7 +58,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-role-table" author="david">
+    <changeSet id="5-create-role-table" author="david">
         <createTable tableName="role">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -88,7 +88,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-branch" author="msucil">
+    <changeSet id="5-create-branch" author="msucil">
         <createTable tableName="branch">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -114,7 +114,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-user-table" author="msucil">
+    <changeSet id="5-create-user-table" author="msucil">
         <createTable tableName="user">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -164,14 +164,14 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-foreign-key-in-role-table" author="david">
+    <changeSet id="5-create-foreign-key-in-role-table" author="david">
         <addForeignKeyConstraint baseTableName="role" baseColumnNames="created_by_id" constraintName="fk_role_created_by_id" referencedTableName="user"
                                  referencedColumnNames="id"/>
         <addForeignKeyConstraint baseTableName="role" baseColumnNames="last_modified_by_id" constraintName="fk_role_last_modified_by_id" referencedTableName="user"
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="4-create-rights" author="david">
+    <changeSet id="5-create-rights" author="david">
         <createTable tableName="rights">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -181,14 +181,15 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="4-create-permission" author="david">
+    <changeSet id="5-create-permission" author="david">
         <createTable tableName="permission">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="permission_name" type="VARCHAR(256)">
                 <constraints nullable="false"
-                             unique="true"/>
+                             unique="true"
+                             uniqueConstraintName="udx_permission_permission_name"/>
             </column>
             <column name="front_url" type="VARCHAR(256)"/>
             <column name="fa_icon" type="VARCHAR(256)"/>
@@ -198,14 +199,15 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="4-create-sub-nav" author="david">
+    <changeSet id="5-create-sub-nav" author="david">
         <createTable tableName="sub_nav">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="sub_nav_name" type="VARCHAR(256)">
                 <constraints nullable="false"
-                    unique="true"/>
+                            unique="true"
+                             uniqueConstraintName="udx_sub_nav_sub_nav_name"/>
             </column>
             <column name="front_url" type="VARCHAR(256)"/>
             <column name="fa_icon" type="VARCHAR(256)"/>
@@ -218,7 +220,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-url_api" author="david">
+    <changeSet id="5-create-url-api" author="david">
         <createTable tableName="url_api">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -237,7 +239,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-role-permission-rights" author="david">
+    <changeSet id="5-create-role-permission-rights" author="david">
         <createTable tableName="role_permission_rights">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -266,7 +268,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-role-permission-rights-api-rights" author="david">
+    <changeSet id="5-create-role-permission-rights-api-rights" author="david">
         <createTable tableName="role_permission_rights_api_rights">
             <column name="role_permission_rights_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -292,7 +294,7 @@
                                  referencedTableName="url_api"/>
     </changeSet>
 
-    <changeSet id="4-create-company" author="david">
+    <changeSet id="5-create-company" author="david">
         <createTable tableName="company">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -313,7 +315,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-base_http" author="david">
+    <changeSet id="5-create-base_http" author="david">
         <createTable tableName="base_http">
             <column name="base_http_id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -326,7 +328,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="4-create-loan_template" author="david">
+    <changeSet id="5-create-loan_template" author="david">
         <createTable tableName="loan_template">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -354,10 +356,7 @@
         </createTable>
     </changeSet>
 
-
-
-
-    <changeSet id="4-create-sector" author="david">
+    <changeSet id="5-create-sector" author="david">
         <createTable tableName="sector">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -377,7 +376,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-sub-sector" author="david">
+    <changeSet id="5-create-sub-sector" author="david">
         <createTable tableName="sub_sector">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -404,7 +403,7 @@
 
     </changeSet>
 
-    <changeSet id="4-create-segment" author="david">
+    <changeSet id="5-create-segment" author="david">
         <createTable tableName="segment">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -423,7 +422,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-sub_segment" author="david">
+    <changeSet id="5-create-sub-segment" author="david">
         <createTable tableName="sub_segment">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -455,7 +454,7 @@
     </changeSet>
 
 
-    <changeSet id="4-create-valuator" author="david">
+    <changeSet id="5-create-valuator" author="david">
         <createTable tableName="valuator">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -477,7 +476,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-loan-config" author="david">
+    <changeSet id="5-create-loan-config" author="david">
         <createTable tableName="loan_config">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -497,13 +496,7 @@
         </createTable>
     </changeSet>
 
-
-
-
-
-
-
-    <changeSet id="4-create-document" author="msucil">
+    <changeSet id="5-create-document" author="msucil">
         <createTable tableName="document">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -527,8 +520,7 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-
-    <changeSet id="4-create-loan-cycle" author="david">
+    <changeSet id="5-create-loan-cycle" author="david">
         <createTable tableName="loan_cycle">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -547,7 +539,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-loan-config-template-list" author="david">
+    <changeSet id="5-create-loan-config-template-list" author="david">
         <createTable tableName="loan_config_template_list">
             <column name="loan_config_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -572,7 +564,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="loan_template"/>
     </changeSet>
-    <changeSet id="4-create-loan-config-template-list" author="david">
+    <changeSet id="5-create-loan-config-template-list" author="david">
         <createTable tableName="loan_config_template_list">
             <column name="loan_config_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -597,7 +589,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="loan_template"/>
     </changeSet>
-    <changeSet id="4-create-loan-config-initial" author="david">
+    <changeSet id="5-create-loan-config-initial" author="david">
         <createTable tableName="loan_config_initial">
             <column name="loan_config_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -622,7 +614,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="document"/>
     </changeSet>
-    <changeSet id="4-create-loan-config-renew" author="david">
+    <changeSet id="5-create-loan-config-renew" author="david">
         <createTable tableName="loan_config_renew">
             <column name="loan_config_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -648,7 +640,7 @@
                                  referencedTableName="document"/>
     </changeSet>
 
-    <changeSet id="4-create-approval-limit" author="david">
+    <changeSet id="5-create-approval-limit" author="david">
         <createTable tableName="approval_limit">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -682,7 +674,7 @@
     </changeSet>
 
 
-    <changeSet id="4-create-role-permission-rights" author="david">
+    <changeSet id="5-create-role-permission-rights" author="david">
         <createTable tableName="role_permission_rights">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -711,23 +703,23 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-province" author="david">
+    <changeSet id="5-create-province" author="david">
         <createTable tableName="province">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="BIGINT">
+            <column name="name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-district" author="david">
+    <changeSet id="5-create-district" author="david">
         <createTable tableName="district">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="BIGINT">
+            <column name="name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="province_id" type="BIGINT">
@@ -739,12 +731,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-municipality-vdc" author="david">
+    <changeSet id="5-create-municipality-vdc" author="david">
         <createTable tableName="municipality_vdc">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="BIGINT">
+            <column name="name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="district_id" type="BIGINT">
@@ -756,7 +748,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4-create-customer" author="david">
+    <changeSet id="5-create-customer" author="david">
         <createTable tableName="customer">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -783,7 +775,7 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-    <changeSet id="4-create-customer-relative" author="david">
+    <changeSet id="5-create-customer-relative" author="david">
         <createTable tableName="customer_relative">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -809,7 +801,7 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-    <changeSet id="4-create-capital" author="david">
+    <changeSet id="5-create-capital" author="david">
     <createTable tableName="capital">
         <column name="id" type="BIGINT" autoIncrement="true">
             <constraints nullable="false" primaryKey="true"/>
@@ -845,7 +837,7 @@
     </createTable>
 </changeSet>
 
-<changeSet id="4-create-legal_status" author="david">
+<changeSet id="5-create-legal-status" author="david">
 <createTable tableName="legal_status">
     <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
@@ -886,7 +878,7 @@
     <column name="version" type="INT" defaultValueNumeric="0"/>
 </createTable>
 </changeSet>
-    <changeSet id="4-swot" author="david">
+    <changeSet id="5-swot" author="david">
         <createTable tableName="swot">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -914,7 +906,7 @@
     </changeSet>
 
 
-    <changeSet id="4-create-entity_info" author="david">
+    <changeSet id="5-create-entity_info" author="david">
         <createTable tableName="entity_info">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -952,7 +944,7 @@
                                  referencedTableName="swot"
                                  referencedColumnNames="id"/>
     </changeSet>
-    <changeSet id="4-create-management-team" author="david">
+    <changeSet id="5-create-management-team" author="david">
         <createTable tableName="management_team">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -979,7 +971,7 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="4-create-document-loan-cycle" author="msucil">
+    <changeSet id="5-create-document-loan-cycle" author="msucil">
         <createTable tableName="document_loan_cycle">
             <column name="document_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1004,7 +996,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="loan_cycle"/>
     </changeSet>
-    <changeSet id="4-create-proprietor" author="david">
+    <changeSet id="5-create-proprietor" author="david">
         <createTable tableName="proprietor">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
