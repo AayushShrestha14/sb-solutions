@@ -3,6 +3,7 @@ package com.sb.solutions.api.basicInfo.customerRelative.entity;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class CustomerRelative extends BaseEntity<Long> {
     private String customerRelation;
     private String customerRelativeName;
