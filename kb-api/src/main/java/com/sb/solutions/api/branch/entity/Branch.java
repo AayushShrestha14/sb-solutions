@@ -46,4 +46,7 @@ public class Branch extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "municipality_vdc_id")
     private MunicipalityVdc municipalityVdc;
+
+    private String streetName;
+    private String wardNumber;
 }

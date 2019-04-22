@@ -147,7 +147,6 @@
                 />
             </column>
             <column name="branch_code" type="VARCHAR(256)"/>
-            <column name="address" type="VARCHAR(256)"/>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
             </column>
@@ -172,6 +171,8 @@
                              referencedColumnNames="id"
                 />
             </column>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="ward_number" type="VARCHAR(256)"/>
             <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
