@@ -73,8 +73,8 @@ public class UserController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(userService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getAll(@RequestBody User user, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(userService.findAllPageable(user,new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({

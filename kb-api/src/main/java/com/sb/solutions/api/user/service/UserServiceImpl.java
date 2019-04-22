@@ -87,9 +87,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Page<User> findAllPageable(User object, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+    public Page<User> findAllPageable(User s, Pageable pageable) {
         return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
 
     }
