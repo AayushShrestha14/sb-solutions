@@ -1,7 +1,7 @@
 CREATE TABLE if not exists `oauth_access_token` (
   `token_id` varchar(256) DEFAULT NULL,
   `token` blob,
-  `authentication_id` varchar(256) DEFAULT NULL,
+  `authentication_id` varchar(256) primary key not null,
   `user_name` varchar(256) DEFAULT NULL,
   `client_id` varchar(256) DEFAULT NULL,
   `authentication` blob,
@@ -14,3 +14,4 @@ CREATE TABLE if not exists `oauth_refresh_token` (
   `token` blob,
   `authentication` blob
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
