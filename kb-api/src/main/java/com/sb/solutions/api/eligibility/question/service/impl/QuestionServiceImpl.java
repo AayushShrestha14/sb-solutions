@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -52,6 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Question> save(List<Question> questions) {
         List<Question> savedQuestions = new ArrayList<>();
         for (Question question: questions) {
+            question.setLastModifiedAt(new Date());
             final Question savedQuestion = questionRepository.save(question);
             question.getAnswers().forEach(answer -> answer.setQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
@@ -59,7 +61,8 @@ public class QuestionServiceImpl implements QuestionService {
                     .map(Answer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
-        Scheme scheme = savedQuestions.stream().map(Question::getScheme).distinct().findAny().orElse(null);
+        Scheme scheme = schemeService.findOne(savedQuestions.stream()
+                .map(Question::getScheme).distinct().findAny().orElse(null).getId());
         scheme.setTotalPoints(savedQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
         schemeService.save(scheme);
         return savedQuestions;
@@ -74,6 +77,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Question update(Question question) {
         final List<Answer> answers = new ArrayList<>();
         answers.addAll(question.getAnswers());
+        question.setLastModifiedAt(new Date());
         question.getAnswers().removeAll(question.getAnswers());
         final Question updatedQuestion = questionRepository.save(question);
         answers.forEach(answer -> answer.setQuestion(updatedQuestion));

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,6 +29,7 @@ public class SchemeServiceImpl implements SchemeService {
 
     @Override
     public Scheme save(Scheme scheme) {
+        scheme.setLastModifiedAt(new Date());
         return schemeRepository.save(scheme);
     }
 

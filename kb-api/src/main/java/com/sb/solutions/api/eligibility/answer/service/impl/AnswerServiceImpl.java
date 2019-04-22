@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public Answer save(Answer answer) {
+        answer.setLastModifiedAt(new Date());
         return answerRepository.save(answer);
     }
 
@@ -42,6 +44,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<Answer> save(List<Answer> answers) {
+        answers.forEach(answer -> answer.setLastModifiedAt(new Date()));
         return answerRepository.saveAll(answers);
     }
 
@@ -56,11 +59,12 @@ public class AnswerServiceImpl implements AnswerService {
                 .collect(Collectors.toList());
         final List<Answer> deletedAnswers = savedAnswers.stream().filter(answer -> modifiedAnswers.stream()
                 .noneMatch(modifiedAnswer -> answer.getId().equals(modifiedAnswer.getId()))).collect(Collectors.toList());
-        List<Answer> updatedAnswers = new ArrayList<>();
-        updatedAnswers.addAll(newAnswers);
-        updatedAnswers.addAll(modifiedAnswers);
+        List<Answer> answersToPersist = new ArrayList<>();
+        answersToPersist.addAll(newAnswers);
+        answersToPersist.addAll(modifiedAnswers);
+        answersToPersist.forEach(answerToPersist -> answerToPersist.setLastModifiedAt(new Date()));
         answerRepository.deleteAll(deletedAnswers);
-        updatedAnswers = answerRepository.saveAll(updatedAnswers);
-        return updatedAnswers;
+        answersToPersist = answerRepository.saveAll(answersToPersist);
+        return answersToPersist;
     }
 }
