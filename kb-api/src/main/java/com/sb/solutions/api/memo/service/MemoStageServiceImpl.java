@@ -35,7 +35,7 @@ public class MemoStageServiceImpl implements MemoStageService {
     }
 
     @Override
-    public Page<MemoStage> findAllPageable(MemoStage memoStage, Pageable pageable) {
+    public Page<MemoStage> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
 }

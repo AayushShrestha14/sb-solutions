@@ -12,7 +12,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @EnableJpaRepositories
 @Configuration
-@EntityScan("com.sb.solutions.api.*.entity.**")
+@EntityScan("com.sb.solutions.api.**")
 public class JpaTestConfig {
 
     @Autowired

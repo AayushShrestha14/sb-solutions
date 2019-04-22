@@ -1,19 +1,24 @@
 package com.sb.solutions.web.loanTemplate;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import com.sb.solutions.api.loanTemplate.service.LoanTemplateService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 2/25/2019
@@ -30,7 +35,8 @@ public class LoanTemplateController {
     GlobalExceptionHandler globalExceptionHandler;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanTemplate loanTemplate, BindingResult bindingResult) {
+    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanTemplate loanTemplate,
+        BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         LoanTemplate template = loanTemplateService.save(loanTemplate);
         if (template == null) {
@@ -41,13 +47,15 @@ public class LoanTemplateController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableLoanTemplate(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-return new RestResponseDto().successModel(loanTemplateService.findAllPageable(searchDto, new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getPageableLoanTemplate(@RequestBody SearchDto searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(loanTemplateService
+            .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 

@@ -47,7 +47,4 @@ public class User extends BaseEntity<Long> {
     private Branch branch;
     private String signatureImage;
     private String profilePicture;
-
-
-
 }

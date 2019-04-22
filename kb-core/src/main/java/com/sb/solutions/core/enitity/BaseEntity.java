@@ -36,8 +36,8 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
     @Column(name = "last_modified_at", nullable = false)
     private Date lastModifiedAt = new Date();
 
-//    @Version
-//    private int version;
+    @Version
+    private int version;
 
     @Override
     public void setId(PK id) {

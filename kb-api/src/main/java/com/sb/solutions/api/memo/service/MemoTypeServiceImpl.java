@@ -75,7 +75,7 @@ public class MemoTypeServiceImpl implements MemoTypeService {
     }
 
     @Override
-    public Page<MemoType> findAllPageable(MemoType memoType, Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<MemoType> findAllPageable(Object t, Pageable pageable) {
+        return null;
     }
 }
