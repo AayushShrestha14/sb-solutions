@@ -88,7 +88,54 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="5-create-branch" author="msucil">
+
+
+    <changeSet id="5-create-province" author="david">
+        <createTable tableName="province">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-district" author="david">
+        <createTable tableName="district">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_district_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-municipality-vdc" author="david">
+        <createTable tableName="municipality_vdc">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_municipality_vdc_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-branch" author="david">
         <createTable tableName="branch">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -103,6 +150,27 @@
             <column name="address" type="VARCHAR(256)"/>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
+            </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"
+                />
             </column>
             <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
@@ -754,79 +822,6 @@
     </changeSet>
 
 
-    <changeSet id="5-create-role-permission-rights" author="david">
-        <createTable tableName="role_permission_rights">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="role_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_role_permission_rights_role_id"
-                             referencedTableName="role"
-                             referencedColumnNames="id"
-                />
-            </column>
-            <column name="permission_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_role_permission_rights_permission_id"
-                             referencedTableName="permission"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="del" type="boolean"/>
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="5-create-province" author="david">
-        <createTable tableName="province">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="5-create-district" author="david">
-        <createTable tableName="district">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="province_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_district_province_id"
-                             referencedTableName="province"
-                             referencedColumnNames="id"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="5-create-municipality-vdc" author="david">
-        <createTable tableName="municipality_vdc">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="district_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_municipality_vdc_id"
-                             referencedTableName="district"
-                             referencedColumnNames="id"/>
-            </column>
-        </createTable>
-    </changeSet>
 
     <changeSet id="5-create-customer" author="david">
         <createTable tableName="customer">
