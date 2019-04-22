@@ -35,6 +35,10 @@ public class Memo extends BaseEntity<Long> {
     @NotNull
     private String subject;
 
+    @Column(nullable = false)
+    @NotNull
+    private String referenceNo;
+
     @NotNull
     @OneToOne
     @JoinColumn(name = "sent_by")
