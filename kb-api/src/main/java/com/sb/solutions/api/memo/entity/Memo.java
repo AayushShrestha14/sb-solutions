@@ -35,7 +35,7 @@ public class Memo extends BaseEntity<Long> {
     @NotNull
     private String subject;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "reference_number")
     @NotNull
     private String referenceNo;
 

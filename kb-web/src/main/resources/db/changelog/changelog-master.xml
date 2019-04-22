@@ -290,7 +290,7 @@
             <column name="subject" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="referenceNo" type="VARCHAR(256)">
+            <column name="reference_number" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="sent_by" type="BIGINT">
