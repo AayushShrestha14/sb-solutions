@@ -31,7 +31,7 @@ public interface BaseService<T> {
      * @param t
      * @return
      */
-    Page<T> findAllPageable(T t, Pageable pageable);
+    Page<T> findAllPageable(Object t,Pageable pageable);
 
 
 }

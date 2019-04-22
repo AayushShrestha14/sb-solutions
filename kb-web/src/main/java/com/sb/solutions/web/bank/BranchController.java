@@ -3,6 +3,7 @@ package com.sb.solutions.web.bank;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,13 +45,22 @@ public class BranchController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(branch, new PaginationUtils().pageable(page, size)));
+    public ResponseEntity<?> getPageableBranch(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
+    }
+    @GetMapping(value = "/getList")
+    public ResponseEntity<?> getBranch() {
+        return new RestResponseDto().successModel(branchService.findAll());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
+        return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
 
 }

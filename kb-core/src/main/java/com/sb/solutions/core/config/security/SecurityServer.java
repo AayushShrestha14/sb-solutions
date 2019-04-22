@@ -52,7 +52,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
     @Bean
     public TokenStore tokenStore() {
 
-         return new CustomJdbcTokenStore(dataSource);
+        return new CustomJdbcTokenStore(dataSource);
     }
 
 
@@ -82,7 +82,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
 
         tokenServices.setTokenStore(tokenStore());
         tokenServices.setSupportRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds(90000);
+        tokenServices.setAccessTokenValiditySeconds(9999999);
         return tokenServices;
     }
 

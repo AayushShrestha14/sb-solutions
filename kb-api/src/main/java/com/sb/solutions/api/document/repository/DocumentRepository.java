@@ -1,6 +1,7 @@
 package com.sb.solutions.api.document.repository;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,14 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "select b from Document b where b.name like concat(:name,'%')")
     Page<Document> documentFilter(@Param("name") String name, Pageable pageable);
 
-    Page<Document> findByLoanCycleIn(@Param("loanCycleList") Collection<LoanCycle> loanCycleList,
-        Pageable pageable);
+    List<Document> findByLoanCycleNotContaining(LoanCycle loanCycleList);
+
+    int countByLoanCycle(LoanCycle loanCycle);
+
+    @Query(value = "select\n" +
+        "  (select  count(id) from document where status=1) active,\n" +
+        "(select  count(id) from document where status=0) inactive,\n" +
+        "(select  count(id) from document) documents\n", nativeQuery = true)
+    Map<Object, Object> documentStatusCount();
+
 }

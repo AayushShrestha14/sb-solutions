@@ -5,6 +5,7 @@ import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.service.DocumentService;
 import com.sb.solutions.api.document.service.LoanCycleService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/document")
+@RequestMapping(value = "/v1/document")
 public class DocumentController {
 
     private final DocumentService documentService;
@@ -45,24 +46,36 @@ public class DocumentController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
-    public ResponseEntity<?> getAll(@RequestBody Document document, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(documentService.findAllPageable(document, PaginationUtils
-            .pageable(page, size)));
+    public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+
     @PostMapping(value="/list")
-    public ResponseEntity<?> getByCycle(@RequestBody Collection<LoanCycle> loanCycleList, @RequestParam("page") int page, @RequestParam("size") int size){
-        return  new RestResponseDto().successModel(documentService.getByCycle(loanCycleList, PaginationUtils
-            .pageable(page, size)));
+    public ResponseEntity<?> getByCycleNotContaining(@RequestBody LoanCycle loanCycleList){
+        return  new RestResponseDto().successModel(documentService.getByCycleNotContaining(loanCycleList));
 
     }
-    @GetMapping(value="lifeCycle")
+    @GetMapping(value="/lifeCycle")
     public ResponseEntity<?> getLifeCycle(){
         return new RestResponseDto().successModel(loanCycleService.findAll());
     }
+
+    @GetMapping(value="/get/getStatusCount")
+    public ResponseEntity<?> getCount(){
+        return new RestResponseDto().successModel(documentService.documentStatusCount());
+    }
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)")})
+    @PostMapping(value="/saveList")
+    public ResponseEntity<?> saveList(@RequestBody List<Long> integers,@RequestParam("loanCycleId") long loanCycleId){
+        LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
+        return new RestResponseDto().successModel(documentService.saveList(integers,loanCycle));
+    }
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<?> getAll(){
+        return new RestResponseDto().successModel(documentService.findAll());
+    }
+
 }
