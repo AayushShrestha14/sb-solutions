@@ -1,6 +1,5 @@
 package com.sb.solutions.api.sector.subsector.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.sector.sector.entity.Sector;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
