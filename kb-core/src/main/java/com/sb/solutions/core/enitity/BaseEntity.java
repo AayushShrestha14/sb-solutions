@@ -36,7 +36,7 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
     @Column(name = "last_modified_at", nullable = false)
     private Date lastModifiedAt;
 
-    @Version
-    private int version;
+//    @Version
+//    private int version;
 
 }

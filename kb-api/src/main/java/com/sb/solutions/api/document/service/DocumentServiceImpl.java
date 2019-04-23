@@ -11,8 +11,19 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.api.document.repository.LoanCycleRepository;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -45,13 +56,32 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<Document> findAllPageable(Document document, Pageable pageable) {
-        return documentRepository
-            .documentFilter(document.getName() == null ? "" : document.getName(), pageable);
+    public Page<Document> findAllPageable(Object t, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(t, SearchDto.class);
+        return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
+    }
+
+
+    @Override
+    public List<Document> getByCycleNotContaining(LoanCycle loanCycleList) {
+        return documentRepository.findByLoanCycleNotContaining(loanCycleList);
     }
 
     @Override
-    public Page<Document> getByCycle(Collection<LoanCycle> loanCycleList, Pageable pageable) {
-        return documentRepository.findByLoanCycleIn(loanCycleList, pageable);
+    public Map<Object, Object> documentStatusCount() {
+        return documentRepository.documentStatusCount();
+    }
+
+    @Override
+    public String saveList(List<Long> ids,LoanCycle loanCycle) {
+        for(Long id: ids){
+            System.out.println(id);
+            Document doc = documentRepository.getOne(id);
+            doc.setLastModifiedAt(new Date());
+            doc.getLoanCycle().add(loanCycle);
+            documentRepository.save(doc);
+        }
+        return "Success";
     }
 }

@@ -1,0 +1,27 @@
+package com.sb.solutions.api.rolePermissionRight.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+/**
+ * Created by Rujan Maharjan on 3/25/2019.
+ */
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Rights {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String rights;
+}

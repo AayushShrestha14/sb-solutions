@@ -34,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Page<Company> findAllPageable(Company company, Pageable pageable) {
+    public Page<Company> findAllPageable(Object company, Pageable pageable) {
         return companyRepository.findAll(pageable);
     }
 }

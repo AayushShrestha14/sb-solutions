@@ -38,7 +38,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Page<Answer> findAllPageable(Answer answer, Pageable pageable) {
+    public Page<Answer> findAllPageable(Object answer, Pageable pageable) {
         return answerRepository.findAll(pageable);
     }
 
