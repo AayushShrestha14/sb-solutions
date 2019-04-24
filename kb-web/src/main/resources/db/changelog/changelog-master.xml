@@ -171,7 +171,6 @@
                              referencedColumnNames="id"
                 />
             </column>
-            <column name="address" type="VARCHAR(256)"/>
             <column name="street_name" type="VARCHAR(256)"/>
             <column name="ward_number" type="VARCHAR(256)"/>
             <column name="created_at" type="DATE">
@@ -851,6 +850,34 @@
     </changeSet>
 
 
+    <changeSet id="5-create-role-permission-rights" author="david">
+        <createTable tableName="role_permission_rights">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_permission_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="del" type="boolean"/>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
 
     <changeSet id="5-create-customer" author="david">
         <createTable tableName="customer">

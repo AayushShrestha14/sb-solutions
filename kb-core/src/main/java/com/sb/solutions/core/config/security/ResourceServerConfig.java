@@ -32,7 +32,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     @RefreshScope
     public void configure(HttpSecurity http) throws Exception {
-        restrictUrl(http);
+        /*restrictUrl(http);*/
         http
                 .authorizeRequests()
                 .antMatchers("/v1/login")
@@ -44,17 +44,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
-                .antMatchers("/v1/**").hasAuthority("admin")
-                .antMatchers("/actuator/**").hasAuthority("admin")
+                .antMatchers("/v1/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/v1/**")
-                .authenticated()
+                .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout")).logoutSuccessUrl("/api/language")
         ;
     }
 
-    public void restrictUrl(HttpSecurity http) throws Exception {
+/*    public void restrictUrl(HttpSecurity http) throws Exception {
         System.out.println("refreshed");
         List<Map<String, Object>> mapList = roleAndPermissionDao.getRole();
         for (Map<String, Object> map : mapList) {
@@ -62,6 +62,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 http.authorizeRequests().
                         antMatchers(map.get("api_url").toString()).hasAnyAuthority(map.get("role_name").toString());
         }
-    }
+    }*/
 
 }
