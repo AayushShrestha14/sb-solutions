@@ -580,13 +580,51 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="address" type="VARCHAR(256)"/>
-            <column name="contact_no" type="VARCHAR(256)"/>
             <column name="name" type="VARCHAR(256)"/>
-            <column name="site_location" type="VARCHAR(256)"/>
+            <column name="contact_no" type="VARCHAR(256)"/>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
             </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="ward_number" type="VARCHAR(256)"/>
+            <column name="site_province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_street_name" type="VARCHAR(256)"/>
+            <column name="site_ward_number" type="VARCHAR(256)"/>
             <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
             </column>

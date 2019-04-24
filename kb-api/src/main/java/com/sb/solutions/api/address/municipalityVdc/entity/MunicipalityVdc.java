@@ -3,6 +3,7 @@ package com.sb.solutions.api.address.municipalityVdc.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.valuator.entity.Valuator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,5 +27,12 @@ public class MunicipalityVdc {
     @JsonIgnore
     @OneToMany(mappedBy = "municipalityVdc", fetch = FetchType.LAZY)
     private Set<Branch> branch;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "municipalityVdc", fetch = FetchType.LAZY)
+    private Set<Valuator> valuator;
+    @JsonIgnore
+    @OneToMany(mappedBy = "siteMunicipalityVdc", fetch = FetchType.LAZY)
+    private Set<Valuator> valuatorSite;
 
 }
