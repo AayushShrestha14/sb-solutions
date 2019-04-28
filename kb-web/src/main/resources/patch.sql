@@ -1,4 +1,4 @@
-INSERT INTO role (id, created_at,  last_modified_at,  role_name, status) VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1);
+INSERT INTO role (id, created_at,created_by,  last_modified_at,modified_by,  role_name, status) VALUES (1, '2019-04-04 12:52:44',1, '2019-04-04 12:53:13',1, 'admin', 1);
 
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'BRANCH', 'fa fa-dashboard', '/home/branch', 10, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-edit', '/home/config', 30, 1);

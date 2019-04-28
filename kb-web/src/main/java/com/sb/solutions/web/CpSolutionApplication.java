@@ -9,6 +9,7 @@ import com.sb.solutions.api.basehttp.BaseHttpRepo;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +18,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +38,7 @@ import java.util.Date;
 @ComponentScan("com.sb.solutions")
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     UserRepository userRepository;
@@ -67,6 +72,11 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CpSolutionApplication.class);
+    }
+
+    @Bean
+    public AuditorAware<Long> auditorAware() {
+        return new SpringSecurityAuditorAware();
     }
 
     @PostConstruct

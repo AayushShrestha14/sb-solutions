@@ -15,7 +15,6 @@ import java.util.Map;
 
 @Configuration
 @EnableResourceServer
-
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -29,7 +28,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        restrictUrl(http);
+        roleAndPermissionDao.restrictUrl(http);
         http
                 .authorizeRequests()
                 .antMatchers("/v1/login")
@@ -42,7 +41,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
                 .antMatchers("/v1/**").hasAuthority("admin")
-                .antMatchers("/actuator/**").hasAuthority("admin")
+                //.antMatchers("/actuator/**").hasAuthority("admin")
                 .antMatchers("/v1/**")
                 .authenticated()
                 .and()
@@ -51,14 +50,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         ;
     }
 
-    public void restrictUrl(HttpSecurity http) throws Exception {
-        System.out.println("refreshed");
-        List<Map<String, Object>> mapList = roleAndPermissionDao.getRole();
-        for (Map<String, Object> map : mapList) {
-            if (map.get("api_url") != null)
-                http.authorizeRequests().
-                        antMatchers(map.get("api_url").toString()).hasAnyAuthority(map.get("role_name").toString());
-        }
-    }
+
 
 }
