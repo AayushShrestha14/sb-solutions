@@ -3,6 +3,7 @@ package com.sb.solutions.api.memo.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,8 @@ public class MemoServiceImpl implements MemoService {
 
     @Override
     public Memo save(Memo memo) {
-        if (memo.getStage() == Stage.DRAFT) {
+
+        if (memo.getStage() == Stage.DRAFT && CollectionUtils.isEmpty(memo.getStages())) {
             final MemoStage memoStage = new MemoStage();
             memoStage.setSentBy(memo.getSentBy());
             memoStage.setSentTo(memo.getSentTo());
@@ -45,6 +47,10 @@ public class MemoServiceImpl implements MemoService {
             memoStage.setNote("Saved as Draft");
 
             memo.addMemoStage(memoStage);
+        } else {
+            for (MemoStage stage : memo.getStages()) {
+                memo.addMemoStage(stage);
+            }
         }
 
         return repository.save(memo);
