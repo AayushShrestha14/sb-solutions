@@ -33,6 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,8 +49,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder());
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
+
 }

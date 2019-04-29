@@ -35,7 +35,7 @@ import java.util.Date;
  * @author Rujan Maharjan on 12/27/2018
  */
 @SpringBootApplication(scanBasePackages = "com.sb.solutions")
-@ComponentScan("com.sb.solutions")
+@ComponentScan(basePackages = "com.sb.solutions")
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -49,21 +49,16 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
-
-    @Value("${server.port}")
-    private String port;
-
     @Autowired
     DataSource dataSource;
-
     @Autowired
     ProvinceService provinceService;
-
     @Autowired
     DistrictService districtService;
-
     @Autowired
     MunicipalityVdcService municipalityVdcService;
+    @Value("${server.port}")
+    private String port;
 
     public static void main(String[] args) {
         SpringApplication.run(CpSolutionApplication.class, args);

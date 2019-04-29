@@ -1,7 +1,5 @@
 package com.sb.solutions.core.config.security;
 
-import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -9,16 +7,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.List;
-import java.util.Map;
-
 
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    @Autowired
-    RoleAndPermissionDao roleAndPermissionDao;
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -28,7 +21,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        roleAndPermissionDao.restrictUrl(http);
         http
                 .authorizeRequests()
                 .antMatchers("/v1/login")
@@ -49,7 +41,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout")).logoutSuccessUrl("/api/language")
         ;
     }
-
 
 
 }
