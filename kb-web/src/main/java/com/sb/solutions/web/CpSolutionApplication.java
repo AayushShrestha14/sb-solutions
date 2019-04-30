@@ -69,10 +69,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         return builder.sources(CpSolutionApplication.class);
     }
 
-    @Bean
-    public AuditorAware<Long> auditorAware() {
-        return new SpringSecurityAuditorAware();
-    }
+
 
     @PostConstruct
     public void initialize() {
@@ -80,17 +77,17 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             ClassPathResource schemaResource = new ClassPathResource("patch.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
             populator.execute(dataSource);
-            Role role = new Role();
-            role.setId(1L);
-            User user = new User();
-            user.setName("SPADMIN");
-            user.setUserName("SPADMIN");
-            user.setStatus(Status.ACTIVE);
-            user.setLastModifiedAt(new Date());
-            user.setEmail("admin@admin.com");
-            user.setRole(role);
-            user.setPassword(passwordEncoder.encode("admin1234"));
-            userRepository.save(user);
+//            Role role = new Role();
+//            role.setId(1L);
+//            User user = new User();
+//            user.setName("SPADMIN");
+//            user.setUserName("SPADMIN");
+//            user.setStatus(Status.ACTIVE);
+//            user.setLastModifiedAt(new Date());
+//            user.setEmail("admin@admin.com");
+//            user.setRole(role);
+//            user.setPassword(passwordEncoder.encode("admin1234"));
+//            userRepository.save(user);
 
 
             schemaResource = new ClassPathResource("oauth.sql");
@@ -128,5 +125,8 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         }
     }
 
-
+    @Bean
+    public AuditorAware<Long> auditorAware() {
+        return new SpringSecurityAuditorAware();
+    }
 }

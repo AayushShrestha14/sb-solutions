@@ -49,6 +49,9 @@ public class RoleAndPermissionDao {
         if (mapApi.isEmpty()) {
             return true;
         }
+        if(this.getCurrentUserRole().equalsIgnoreCase("admin")){
+            return true;
+        }
         List<Map<String, Object>> mapApiChk = this.chkPermissionInRole(api);
         if (!mapApiChk.isEmpty()) {
             return true;
