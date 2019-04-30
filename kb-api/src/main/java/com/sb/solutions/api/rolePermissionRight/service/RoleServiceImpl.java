@@ -38,13 +38,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role save(Role role) {
-        User u = userService.getAuthenticated();
-        role.setLastModifiedAt(new Date());
-        if (role.getId() == null) {
-            role.setCreatedBy(u);
-        } else {
-            role.setLastModifiedBy(u);
-        }
+//        User u = userService.getAuthenticated();
+//        role.setLastModifiedAt(new Date());
+//        if (role.getId() == null) {
+//            role.setCreatedBy(u);
+//        } else {
+//            role.setLastModifiedBy(u);
+//        }
         role.setRoleName(role.getRoleName().toUpperCase());
         return roleRepository.save(role);
     }

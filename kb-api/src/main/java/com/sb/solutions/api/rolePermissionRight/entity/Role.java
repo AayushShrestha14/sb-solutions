@@ -30,8 +30,4 @@ public class Role extends BaseEntity<Long> {
 
     private Status status = Status.ACTIVE;
 
-    @OneToOne
-    private User createdBy;
-    @OneToOne
-    private User lastModifiedBy;
 }
