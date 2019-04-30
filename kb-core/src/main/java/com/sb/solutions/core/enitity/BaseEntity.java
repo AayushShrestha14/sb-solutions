@@ -42,11 +42,11 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
     private Date lastModifiedAt = new Date();
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by_id", updatable = false)
     private Long createdBy;
 
     @LastModifiedBy
-    @Column(name = "modified_by")
+    @Column(name = "modified_by_id")
     private  Long modifiedBy ;
 
 //    @Version

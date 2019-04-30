@@ -1,7 +1,5 @@
 package com.sb.solutions.api.branch.service;
 
-import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.api.address.province.service.ProvinceService;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
@@ -32,9 +30,6 @@ public class BranchServiceImpl implements BranchService {
     @Autowired
     BaseHttpService baseHttpService;
 
-    @Autowired
-    ProvinceService provinceService;
-
     @Override
     public List<Branch> findAll() {
         return branchRepository.findAll();
@@ -48,7 +43,7 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Branch save(Branch branch) {
         branch.setLastModifiedAt(new Date());
-        if (branch.getId() == null) {
+        if(branch.getId()==null){
             branch.setStatus(Status.ACTIVE);
         }
         branch.setBranchCode(branch.getBranchCode().toUpperCase());
@@ -59,15 +54,6 @@ public class BranchServiceImpl implements BranchService {
     public Page<Branch> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        String provinceList = null;
-        if(s.getProvinceId() == null){
-            List<Province> provinces = provinceService.findAll();
-            for(Province p:provinces){
-                provinceList = p.getId()+",";
-            }
-
-
-        }
         return branchRepository.branchFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
@@ -86,11 +72,6 @@ public class BranchServiceImpl implements BranchService {
         header.put("address", "Address");
         header.put("branchCode", "Branch Code");
         String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return baseHttpService.getBaseUrl() + url;
-    }
-
-    public String searchQuery(SearchDto searchDto){
-        String query = "SELECT * FROM branch";
-        return query;
+        return  baseHttpService.getBaseUrl()+url;
     }
 }

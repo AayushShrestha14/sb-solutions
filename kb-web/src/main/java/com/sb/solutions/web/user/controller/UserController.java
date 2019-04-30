@@ -40,8 +40,6 @@ public class UserController {
         this.roleService = roleService;
         this.uploadFile = uploadFile;
     }
-    private String signaturePath=null;
-    private String profiePath=null;
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
     return new RestResponseDto().successModel(userService.getAuthenticated());
@@ -50,16 +48,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        System.out.println("here");
-        if(profiePath != null) {
-            user.setProfilePicture(profiePath);
-            profiePath=null;
-        }
-        if(signaturePath != null) {
-            user.setSignatureImage(signaturePath);
-            signaturePath=null;
-        }
-        user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
     @PostMapping(value = "/uploadFile")

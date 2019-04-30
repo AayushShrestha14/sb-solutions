@@ -48,7 +48,6 @@ INSERT INTO permission_api_list(permission_id, api_list_id) values (8,11);
 
 -- ************************USER*******************************************
 INSERT INTO url_api (id,api_url,type) values (12,'/v1/user','ADD USER');
-
 INSERT INTO url_api (id,api_url,type) values (30,'/v1/user/csv','DOWNLOAD CSV');
 
 INSERT INTO permission_api_list(permission_id, api_list_id) values (6,12);

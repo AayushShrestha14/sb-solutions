@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 public class LoanCycle extends BaseEntity<Long> {
 
     private String cycle;
-    private String level;
+    private String label;
 
 }
