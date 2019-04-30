@@ -171,6 +171,7 @@
                              referencedColumnNames="id"
                 />
             </column>
+            <column name="address" type="VARCHAR(256)"/>
             <column name="street_name" type="VARCHAR(256)"/>
             <column name="ward_number" type="VARCHAR(256)"/>
             <column name="created_at" type="DATE">
