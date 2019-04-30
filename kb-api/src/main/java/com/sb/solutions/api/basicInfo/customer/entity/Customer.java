@@ -22,6 +22,7 @@ public class Customer extends BaseEntity<Long> {
     private String accountNo;
     private String province;
     private String district;
+    @Column(name = "municipalities_or_vdc")
     private String municipalitiesOrVDC;
     private String telephone;
     private String mobile;
