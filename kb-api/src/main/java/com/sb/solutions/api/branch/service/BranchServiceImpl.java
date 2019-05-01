@@ -69,7 +69,8 @@ public class BranchServiceImpl implements BranchService {
         List branchList = branchRepository.branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
-        header.put("address", "Address");
+        header.put("province,name", "Province");
+        header.put("province,district", "District");
         header.put("branchCode", "Branch Code");
         String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
         return  baseHttpService.getBaseUrl()+url;
