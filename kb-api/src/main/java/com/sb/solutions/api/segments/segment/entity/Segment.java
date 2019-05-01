@@ -26,7 +26,7 @@ public class Segment extends BaseEntity<Long> {
     private Status status;
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
+            cascade = CascadeType.ALL,
             mappedBy = "segment")
     private SubSegment subSegment;
 }

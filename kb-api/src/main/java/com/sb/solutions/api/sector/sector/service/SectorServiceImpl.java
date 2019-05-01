@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 @Service
 @AllArgsConstructor
 public class SectorServiceImpl implements SectorService {
@@ -36,7 +37,7 @@ public class SectorServiceImpl implements SectorService {
     @Override
     public Sector save(Sector sector) {
         sector.setLastModifiedAt(new Date());
-        if(sector.getId()==null){
+        if (sector.getId() == null) {
             sector.setStatus(Status.ACTIVE);
         }
         return sectorRepository.save(sector);
@@ -45,7 +46,7 @@ public class SectorServiceImpl implements SectorService {
     @Override
     public Page<Sector> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return sectorRepository.sectorFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return sectorRepository.sectorFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 }

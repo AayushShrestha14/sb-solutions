@@ -15,10 +15,10 @@ import java.util.Map;
  */
 
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission,Long> {
+public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     @Query(value = "select p from Permission p where p.id not in (2,3,6) ")
-    List<Permission>  getAllForRoleAndPermission();
+    List<Permission> getAllForRoleAndPermission();
 
     @Query(value = "select ua.type,p.permission_name from url_api ua\n" +
             " left join role_permission_rights_api_rights apirights\n" +
@@ -26,6 +26,6 @@ public interface PermissionRepository extends JpaRepository<Permission,Long> {
             "left join role_permission_rights rpr on rpr.id= apirights.role_permission_rights_id\n" +
             "left join role r on rpr.role_id = r.id\n" +
             " left join permission p on p.id = rpr.permission_id\n" +
-            "where r.role_name=:role and permission_name = :permName",nativeQuery = true)
-    List<Map<String,Object>> permsRight(@Param("permName") String permName,@Param("role") String role);
+            "where r.role_name=:role and permission_name = :permName", nativeQuery = true)
+    List<Map<String, Object>> permsRight(@Param("permName") String permName, @Param("role") String role);
 }

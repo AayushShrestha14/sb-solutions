@@ -26,6 +26,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
             "left join user u on p.id = u.role_id\n" +
             "where p.status=1\n" +
             "and p.id <>:id group by p.id", nativeQuery = true)
-    List<Map<Object,Object>> activeRole(@Param("id") Long id);
+    List<Map<Object, Object>> activeRole(@Param("id") Long id);
 
 }

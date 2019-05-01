@@ -43,7 +43,7 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Branch save(Branch branch) {
         branch.setLastModifiedAt(new Date());
-        if(branch.getId()==null){
+        if (branch.getId() == null) {
             branch.setStatus(Status.ACTIVE);
         }
         branch.setBranchCode(branch.getBranchCode().toUpperCase());
@@ -73,6 +73,6 @@ public class BranchServiceImpl implements BranchService {
         header.put("province,district", "District");
         header.put("branchCode", "Branch Code");
         String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return  baseHttpService.getBaseUrl()+url;
+        return baseHttpService.getBaseUrl() + url;
     }
 }

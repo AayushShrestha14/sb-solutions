@@ -32,7 +32,7 @@ public class ValuatorServiceImpl implements ValuatorService {
     @Override
     public Valuator save(Valuator valuator) {
         valuator.setLastModifiedAt(new Date());
-        if(valuator.getId()==null){
+        if (valuator.getId() == null) {
             valuator.setStatus(Status.ACTIVE);
         }
         return valuatorRepository.save(valuator);
@@ -41,8 +41,8 @@ public class ValuatorServiceImpl implements ValuatorService {
     @Override
     public Page<Valuator> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return valuatorRepository.valuatorFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return valuatorRepository.valuatorFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

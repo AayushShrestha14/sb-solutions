@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public interface BranchService extends BaseService<Branch> {
 
-    Map<Object,Object> branchStatusCount();
+    Map<Object, Object> branchStatusCount();
+
     String csv(SearchDto searchDto);
 }

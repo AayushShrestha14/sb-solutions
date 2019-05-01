@@ -15,20 +15,20 @@ import java.util.Map;
  * @author Rujan Maharjan on 2/13/2019
  */
 @Repository
-public interface BranchRepository extends JpaRepository<Branch,Long> {
+public interface BranchRepository extends JpaRepository<Branch, Long> {
 
 
     @Query(value = "select\n" +
-        "  (select  count(id) from branch where status=1) active,\n" +
-        "(select  count(id) from branch where status=0) inactive,\n" +
-        "(select  count(id) from branch) branches\n",nativeQuery = true)
-    Map<Object,Object> branchStatusCount();
+            "  (select  count(id) from branch where status=1) active,\n" +
+            "(select  count(id) from branch where status=0) inactive,\n" +
+            "(select  count(id) from branch) branches\n", nativeQuery = true)
+    Map<Object, Object> branchStatusCount();
 
 
     @Query(value = "select b from Branch b where b.name like concat(:name,'%')")
-    Page<Branch> branchFilter(@Param("name")String name,Pageable pageable);
+    Page<Branch> branchFilter(@Param("name") String name, Pageable pageable);
 
     @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
-    List<Branch> branchCsvFilter(@Param("name")String name);
+    List<Branch> branchCsvFilter(@Param("name") String name);
 
 }

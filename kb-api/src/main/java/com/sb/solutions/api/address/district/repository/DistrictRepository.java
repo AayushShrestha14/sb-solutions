@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface DistrictRepository extends JpaRepository<District,Long> {
+public interface DistrictRepository extends JpaRepository<District, Long> {
     @Query(value = "select b from District b where b.name like  concat(:name,'%')")
-    Page<District> districtFilter(@Param("name")String name, Pageable pageable);
+    Page<District> districtFilter(@Param("name") String name, Pageable pageable);
 
     List<District> findAllByProvince(Province province);
 }

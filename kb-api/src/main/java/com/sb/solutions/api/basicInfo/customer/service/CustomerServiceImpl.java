@@ -34,9 +34,9 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer save(Customer customer) {
         Date date = new Date();
         customer.setLastModifiedAt(date);
-        if(customer.getCustomerRelatives().size()<=0){
+        if (customer.getCustomerRelatives().size() <= 0) {
             customer.setCustomerRelatives(null);
-        }else {
+        } else {
             for (CustomerRelative relative : customer.getCustomerRelatives()) {
                 relative.setLastModifiedAt(date);
             }
@@ -47,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<Customer> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return customerRepository.customerFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return customerRepository.customerFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 }

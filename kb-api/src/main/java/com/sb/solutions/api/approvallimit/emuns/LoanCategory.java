@@ -18,7 +18,7 @@ public enum LoanCategory {
 
     private final String value;
 
-    private LoanCategory(String value){
+    private LoanCategory(String value) {
         this.value = value;
     }
 

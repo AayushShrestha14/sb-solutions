@@ -9,14 +9,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Map;
 
-public interface ValuatorRepository extends JpaRepository<Valuator,Long> {
+public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
 
     @Query(value = "select\n" +
             "  (select  count(id) from valuator where status=1) active,\n" +
             "(select  count(id) from valuator where status=0) inactive,\n" +
-            "(select  count(id) from valuator) valuators\n",nativeQuery = true)
-    Map<Object,Object> valuatorStatusCount();
+            "(select  count(id) from valuator) valuators\n", nativeQuery = true)
+    Map<Object, Object> valuatorStatusCount();
 
     @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")
-    Page<Valuator> valuatorFilter(@Param("name")String name, Pageable pageable);
+    Page<Valuator> valuatorFilter(@Param("name") String name, Pageable pageable);
 }

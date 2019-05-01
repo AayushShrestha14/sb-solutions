@@ -11,14 +11,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface NepseCompanyRepository extends JpaRepository<NepseCompany,Long> {
+public interface NepseCompanyRepository extends JpaRepository<NepseCompany, Long> {
     @Query(value = "select n from NepseCompany n where n.companyName like  concat(:companyName,'%')")
-    Page<NepseCompany> nepseCompanyFilter(@Param("companyName")String companyName, Pageable pageable);
+    Page<NepseCompany> nepseCompanyFilter(@Param("companyName") String companyName, Pageable pageable);
+
     @Query(value = "select\n" +
             "  (select  count(id) from Nepse_Company where status=1) active,\n" +
             "(select  count(id) from Nepse_Company where status=0) inactive,\n" +
-            "(select  count(id) from Nepse_Company) nepses\n",nativeQuery = true)
-    Map<Object,Object> nepseCompanyStatusCount();
+            "(select  count(id) from Nepse_Company) nepses\n", nativeQuery = true)
+    Map<Object, Object> nepseCompanyStatusCount();
 
     List<NepseCompany> findByStatus(Status status);
 }
