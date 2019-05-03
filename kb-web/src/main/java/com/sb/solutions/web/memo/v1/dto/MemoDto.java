@@ -24,6 +24,8 @@ public class MemoDto extends BaseDto<Long> {
     @NotNull
     private String content;
 
+    private String refNumber;
+
     private MemoUserDto sentBy;
 
     private MemoUserDto sentTo;

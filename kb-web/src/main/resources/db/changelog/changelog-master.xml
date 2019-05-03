@@ -1443,6 +1443,9 @@
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
+      <column name="reference_number" type="VARCHAR(256)">
+        <constraints nullable="true"/>
+      </column>
       <column name="subject" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
