@@ -340,8 +340,7 @@
 
       </column>
       <column name="api_list_id" type="BIGINT">
-        <constraints unique="true"
-        ></constraints>
+        <constraints unique="true"/>
       </column>
 
     </createTable>
@@ -360,7 +359,7 @@
 
       </column>
       <column name="sub_navs_id" type="BIGINT">
-        <constraints unique="true"></constraints>
+        <constraints unique="true"/>
       </column>
 
     </createTable>
@@ -1435,6 +1434,13 @@
         <constraints nullable="false"/>
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
     </createTable>
   </changeSet>
 
@@ -1479,6 +1485,13 @@
         <constraints nullable="false"/>
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
     </createTable>
   </changeSet>
 
@@ -1560,7 +1573,68 @@
         <constraints nullable="false"/>
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
     </createTable>
+  </changeSet>
+
+  <changeSet id="3-load-path-file" author="msucil">
+    <sqlFile path="data/patch.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-oauth-file" author="msucil">
+    <sqlFile path="data/oauth.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-permission-api-file" author="msucil">
+    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-province-file" author="msucil">
+    <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-permission-api-file" author="msucil">
+    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-district-file" author="msucil">
+    <sqlFile path="data/district.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-load-municipalityVdc-file" author="msucil">
+    <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet id="3-add-entry-for-memo-permission" author="msucil">
+    <sql>
+      INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (15,
+      'Memo', 'fa fa-user', '/home/memo', 62, 1);
+
+      INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+      VALUES (15 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 15, 1);
+    </sql>
+  </changeSet>
+  <changeSet id="3-add-nav-entry-for-memo-type" author="msucil">
+    <sql>
+      INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (16,
+      'Memo Type', 'fa fa-user', '/home/memo/type', 62, 1);
+
+      INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+      VALUES (16 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 16, 1);
+    </sql>
+  </changeSet>
+
+  <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
+    <sql>
+      INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
+      'Memo Type','/home/memo/type', 'fa fa-user',15);
+    </sql>
   </changeSet>
 
 </databaseChangeLog>
