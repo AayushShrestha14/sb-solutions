@@ -7,6 +7,6 @@ import com.sb.solutions.core.service.BaseService;
 import java.util.Map;
 
 public interface SubSegmentService extends BaseService<SubSegment> {
-    Map<Object,Object> subSegmentStatusCount();
+    Map<Object, Object> subSegmentStatusCount();
 
 }

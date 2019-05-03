@@ -1,4 +1,5 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,6 @@ public class SubNav {
     private String subNavName;
     private String frontUrl;
     private String faIcon;
-
 
 
 }

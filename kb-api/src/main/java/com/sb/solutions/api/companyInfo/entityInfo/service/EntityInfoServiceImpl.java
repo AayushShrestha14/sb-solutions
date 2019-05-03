@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class EntityInfoServiceImpl implements  EntityInfoService {
+public class EntityInfoServiceImpl implements EntityInfoService {
     private final EntityInfoRepository entityInfoRepository;
 
     @Override
@@ -34,17 +34,17 @@ public class EntityInfoServiceImpl implements  EntityInfoService {
         entityInfo.getCapital().setLastModifiedAt(date);
         entityInfo.getLegalStatus().setLastModifiedAt(date);
         entityInfo.getSwot().setLastModifiedAt(date);
-        if(entityInfo.getManagementTeamList().size()<=0){
+        if (entityInfo.getManagementTeamList().size() <= 0) {
             entityInfo.setManagementTeamList(null);
-        }else {
+        } else {
             for (ManagementTeam managementTeam : entityInfo.getManagementTeamList()) {
                 managementTeam.setLastModifiedAt(date);
             }
         }
-        if(entityInfo.getProprietorsList().size()<=0){
+        if (entityInfo.getProprietorsList().size() <= 0) {
             entityInfo.setProprietorsList(null);
-        }else{
-            for(Proprietor proprietor : entityInfo.getProprietorsList()){
+        } else {
+            for (Proprietor proprietor : entityInfo.getProprietorsList()) {
                 proprietor.setLastModifiedAt(date);
             }
         }

@@ -13,9 +13,9 @@ public interface SectorRepository extends JpaRepository<Sector, Long> {
     @Query(value = "select\n" +
             "  (select  count(id) from Sector where status=1) active,\n" +
             "(select  count(id) from Sector where status=0) inactive,\n" +
-            "(select  count(id) from Sector) sectors\n",nativeQuery = true)
-    Map<Object,Object> sectorStatusCount();
+            "(select  count(id) from Sector) sectors\n", nativeQuery = true)
+    Map<Object, Object> sectorStatusCount();
 
     @Query(value = "select s from Sector s where s.sectorName like concat(:sectorName,'%')")
-    Page<Sector> sectorFilter(@Param("sectorName")String sectorName, Pageable pageable);
+    Page<Sector> sectorFilter(@Param("sectorName") String sectorName, Pageable pageable);
 }

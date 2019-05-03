@@ -32,7 +32,7 @@ public class SubSegmentServiceImpl implements SubSegmentService {
     @Override
     public SubSegment save(SubSegment subSegment) {
         subSegment.setLastModifiedAt(new Date());
-        if(subSegment.getId()==null){
+        if (subSegment.getId() == null) {
             subSegment.setStatus(Status.ACTIVE);
         }
         return subSegmentRepository.save(subSegment);
@@ -41,8 +41,8 @@ public class SubSegmentServiceImpl implements SubSegmentService {
     @Override
     public Page<SubSegment> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return subSegmentRepository.subSegmentFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return subSegmentRepository.subSegmentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

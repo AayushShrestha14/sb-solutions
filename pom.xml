@@ -97,17 +97,17 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-context</artifactId>
-            <version>2.1.0.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-context</artifactId>
+      <version>2.1.0.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
 
 
     <dependency>
@@ -135,7 +135,6 @@
       <artifactId>poi</artifactId>
       <version>3.16</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -179,6 +178,16 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.itextpdf.tool</groupId>
+      <artifactId>xmlworker</artifactId>
+      <version>5.5.12</version>
+    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>com.itextpdf</groupId>-->
+    <!--<artifactId>html2pdf</artifactId>-->
+    <!--<version>2.0.0</version>-->
+    <!--</dependency>-->
     <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
@@ -192,7 +201,6 @@
       <artifactId>mapstruct</artifactId>
       <version>${org.mapstruct.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>

@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface PermissionService extends BaseService<Permission> {
 
-    List<Map<String,Object>> permsRight(String permName, String role);
+    List<Map<String, Object>> permsRight(String permName, String role);
 }

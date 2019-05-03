@@ -38,7 +38,7 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     @Override
     public Page<ApprovalLimit> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return approvalLimitRepository.approvalLimitFilter(pageable);
     }
 

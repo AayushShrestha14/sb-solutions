@@ -1,17 +1,8 @@
 package com.sb.solutions.api.document.service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
-import com.sb.solutions.api.document.repository.LoanCycleRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -20,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +64,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public String saveList(List<Long> ids,LoanCycle loanCycle) {
-        for(Long id: ids){
+    public String saveList(List<Long> ids, LoanCycle loanCycle) {
+        for (Long id : ids) {
             System.out.println(id);
             Document doc = documentRepository.getOne(id);
             doc.setLastModifiedAt(new Date());
