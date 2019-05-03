@@ -28,6 +28,7 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
         OAuth2Request authorizationRequest = authentication.getOAuth2Request();
         if (!authentication.isClientOnly()) {
             values.put(USERNAME, authentication.getName());
+            values.put("principal",authentication.getPrincipal().toString());
         }
         values.put(CLIENT_ID, authorizationRequest.getClientId());
         if (authorizationRequest.getScope() != null) {

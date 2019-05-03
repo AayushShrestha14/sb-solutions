@@ -26,9 +26,9 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
 
 
     @Query(value = "select b from Branch b where b.name like concat(:name,'%')")
-    Page<Branch> branchFilter(@Param("name")String name, Pageable pageable);
+    Page<Branch> branchFilter(@Param("name")String name,Pageable pageable);
 
-    @Query(value = "select b from Branch b where b.name like  concat(:name,'%') or b.address like  concat(:name,'%')")
+    @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
     List<Branch> branchCsvFilter(@Param("name")String name);
 
 }
