@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 
 
@@ -28,7 +27,7 @@ public class LoanCycleServiceImpl implements LoanCycleService {
     public LoanCycle findOne(Long id) {
         try {
             return loanCycleRepository.findById(id).get();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -39,14 +38,12 @@ public class LoanCycleServiceImpl implements LoanCycleService {
     }
 
 
-
     @Override
     public Page<LoanCycle> findAllPageable(Object loanCycle, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(loanCycle, SearchDto.class);
-        return loanCycleRepository.loanCycleFilter(s.getName()==null?"":s.getName(),pageable);
+        return loanCycleRepository.loanCycleFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
-
 
 
 }

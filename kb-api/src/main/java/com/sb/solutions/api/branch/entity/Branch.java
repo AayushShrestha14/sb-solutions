@@ -1,8 +1,5 @@
 package com.sb.solutions.api.branch.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
@@ -13,6 +10,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Rujan Maharjan on 2/13/2019

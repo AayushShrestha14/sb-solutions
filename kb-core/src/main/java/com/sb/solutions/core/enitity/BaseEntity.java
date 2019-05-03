@@ -12,12 +12,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -47,9 +47,13 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
 
     @LastModifiedBy
     @Column(name = "modified_by_id")
-    private  Long modifiedBy ;
+    private Long modifiedBy;
 
-//    @Version
-//    private int version;
+    @Version
+    private int version;
 
+    @Override
+    public void setId(PK id) {
+        super.setId(id);
+    }
 }

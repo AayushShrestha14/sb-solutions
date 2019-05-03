@@ -15,14 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 public class ProvinceServiceImpl implements ProvinceService {
     private final ProvinceRepository provinceRepository;
+
     @Override
     public List<Province> findAll() {
         return provinceRepository.findAll();
     }
 
     @Override
-    public Province findOne(Long id)
-    {
+    public Province findOne(Long id) {
         return provinceRepository.getOne(id);
     }
 
@@ -34,7 +34,7 @@ public class ProvinceServiceImpl implements ProvinceService {
     @Override
     public Page<Province> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return provinceRepository.provinceFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return provinceRepository.provinceFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 }

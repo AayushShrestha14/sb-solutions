@@ -6,5 +6,5 @@ import com.sb.solutions.core.service.BaseService;
 import java.util.Map;
 
 public interface ValuatorService extends BaseService<Valuator> {
-    Map<Object,Object> valuatorStatusCount();
+    Map<Object, Object> valuatorStatusCount();
 }

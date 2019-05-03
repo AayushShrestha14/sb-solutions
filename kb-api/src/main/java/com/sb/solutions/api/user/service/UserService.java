@@ -22,9 +22,11 @@ public interface UserService extends BaseService<User> {
     User getByUsername(String username);
 
     User save(User user);
+
     Page<User> findByRole(Collection<Role> roles, Pageable pageable);
 
-    Map<Object,Object> userStatusCount();
+    Map<Object, Object> userStatusCount();
+
     String csv(SearchDto searchDto);
 
 }

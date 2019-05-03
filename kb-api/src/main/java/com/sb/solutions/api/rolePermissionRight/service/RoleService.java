@@ -12,7 +12,7 @@ import java.util.Map;
 public interface RoleService extends BaseService<Role> {
     Map<Object, Object> roleStatusCount();
 
-    List<Map<Object,Object>>  activeRole();
+    List<Map<Object, Object>> activeRole();
 
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MunicipalityVdcServiceImpl implements MunicipalityVdcService {
     private final MunicipalityVdcRepository municipality_vdcRepository;
+
     @Override
     public List<MunicipalityVdc> findAll() {
         return municipality_vdcRepository.findAll();
@@ -34,8 +35,8 @@ public class MunicipalityVdcServiceImpl implements MunicipalityVdcService {
     @Override
     public Page<MunicipalityVdc> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return municipality_vdcRepository.municipalityVdcFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return municipality_vdcRepository.municipalityVdcFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

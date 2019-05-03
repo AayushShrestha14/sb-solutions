@@ -18,10 +18,12 @@ public enum Authorities {
     ROLE_BOD("Role BOD"),
     ROLE_CA("Roel CA"),
     ROLE_CREDIT_COMMITTEE("Role Credit Committee");
-     public final String value;
-     Authorities(String value){
-         this.value = value;
-     }
+    public final String value;
+
+    Authorities(String value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return value;

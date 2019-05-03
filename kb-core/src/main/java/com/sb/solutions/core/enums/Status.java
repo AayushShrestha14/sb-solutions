@@ -16,6 +16,4 @@ public enum Status {
     public String toString() {
         return value;
     }
-
-
 }

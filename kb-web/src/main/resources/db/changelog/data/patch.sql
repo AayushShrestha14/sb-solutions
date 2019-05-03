@@ -5,8 +5,6 @@ INSERT INTO `user` (`id`, `created_at`, `last_modified_at`, `account_no`, `email
 (1, CURRENT_DATE , CURRENT_DATE , NULL, 'admin@admin.com', 'SPADMIN', '$2a$10$cSqKGvZvEGEzQhRFRyDVyuCR3Lf0e7FcpIfxd/0t5IOG9U.3flG8m', NULL, NULL, 1, 'SPADMIN', NULL, 1, NULL, NULL);
 
 
-
-
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'BRANCH', 'fa fa-dashboard', '/home/branch', 10, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-edit', '/home/config', 30, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-edit', '/home/role', 20, 1);

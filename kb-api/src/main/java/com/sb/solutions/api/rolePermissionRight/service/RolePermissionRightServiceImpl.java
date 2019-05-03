@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +35,7 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
     }
 
     @Override
-   public RolePermissionRights save(RolePermissionRights rolePermissionRights) {
+    public RolePermissionRights save(RolePermissionRights rolePermissionRights) {
         rolePermissionRights.setLastModifiedAt(new Date());
         return rolePermissionRightRepository.save(rolePermissionRights);
     }

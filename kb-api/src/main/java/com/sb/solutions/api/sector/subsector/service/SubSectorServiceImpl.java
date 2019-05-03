@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 @Service
 @AllArgsConstructor
 public class SubSectorServiceImpl implements SubSectorService {
@@ -32,7 +33,7 @@ public class SubSectorServiceImpl implements SubSectorService {
     @Override
     public SubSector save(SubSector subSector) {
         subSector.setLastModifiedAt(new Date());
-        if(subSector.getId()==null){
+        if (subSector.getId() == null) {
             subSector.setStatus(Status.ACTIVE);
         }
         return subSectorRepository.save(subSector);
@@ -41,8 +42,8 @@ public class SubSectorServiceImpl implements SubSectorService {
     @Override
     public Page<SubSector> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return subSectorRepository.subSectorFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return subSectorRepository.subSectorFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
