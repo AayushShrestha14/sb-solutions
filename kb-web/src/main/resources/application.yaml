@@ -8,7 +8,7 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
   datasource:
-    url: jdbc:mysql://localhost:3306/ttt
+    url: jdbc:mysql://localhost:3306/cp_master
     username: root
     password:
 
@@ -32,7 +32,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: *
+        include: '*'
   endpoint:
     refresh:
       enabled: true

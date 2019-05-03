@@ -2,7 +2,6 @@ package com.sb.solutions.api.basicInfo.customer.entity;
 
 import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +22,7 @@ public class Customer extends BaseEntity<Long> {
     private String accountNo;
     private String province;
     private String district;
+    @Column(name = "municipalities_or_vdc")
     private String municipalitiesOrVDC;
     private String telephone;
     private String mobile;
