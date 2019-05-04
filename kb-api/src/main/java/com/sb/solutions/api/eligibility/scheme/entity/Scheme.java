@@ -1,6 +1,6 @@
 package com.sb.solutions.api.eligibility.scheme.entity;
 
-import com.sb.solutions.api.eligibility.company.entity.Company;
+import com.sb.solutions.api.company.entity.Company;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

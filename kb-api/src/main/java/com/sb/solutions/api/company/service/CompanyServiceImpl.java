@@ -17,7 +17,9 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
+
     private final CompanyRepository companyRepository;
+
     @Override
     public List<Company> findAll() {
         return companyRepository.findAll();
@@ -31,7 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company save(Company company) {
         company.setLastModifiedAt(new Date());
-        if(company.getId()==null){
+        if (company.getId() == null) {
             company.setStatus(Status.ACTIVE);
         }
         return companyRepository.save(company);
@@ -40,8 +42,8 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Page<Company> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return companyRepository.companyFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return companyRepository.companyFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
