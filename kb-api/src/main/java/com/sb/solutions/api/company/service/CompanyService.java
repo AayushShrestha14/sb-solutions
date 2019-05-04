@@ -6,5 +6,5 @@ import com.sb.solutions.core.service.BaseService;
 import java.util.Map;
 
 public interface CompanyService extends BaseService<Company> {
-    Map<Object,Object> companyStatusCount();
+    Map<Object, Object> companyStatusCount();
 }

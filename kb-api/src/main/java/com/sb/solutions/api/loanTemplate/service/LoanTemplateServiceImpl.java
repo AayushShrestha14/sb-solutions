@@ -47,6 +47,6 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
     public Page<LoanTemplate> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return loanTemplateRepository.LoanTemplateFilter(s.getName()==null?"":s.getName(), pageable);
+        return loanTemplateRepository.LoanTemplateFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 }

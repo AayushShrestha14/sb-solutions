@@ -4,7 +4,7 @@ import com.sb.solutions.api.eligibility.scheme.entity.Scheme;
 import com.sb.solutions.api.eligibility.scheme.service.SchemeService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -54,7 +54,7 @@ public class SchemeController {
     , @PathVariable Long companyId) {
         logger.debug("Request to get list of schemes.");
         return new RestResponseDto().successModel(schemeService.
-                findAllPageable(companyId, new CustomPageable().pageable(page, size)));
+                findAllPageable(companyId, PaginationUtils.pageable(page, size)));
     }
 
     @PutMapping(path = "/{schemeId}")

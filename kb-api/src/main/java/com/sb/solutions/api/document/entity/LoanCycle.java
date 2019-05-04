@@ -1,9 +1,7 @@
 package com.sb.solutions.api.document.entity;
 
-import java.util.Collection;
-import javax.persistence.*;
+import javax.persistence.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -4,7 +4,7 @@ import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -53,7 +53,7 @@ public class ApplicantController {
             , @PathVariable long companyId, @PathVariable long schemeId) {
         logger.debug("Request to get all the applicants.");
         return new RestResponseDto().successModel(applicantService
-                .findAllPageable(null, new CustomPageable().pageable(page, size)));
+                .findAllPageable(null, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(path = "/{id}")

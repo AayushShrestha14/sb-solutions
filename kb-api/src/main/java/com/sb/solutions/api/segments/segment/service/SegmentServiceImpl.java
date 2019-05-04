@@ -19,6 +19,7 @@ import java.util.Map;
 public class SegmentServiceImpl implements SegmentService {
 
     private final SegmentRepository segmentRepository;
+
     @Override
     public List<Segment> findAll() {
         return segmentRepository.findAll();
@@ -32,7 +33,7 @@ public class SegmentServiceImpl implements SegmentService {
     @Override
     public Segment save(Segment segment) {
         segment.setLastModifiedAt(new Date());
-        if(segment.getId()==null){
+        if (segment.getId() == null) {
             segment.setStatus(Status.ACTIVE);
         }
         return segmentRepository.save(segment);
@@ -41,8 +42,8 @@ public class SegmentServiceImpl implements SegmentService {
     @Override
     public Page<Segment> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return segmentRepository.segmentFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return segmentRepository.segmentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

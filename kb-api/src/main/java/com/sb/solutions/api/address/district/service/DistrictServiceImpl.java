@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
     private final DistrictRepository districtRepository;
+
     @Override
     public List<District> findAll() {
         return districtRepository.findAll();
@@ -34,8 +35,8 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public Page<District> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return districtRepository.districtFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return districtRepository.districtFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

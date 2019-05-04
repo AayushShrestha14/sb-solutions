@@ -10,5 +10,5 @@ import java.util.Map;
  */
 public interface LoanConfigService extends BaseService<LoanConfig> {
 
-    Map<Object,Object> loanStatusCount();
+    Map<Object, Object> loanStatusCount();
 }

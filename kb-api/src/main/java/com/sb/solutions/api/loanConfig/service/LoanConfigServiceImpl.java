@@ -37,7 +37,7 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     @Override
     public LoanConfig save(LoanConfig loanConfig) {
         loanConfig.setLastModifiedAt(new Date());
-        if(loanConfig.getId()==null){
+        if (loanConfig.getId() == null) {
             loanConfig.setStatus(Status.ACTIVE);
         }
         loanConfig.setName(loanConfig.getName().toUpperCase());
@@ -48,7 +48,7 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     public Page<LoanConfig> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(t, SearchDto.class);
-        return loanConfigRepository.LoanConfigFilter(s.getName()==null?"":s.getName(), pageable);
+        return loanConfigRepository.LoanConfigFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

@@ -1,13 +1,9 @@
 package com.sb.solutions.web;
 
 
-import com.sb.solutions.api.address.district.service.DistrictService;
-import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
-import com.sb.solutions.api.address.province.service.ProvinceService;
-import com.sb.solutions.api.basehttp.BaseHttp;
-import com.sb.solutions.api.basehttp.BaseHttpRepo;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +15,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
+import com.sb.solutions.api.address.district.service.DistrictService;
+import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
+import com.sb.solutions.api.address.province.service.ProvinceService;
+import com.sb.solutions.api.basehttp.BaseHttp;
+import com.sb.solutions.api.basehttp.BaseHttpRepo;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -39,6 +38,7 @@ import javax.sql.DataSource;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties({FileStorageProperties.class})
 public class CpSolutionApplication extends SpringBootServletInitializer {
+
     @Autowired
     UserRepository userRepository;
 
@@ -71,36 +71,6 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @PostConstruct
     public void initialize() {
-        if (userRepository.findAll().isEmpty()) {
-            ClassPathResource schemaResource = new ClassPathResource("patch.sql");
-            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-            schemaResource = new ClassPathResource("oauth.sql");
-            populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-            schemaResource = new ClassPathResource("permissionApi.sql");
-            populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-
-        }
-
-        if (provinceService.findAll().isEmpty()) {
-            ClassPathResource schemaResource = new ClassPathResource("province.sql");
-            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-        }
-
-        if (districtService.findAll().isEmpty()) {
-            ClassPathResource schemaResource = new ClassPathResource("district.sql");
-            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-        }
-
-        if (municipalityVdcService.findAll().isEmpty()) {
-            ClassPathResource schemaResource = new ClassPathResource("municipalityVdc.sql");
-            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(schemaResource);
-            populator.execute(dataSource);
-        }
 
         if (baseHttpRepo.findAll().isEmpty()) {
             BaseHttp baseHttp = new BaseHttp();

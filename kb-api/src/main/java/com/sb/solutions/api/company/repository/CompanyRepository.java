@@ -9,13 +9,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Map;
 
-public interface CompanyRepository extends JpaRepository<Company,Long> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query(value = "select\n" +
             "  (select  count(id) from Company where status=1) active,\n" +
             "(select  count(id) from Company where status=0) inactive,\n" +
-            "(select  count(id) from Company) companys\n",nativeQuery = true)
-    Map<Object,Object> companyStatusCount();
+            "(select  count(id) from Company) companys\n", nativeQuery = true)
+    Map<Object, Object> companyStatusCount();
 
     @Query(value = "select c from Company c where c.name like concat(:companyName,'%')")
-    Page<Company> companyFilter(@Param("companyName")String companyName, Pageable pageable);
+    Page<Company> companyFilter(@Param("companyName") String companyName, Pageable pageable);
 }
