@@ -12,45 +12,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Table(name = "ac_customer")
-public class Customer extends BaseEntity<Long> {
-    @ManyToOne
-    private Branch branch;
-    private String accountType;
-    private String accountNo;
-    private String currency;
-    private String imagePath;
-    private boolean isJoint;
-    private boolean haveNominee;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Nominee> nominees;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Beneficiary> beneficiaries;
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "customer")
-    private Kyc kyc;
-    @Column(columnDefinition = "text")
-    private String customerDetailsJson;
-    @Transient
-    private Set<CustomerDetails> customerDetails;
-    private Status status;
-    private String internetBanking;
-    private String mobileBanking;
-    private String debitCard;
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name="joint_customer_id")
-//    private Customer customer;
-//    @OneToMany(mappedBy="customer")
-//    private Set<Customer> jointApplicants;
-   /*
+//@EqualsAndHashCode(callSuper = true)
+//@Table(name = "customer")
+public class Customer {
     private String title;
     private String firstName;
     private String middleName;
@@ -58,6 +28,29 @@ public class Customer extends BaseEntity<Long> {
     private String proposeOfAccount;
     private String maritalStatus;
     private String gender;
+    private String accountType;
+    private String accountNo;
+    private String currency;
+    private boolean isJoint;
+    private boolean haveNominee;
+    //@OneToMany(cascade = CascadeType.ALL)
+    @Transient
+    private Set<Nominee> nominees;
+    //@OneToMany(cascade = CascadeType.ALL)
+    @Transient
+    private Set<Beneficiary> beneficiaries;
+    //@OneToOne(fetch = FetchType.LAZY,
+      //      cascade =  CascadeType.ALL,
+      //      mappedBy = "customer")
+    @Transient
+    private Kyc kyc;
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name="joint_customer_id")
+//    private Customer customer;
+//    @OneToMany(mappedBy="customer")
+//    private Set<Customer> jointApplicants;
+
     private String permanentAddress;
     private String presentAddress;
     private String landLordName;
@@ -94,6 +87,6 @@ public class Customer extends BaseEntity<Long> {
     private Status status;
     private String internetBanking;
     private String mobileBanking;
-    private String debitCard;*/
+    private String debitCard;
 
 }

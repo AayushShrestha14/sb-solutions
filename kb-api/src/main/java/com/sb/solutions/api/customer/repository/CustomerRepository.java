@@ -1,3 +1,4 @@
+/*
 package com.sb.solutions.api.customer.repository;
 
 import com.sb.solutions.api.branch.entity.Branch;
@@ -14,3 +15,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Page<Customer> findAllByBranch(Branch branch, Pageable pageable);
 }
+*/

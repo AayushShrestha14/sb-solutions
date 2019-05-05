@@ -1,3 +1,4 @@
+/*
 package com.sb.solutions.api.customer.service;
 
 import com.sb.solutions.api.branch.entity.Branch;
@@ -9,3 +10,4 @@ import org.springframework.data.domain.Pageable;
 public interface CustomerService extends BaseService<Customer> {
     Page<Customer> findAllPageableByBranch(Branch branch, Pageable pageable);
 }
+*/

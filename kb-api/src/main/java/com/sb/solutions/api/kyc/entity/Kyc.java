@@ -9,26 +9,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
-@Entity
+//@Entity
+@Component
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Table(name = "ac_kyc")
-public class Kyc extends BaseEntity<Long> {
-    @OneToOne
+//@EqualsAndHashCode(callSuper = true)
+//@Table(name = "kyc")
+//public class Kyc extends BaseEntity<Long> {
+public class Kyc{
+     /*   @OneToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private Customer customer;*/
 
-    @OneToMany(mappedBy = "kyc", fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "kyc", fetch = FetchType.LAZY)
     private Set<OccupationalDetails> occupationalDetails;
 
-    @OneToMany(mappedBy = "kyc", fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "kyc", fetch = FetchType.LAZY)
     private Set<CustomerRelative> customerRelatives;
     /*private String maritalStatus;
     private String gender;

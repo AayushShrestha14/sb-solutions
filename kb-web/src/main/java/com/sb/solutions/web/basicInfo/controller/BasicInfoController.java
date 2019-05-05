@@ -1,3 +1,4 @@
+/*
 package com.sb.solutions.web.basicInfo.controller;
 
 import com.sb.solutions.api.customer.entity.Customer;
@@ -22,3 +23,4 @@ public class BasicInfoController {
         return new RestResponseDto().successModel(customerService.save(customer));
     }
 }
+*/

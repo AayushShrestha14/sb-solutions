@@ -13,22 +13,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
+//@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Table(name = "ac_occupational_details")
-public class OccupationalDetails extends BaseEntity<Long> {
+/*@EqualsAndHashCode(callSuper = true)
+@Table(name = "occupational_details")*/
+public class OccupationalDetails{
     private String nameOfOrganization;
     private String address;
     private String telNo;
     private String natureOfBusiness;
     private String designation;
     private String estimatedAnnualIncome;
-    @JsonIgnore
+    /*@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kyc_id")
-    private Kyc kyc;
+    private Kyc kyc;*/
 
 }

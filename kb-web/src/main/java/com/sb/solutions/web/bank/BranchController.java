@@ -46,8 +46,8 @@ public class BranchController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableBranch(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    public ResponseEntity<?> getPageableBranch(@RequestBody Object object, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(branchService.findAllPageable(object, PaginationUtils.pageable(page, size)));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")

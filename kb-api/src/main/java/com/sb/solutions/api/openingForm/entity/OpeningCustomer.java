@@ -1,12 +1,17 @@
-package com.sb.solutions.api.customer.entity;
+package com.sb.solutions.api.openingForm.entity;
 
+import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
-@Component
+import java.util.Set;
+
 @Data
-public class CustomerDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class OpeningCustomer {
     private String title;
     private String firstName;
     private String middleName;
@@ -14,6 +19,14 @@ public class CustomerDetails {
     private String proposeOfAccount;
     private String maritalStatus;
     private String gender;
+    private String accountType;
+    private String accountNo;
+    private String currency;
+    private boolean isJoint;
+    private boolean haveNominee;
+    private Set<OpeningNominee> nominees;
+    private Set<OpeningBeneficiary> beneficiaries;
+    private OpeningKyc kyc;
     private String permanentAddress;
     private String presentAddress;
     private String landLordName;
@@ -46,4 +59,10 @@ public class CustomerDetails {
     private boolean isAccountInAnotherBank;
     private String bankName;
     private String education;
+    private String map;
+    private Status status;
+    private String internetBanking;
+    private String mobileBanking;
+    private String debitCard;
+
 }

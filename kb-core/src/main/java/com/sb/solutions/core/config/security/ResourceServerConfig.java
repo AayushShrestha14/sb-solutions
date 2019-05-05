@@ -32,7 +32,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
-                .antMatchers("/v1/**").hasAuthority("admin")
+                .antMatchers("/v1/**").permitAll()
                 //.antMatchers("/actuator/**").hasAuthority("admin")
                 .antMatchers("/v1/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()

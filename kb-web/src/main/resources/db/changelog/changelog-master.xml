@@ -1056,26 +1056,102 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
+<!--
+  <changeSet id="5-create-nominee" author="david">
+    <createTable tableName="nominee">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="full_name" type="VARCHAR(256)"/>
+      <column name="image_path" type="VARCHAR(256)"/>
+      <column name="relation_to_me" type="VARCHAR(256)"/>
+      <column name="date_of_birth" type="DATE"/>
+      <column name="age" type="INT"/>
+      <column name="citizen_number" type="VARCHAR(256)"/>
+      <column name="issued_place" type="VARCHAR(256)"/>
+      <column name="temporary_address" type="VARCHAR(256)"/>
+      <column name="permanent_address" type="VARCHAR(256)"/>
+      <column name="contact_address" type="VARCHAR(256)"/>
+      <column name="contact_number" type="VARCHAR(256)"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_nominee_created_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_nominee_modified_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
 
+  <changeSet id="5-create-beneficiary" author="david">
+    <createTable tableName="beneficiary">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="full_name" type="VARCHAR(256)"/>
+      <column name="image_path" type="VARCHAR(256)"/>
+      <column name="relation_to_me" type="VARCHAR(256)"/>
+      <column name="date_of_birth" type="DATE"/>
+      <column name="age" type="INT"/>
+      <column name="citizen_number" type="VARCHAR(256)"/>
+      <column name="issued_place" type="VARCHAR(256)"/>
+      <column name="temporary_address" type="VARCHAR(256)"/>
+      <column name="permanent_address" type="VARCHAR(256)"/>
+      <column name="contact_address" type="VARCHAR(256)"/>
+      <column name="contact_number" type="VARCHAR(256)"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_beneficiary_created_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_beneficiary_modified_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>-->
+
+<!--
 
   <changeSet id="5-create-customer" author="david">
     <createTable tableName="customer">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
-      <column name="title" type="VARCHAR(256)"/>
-      <column name="customer_name" type="VARCHAR(256)"/>
+      <column name="account_type" type="VARCHAR(256)"/>
       <column name="account_no" type="VARCHAR(256)"/>
-      <column name="province" type="VARCHAR(256)"/>
+      <column name="currency" type="VARCHAR(256)"/>
+      &lt;!&ndash;<column name="province" type="VARCHAR(256)"/>
       <column name="district" type="VARCHAR(256)"/>
-      <column name="municipalities_or_vdc" type="VARCHAR(256)"/>
-      <column name="telephone" type="VARCHAR(256)"/>
-      <column name="mobile" type="VARCHAR(256)"/>
-      <column name="email" type="VARCHAR(256)"/>
-      <column name="citizenship_number" type="VARCHAR(256)"/>
-      <column name="initial_relation_date" type="DATE"/>
-      <column name="citizenship_issued_date" type="DATE"/>
-      <column name="issued_place" type="VARCHAR(256)"/>
+      <column name="municipalities_or_vdc" type="VARCHAR(256)"/>&ndash;&gt;
+      <column name="is_joint" type="BOOLEAN"/>
+      <column name="have_nominees" type="BOOLEAN"/>
+      <column name="status" type="INT"/>
+      <column name="internet_banking" type="VARCHAR(256)"/>
+      <column name="mobile_banking" type="VARCHAR(256)"/>
+      <column name="debit_card" type="VARCHAR(256)"/>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_created_by_id"
@@ -1097,7 +1173,43 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
+-->
 
+  <!--<changeSet id="5-create-kyc" author="david">
+    <createTable tableName="kyc">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="customer_id" type="BIGINT">
+        <constraints nullable="false"
+                     foreignKeyName="fk_kyc_customer_id"
+                     referencedTableName="customer"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_relative_created_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_relative_modified_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+-->
+
+  <!--
   <changeSet id="5-create-customer-relative" author="david">
     <createTable tableName="customer_relative">
       <column name="id" type="BIGINT" autoIncrement="true">
@@ -1109,21 +1221,21 @@
       <column name="citizenship_number" type="VARCHAR(256)"/>
       <column name="citizenship_issued_date" type="DATE"/>
       <column name="citizenship_issued_place" type="VARCHAR(256)"/>
-      <column name="customer_id" type="BIGINT">
+      <column name="kyc_id" type="BIGINT">
         <constraints nullable="false"
-          foreignKeyName="fk_customer_relative_customer_id"
-          referencedTableName="customer"
+          foreignKeyName="fk_customer_relative_kyc_id"
+          referencedTableName="kyc"
           referencedColumnNames="id"/>
       </column>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_customer_relative_created_by_id"
+          foreignKeyName="fk_kyc_created_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_customer_relative_modified_by_id"
+          foreignKeyName="fk_kyc_modified_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
       </column>
@@ -1136,6 +1248,47 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
+
+
+  <changeSet id="5-create-occupational-details" author="david">
+    <createTable tableName="occupational_details">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="name_of_organization" type="VARCHAR(256)"/>
+      <column name="address" type="VARCHAR(256)"/>
+      <column name="tel_no" type="VARCHAR(256)"/>
+      <column name="nature_of_business" type="VARCHAR(256)"/>
+      <column name="designation" type="DATE"/>
+      <column name="estimated_annual_income" type="VARCHAR(256)"/>
+      <column name="kyc_id" type="BIGINT">
+        <constraints nullable="false"
+                     foreignKeyName="fk_occupational_details_kyc_id"
+                     referencedTableName="kyc"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_occupational_details_created_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_occupational_details_modified_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>-->
+
 
   <changeSet id="5-create-capital" author="david">
     <createTable tableName="capital">
@@ -1636,5 +1789,44 @@
       'Memo Type','/home/memo/type', 'fa fa-user',15);
     </sql>
   </changeSet>
+
+
+
+  <changeSet id="5-create-opening_form" author="david">
+    <createTable tableName="opening_form">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="branch_id" type="BIGINT">
+        <constraints nullable="false"
+                     foreignKeyName="fk_opening_form_brach_id"
+                     referencedTableName="branch"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="full_name" type="VARCHAR(256)"/>
+      <column name="requested_date" type="DATE"/>
+      <column name="customer_details_json" type="TEXT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_opening_form_created_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_opening_form_modified_by_id"
+                     referencedTableName="user"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
 
 </databaseChangeLog>

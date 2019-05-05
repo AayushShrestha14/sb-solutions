@@ -1,3 +1,4 @@
+/*
 package com.sb.solutions.api.customer.service;
 
 import com.google.gson.Gson;
@@ -17,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
-    private Gson gson;
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
@@ -30,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer save(Customer customer) {
-        customer.setCustomerDetailsJson(gson.toJson(customer.getCustomerDetails()));
+        //customer.setCustomerDetailsJson(gson.toJson(customer.getCustomerDetails()));
         return customerRepository.save(customer);
     }
 
@@ -46,3 +46,4 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAllByBranch(branch,pageable);
     }
 }
+*/

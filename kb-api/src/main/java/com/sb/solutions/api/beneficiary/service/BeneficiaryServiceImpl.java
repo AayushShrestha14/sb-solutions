@@ -1,3 +1,4 @@
+/*
 package com.sb.solutions.api.beneficiary.service;
 
 import com.sb.solutions.api.beneficiary.entity.Beneficiary;
@@ -27,3 +28,4 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         return null;
     }
 }
+*/

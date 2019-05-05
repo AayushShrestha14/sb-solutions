@@ -3,8 +3,8 @@ package com.sb.solutions.web.customer.controller;
 
 import com.google.gson.Gson;
 import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.customer.entity.Customer;
-import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.openingForm.entity.OpeningForm;
+import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -23,15 +23,15 @@ import javax.validation.Valid;
 @RequestMapping("/v1/customer")
 @AllArgsConstructor
 public class CustomerController {
-    CustomerService customerService;
+    OpeningFormService openingFormService;
     GlobalExceptionHandler globalExceptionHandler;
     Gson gson;
     private UploadFile uploadFile;
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveCustomer(@Valid @RequestBody Customer customer, BindingResult bindingResult) {
+    public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
-        gson.toJson(customer);
-        Customer c = customerService.save(customer);
+        gson.toJson(openingForm);
+        OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
@@ -41,7 +41,7 @@ public class CustomerController {
 
     @GetMapping(value = "/getList")
     public ResponseEntity<?> getCustomer() {
-        return new RestResponseDto().successModel(customerService.findAll());
+        return new RestResponseDto().successModel(openingFormService.findAll());
     }
 
     @ApiImplicitParams({
@@ -50,8 +50,8 @@ public class CustomerController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(customerService.findAllPageableByBranch(branch, PaginationUtils.pageable(page, size)));
+    public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch,@RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(openingFormService.findAllByBranch(branch,PaginationUtils.pageable(page, size)));
     }
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type) {
