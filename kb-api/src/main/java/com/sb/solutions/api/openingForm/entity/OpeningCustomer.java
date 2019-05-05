@@ -41,14 +41,17 @@ public class OpeningCustomer {
     private String citizenNumber;
     private String citizenIssuedPlace;
     private Date citizenIssuedDate;
+    private String citizenPath;
     private String passwordNumber;
     private String passwordIssuedPlace;
     private Date passwordIssuedDate;
     private Date passwordExpireDate;
+    private String passwordPath;
     private String IdCardNumber;
     private String IdCardIssueAuthority;
     private Date IdCardIssuedDate;
     private Date IdCardExpireDate;
+    private String idPath;
     private Date visaIssueDate;
     private Date visaValidity;
     private String panNo;
