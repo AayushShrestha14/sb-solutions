@@ -14,4 +14,7 @@ import lombok.NoArgsConstructor;
 public class SearchDto {
 
     private String name;
+    private Long provinceId;
+    private Long districtId;
+    private Long municipalityId;
 }

@@ -2,11 +2,10 @@ package com.sb.solutions.web.loanConfig;
 
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
-import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,7 +33,8 @@ public class LoanConfigController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanConfig config, BindingResult bindingResult) {
+    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanConfig config,
+        BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         LoanConfig loanConfig = loanConfigService.save(config);
         if (loanConfig == null) {
@@ -45,13 +45,15 @@ public class LoanConfigController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableLoanConfig(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(loanConfigService.findAllPageable(searchDto, new CustomPageable().pageable(page, size)));
+    public ResponseEntity<?> getPageableLoanConfig(@RequestBody SearchDto searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(loanConfigService
+            .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 

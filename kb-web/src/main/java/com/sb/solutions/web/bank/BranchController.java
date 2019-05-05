@@ -5,7 +5,7 @@ import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,7 @@ public class BranchController {
 
     @Autowired
     BranchService branchService;
+
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
 
@@ -46,7 +47,7 @@ public class BranchController {
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
     public ResponseEntity<?> getPageableBranch(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(searchDto, new CustomPageable().pageable(page, size)));
+        return new RestResponseDto().successModel(branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")

@@ -11,10 +11,12 @@
 
     <artifactId>kb-core</artifactId>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
-
-
-
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.12</version>
+        </dependency>
     </dependencies>
+
 
 </project>

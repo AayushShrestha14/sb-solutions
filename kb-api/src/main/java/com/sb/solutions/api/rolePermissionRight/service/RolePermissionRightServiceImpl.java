@@ -23,8 +23,6 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
     @Autowired
     UrlApiRepository urlApiRepository;
 
-//    @Autowired
-//    RefreshConfiguration refreshConfiguration;
 
     @Override
     public List<RolePermissionRights> findAll() {

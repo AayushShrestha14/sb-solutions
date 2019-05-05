@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +37,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role save(Role role) {
-        User u = userService.getAuthenticated();
-        role.setLastModifiedAt(new Date());
-        if (role.getId() == null) {
-            role.setCreatedBy(u);
-        } else {
-            role.setLastModifiedBy(u);
-        }
+//        User u = userService.getAuthenticated();
+//        role.setLastModifiedAt(new Date());
+//        if (role.getId() == null) {
+//            role.setCreatedBy(u);
+//        } else {
+//            role.setLastModifiedBy(u);
+//        }
         role.setRoleName(role.getRoleName().toUpperCase());
         return roleRepository.save(role);
     }
@@ -60,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Map<Object,Object>>  activeRole() {
+    public List<Map<Object, Object>> activeRole() {
         User u = userService.getAuthenticated();
         Role r = u.getRole();
         return roleRepository.activeRole(r.getId());

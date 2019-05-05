@@ -39,7 +39,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public  List<Map<String,Object>> permsRight(String permName, String role) {
-        return permissionRepository.permsRight(permName,role);
+    public List<Map<String, Object>> permsRight(String permName, String role) {
+        return permissionRepository.permsRight(permName, role);
     }
 }

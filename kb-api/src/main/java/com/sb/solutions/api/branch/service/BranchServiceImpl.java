@@ -3,6 +3,7 @@ package com.sb.solutions.api.branch.service;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
@@ -11,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -43,7 +45,7 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Branch save(Branch branch) {
         branch.setLastModifiedAt(new Date());
-        if(branch.getId()==null){
+        if (branch.getId() == null) {
             branch.setStatus(Status.ACTIVE);
         }
         branch.setBranchCode(branch.getBranchCode().toUpperCase());
@@ -53,8 +55,10 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Page<Branch> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return branchRepository.branchFilter(s.getName() == null ? "" : s.getName(), pageable);
+        Map<String, String> s = objectMapper.convertValue(object, Map.class);
+        final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
+        final Specification<Branch> specification = branchSpecBuilder.build();
+        return branchRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -69,9 +73,10 @@ public class BranchServiceImpl implements BranchService {
         List branchList = branchRepository.branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
-        header.put("address", "Address");
+        header.put("province,name", "Province");
+        header.put("province,district", "District");
         header.put("branchCode", "Branch Code");
         String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return  baseHttpService.getBaseUrl()+url;
+        return baseHttpService.getBaseUrl() + url;
     }
 }

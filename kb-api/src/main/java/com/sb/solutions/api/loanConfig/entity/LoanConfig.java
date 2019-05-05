@@ -22,7 +22,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class LoanConfig extends BaseEntity<Long> {
 
-    @NotNull(message="name should not be null")
+    @NotNull(message = "name should not be null")
     private String name;
     @ManyToMany
     private List<LoanTemplate> templateList;
@@ -32,7 +32,7 @@ public class LoanConfig extends BaseEntity<Long> {
     @ManyToMany
     private List<Document> initial;
     @ManyToMany
-    private List<Document>  renew;
+    private List<Document> renew;
 
 
 }

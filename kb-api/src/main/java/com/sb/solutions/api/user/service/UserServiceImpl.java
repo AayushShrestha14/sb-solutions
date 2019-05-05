@@ -1,7 +1,5 @@
 package com.sb.solutions.api.user.service;
 
-import com.machinezoo.sourceafis.FingerprintMatcher;
-import com.machinezoo.sourceafis.FingerprintTemplate;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
@@ -19,11 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -32,11 +26,9 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    BaseHttpService baseHttpService;
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
-    BaseHttpService baseHttpService;
-
-
 
     @Override
     public List<User> findAll() {
@@ -73,7 +65,7 @@ public class UserServiceImpl implements UserService {
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);
-        }else{
+        } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
         return userRepository.save(user);
@@ -84,7 +76,6 @@ public class UserServiceImpl implements UserService {
     public Page<User> findByRole(Collection<Role> roles, Pageable pageable) {
         return userRepository.findByRoleIn(roles, pageable);
     }
-
 
 
     @Override
@@ -104,7 +95,7 @@ public class UserServiceImpl implements UserService {
         header.put("role,roleName", "Role");
         header.put("status", "Status");
         String url = csvMaker.csv("user", header, branchList, UploadDir.branchCsv);
-        return  baseHttpService.getBaseUrl()+url;
+        return baseHttpService.getBaseUrl() + url;
     }
 
     @Override

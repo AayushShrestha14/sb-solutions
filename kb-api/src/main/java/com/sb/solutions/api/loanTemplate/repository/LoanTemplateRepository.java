@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 /**
  * @author Rujan Maharjan on 2/25/2019
  */
-public interface LoanTemplateRepository extends JpaRepository<LoanTemplate,Long> {
+public interface LoanTemplateRepository extends JpaRepository<LoanTemplate, Long> {
 
     @Query(value = "select l from LoanTemplate l where l.name like  concat(:name,'%')")
-    Page<LoanTemplate> LoanTemplateFilter(@Param("name")String name, Pageable pageable);
+    Page<LoanTemplate> LoanTemplateFilter(@Param("name") String name, Pageable pageable);
 }

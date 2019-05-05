@@ -31,8 +31,10 @@ public class RoleRightPermissionController {
     GlobalExceptionHandler globalExceptionHandler;
 
 
+
+
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr, BindingResult bindingResult) {
+    public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr, BindingResult bindingResult) throws ClassNotFoundException {
         globalExceptionHandler.constraintValidation(bindingResult);
         rolePermissionRightService.saveList(rpr);
         return new RestResponseDto().successModel(null);

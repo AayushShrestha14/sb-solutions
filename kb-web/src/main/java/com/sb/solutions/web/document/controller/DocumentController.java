@@ -7,7 +7,7 @@ import com.sb.solutions.api.document.service.LoanCycleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -47,7 +47,7 @@ public class DocumentController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
     public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(documentService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
+        return new RestResponseDto().successModel(documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 

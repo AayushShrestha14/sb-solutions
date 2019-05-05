@@ -23,6 +23,6 @@ public interface RolePermissionRightRepository extends JpaRepository<RolePermiss
 
     @Transactional
     @Modifying
-    @Query(value = "delete from role_permission_rights where role_id=:id and permission_id=:pid",nativeQuery = true)
-    void deleteRolePermissionRightsByRole(@Param("id") Long i,@Param("pid") Long pid);
+    @Query(value = "delete from role_permission_rights where role_id=:id and permission_id=:pid", nativeQuery = true)
+    void deleteRolePermissionRightsByRole(@Param("id") Long i, @Param("pid") Long pid);
 }

@@ -16,8 +16,9 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class NepseCompanyServiceImpl implements  NepseCompanyService{
+public class NepseCompanyServiceImpl implements NepseCompanyService {
     private final NepseCompanyRepository nepseCompanyRepository;
+
     @Override
     public List<NepseCompany> findAll() {
         return nepseCompanyRepository.findAll();
@@ -31,7 +32,7 @@ public class NepseCompanyServiceImpl implements  NepseCompanyService{
     @Override
     public NepseCompany save(NepseCompany nepseCompany) {
         nepseCompany.setLastModifiedAt(new Date());
-        if(nepseCompany.getId()==null){
+        if (nepseCompany.getId() == null) {
             nepseCompany.setStatus(Status.ACTIVE);
         }
         return nepseCompanyRepository.save(nepseCompany);
@@ -40,8 +41,8 @@ public class NepseCompanyServiceImpl implements  NepseCompanyService{
     @Override
     public Page<NepseCompany> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object,SearchDto.class);
-        return nepseCompanyRepository.nepseCompanyFilter(s.getName()==null?"":s.getName(),pageable);
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return nepseCompanyRepository.nepseCompanyFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class NepseCompanyServiceImpl implements  NepseCompanyService{
     @Override
     public void saveList(List<NepseCompany> nepseCompanyList) {
         inactivePreviousCompanies();
-        for(NepseCompany nepseCompany : nepseCompanyList){
+        for (NepseCompany nepseCompany : nepseCompanyList) {
             nepseCompany.setStatus(Status.ACTIVE);
             nepseCompanyRepository.save(nepseCompany);
         }

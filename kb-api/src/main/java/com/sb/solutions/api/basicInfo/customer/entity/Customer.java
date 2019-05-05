@@ -22,6 +22,7 @@ public class Customer extends BaseEntity<Long> {
     private String accountNo;
     private String province;
     private String district;
+    @Column(name = "municipalities_or_vdc")
     private String municipalitiesOrVDC;
     private String telephone;
     private String mobile;
@@ -30,7 +31,7 @@ public class Customer extends BaseEntity<Long> {
     private String citizenshipNumber;
     private Date citizenshipIssuedDate;
     private String issuedPlace;
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Set<CustomerRelative> customerRelatives;
 }

@@ -4,6 +4,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,20 +16,20 @@ import java.util.Map;
  * @author Rujan Maharjan on 2/13/2019
  */
 @Repository
-public interface BranchRepository extends JpaRepository<Branch,Long> {
+public interface BranchRepository extends JpaRepository<Branch, Long>,JpaSpecificationExecutor<Branch> {
 
 
     @Query(value = "select\n" +
-        "  (select  count(id) from branch where status=1) active,\n" +
-        "(select  count(id) from branch where status=0) inactive,\n" +
-        "(select  count(id) from branch) branches\n",nativeQuery = true)
-    Map<Object,Object> branchStatusCount();
+            "  (select  count(id) from branch where status=1) active,\n" +
+            "(select  count(id) from branch where status=0) inactive,\n" +
+            "(select  count(id) from branch) branches\n", nativeQuery = true)
+    Map<Object, Object> branchStatusCount();
 
 
     @Query(value = "select b from Branch b where b.name like concat(:name,'%')")
-    Page<Branch> branchFilter(@Param("name")String name, Pageable pageable);
+    Page<Branch> branchFilter(@Param("name") String name, Pageable pageable);
 
-    @Query(value = "select b from Branch b where b.name like  concat(:name,'%') or b.address like  concat(:name,'%')")
-    List<Branch> branchCsvFilter(@Param("name")String name);
+    @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
+    List<Branch> branchCsvFilter(@Param("name") String name);
 
 }
