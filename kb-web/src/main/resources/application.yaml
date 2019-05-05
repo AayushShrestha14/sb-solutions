@@ -5,7 +5,7 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       use-new-id-generator-mappings: false
   datasource:
     url: jdbc:mysql://localhost:3306/cp_master
@@ -19,8 +19,8 @@ spring:
   queries:
       users-query: select user_name, password, status from user where user_name=?
       roles-query: select u.user_name, r.role_name from user u join role r on r.id = u.role_id where u.user_name=?
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-master.xml
+#  liquibase:
+#    change-log: classpath:/db/changelog/changelog-master.xml
 
 logging:
   level:
