@@ -7,12 +7,14 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.CustomPageable;
+import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -27,6 +29,8 @@ public class LoanConfigController {
     GlobalExceptionHandler globalExceptionHandler;
     @Autowired
     LoanConfigService loanConfigService;
+    @Autowired
+    private UploadFile uploadFile;
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -66,4 +70,9 @@ public class LoanConfigController {
         return new RestResponseDto().successModel(loanConfigService.findOne(id));
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/uploadFile")
+    public ResponseEntity<?> saveDocuments(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("cycle") String cycle) {
+        System.out.println(type);
+        return uploadFile.uploadFile(multipartFile, type, cycle);
+    }
 }

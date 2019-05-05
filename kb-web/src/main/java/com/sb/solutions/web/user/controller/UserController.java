@@ -34,38 +34,32 @@ public class UserController {
     private final UserService userService;
     private RoleService roleService;
     private UploadFile uploadFile;
+
     @Autowired
-    public UserController (UserService userService,RoleService roleService, UploadFile uploadFile){
+    public UserController(UserService userService, RoleService roleService, UploadFile uploadFile) {
         this.userService = userService;
         this.roleService = roleService;
         this.uploadFile = uploadFile;
     }
-    private String signaturePath=null;
-    private String profiePath=null;
+
+    private String signaturePath = null;
+    private String profiePath = null;
+
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
-    return new RestResponseDto().successModel(userService.getAuthenticated());
+        return new RestResponseDto().successModel(userService.getAuthenticated());
     }
 
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        System.out.println("here");
-        if(profiePath != null) {
-            user.setProfilePicture(profiePath);
-            profiePath=null;
-        }
-        if(signaturePath != null) {
-            user.setSignatureImage(signaturePath);
-            signaturePath=null;
-        }
-        user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
+
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type) {
-        System.out.println();
-        return uploadFile.uploadFile(multipartFile,type);
+
+        return uploadFile.uploadFile(multipartFile, type);
     }
 
     @ApiImplicitParams({
@@ -75,7 +69,7 @@ public class UserController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/get")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(userService.findAllPageable(searchDto,new CustomPageable().pageable(page, size)));
+        return new RestResponseDto().successModel(userService.findAllPageable(searchDto, new CustomPageable().pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -84,15 +78,15 @@ public class UserController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
-    public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles, @RequestParam("page") int page, @RequestParam("size") int size){
+    public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles, @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(userService.findByRole(roles, new CustomPageable().pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")
-    public  ResponseEntity<?> getRoleList(){
+    public ResponseEntity<?> getRoleList() {
         return new RestResponseDto().successModel(roleService.findAll());
     }
-    
+
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
     public ResponseEntity<?> getUserStatusCount() {

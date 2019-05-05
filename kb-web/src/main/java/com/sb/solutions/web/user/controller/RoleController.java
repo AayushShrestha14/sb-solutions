@@ -43,7 +43,7 @@ public class RoleController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @Produces("application/json")
+        @Produces("application/json")
     public ResponseEntity<?> getRole() {
         return new RestResponseDto().successModel(roleService.findAll());
     }
