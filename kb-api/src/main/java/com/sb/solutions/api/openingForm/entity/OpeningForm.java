@@ -15,9 +15,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "opening_form")
-public class OpeningForm extends BaseEntity<Long> {
+public class OpeningForm {
+    @Id
+    @GeneratedValue
+    private Long id;
     @ManyToOne
     private Branch branch;
     private Date requestedDate;

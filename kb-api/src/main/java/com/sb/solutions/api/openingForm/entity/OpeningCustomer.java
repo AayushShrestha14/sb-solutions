@@ -1,6 +1,8 @@
 package com.sb.solutions.api.openingForm.entity;
 
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +29,12 @@ public class OpeningCustomer {
     private Set<OpeningNominee> nominees;
     private Set<OpeningBeneficiary> beneficiaries;
     private OpeningKyc kyc;
-    private String permanentAddress;
-    private String presentAddress;
+    private Province permanentProvince;
+    private District permanentDistrict;
+    private MunicipalityVdc permanentMunicipality;
+    private Province presentProvince;
+    private District presentDistrict;
+    private MunicipalityVdc presentMunicipality;
     private String landLordName;
     private String landLordContactNo;
     private String email;
@@ -41,17 +47,17 @@ public class OpeningCustomer {
     private String citizenNumber;
     private String citizenIssuedPlace;
     private Date citizenIssuedDate;
-    private String citizenPath;
+    private String citizenImagePath;
     private String passwordNumber;
     private String passwordIssuedPlace;
     private Date passwordIssuedDate;
     private Date passwordExpireDate;
-    private String passwordPath;
+    private String passwordImagePath;
     private String IdCardNumber;
     private String IdCardIssueAuthority;
     private Date IdCardIssuedDate;
     private Date IdCardExpireDate;
-    private String idPath;
+    private String idImagePath;
     private Date visaIssueDate;
     private Date visaValidity;
     private String panNo;
@@ -63,7 +69,6 @@ public class OpeningCustomer {
     private String bankName;
     private String education;
     private String map;
-    private Status status;
     private boolean internetBanking;
     private boolean mobileBanking;
     private boolean debitCard;

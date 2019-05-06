@@ -28,8 +28,9 @@ public class SpringSecurityAuditorAware implements AuditorAware<Long> {
                 .getPrincipal();
             Long id = roleAndPermissionDao.getCurrentUserId(userDetail.getUsername());
             return Optional.of(id);
+        }else{
+            return Optional.of(null);
         }
 
-        throw new ApiException("Invalid Token");
     }
 }

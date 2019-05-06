@@ -53,7 +53,7 @@ public class AccountOpeningController {
         return new RestResponseDto().successModel(openingFormService.findAllByBranch(branch, PaginationUtils.pageable(page, size)));
     }
     @PostMapping(value = "/uploadFile")
-    public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type) {
-        return uploadFile.uploadFile(multipartFile,type);
+    public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
+        return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
 }

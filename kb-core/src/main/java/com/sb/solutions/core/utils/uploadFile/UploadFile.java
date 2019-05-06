@@ -21,13 +21,49 @@ import java.util.Date;
 public class UploadFile {
     String url;
 
+    public ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile,String branch, String type, String name){
+        FilePath filePath = new FilePath();
+        if (multipartFile.isEmpty()) {
+            return new RestResponseDto().failureModel("Select Signature Image");
+        }
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            url = filePath.getOSPath() + UploadDir.accountRequest+branch+"/";
+
+            Path path = Paths.get(url);
+            if(!Files.exists(path)) {
+                new File(url).mkdirs();
+            }
+            String imagePath;
+            if(type.equals("citizen")){
+                imagePath = url + name +"_"+System.currentTimeMillis()+"_citizen.jpg";
+            }
+            else if(type.equals("passport")){
+                imagePath = url + name +"_"+System.currentTimeMillis()+"_passport.jpg";
+            }
+            else if(type.equals("id")){
+                imagePath = url + name + "_"+System.currentTimeMillis()+"_id.jpg";
+            }
+            else{
+                return new RestResponseDto().failureModel("wrong file type");
+            }
+            path = Paths.get(imagePath);
+            Files.write(path, bytes);
+            System.out.println(imagePath);
+            return new RestResponseDto().successModel(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new RestResponseDto().failureModel("Fail");
+        }
+
+
+    }
 
     public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         }
-
         try {
             byte[] bytes = multipartFile.getBytes();
             if(type.equals("profile")){

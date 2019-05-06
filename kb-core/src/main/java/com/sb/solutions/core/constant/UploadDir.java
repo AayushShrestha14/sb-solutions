@@ -9,5 +9,6 @@ public class UploadDir {
     public static String branchCsv = "images/branchCsv";
     public static String userProfile = "images/userProfile/";
     public static String userSignature = "images/userSignature/";
+    public static String accountRequest = "images/accountRequest/";
 
 }

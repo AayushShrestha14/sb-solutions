@@ -17,7 +17,7 @@ import java.util.List;
 public class OpeningFormServiceImpl implements OpeningFormService {
     private OpeningFormRepository openingFormRepository;
     private Gson gson;
-    DateValidation dateValidation;
+    private DateValidation dateValidation;
     @Override
     public List<OpeningForm> findAll() {
         return openingFormRepository.findAll();
@@ -30,6 +30,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public OpeningForm save(OpeningForm openingForm) {
+        System.out.println(openingForm.getOpeningCustomers());
         System.out.println(gson.toJson(openingForm.getOpeningCustomers()));
         openingForm.setCustomerDetailsJson(gson.toJson(openingForm.getOpeningCustomers()));
         return openingFormRepository.save(openingForm);

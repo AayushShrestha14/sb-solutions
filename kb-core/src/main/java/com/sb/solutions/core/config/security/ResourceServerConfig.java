@@ -36,7 +36,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 //.antMatchers("/actuator/**").hasAuthority("admin")
                 .antMatchers("/v1/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/v1/**")
+                .antMatchers("/v1/**","/v1/accountOpening")
                 .permitAll()
                 .and()
                 .logout()
