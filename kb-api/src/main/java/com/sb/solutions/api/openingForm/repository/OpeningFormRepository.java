@@ -6,6 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OpeingFormRepository extends JpaRepository<OpeningForm, Long> {
+public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long> {
     Page<OpeningForm> findAllByBranch(Branch branch, Pageable pageable);
 }

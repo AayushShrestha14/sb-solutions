@@ -64,8 +64,9 @@ public class OpeningCustomer {
     private String education;
     private String map;
     private Status status;
-    private String internetBanking;
-    private String mobileBanking;
-    private String debitCard;
+    private boolean internetBanking;
+    private boolean mobileBanking;
+    private boolean debitCard;
+    private boolean checkBook;
 
 }

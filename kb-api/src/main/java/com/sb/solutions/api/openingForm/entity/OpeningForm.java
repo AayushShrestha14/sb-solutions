@@ -1,7 +1,6 @@
 package com.sb.solutions.api.openingForm.entity;
 
 import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
