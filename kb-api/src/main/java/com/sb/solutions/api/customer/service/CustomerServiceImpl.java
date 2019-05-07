@@ -1,8 +1,5 @@
-/*
 package com.sb.solutions.api.customer.service;
 
-import com.google.gson.Gson;
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.repository.CustomerRepository;
 import com.sb.solutions.core.dto.SearchDto;
@@ -18,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
+
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
@@ -30,7 +28,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer save(Customer customer) {
-        //customer.setCustomerDetailsJson(gson.toJson(customer.getCustomerDetails()));
         return customerRepository.save(customer);
     }
 
@@ -41,9 +38,5 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.customerFilter("", pageable);
     }
 
-    @Override
-    public Page<Customer> findAllPageableByBranch(Branch branch, Pageable pageable) {
-        return customerRepository.findAllByBranch(branch,pageable);
-    }
 }
-*/
+

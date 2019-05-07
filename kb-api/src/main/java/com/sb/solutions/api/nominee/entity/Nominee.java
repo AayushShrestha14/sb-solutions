@@ -6,22 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 
-//@Entity
-@Component
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode(callSuper = true)
-//@Table(name = "nominee")
-//public class Nominee extends BaseEntity<Long> {
-public class Nominee{
-        private String fullName;
+@EqualsAndHashCode(callSuper = true)
+@Table(name = "nominee")
+public class Nominee extends BaseEntity<Long> {
+    private String fullName;
     private String imagePath;
     private String relationToMe;
     private Date dateOfBirth;

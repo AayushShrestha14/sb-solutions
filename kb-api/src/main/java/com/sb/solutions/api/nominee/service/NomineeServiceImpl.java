@@ -1,4 +1,3 @@
-/*
 package com.sb.solutions.api.nominee.service;
 
 import com.sb.solutions.api.nominee.entity.Nominee;
@@ -32,4 +31,3 @@ public class NomineeServiceImpl implements NomineeService {
         return null;
     }
 }
-*/

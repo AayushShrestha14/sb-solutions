@@ -16,23 +16,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
 
-//@Entity
-@Component
-@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode(callSuper = true)
-//@Table(name = "customer_relative")
-//public class CustomerRelative extends BaseEntity<Long> {
-public class CustomerRelative{
-        private String title;
+@EqualsAndHashCode(callSuper = true)
+@Table(name = "customer_relative")
+public class CustomerRelative extends BaseEntity<Long> {
+    private String title;
     private String customerRelation;
     private String customerRelativeName;
     private String citizenshipNumber;
     private String citizenshipIssuedPlace;
     private Date citizenshipIssuedDate;
-    /*@JsonIgnore
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kyc_id")
-    private Kyc kyc;*/
+    private Kyc kyc;
 }

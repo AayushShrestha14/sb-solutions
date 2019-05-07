@@ -18,7 +18,7 @@ import java.util.Set;
 public class Province {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String name;
     @JsonIgnore
     @OneToMany(mappedBy = "province")

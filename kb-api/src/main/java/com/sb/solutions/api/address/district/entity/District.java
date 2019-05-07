@@ -19,7 +19,7 @@ import java.util.Set;
 public class District {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String name;
     @ManyToOne
     @JoinColumn(name = "province_id")
