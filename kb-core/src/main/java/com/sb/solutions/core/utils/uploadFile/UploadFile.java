@@ -4,6 +4,7 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.AllArgsConstructor;
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,12 @@ public class UploadFile {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
+        }
+        else if(multipartFile.getSize()>409600){
+            return new RestResponseDto().failureModel("Image Size more than 400kb");
+        }
+        if(!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") || !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")){
+            return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
             byte[] bytes = multipartFile.getBytes();

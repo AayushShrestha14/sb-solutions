@@ -26,7 +26,7 @@ public class OpeningCustomer {
     private String currency;
     private boolean isJoint;
     private boolean haveNominee;
-    private Set<OpeningNominee> nominees;
+    private OpeningNominee nominee;
     private Set<OpeningBeneficiary> beneficiaries;
     private OpeningKyc kyc;
     private Province permanentProvince;
@@ -48,11 +48,11 @@ public class OpeningCustomer {
     private String citizenIssuedPlace;
     private Date citizenIssuedDate;
     private String citizenImagePath;
-    private String passwordNumber;
-    private String passwordIssuedPlace;
-    private Date passwordIssuedDate;
-    private Date passwordExpireDate;
-    private String passwordImagePath;
+    private String passportNumber;
+    private String passportIssuedPlace;
+    private Date passportIssuedDate;
+    private Date passportExpireDate;
+    private String passportImagePath;
     private String IdCardNumber;
     private String IdCardIssueAuthority;
     private Date IdCardIssuedDate;

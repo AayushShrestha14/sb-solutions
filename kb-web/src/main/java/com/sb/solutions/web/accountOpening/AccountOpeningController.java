@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.validation.Valid;
 
@@ -54,6 +55,10 @@ public class AccountOpeningController {
     }
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
+        /*CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+        //set max upload size per file is 20mb
+        commonsMultipartResolver.setMaxUploadSizePerFile(20*1024*1024);
+        */
         return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
 }
