@@ -3,8 +3,10 @@ package com.sb.solutions.core.utils.uploadFile;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -54,26 +56,26 @@ public class UploadFile {
         }
     }
 
-    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, String cycle) {
+    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, String name, String documentName) {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
-            return new RestResponseDto().failureModel("Select Signature Image");
+            return new RestResponseDto().failureModel("No image is selected");
         }
 
         try {
             byte[] bytes = multipartFile.getBytes();
-            if (cycle.equals("initial")) {
-                if (type.equals("Cititzenship")) {
+            if (type.equals("initial")) {
+                if (documentName.equals("Citizenship")) {
                     url = filePath.getOSPath() + UploadDir.initialDocumentCitizenship;
-                } else if (type.equals("Promissory Note")) {
+                } else if (documentName.equals("Promissory Note")) {
                     url = filePath.getOSPath() + UploadDir.initialDocumentPromissoryNote;
                 } else {
                     url = filePath.getOSPath() + UploadDir.initialDocumentPropertyOwner;
                 }
             } else {
-                if (type.equals("Cititzenship")) {
+                if (documentName.equals("Citizenship")) {
                     url = filePath.getOSPath() + UploadDir.renewalDocumentCitizenship;
-                } else if (type.equals("Promissory Note")) {
+                } else if (documentName.equals("Promissory Note")) {
                     url = filePath.getOSPath() + UploadDir.renewalDocumentPromissoryNote;
                 } else {
                     url = filePath.getOSPath() + UploadDir.renewalDocumentPropertyOwner;
@@ -84,13 +86,20 @@ public class UploadFile {
             if (!Files.exists(path)) {
                 new File(url).mkdirs();
             }
-            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-            Date now = new Date();
-            String strDate = sdfDate.format(now);
-            String imagePath = url + strDate + type;
-            path = Paths.get(imagePath);
-            Files.write(path, bytes);
-            return new RestResponseDto().successModel(imagePath);
+
+            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename());
+            if (fileExtension.equals("jpg")) {
+                String imagePath = url + name + "_" + documentName + ".jpg";
+                path = Paths.get(imagePath);
+                Files.write(path, bytes);
+                return new RestResponseDto().successModel(imagePath);
+            } else {
+                String imagePath = url + name + " " + documentName + ".png";
+                path = Paths.get(imagePath);
+                Files.write(path, bytes);
+                return new RestResponseDto().successModel(imagePath);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             return new RestResponseDto().failureModel("Fail");

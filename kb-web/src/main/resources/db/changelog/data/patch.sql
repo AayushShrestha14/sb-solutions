@@ -1,5 +1,10 @@
 INSERT INTO role (id, created_at,  last_modified_at,  role_name, status) VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1);
 
+-- password = admin1234
+INSERT INTO `user` (`id`, `created_at`, `last_modified_at`, `account_no`, `email`, `name`, `password`, `profile_picture`, `signature_image`, `status`, `user_name`, `branch_id`, `role_id`, `created_by_id`, `modified_by_id`) VALUES
+(1, CURRENT_DATE , CURRENT_DATE , NULL, 'admin@admin.com', 'SPADMIN', '$2a$10$cSqKGvZvEGEzQhRFRyDVyuCR3Lf0e7FcpIfxd/0t5IOG9U.3flG8m', NULL, NULL, 1, 'SPADMIN', NULL, 1, NULL, NULL);
+
+
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'BRANCH', 'fa fa-dashboard', '/home/branch', 10, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-edit', '/home/config', 30, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-edit', '/home/role', 20, 1);
@@ -13,9 +18,9 @@ INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, 'Company', 'fa fa-user', '/home/company', 24, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (12,  'SubSector', 'fa fa-user', '/home/subSector', 51, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-user', '/home/document', 55, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Dashboard', 'fa fa-dashboard', '/home/dashboard', 1, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Template', 'fa fa-user', '/home/template', 61, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fa fa-dashboard', '/home/dashboard', 1, 1);
 -- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Ui', 'fa fa-user', '/home/ui', 60, 1);
--- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (15,  'Template', 'fa fa-user', '/home/template', 61, 1);
 -- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (16,  'Loan', 'fa fa-user', '/home/loan', 62, 1);
 
 
@@ -61,7 +66,11 @@ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permissi
  VALUES (13, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  13, 1);
 
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (14, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  14, 1);
+ VALUES (14 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  14, 1);
+
+
+ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (17, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  17, 1);
 
 
 

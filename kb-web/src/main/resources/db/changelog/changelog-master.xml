@@ -1,1640 +1,1702 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
-  <changeSet id="5-create-hibernate_sequence" author="msucil">
-    <createTable tableName="hibernate_sequence">
-      <column name="next_val" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-populate-hibernate_sequence" author="msucil">
-    <insert tableName="hibernate_sequence">
-      <column name="next_val" valueNumeric="1"/>
-    </insert>
-  </changeSet>
-
-  <changeSet id="5-create-oauth-token-table" author="msucil">
-    <createTable tableName="oauth_access_token">
-      <column name="token_id" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="token" type="BLOB">
-        <constraints nullable="true"/>
-      </column>
-      <column name="authentication_id" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="user_name" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="client_id" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="authentication" type="BLOB">
-        <constraints nullable="true"/>
-      </column>
-      <column name="refresh_token" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-
-    <addPrimaryKey tableName="oauth_access_token" columnNames="authentication_id"/>
-
-    <createTable tableName="oauth_refresh_token">
-      <column name="token_id" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="token" type="BLOB">
-        <constraints nullable="true"/>
-      </column>
-      <column name="authentication" type="BLOB">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-role-table" author="david">
-    <createTable tableName="role">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="role_name" type="VARCHAR(256)">
-        <constraints nullable=" false"
-          unique="true"
-          uniqueConstraintName="udx_role_role_name"
-        />
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-  <changeSet id="5-create-province" author="david">
-    <createTable tableName="province">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-district" author="david">
-    <createTable tableName="district">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="province_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_district_province_id"
-          referencedTableName="province"
-          referencedColumnNames="id"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-municipality-vdc" author="david">
-    <createTable tableName="municipality_vdc">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="district_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_municipality_vdc_district_id"
-          referencedTableName="district"
-          referencedColumnNames="id"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-branch" author="david">
-    <createTable tableName="branch">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable=" false"
-          unique="true"
-          uniqueConstraintName="udx_branch_name"
-        />
-      </column>
-      <column name="branch_code" type="VARCHAR(256)"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="province_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_branch_province_id"
-          referencedTableName="province"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="district_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_branch_district_id"
-          referencedTableName="district"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="municipality_vdc_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_branch_municipality_vdc_id"
-          referencedTableName="municipality_vdc"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="address" type="VARCHAR(256)"/>
-      <column name="street_name" type="VARCHAR(256)"/>
-      <column name="ward_number" type="VARCHAR(256)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-user-table" author="msucil">
-    <createTable tableName="user">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)"/>
-      <column name="user_name" type="VARCHAR(256)">
-        <constraints nullable=" false"
-          unique="true"
-          uniqueConstraintName="udx_user_username"
-        />
-      </column>
-      <column name="email" type="VARCHAR(256)">
-        <constraints nullable=" false"
-          unique="true"
-          uniqueConstraintName="udx_user_email"
-        />
-      </column>
-      <column name="password" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="role_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_user_role_id"
-          referencedTableName="role"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="branch_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_user_branch_id"
-          referencedTableName="branch"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="account_no" type="VARCHAR(256)"/>
-      <column name="signature_image" type="VARCHAR(256)"/>
-      <column name="profile_picture" type="VARCHAR(256)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-foreign-key-in-user-table" author="david">
-    <addForeignKeyConstraint baseTableName="user" baseColumnNames="created_by_id"
-      constraintName="fk_user_created_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="user" baseColumnNames="modified_by_id"
-      constraintName="fk_user_modified_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-
-  <changeSet id="5-create-foreign-key-in-branch-table" author="david">
-    <addForeignKeyConstraint baseTableName="branch" baseColumnNames="created_by_id"
-      constraintName="fk_branch_created_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="branch" baseColumnNames="modified_by_id"
-      constraintName="fk_branch_modified_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="5-create-foreign-key-in-role-table" author="david">
-    <addForeignKeyConstraint baseTableName="role" baseColumnNames="created_by_id"
-      constraintName="fk_role_created_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="role" baseColumnNames="modified_by_id"
-      constraintName="fk_role_modified_by_id" referencedTableName="user"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="5-create-rights" author="david">
-    <createTable tableName="rights">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="rights" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-permission" author="david">
-    <createTable tableName="permission">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="permission_name" type="VARCHAR(256)">
-        <constraints nullable="false"
-          unique="true"
-          uniqueConstraintName="udx_permission_permission_name"/>
-      </column>
-      <column name="front_url" type="VARCHAR(256)"/>
-      <column name="fa_icon" type="VARCHAR(256)"/>
-      <column name="orders" type="BIGINT"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-sub-nav" author="david">
-    <createTable tableName="sub_nav">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="sub_nav_name" type="VARCHAR(256)">
-        <constraints nullable="false"
-          unique="true"
-          uniqueConstraintName="udx_sub_nav_sub_nav_name"/>
-      </column>
-      <column name="front_url" type="VARCHAR(256)"/>
-      <column name="fa_icon" type="VARCHAR(256)"/>
-      <column name="permission_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sub-nav_permission_id"
-          referencedTableName="permission"
-          referencedColumnNames="id"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-url-api" author="david">
-    <createTable tableName="url_api">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="api_url" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="type" type="VARCHAR(256)"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-permission-api-list" author="rujan">
-    <createTable tableName="permission_api_list">
-      <column name="permission_id" type="BIGINT">
-
-      </column>
-      <column name="api_list_id" type="BIGINT">
-        <constraints unique="true"/>
-      </column>
-
-    </createTable>
-    <addForeignKeyConstraint baseColumnNames="permission_id"
-      baseTableName="permission_api_list"
-      constraintName="fk_permission_api_list_permission_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="permission"/>
-  </changeSet>
-
-  <changeSet id="5-permission-sub-navs" author="rujan">
-    <createTable tableName="permission_sub_navs">
-      <column name="permission_id" type="BIGINT">
-
-      </column>
-      <column name="sub_navs_id" type="BIGINT">
-        <constraints unique="true"/>
-      </column>
-
-    </createTable>
-    <addForeignKeyConstraint baseColumnNames="permission_id"
-      baseTableName="permission_sub_navs"
-      constraintName="fk_permission_sub_navs_permission_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="sub_nav"/>
-  </changeSet>
-
-  <changeSet id="5-create-role-permission-rights" author="david">
-    <createTable tableName="role_permission_rights">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="role_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_role_permission_rights_role_id"
-          referencedTableName="role"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="permission_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_role_permission_rights_permission_id"
-          referencedTableName="permission"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="del" type="boolean"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_role_permission_rights_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_role_permission_rights_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-role-permission-rights-api-rights" author="david">
-    <createTable tableName="role_permission_rights_api_rights">
-      <column name="role_permission_rights_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="api_rights_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="role_permission_rights_id"
-      baseTableName="role_permission_rights_api_rights"
-      constraintName="fk_role_permission_rights_api_rights_role_permission_rights_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="role_permission_rights"/>
-    <addForeignKeyConstraint baseColumnNames="api_rights_id"
-      baseTableName="role_permission_rights_api_rights"
-      constraintName="fk_role_permission_rights_api_rights_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="url_api"/>
-  </changeSet>
-
-  <changeSet id="5-create-company" author="david">
-    <createTable tableName="company">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="company_name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_company_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_company_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="4-create-nepse_company" author="david">
-    <createTable tableName="nepse_company">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="amount_per_unit" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="company_name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_nepse_company_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_nepse_company_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-base_http" author="david">
-    <createTable tableName="base_http">
-      <column name="base_http_id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="base_url" type="VARCHAR(256)">
-        <constraints nullable=" false"/>
-      </column>
-      <column name="flag" type="INT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-loan_template" author="david">
-    <createTable tableName="loan_template">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="template_url" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="order_url" type="INT"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="template_view" type="VARCHAR2(4000)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_template_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_template_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-sector" author="david">
-    <createTable tableName="sector">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="sector_code" type="VARCHAR(256)"/>
-      <column name="sector_name" type="VARCHAR(256)"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sector_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sector_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-sub-sector" author="david">
-    <createTable tableName="sub_sector">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="sub_sector_code" type="VARCHAR(256)"/>
-      <column name="sub_sector_name" type="VARCHAR(256)"/>
-      <column name="sector_id" type="BIGINT"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sub_sector_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sub_sector_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-    <addForeignKeyConstraint baseColumnNames="sector_id"
-      baseTableName="sub_sector"
-      constraintName="fk_sub_sector_sector_id"
-      referencedColumnNames="id"
-      referencedTableName="sector"/>
-
-  </changeSet>
-
-  <changeSet id="5-create-segment" author="david">
-    <createTable tableName="segment">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="segment_name" type="VARCHAR(256)"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_segment_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_segment_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-sub-segment" author="david">
-    <createTable tableName="sub_segment">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="is_funded" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="sub_segment_name" type="VARCHAR(256)"/>
-      <column name="segment_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sub_segment_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_sub_segment_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-    <addForeignKeyConstraint baseColumnNames="segment_id"
-      baseTableName="sub_segment"
-      constraintName="fk_sub_segment_segment_id"
-      referencedColumnNames="id"
-      referencedTableName="segment"/>
-
-  </changeSet>
-
-
-  <changeSet id="5-create-valuator" author="david">
-    <createTable tableName="valuator">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)"/>
-      <column name="contact_no" type="VARCHAR(256)"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="province_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_province_id"
-          referencedTableName="province"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="district_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_district_id"
-          referencedTableName="district"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="municipality_vdc_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_municipality_vdc_id"
-          referencedTableName="municipality_vdc"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="street_name" type="VARCHAR(256)"/>
-      <column name="ward_number" type="VARCHAR(256)"/>
-      <column name="site_province_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_site_province_id"
-          referencedTableName="province"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="site_district_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_site_district_id"
-          referencedTableName="district"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="site_municipality_vdc_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_site_municipality_vdc_id"
-          referencedTableName="municipality_vdc"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="site_street_name" type="VARCHAR(256)"/>
-      <column name="site_ward_number" type="VARCHAR(256)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_valuator_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-loan-config" author="david">
-    <createTable tableName="loan_config">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="is_fundable" type="boolean"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="is_renewable" type="boolean"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_config_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_config_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-
-  <changeSet id="5-create-sub-segment-loan-config" author="david">
-    <createTable tableName="sub_segment_loan_config">
-      <column name="sub_segment_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="loan_config_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="sub_segment_id"
-      baseTableName="sub_segment_loan_config"
-      constraintName="fk_sub_segment_loan_config_sub_segment_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="sub_segment"/>
-    <addForeignKeyConstraint baseColumnNames="loan_config_id"
-      baseTableName="sub_segment_loan_config"
-      constraintName="fk_sub_segment_loan_config_list_loan_config_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_config"/>
-  </changeSet>
-
-  <changeSet id="5-create-document" author="david">
-    <createTable tableName="document">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable=" false"
-          unique="true"
-          uniqueConstraintName="udx_document_name"
-        />
-      </column>
-      <column name="url" type="VARCHAR(256)"/>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_document_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_document_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-loan-cycle" author="david">
-    <createTable tableName="loan_cycle">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="cycle" type="VARCHAR(256)">
-        <constraints nullable=" false"/>
-      </column>
-      <column name="label" type="VARCHAR2(1000)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_cycle_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_loan_cycle_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-document-loan-cycle" author="msucil">
-    <createTable tableName="document_loan_cycle">
-      <column name="document_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="loan_cycle_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="document_id"
-      baseTableName="document_loan_cycle"
-      constraintName="fk_document_loan_cycle_document_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="document"/>
-    <addForeignKeyConstraint baseColumnNames="loan_cycle_id"
-      baseTableName="document_loan_cycle"
-      constraintName="fk_document_loan_cycle_loan_cycle_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_cycle"/>
-  </changeSet>
-
-  <changeSet id="5-create-loan-config-template-list" author="david">
-    <createTable tableName="loan_config_template_list">
-      <column name="loan_config_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="template_list_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="loan_config_id"
-      baseTableName="loan_config_template_list"
-      constraintName="fk_loan_config_template_list_loan_config_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_config"/>
-    <addForeignKeyConstraint baseColumnNames="template_list_id"
-      baseTableName="loan_config_template_list"
-      constraintName="fk_loan_config_template_list_template_list_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_template"/>
-  </changeSet>
-
-  <changeSet id="5-create-loan-config-initial" author="david">
-    <createTable tableName="loan_config_initial">
-      <column name="loan_config_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="initial_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="loan_config_id"
-      baseTableName="loan_config_initial"
-      constraintName="fk_loan_config_initial_loan_config_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_config"/>
-    <addForeignKeyConstraint baseColumnNames="initial_id"
-      baseTableName="loan_config_initial"
-      constraintName="fk_loan_config_initial_initial_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="document"/>
-  </changeSet>
-
-  <changeSet id="5-create-loan-config-renew" author="david">
-    <createTable tableName="loan_config_renew">
-      <column name="loan_config_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="renew_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="loan_config_id"
-      baseTableName="loan_config_renew"
-      constraintName="fk_loan_config_renew_loan_config_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="loan_config"/>
-    <addForeignKeyConstraint baseColumnNames="renew_id"
-      baseTableName="loan_config_renew"
-      constraintName="fk_loan_config_renew_renew_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="document"/>
-  </changeSet>
-
-  <changeSet id="5-create-approval-limit" author="david">
-    <createTable tableName="approval_limit">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="amount" type="DOUBLE"/>
-      <column name="loan_approval_type" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="loan_category_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval-limit_loan_category_id"
-          referencedTableName="loan_config"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="authorities_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval-limit_authorities_id"
-          referencedTableName="role"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval_limit_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval_limit_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-
-  <changeSet id="5-create-customer" author="david">
-    <createTable tableName="customer">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="title" type="VARCHAR(256)"/>
-      <column name="customer_name" type="VARCHAR(256)"/>
-      <column name="account_no" type="VARCHAR(256)"/>
-      <column name="province" type="VARCHAR(256)"/>
-      <column name="district" type="VARCHAR(256)"/>
-      <column name="municipalities_or_vdc" type="VARCHAR(256)"/>
-      <column name="telephone" type="VARCHAR(256)"/>
-      <column name="mobile" type="VARCHAR(256)"/>
-      <column name="email" type="VARCHAR(256)"/>
-      <column name="citizenship_number" type="VARCHAR(256)"/>
-      <column name="initial_relation_date" type="DATE"/>
-      <column name="citizenship_issued_date" type="DATE"/>
-      <column name="issued_place" type="VARCHAR(256)"/>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_customer_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_customer_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-customer-relative" author="david">
-    <createTable tableName="customer_relative">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="title" type="VARCHAR(256)"/>
-      <column name="customer_relative" type="VARCHAR(256)"/>
-      <column name="customer_relative_name" type="VARCHAR(256)"/>
-      <column name="citizenship_number" type="VARCHAR(256)"/>
-      <column name="citizenship_issued_date" type="DATE"/>
-      <column name="citizenship_issued_place" type="VARCHAR(256)"/>
-      <column name="customer_id" type="BIGINT">
-        <constraints nullable="false"
-          foreignKeyName="fk_customer_relative_customer_id"
-          referencedTableName="customer"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_customer_relative_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_customer_relative_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-capital" author="david">
-    <createTable tableName="capital">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="authorized_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="paid_up_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="issued_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="total_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="fixed_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="working_capital" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="number_of_shareholder" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_capital_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_capital_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-legal-status" author="david">
-    <createTable tableName="legal_status">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="company_name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="corporate_structure" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="registered_office" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="registered_under_act" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="registration_no" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="registration_date" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="pan_registration_office" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="pan_number" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="pan_registration_date" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_legal_status_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_legal-status_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-swot" author="david">
-    <createTable tableName="swot">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="strength" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="weakness" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="opportunity" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="threats" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_swot_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_swot_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="5-create-entity_info" author="david">
-    <createTable tableName="entity_info">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="legal_status_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="capital_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="swot_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_entity_info_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_entity_info_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="capital_id"
-      constraintName="fk_entity_info_capital_id"
-      referencedTableName="capital"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="legal_status_id"
-      constraintName="fk_entity_info_legal_status_id"
-      referencedTableName="legal_status"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="swot_id"
-      constraintName="fk_entity_info_swot_id"
-      referencedTableName="swot"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="5-create-management-team" author="david">
-    <createTable tableName="management_team">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="description" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="entity_info_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_management_team_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_management_team_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-
-    </createTable>
-    <addForeignKeyConstraint baseTableName="management_team"
-      baseColumnNames="entity_info_id"
-      constraintName="fk_management_entity_info_id"
-      referencedTableName="entity_info"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="5-create-proprietor" author="david">
-    <createTable tableName="proprietor">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="contact_no" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="address" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="share" type="DOUBLE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="entity_info_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_proprietor_created_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_proprietor_modified_by_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-    </createTable>
-    <addForeignKeyConstraint baseTableName="proprietor"
-      baseColumnNames="entity_info_id"
-      constraintName="fk_proprietor_entity_info_id"
-      referencedTableName="entity_info"
-      referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="3-create-memo-type-table" author="msucil">
-    <createTable tableName="memo_type">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="3-create-memo-table" author="msucil">
-    <createTable tableName="memo">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="reference_number" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="subject" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="sent_by" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="sent_to" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="content" type="TEXT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="stage" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="memo_type_id" type="BIGINT">
-        <constraints nullable="false"
-          foreignKeyName="fk_memo_type_id"
-          referencedTableName="memo_type"
-          referencedColumnNames="id"
-        />
-      </column>
-
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="3-create-memo-cc-user-table" author="msucil">
-    <createTable tableName="memo_cc_user">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints primaryKey="true"/>
-      </column>
-      <column name="user_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="memo_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-    <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="user_id"
-      constraintName="fk_memo_cc_user_user_id"
-      referencedTableName="user" referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="memo_id"
-      constraintName="fk_memo_cc_user_memo_id"
-      referencedTableName="memo" referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="3-create-memo-bcc-user-table" author="msucil">
-    <createTable tableName="memo_bcc_user">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints primaryKey="true"/>
-      </column>
-      <column name="user_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="memo_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="user_id"
-      constraintName="fk_memo_bcc_user_user_id"
-      referencedTableName="user" referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="memo_id"
-      constraintName="fk_memo_bcc_user_memo_id"
-      referencedTableName="memo" referencedColumnNames="id"/>
-  </changeSet>
-
-  <changeSet id="3-create-memo-stage-table" author="msucil">
-    <createTable tableName="memo_stage">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints primaryKey="true"/>
-      </column>
-      <column name="memo_id" type="BIGINT">
-        <constraints nullable="false"
-          foreignKeyName="fk_memo_stage_memo_id"
-          referencedColumnNames="id"
-          referencedTableName="memo"
-        />
-      </column>
-      <column name="sent_by" type="BIGINT">
-        <constraints nullable="false"
-          foreignKeyName="fk_memo_stage_sent_by_user_id"
-          referencedColumnNames="id"
-          referencedTableName="user"
-        />
-      </column>
-      <column name="sent_to" type="BIGINT">
-        <constraints nullable="false"
-          foreignKeyName="fk_memo_stage_sent_to_user_id"
-          referencedTableName="user"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="stage" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="note" type="TEXT"/>
-
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-  </changeSet>
-
-  <changeSet id="3-load-path-file" author="msucil">
-    <sqlFile path="data/patch.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-oauth-file" author="msucil">
-    <sqlFile path="data/oauth.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-permission-api-file" author="msucil">
-    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-province-file" author="msucil">
-    <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-permission-api-file" author="msucil">
-    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-district-file" author="msucil">
-    <sqlFile path="data/district.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-municipalityVdc-file" author="msucil">
-    <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-add-entry-for-memo-permission" author="msucil">
-    <sql>
-      INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (15,
-      'Memo', 'fa fa-user', '/home/memo', 62, 1);
-
-      INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-      VALUES (15 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 15, 1);
-    </sql>
-  </changeSet>
-  <changeSet id="3-add-nav-entry-for-memo-type" author="msucil">
-    <sql>
-      INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (16,
-      'Memo Type', 'fa fa-user', '/home/memo/type', 62, 1);
-
-      INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-      VALUES (16 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 16, 1);
-    </sql>
-  </changeSet>
-
-  <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
-    <sql>
-      INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
-      'Memo Type','/home/memo/type', 'fa fa-user',15);
-    </sql>
-  </changeSet>
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="5-create-hibernate_sequence" author="msucil">
+        <createTable tableName="hibernate_sequence">
+            <column name="next_val" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-populate-hibernate_sequence" author="msucil">
+        <insert tableName="hibernate_sequence">
+            <column name="next_val" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5-create-oauth-token-table" author="msucil">
+        <createTable tableName="oauth_access_token">
+            <column name="token_id" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="token" type="BLOB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="authentication_id" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_name" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="client_id" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="authentication" type="BLOB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="refresh_token" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="oauth_access_token" columnNames="authentication_id"/>
+
+        <createTable tableName="oauth_refresh_token">
+            <column name="token_id" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="token" type="BLOB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="authentication" type="BLOB">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-role-table" author="david">
+        <createTable tableName="role">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_name" type="VARCHAR(256)">
+                <constraints nullable=" false"
+                             unique="true"
+                             uniqueConstraintName="udx_role_role_name"
+                />
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="5-create-province" author="david">
+        <createTable tableName="province">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-district" author="david">
+        <createTable tableName="district">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_district_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-municipality-vdc" author="david">
+        <createTable tableName="municipality_vdc">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_municipality_vdc_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-branch" author="david">
+        <createTable tableName="branch">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable=" false"
+                             unique="true"
+                             uniqueConstraintName="udx_branch_name"
+                />
+            </column>
+            <column name="branch_code" type="VARCHAR(256)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_branch_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="address" type="VARCHAR(256)"/>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="ward_number" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-user-table" author="msucil">
+        <createTable tableName="user">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="user_name" type="VARCHAR(256)">
+                <constraints nullable=" false"
+                             unique="true"
+                             uniqueConstraintName="udx_user_username"
+                />
+            </column>
+            <column name="email" type="VARCHAR(256)">
+                <constraints nullable=" false"
+                             unique="true"
+                             uniqueConstraintName="udx_user_email"
+                />
+            </column>
+            <column name="password" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_user_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_user_branch_id"
+                             referencedTableName="branch"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="account_no" type="VARCHAR(256)"/>
+            <column name="signature_image" type="VARCHAR(256)"/>
+            <column name="profile_picture" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-foreign-key-in-user-table" author="david">
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="created_by_id"
+                                 constraintName="fk_user_created_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="modified_by_id"
+                                 constraintName="fk_user_modified_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+
+    <changeSet id="5-create-foreign-key-in-branch-table" author="david">
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="created_by_id"
+                                 constraintName="fk_branch_created_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="modified_by_id"
+                                 constraintName="fk_branch_modified_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-create-foreign-key-in-role-table" author="david">
+        <addForeignKeyConstraint baseTableName="role" baseColumnNames="created_by_id"
+                                 constraintName="fk_role_created_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="role" baseColumnNames="modified_by_id"
+                                 constraintName="fk_role_modified_by_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-create-rights" author="david">
+        <createTable tableName="rights">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rights" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-permission" author="david">
+        <createTable tableName="permission">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="permission_name" type="VARCHAR(256)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="udx_permission_permission_name"/>
+            </column>
+            <column name="front_url" type="VARCHAR(256)"/>
+            <column name="fa_icon" type="VARCHAR(256)"/>
+            <column name="orders" type="BIGINT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-sub-nav" author="david">
+        <createTable tableName="sub_nav">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sub_nav_name" type="VARCHAR(256)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="udx_sub_nav_sub_nav_name"/>
+            </column>
+            <column name="front_url" type="VARCHAR(256)"/>
+            <column name="fa_icon" type="VARCHAR(256)"/>
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sub-nav_permission_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-url-api" author="david">
+        <createTable tableName="url_api">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="api_url" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-permission-api-list" author="rujan">
+        <createTable tableName="permission_api_list">
+            <column name="permission_id" type="BIGINT">
+
+            </column>
+            <column name="api_list_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="permission_id"
+                                 baseTableName="permission_api_list"
+                                 constraintName="fk_permission_api_list_permission_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="permission"/>
+    </changeSet>
+
+    <changeSet id="5-permission-sub-navs" author="rujan">
+        <createTable tableName="permission_sub_navs">
+            <column name="permission_id" type="BIGINT">
+
+            </column>
+            <column name="sub_navs_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="permission_id"
+                                 baseTableName="permission_sub_navs"
+                                 constraintName="fk_permission_sub_navs_permission_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sub_nav"/>
+    </changeSet>
+
+    <changeSet id="5-create-role-permission-rights" author="david">
+        <createTable tableName="role_permission_rights">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_permission_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="del" type="boolean"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_permission_rights_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-role-permission-rights-api-rights" author="david">
+        <createTable tableName="role_permission_rights_api_rights">
+            <column name="role_permission_rights_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="api_rights_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="role_permission_rights_id"
+                                 baseTableName="role_permission_rights_api_rights"
+                                 constraintName="fk_role_permission_rights_api_rights_role_permission_rights_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="role_permission_rights"/>
+        <addForeignKeyConstraint baseColumnNames="api_rights_id"
+                                 baseTableName="role_permission_rights_api_rights"
+                                 constraintName="fk_role_permission_rights_api_rights_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="url_api"/>
+    </changeSet>
+
+    <changeSet id="5-create-company" author="david">
+        <createTable tableName="company">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="company_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_company_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_company_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4-create-nepse_company" author="david">
+        <createTable tableName="nepse_company">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="amount_per_unit" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_nepse_company_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_nepse_company_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-base_http" author="david">
+        <createTable tableName="base_http">
+            <column name="base_http_id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="base_url" type="VARCHAR(256)">
+                <constraints nullable=" false"/>
+            </column>
+            <column name="flag" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-loan_template" author="david">
+        <createTable tableName="loan_template">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_url" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_url" type="INT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_view" type="VARCHAR2(4000)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_template_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_template_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-sector" author="david">
+        <createTable tableName="sector">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sector_code" type="VARCHAR(256)"/>
+            <column name="sector_name" type="VARCHAR(256)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sector_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sector_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-sub-sector" author="david">
+        <createTable tableName="sub_sector">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sub_sector_code" type="VARCHAR(256)"/>
+            <column name="sub_sector_name" type="VARCHAR(256)"/>
+            <column name="sector_id" type="BIGINT"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sub_sector_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sub_sector_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="sector_id"
+                                 baseTableName="sub_sector"
+                                 constraintName="fk_sub_sector_sector_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sector"/>
+
+    </changeSet>
+
+    <changeSet id="5-create-segment" author="david">
+        <createTable tableName="segment">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="segment_name" type="VARCHAR(256)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_segment_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_segment_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-sub-segment" author="david">
+        <createTable tableName="sub_segment">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="is_funded" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sub_segment_name" type="VARCHAR(256)"/>
+            <column name="segment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sub_segment_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sub_segment_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="segment_id"
+                                 baseTableName="sub_segment"
+                                 constraintName="fk_sub_segment_segment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="segment"/>
+
+    </changeSet>
+
+
+    <changeSet id="5-create-valuator" author="david">
+        <createTable tableName="valuator">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)"/>
+            <column name="contact_no" type="VARCHAR(256)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="ward_number" type="VARCHAR(256)"/>
+            <column name="site_province_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_province_id"
+                             referencedTableName="province"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_municipality_vdc_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_site_municipality_vdc_id"
+                             referencedTableName="municipality_vdc"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_street_name" type="VARCHAR(256)"/>
+            <column name="site_ward_number" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_valuator_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-loan-config" author="david">
+        <createTable tableName="loan_config">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_fundable" type="boolean"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_renewable" type="boolean"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_config_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_config_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="5-create-sub-segment-loan-config" author="david">
+        <createTable tableName="sub_segment_loan_config">
+            <column name="sub_segment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="sub_segment_id"
+                                 baseTableName="sub_segment_loan_config"
+                                 constraintName="fk_sub_segment_loan_config_sub_segment_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sub_segment"/>
+        <addForeignKeyConstraint baseColumnNames="loan_config_id"
+                                 baseTableName="sub_segment_loan_config"
+                                 constraintName="fk_sub_segment_loan_config_list_loan_config_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_config"/>
+    </changeSet>
+
+    <changeSet id="5-create-document" author="david">
+        <createTable tableName="document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable=" false"
+                             unique="true"
+                             uniqueConstraintName="udx_document_name"
+                />
+            </column>
+            <column name="url" type="VARCHAR(256)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_document_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_document_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-loan-cycle" author="david">
+        <createTable tableName="loan_cycle">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="cycle" type="VARCHAR(256)">
+                <constraints nullable=" false"/>
+            </column>
+            <column name="label" type="VARCHAR2(1000)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_cycle_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_cycle_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-document-loan-cycle" author="msucil">
+        <createTable tableName="document_loan_cycle">
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loan_cycle_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="document_id"
+                                 baseTableName="document_loan_cycle"
+                                 constraintName="fk_document_loan_cycle_document_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="document"/>
+        <addForeignKeyConstraint baseColumnNames="loan_cycle_id"
+                                 baseTableName="document_loan_cycle"
+                                 constraintName="fk_document_loan_cycle_loan_cycle_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_cycle"/>
+    </changeSet>
+
+    <changeSet id="5-create-loan-config-template-list" author="david">
+        <createTable tableName="loan_config_template_list">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_list_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="loan_config_id"
+                                 baseTableName="loan_config_template_list"
+                                 constraintName="fk_loan_config_template_list_loan_config_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_config"/>
+        <addForeignKeyConstraint baseColumnNames="template_list_id"
+                                 baseTableName="loan_config_template_list"
+                                 constraintName="fk_loan_config_template_list_template_list_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_template"/>
+    </changeSet>
+
+    <changeSet id="5-create-loan-config-initial" author="david">
+        <createTable tableName="loan_config_initial">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="initial_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="loan_config_id"
+                                 baseTableName="loan_config_initial"
+                                 constraintName="fk_loan_config_initial_loan_config_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_config"/>
+        <addForeignKeyConstraint baseColumnNames="initial_id"
+                                 baseTableName="loan_config_initial"
+                                 constraintName="fk_loan_config_initial_initial_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="document"/>
+    </changeSet>
+
+    <changeSet id="5-create-loan-config-renew" author="david">
+        <createTable tableName="loan_config_renew">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="renew_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="loan_config_id"
+                                 baseTableName="loan_config_renew"
+                                 constraintName="fk_loan_config_renew_loan_config_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_config"/>
+        <addForeignKeyConstraint baseColumnNames="renew_id"
+                                 baseTableName="loan_config_renew"
+                                 constraintName="fk_loan_config_renew_renew_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="document"/>
+    </changeSet>
+
+    <changeSet id="5-create-approval-limit" author="david">
+        <createTable tableName="approval_limit">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="amount" type="DOUBLE"/>
+            <column name="loan_approval_type" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="loan_category_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval-limit_loan_category_id"
+                             referencedTableName="loan_config"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="authorities_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval-limit_authorities_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval_limit_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval_limit_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="5-create-customer" author="david">
+        <createTable tableName="customer">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(256)"/>
+            <column name="customer_name" type="VARCHAR(256)"/>
+            <column name="account_no" type="VARCHAR(256)"/>
+            <column name="province" type="VARCHAR(256)"/>
+            <column name="district" type="VARCHAR(256)"/>
+            <column name="municipalities_or_vdc" type="VARCHAR(256)"/>
+            <column name="telephone" type="VARCHAR(256)"/>
+            <column name="mobile" type="VARCHAR(256)"/>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="citizenship_number" type="VARCHAR(256)"/>
+            <column name="initial_relation_date" type="DATE"/>
+            <column name="citizenship_issued_date" type="DATE"/>
+            <column name="issued_place" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-customer-relative" author="david">
+        <createTable tableName="customer_relative">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(256)"/>
+            <column name="customer_relative" type="VARCHAR(256)"/>
+            <column name="customer_relative_name" type="VARCHAR(256)"/>
+            <column name="citizenship_number" type="VARCHAR(256)"/>
+            <column name="citizenship_issued_date" type="DATE"/>
+            <column name="citizenship_issued_place" type="VARCHAR(256)"/>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_customer_relative_customer_id"
+                             referencedTableName="customer"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_relative_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_relative_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-capital" author="david">
+        <createTable tableName="capital">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="authorized_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="paid_up_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issued_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fixed_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="working_capital" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_shareholder" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_capital_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_capital_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-legal-status" author="david">
+        <createTable tableName="legal_status">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="company_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corporate_structure" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registered_office" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registered_under_act" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_no" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pan_registration_office" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pan_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pan_registration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_legal_status_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_legal-status_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-swot" author="david">
+        <createTable tableName="swot">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="strength" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weakness" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="opportunity" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="threats" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_swot_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_swot_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-entity_info" author="david">
+        <createTable tableName="entity_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="legal_status_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capital_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="swot_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_entity_info_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_entity_info_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="entity_info"
+                                 baseColumnNames="capital_id"
+                                 constraintName="fk_entity_info_capital_id"
+                                 referencedTableName="capital"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="entity_info"
+                                 baseColumnNames="legal_status_id"
+                                 constraintName="fk_entity_info_legal_status_id"
+                                 referencedTableName="legal_status"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="entity_info"
+                                 baseColumnNames="swot_id"
+                                 constraintName="fk_entity_info_swot_id"
+                                 referencedTableName="swot"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-create-management-team" author="david">
+        <createTable tableName="management_team">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_management_team_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_management_team_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="management_team"
+                                 baseColumnNames="entity_info_id"
+                                 constraintName="fk_management_entity_info_id"
+                                 referencedTableName="entity_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-create-proprietor" author="david">
+        <createTable tableName="proprietor">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_no" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="share" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_proprietor_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_proprietor_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="proprietor"
+                                 baseColumnNames="entity_info_id"
+                                 constraintName="fk_proprietor_entity_info_id"
+                                 referencedTableName="entity_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="6-create-client-info-table" author="anil">
+        <createTable tableName="client_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="citizenship_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="security" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_client_info_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_client_info_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6-create-client-document-table" author="anil">
+        <createTable tableName="client_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="client_document"
+                                 baseColumnNames="client_info_id"
+                                 constraintName="fk_client_document_client_info_id"
+                                 referencedTableName="client_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="3-create-memo-type-table" author="msucil">
+        <createTable tableName="memo_type">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3-create-memo-table" author="msucil">
+        <createTable tableName="memo">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference_number" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="subject" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_by" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_to" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stage" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="memo_type_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_memo_type_id"
+                             referencedTableName="memo_type"
+                             referencedColumnNames="id"
+                />
+            </column>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3-create-memo-cc-user-table" author="msucil">
+        <createTable tableName="memo_cc_user">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="memo_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="user_id"
+                                 constraintName="fk_memo_cc_user_user_id"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="memo_id"
+                                 constraintName="fk_memo_cc_user_memo_id"
+                                 referencedTableName="memo" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3-create-memo-bcc-user-table" author="msucil">
+        <createTable tableName="memo_bcc_user">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="memo_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="user_id"
+                                 constraintName="fk_memo_bcc_user_user_id"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="memo_id"
+                                 constraintName="fk_memo_bcc_user_memo_id"
+                                 referencedTableName="memo" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3-create-memo-stage-table" author="msucil">
+        <createTable tableName="memo_stage">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="memo_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_memo_stage_memo_id"
+                             referencedColumnNames="id"
+                             referencedTableName="memo"
+                />
+            </column>
+            <column name="sent_by" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_memo_stage_sent_by_user_id"
+                             referencedColumnNames="id"
+                             referencedTableName="user"
+                />
+            </column>
+            <column name="sent_to" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_memo_stage_sent_to_user_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="stage" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="TEXT"/>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3-load-path-file" author="msucil">
+        <sqlFile path="data/patch.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-load-oauth-file" author="msucil">
+        <sqlFile path="data/oauth.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-load-permission-api-file" author="msucil">
+        <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-load-province-file" author="msucil">
+        <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-load-district-file" author="msucil">
+        <sqlFile path="data/district.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-load-municipalityVdc-file" author="msucil">
+        <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3-add-entry-for-memo-permission" author="msucil">
+        <sql>
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (15,
+            'Memo', 'fa fa-user', '/home/memo', 62, 1);
+
+            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+            VALUES (15 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 15, 1);
+        </sql>
+    </changeSet>
+    <changeSet id="3-add-nav-entry-for-memo-type" author="msucil">
+        <sql>
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (16,
+            'Memo Type', 'fa fa-user', '/home/memo/type', 62, 1);
+
+            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+            VALUES (16 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 16, 1);
+        </sql>
+    </changeSet>
+
+    <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
+        <sql>
+            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
+            'Memo Type','/home/memo/type', 'fa fa-user',15);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
