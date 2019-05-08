@@ -17,6 +17,7 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
+
     private final CompanyRepository companyRepository;
 
     @Override
