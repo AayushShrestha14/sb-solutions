@@ -1672,14 +1672,14 @@
 
 
 
-  <changeSet id="5-create-opening_form" author="david">
+  <changeSet id="13-create-opening_form" author="david">
     <createTable tableName="opening_form">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="branch_id" type="BIGINT">
         <constraints nullable="false"
-                     foreignKeyName="fk_opening_form_brach_id"
+                     foreignKeyName="fk_opening_form_branch_id"
                      referencedTableName="branch"
                      referencedColumnNames="id"/>
       </column>
