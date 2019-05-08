@@ -33,7 +33,6 @@ public class DocumentController {
 
         Document doc = documentService.save(document);
         if(doc != null){
-
             return new RestResponseDto().successModel(doc);
         }else{
             return new RestResponseDto().failureModel("Error Occurred");

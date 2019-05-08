@@ -38,3 +38,6 @@ management:
       enabled: true
     restart:
       enabled: true
+
+file:
+  upload-directory: Z:/
