@@ -1,10 +1,7 @@
 package com.sb.solutions.api.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.beneficiary.entity.Beneficiary;
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.kyc.entity.Kyc;
-import com.sb.solutions.api.nominee.entity.Nominee;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -14,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -22,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "customer")
-public class Customer extends BaseEntity<Long>{
+public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
     private String accountNo;

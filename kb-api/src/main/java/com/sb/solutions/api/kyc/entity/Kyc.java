@@ -1,18 +1,14 @@
-
 package com.sb.solutions.api.kyc.entity;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
-import com.sb.solutions.api.occupationalDetails.entity.OccupationalDetails;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -28,7 +24,6 @@ public class Kyc extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "kyc", fetch = FetchType.LAZY)
     private Set<CustomerRelative> customerRelatives;
-
 
 
 }
