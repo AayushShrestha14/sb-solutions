@@ -12,7 +12,10 @@ import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,14 +47,22 @@ public class UserServiceImpl implements UserService {
     public User getAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User userDetail = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User u = this.getByUsername(userDetail.getUsername());
-            return u;
+
+        if (authentication.getPrincipal() instanceof User) {
+
+            Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            authorities.add(new SimpleGrantedAuthority("test"));
+            UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = (User) authentication.getPrincipal();
+            return user;
         } else {
-            throw new UsernameNotFoundException("User is not authenticated; Found " + authentication.getPrincipal() + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
+            throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
         }
     }
+
 
     @Override
     public User getByUsername(String username) {
@@ -106,4 +117,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.getUsersByUserName(username);
+    }
 }

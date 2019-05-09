@@ -8,7 +8,7 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
+    url: jdbc:mysql://localhost:3306/cp_master1
     username: root
     password:
 
@@ -18,7 +18,8 @@ spring:
 
   queries:
       users-query: select user_name, password, status from user where user_name=?
-      roles-query: select u.user_name, r.role_name from user u join role r on r.id = u.role_id where u.user_name=?
+      roles-query: select u.user_name, a.type from user u join role r left join role_permission_rights rpr on rpr.role_id = r.id left join role_permission_rights_api_rights rprar on rprar.role_permission_rights_id=rpr.id left join url_api a on rprar.api_rights_id = a.id where (a.type is not null and u.user_name=? );
+
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
 
