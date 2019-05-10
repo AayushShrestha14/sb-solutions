@@ -1,8 +1,5 @@
 package com.sb.solutions.api.openingForm.entity;
 
-import com.sb.solutions.api.address.district.entity.District;
-import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
-import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
