@@ -67,8 +67,8 @@ public class OpeningCustomer {
     private String panNo;
     private String salariedEmployedWith;
     private String selfEmployedWith;
-    private int annualTurnover;
-    private int annualTransaction;
+    private double annualTurnover;
+    private double annualTransaction;
     private boolean isAccountInAnotherBank;
     private String bankName;
     private String education;

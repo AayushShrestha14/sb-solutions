@@ -14,8 +14,15 @@ import java.util.Date;
 @NoArgsConstructor
 public class DateValidation {
     private Data date;
-    public boolean checkDate(Date date){
+    public boolean checkDateBefore(Date date){
         if(date.after(new Date())){
+            throw new ApiException("Invalid Date");
+        }else {
+            return true;
+        }
+    }
+    public boolean checkDateAfter(Date date){
+        if(date.before(new Date())){
             throw new ApiException("Invalid Date");
         }else {
             return true;
