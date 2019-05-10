@@ -28,8 +28,9 @@ public class AccountOpeningController {
     private UploadFile uploadFile;
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
+        System.out.println(openingForm.getOpeningCustomers().size());
+        System.out.println(openingForm.getOpeningCustomers().toString());
         globalExceptionHandler.constraintValidation(bindingResult);
-        gson.toJson(openingForm);
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
             return new RestResponseDto().failureModel("Error Occurs");
@@ -54,6 +55,9 @@ public class AccountOpeningController {
     }
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
+        System.out.println(type);
+        System.out.println(name);
+        System.out.println(branch);
         return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
 }

@@ -1,5 +1,6 @@
 package com.sb.solutions.core.dateValidation;
 
+import com.sb.solutions.core.exception.ApiException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,7 @@ public class DateValidation {
     private Data date;
     public boolean checkDate(Date date){
         if(date.after(new Date())){
-            System.out.println("Invalid date");
-            return false;
+            throw new ApiException("Invalid Date");
         }else {
             return true;
         }

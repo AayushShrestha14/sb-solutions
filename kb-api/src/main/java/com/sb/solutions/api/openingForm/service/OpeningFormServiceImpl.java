@@ -32,41 +32,52 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm save(OpeningForm openingForm) {
         for(OpeningCustomer openingCustomer: openingForm.getOpeningCustomers()){
-            if(!dateValidation.checkDate(openingCustomer.getDateOfBirthAD())){
-                throw new ApiException("Invalid Date of Birth of Customer");
+            if(openingCustomer.getDateOfBirthAD() != null){
+                dateValidation.checkDate(openingCustomer.getDateOfBirthAD());
+                //throw new ApiException("Invalid Date of Birth of Customer");
             }
-            if(dateValidation.checkDate(openingCustomer.getCitizenIssuedDate())){
-                throw new ApiException("Invalid Citizen Issued Date of Customer");
+            if(openingCustomer.getCitizenIssuedDate() != null){
+                dateValidation.checkDate(openingCustomer.getCitizenIssuedDate());
+                //throw new ApiException("Invalid Citizen Issued Date of Customer");
             }
-            if(dateValidation.checkDate(openingCustomer.getPassportIssuedDate())){
-                throw new ApiException("Invalid Password Issued Date of Customer");
+            if(openingCustomer.getPassportIssuedDate() != null){
+                dateValidation.checkDate(openingCustomer.getPassportIssuedDate());
+                //throw new ApiException("Invalid Password Issued Date of Customer");
             }
-            if(!dateValidation.checkDate(openingCustomer.getPassportExpireDate())){
-                throw new ApiException("Invalid Passport Expire Date of Customer");
+            if(openingCustomer.getPassportExpireDate()!= null){
+                dateValidation.checkDate(openingCustomer.getPassportExpireDate());
+                //throw new ApiException("Invalid Passport Expire Date of Customer");
             }
-            if(dateValidation.checkDate(openingCustomer.getIdCardIssuedDate())){
-                throw new ApiException("Invalid Id Issued Date of Customer");
+            if(openingCustomer.getIdCardIssuedDate() != null){
+                dateValidation.checkDate(openingCustomer.getIdCardIssuedDate());
+                //throw new ApiException("Invalid Id Issued Date of Customer");
             }
-            if(!dateValidation.checkDate(openingCustomer.getIdCardExpireDate())){
-                throw new ApiException("Invalid Id Expire Date of Customer");
+            if(openingCustomer.getIdCardExpireDate() != null){
+                dateValidation.checkDate(openingCustomer.getIdCardExpireDate());
+                //throw new ApiException("Invalid Id Expire Date of Customer");
             }
-            if(dateValidation.checkDate(openingCustomer.getVisaIssueDate())){
-                throw new ApiException("Invalid Visa Issued Date of Customer");
+            if(openingCustomer.getVisaIssueDate() != null){
+                dateValidation.checkDate(openingCustomer.getVisaIssueDate());
+                //throw new ApiException("Invalid Visa Issued Date of Customer");
             }
-            if(!dateValidation.checkDate(openingCustomer.getVisaValidity())){
-                throw new ApiException("Invalid Visa Validity Date of Customer");
+            if(openingCustomer.getVisaValidity() != null){
+                dateValidation.checkDate(openingCustomer.getVisaValidity());
+                //throw new ApiException("Invalid Visa Validity Date of Customer");
             }
-            if(!dateValidation.checkDate(openingCustomer.getNominee().getDateOfBirth())){
-                throw new ApiException("Invalid Date of Birth of Nominee");
-            }
-            for(OpeningBeneficiary openingBeneficiary: openingCustomer.getBeneficiaries()){
-                if(!dateValidation.checkDate(openingBeneficiary.getDateOfBirth())){
-                    throw new ApiException("Invalid Date of Birth of Beneficiaries");
+            for(OpeningNominee openingNominee: openingCustomer.getNominees()){
+                if(openingNominee.getDateOfBirth() != null){
+                    dateValidation.checkDate(openingNominee.getDateOfBirth());
+                    //throw new ApiException("Invalid Date of Birth of Nominee");
                 }
             }
+            if(openingCustomer.getBeneficiary().getDateOfBirth() != null){
+                dateValidation.checkDate(openingCustomer.getBeneficiary().getDateOfBirth());
+                //throw new ApiException("Invalid Date of Birth of Beneficiaries");
+            }
             for(OpeningCustomerRelative openingCustomerRelative: openingCustomer.getKyc().getCustomerRelatives()){
-                if(dateValidation.checkDate(openingCustomerRelative.getCitizenshipIssuedDate())){
-                    throw new ApiException("Invalid Citizen Issued Date of Customer Relative");
+                if(openingCustomerRelative.getCitizenshipIssuedDate() != null){
+                    dateValidation.checkDate(openingCustomerRelative.getCitizenshipIssuedDate());
+                    //throw new ApiException("Invalid Citizen Issued Date of Customer Relative");
                 }
             }
         }

@@ -30,7 +30,9 @@ public class UploadFile {
         else if(multipartFile.getSize()>409600){
             return new RestResponseDto().failureModel("Image Size more than 400kb");
         }
-        if(!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") || !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")){
+        if(FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") || FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")){
+            //return new RestResponseDto().failureModel("Invalid file format");
+        }else{
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
@@ -42,6 +44,7 @@ public class UploadFile {
                 new File(url).mkdirs();
             }
             String imagePath;
+            System.out.println(type);
             if(type.equals("citizen")){
                 imagePath = url + name +"_"+System.currentTimeMillis()+"_citizen.jpg";
             }
