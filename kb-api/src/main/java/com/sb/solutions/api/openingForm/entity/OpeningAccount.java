@@ -12,6 +12,7 @@ import java.util.Set;
 public class OpeningAccount {
     private String accountType;
     private String accountNo;
+    private String proposeOfAccount;
     private String currency; private boolean isJoint;
     private boolean haveNominee;
     private boolean haveBeneficiary;
