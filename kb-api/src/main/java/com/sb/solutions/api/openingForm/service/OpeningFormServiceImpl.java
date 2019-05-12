@@ -8,7 +8,9 @@ import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dateValidation.DateValidation;
+import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ApiException;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +46,10 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm save(OpeningForm openingForm) {
         String jsonPath = "";
-        openingForm.setRequestedDate(new Date());
+        if(openingForm.getId() ==  null) {
+            openingForm.setRequestedDate(new Date());
+            openingForm.getOpeningAccount().setAccountStatus(AccountStatus.NEW_REQUESTED);
+        }
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if(openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null){
             if(!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
