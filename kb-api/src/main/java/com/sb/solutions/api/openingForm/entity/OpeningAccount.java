@@ -12,10 +12,15 @@ import java.util.Set;
 public class OpeningAccount {
     private String accountType;
     private String accountNo;
-    private String currency; private boolean isJoint;
+    private String currency;
+    private boolean isJoint;
     private boolean haveNominee;
     private boolean haveBeneficiary;
     private OpeningNominee nominee;
     private OpeningBeneficiary beneficiary;
     private Set<OpeningCustomer> openingCustomers;
+    private double annualTurnover;
+    private double annualTransaction;
+    private boolean isAccountInAnotherBank;
+    private String bankName;
 }
