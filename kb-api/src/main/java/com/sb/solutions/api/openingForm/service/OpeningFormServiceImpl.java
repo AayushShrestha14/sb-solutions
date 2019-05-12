@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -35,24 +36,9 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public OpeningForm findOne(Long id) {
-        String jsonCustomerData;
         OpeningForm openingForm =  openingFormRepository.getOne(id);
-        try {
-            FileReader fileReader = new  FileReader(openingForm.getCustomerDetailsJson());
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            FileInputStream fileInputStream = new FileInputStream(openingForm.getCustomerDetailsJson());
-            byte[] crunchifyValue = new byte[(int) openingForm.getCustomerDetailsJson().length()];
-            fileInputStream.read(crunchifyValue);
-            fileInputStream.close();
-            System.out.println("---------------------------------------------");
-            String fileContent = new String(crunchifyValue, "UTF-8");
-            System.out.println(fileContent);
-            System.out.println("---------------------------------------------");
-            bufferedReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return openingFormRepository.getOne(id);
+        openingForm.setOpeningAccount(convertJson(openingForm.getCustomerDetailsJson()));
+        return openingForm;
     }
 
     @Override
@@ -148,13 +134,24 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public Page<OpeningForm> findAllByBranch(Branch branch, Pageable pageable) {
         Page<OpeningForm> openingForms = openingFormRepository.findAllByBranch(branch, pageable);
         for(OpeningForm openingForm: openingForms){
-            try {
-                FileReader fileReader = new  FileReader(openingForm.getCustomerDetailsJson());
-                System.out.println(fileReader.toString());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            openingForm.setOpeningAccount(convertJson(openingForm.getCustomerDetailsJson()));
         }
         return openingForms;
+    }
+
+    public OpeningAccount convertJson(String path){
+        StringBuffer jsonCustomerData = new StringBuffer();
+        try{
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+            String line;
+            while((line =bufferedReader.readLine())!=null){
+                jsonCustomerData.append(line);
+            }
+            Gson g = new Gson();
+            OpeningAccount openingAccount = g.fromJson(jsonCustomerData.toString(), OpeningAccount.class);
+            return openingAccount;
+        }catch (Exception e) {
+            throw new ApiException(e.toString());
+        }
     }
 }
