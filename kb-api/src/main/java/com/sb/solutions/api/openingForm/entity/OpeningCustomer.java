@@ -58,6 +58,7 @@ public class OpeningCustomer {
     private String panNo;
     private String salariedEmployedWith;
     private String selfEmployedWith;
+    private String otherSourceOfIncome;
     private String education;
     private String map;
     private boolean isUsResident;
