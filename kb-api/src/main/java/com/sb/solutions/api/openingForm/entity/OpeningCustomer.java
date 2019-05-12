@@ -24,7 +24,7 @@ public class OpeningCustomer {
     private boolean isJoint;
     private boolean haveNominee;
     private boolean haveBeneficiary;
-    private Set<OpeningNominee> nominees;
+    private OpeningNominee nominee;
     private OpeningBeneficiary beneficiary;
     private OpeningKyc kyc;
     private String permanentProvince;

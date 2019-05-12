@@ -44,7 +44,6 @@ public class UploadFile {
                 new File(url).mkdirs();
             }
             String imagePath;
-            System.out.println(type);
             if(type.equals("citizen")){
                 imagePath = url + name +"_"+System.currentTimeMillis()+"_citizen.jpg";
             }
@@ -59,7 +58,6 @@ public class UploadFile {
             }
             path = Paths.get(imagePath);
             Files.write(path, bytes);
-            System.out.println(imagePath);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
             e.printStackTrace();

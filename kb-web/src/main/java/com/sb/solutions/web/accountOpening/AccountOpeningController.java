@@ -1,6 +1,5 @@
 package com.sb.solutions.web.accountOpening;
 
-import com.google.gson.Gson;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.service.OpeningFormService;
@@ -24,12 +23,9 @@ import javax.validation.Valid;
 public class AccountOpeningController {
     private OpeningFormService openingFormService;
     private GlobalExceptionHandler globalExceptionHandler;
-    private Gson gson;
     private UploadFile uploadFile;
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
-        System.out.println(openingForm.getOpeningCustomers().size());
-        System.out.println(openingForm.getOpeningCustomers().toString());
         globalExceptionHandler.constraintValidation(bindingResult);
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
@@ -55,9 +51,6 @@ public class AccountOpeningController {
     }
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
-        System.out.println(type);
-        System.out.println(name);
-        System.out.println(branch);
         return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
 }
