@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -18,14 +17,6 @@ public class OpeningCustomer {
     private String proposeOfAccount;
     private String maritalStatus;
     private String gender;
-    private String accountType;
-    private String accountNo;
-    private String currency;
-    private boolean isJoint;
-    private boolean haveNominee;
-    private boolean haveBeneficiary;
-    private OpeningNominee nominee;
-    private OpeningBeneficiary beneficiary;
     private OpeningKyc kyc;
     private String permanentProvince;
     private String permanentDistrict;
@@ -67,10 +58,6 @@ public class OpeningCustomer {
     private String panNo;
     private String salariedEmployedWith;
     private String selfEmployedWith;
-    private double annualTurnover;
-    private double annualTransaction;
-    private boolean isAccountInAnotherBank;
-    private String bankName;
     private String education;
     private String map;
     private boolean internetBanking;

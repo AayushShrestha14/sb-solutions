@@ -27,5 +27,9 @@ public class OpeningForm {
     @Column(columnDefinition = "text")
     private String customerDetailsJson;
     @Transient
-    private Set<OpeningCustomer> openingCustomers;
+    private OpeningAccount openingAccount;
+    private double annualTurnover;
+    private double annualTransaction;
+    private boolean isAccountInAnotherBank;
+    private String bankName;
 }

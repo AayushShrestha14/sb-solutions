@@ -44,7 +44,17 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         String jsonPath = "";
         openingForm.setRequestedDate(new Date());
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
-        for(OpeningCustomer openingCustomer: openingForm.getOpeningCustomers()){
+        if(openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null){
+            if(!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
+                throw new ApiException("Invalid Date of Birth of Nominee");
+            }
+        }
+        if(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth() != null){
+            if(!dateValidation.checkDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
+                throw new ApiException("Invalid Date of Birth of Beneficiaries");
+            }
+        }
+        for(OpeningCustomer openingCustomer: openingForm.getOpeningAccount().getOpeningCustomers()){
             if(openingCustomer.getDateOfBirthAD() != null){
                 if(!dateValidation.checkDate(openingCustomer.getDateOfBirthAD())) {
                     throw new ApiException("Invalid Date of Birth of Customer");
@@ -85,16 +95,6 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                     throw new ApiException("Invalid Visa Validity Date of Customer");
                 }
             }
-            if(openingCustomer.getNominee().getDateOfBirth() != null){
-                if(!dateValidation.checkDate(openingCustomer.getNominee().getDateOfBirth())) {
-                    throw new ApiException("Invalid Date of Birth of Nominee");
-                }
-            }
-            if(openingCustomer.getBeneficiary().getDateOfBirth() != null){
-                if(!dateValidation.checkDate(openingCustomer.getBeneficiary().getDateOfBirth())) {
-                    throw new ApiException("Invalid Date of Birth of Beneficiaries");
-                }
-            }
             for(OpeningCustomerRelative openingCustomerRelative: openingCustomer.getKyc().getCustomerRelatives()){
                 if(openingCustomerRelative.getCitizenshipIssuedDate() != null){
                     if(!dateValidation.checkDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
@@ -114,7 +114,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             File file = new File(jsonPath);
             file.getParentFile().mkdirs();
             FileWriter writer = new FileWriter(file);
-            writer.write(gson.toJson(openingForm.getOpeningCustomers()));
+            writer.write(gson.toJson(openingForm.getOpeningAccount()));
             writer.flush();
         }catch (Exception exception){
 
