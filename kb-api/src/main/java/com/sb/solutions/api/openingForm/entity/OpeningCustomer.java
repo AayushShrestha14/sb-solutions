@@ -61,16 +61,16 @@ public class OpeningCustomer {
     private String otherSourceOfIncome;
     private String education;
     private String map;
-    private boolean isUsResident;
-    private boolean isUsCitizen;
-    private boolean isGreenCardHolder;
-    private boolean isExposeToPep;
+    private boolean usResident;
+    private boolean usCitizen;
+    private boolean greenCardHolder;
+    private boolean exposeToPep;
     private String pepName;
     private String pepRelationToYou;
-    private boolean isConvictedOfCrime;
+    private boolean convictedOfCrime;
     private String convictedCrime;
     private boolean residentialPermitOfForeign;
     private String residentialPermitOfForeignType;
-    private boolean isAccountInAnotherBank;
+    private boolean accountInAnotherBank;
     private String bankName;
 }

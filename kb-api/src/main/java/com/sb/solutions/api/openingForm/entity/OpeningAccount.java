@@ -15,7 +15,7 @@ public class OpeningAccount {
     private String accountNo;
     private String proposeOfAccount;
     private String currency;
-    private boolean isJoint;
+    private boolean haveJoint;
     private boolean haveNominee;
     private boolean haveBeneficiary;
     private OpeningNominee nominee;
