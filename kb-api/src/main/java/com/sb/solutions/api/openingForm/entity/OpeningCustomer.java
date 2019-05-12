@@ -60,11 +60,6 @@ public class OpeningCustomer {
     private String selfEmployedWith;
     private String education;
     private String map;
-    private boolean internetBanking;
-    private boolean mobileBanking;
-    private boolean debitCard;
-    private String statementOnEvery;
-    private String statementMode;
     private boolean isUsResident;
     private boolean isUsCitizen;
     private boolean isGreenCardHolder;
@@ -75,4 +70,6 @@ public class OpeningCustomer {
     private String convictedCrime;
     private boolean residentialPermitOfForeign;
     private String residentialPermitOfForeignType;
+    private boolean isAccountInAnotherBank;
+    private String bankName;
 }

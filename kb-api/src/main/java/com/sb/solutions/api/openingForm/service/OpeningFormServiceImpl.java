@@ -14,8 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +35,23 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public OpeningForm findOne(Long id) {
+        String jsonCustomerData;
+        OpeningForm openingForm =  openingFormRepository.getOne(id);
+        try {
+            FileReader fileReader = new  FileReader(openingForm.getCustomerDetailsJson());
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            FileInputStream fileInputStream = new FileInputStream(openingForm.getCustomerDetailsJson());
+            byte[] crunchifyValue = new byte[(int) openingForm.getCustomerDetailsJson().length()];
+            fileInputStream.read(crunchifyValue);
+            fileInputStream.close();
+            System.out.println("---------------------------------------------");
+            String fileContent = new String(crunchifyValue, "UTF-8");
+            System.out.println(fileContent);
+            System.out.println("---------------------------------------------");
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return openingFormRepository.getOne(id);
     }
 
@@ -130,6 +146,15 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public Page<OpeningForm> findAllByBranch(Branch branch, Pageable pageable) {
-        return openingFormRepository.findAllByBranch(branch, pageable);
+        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranch(branch, pageable);
+        for(OpeningForm openingForm: openingForms){
+            try {
+                FileReader fileReader = new  FileReader(openingForm.getCustomerDetailsJson());
+                System.out.println(fileReader.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return openingForms;
     }
 }

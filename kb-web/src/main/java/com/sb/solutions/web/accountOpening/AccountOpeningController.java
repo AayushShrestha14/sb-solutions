@@ -53,4 +53,8 @@ public class AccountOpeningController {
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
         return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
+    @GetMapping(value = "/uploadFile")
+    public ResponseEntity<?> getById(@RequestParam("id") Long id) {
+        return new RestResponseDto().successModel(openingFormService.findOne(id));
+    }
 }

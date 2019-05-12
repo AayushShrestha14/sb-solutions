@@ -28,8 +28,4 @@ public class OpeningForm {
     private String customerDetailsJson;
     @Transient
     private OpeningAccount openingAccount;
-    private double annualTurnover;
-    private double annualTransaction;
-    private boolean isAccountInAnotherBank;
-    private String bankName;
 }
