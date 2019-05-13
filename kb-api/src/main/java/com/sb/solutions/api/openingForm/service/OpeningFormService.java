@@ -7,5 +7,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface OpeningFormService extends BaseService<OpeningForm> {
-    Page<OpeningForm> findAllByBranch(Branch branch, Pageable pageable);
+    Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus);
 }

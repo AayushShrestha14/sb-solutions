@@ -46,9 +46,10 @@ public class AccountOpeningController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/get")
-    public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(openingFormService.findAllByBranch(branch, PaginationUtils.pageable(page, size)));
+    public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("accountStatus") String accountStatus) {
+        return new RestResponseDto().successModel(openingFormService.findAllByBranchAndAccountStatus(branch, PaginationUtils.pageable(page, size), accountStatus));
     }
+
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
         return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);

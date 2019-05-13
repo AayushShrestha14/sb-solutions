@@ -1683,6 +1683,9 @@
                      referencedTableName="branch"
                      referencedColumnNames="id"/>
       </column>
+      <column name="account_status" type="INT">
+        <constraints nullable="false"/>
+      </column>
       <column name="full_name" type="VARCHAR(256)"/>
       <column name="requested_date" type="DATE"/>
       <column name="customer_details_json" type="TEXT"/>

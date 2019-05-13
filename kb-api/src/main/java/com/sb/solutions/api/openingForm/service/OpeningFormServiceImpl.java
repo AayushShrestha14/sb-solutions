@@ -10,7 +10,6 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dateValidation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ApiException;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,9 +44,9 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm save(OpeningForm openingForm) {
         String jsonPath = "";
-        if(openingForm.getId() ==  null) {
+        if(openingForm.getId() == null) {
             openingForm.setRequestedDate(new Date());
-            openingForm.getOpeningAccount().setAccountStatus(AccountStatus.NEW_REQUESTED);
+            openingForm.setAccountStatus(AccountStatus.NEW_REQUEST);
         }
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if(openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null){
@@ -135,8 +134,9 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     }
 
     @Override
-    public Page<OpeningForm> findAllByBranch(Branch branch, Pageable pageable) {
-        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranch(branch, pageable);
+    public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus) {
+        AccountStatus a = AccountStatus.valueOf(accountStatus);
+        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranchAndAccountStatus(branch, pageable, a);
         for(OpeningForm openingForm: openingForms){
             openingForm.setOpeningAccount(convertJson(openingForm.getCustomerDetailsJson()));
         }

@@ -1,6 +1,7 @@
 package com.sb.solutions.api.openingForm.entity;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.enums.AccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class OpeningForm {
     private Branch branch;
     private Date requestedDate;
     private String fullName;
+    private AccountStatus accountStatus;
     @Column(columnDefinition = "text")
     private String customerDetailsJson;
     @Transient

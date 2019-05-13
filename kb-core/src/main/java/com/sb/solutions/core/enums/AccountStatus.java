@@ -1,7 +1,7 @@
 package com.sb.solutions.core.enums;
 
 public enum AccountStatus {
-    NEW_REQUESTED("New Request"), APPROVAL("Approval"), REJECTED("Rejected");
+    NEW_REQUEST("New Request"), APPROVAL("Approval"), REJECTED("Rejected");
 
     private final String value;
 
