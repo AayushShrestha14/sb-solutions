@@ -24,6 +24,7 @@ public class AccountOpeningController {
     private OpeningFormService openingFormService;
     private GlobalExceptionHandler globalExceptionHandler;
     private UploadFile uploadFile;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
@@ -45,7 +46,7 @@ public class AccountOpeningController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @RequestMapping(method = RequestMethod.POST, path = "/get")
+    @PostMapping(value = "/get")
     public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("accountStatus") String accountStatus) {
         return new RestResponseDto().successModel(openingFormService.findAllByBranchAndAccountStatus(branch, PaginationUtils.pageable(page, size), accountStatus));
     }
