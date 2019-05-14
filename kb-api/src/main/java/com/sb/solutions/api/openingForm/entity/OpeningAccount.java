@@ -12,7 +12,7 @@ import java.util.Set;
 public class OpeningAccount {
     private String accountType;
     private String accountNo;
-    private String proposeOfAccount;
+    private String purposeOfAccount;
     private String currency;
     private boolean haveJoint;
     private boolean haveNominee;
@@ -25,7 +25,7 @@ public class OpeningAccount {
     private boolean internetBanking;
     private boolean mobileBanking;
     private boolean debitCard;
-    private String statementOnEvery;
+    private String statementFrequency;
     private String statementMode;
 
 }
