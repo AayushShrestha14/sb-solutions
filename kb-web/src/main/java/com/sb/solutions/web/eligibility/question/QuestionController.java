@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/companies/{companyId}/schemes/{schemeId}/questions")
+@RequestMapping("/v1/loan-configs/{loanConfigId}/questions")
 @AllArgsConstructor
 public class QuestionController {
 
@@ -28,7 +28,7 @@ public class QuestionController {
     private final GlobalExceptionHandler globalExceptionHandler;
 
     @PostMapping
-    final public ResponseEntity<?> addQuestions(@PathVariable long companyId, @PathVariable long schemeId
+    final public ResponseEntity<?> addQuestions(@PathVariable long loanConfigId
             , @Valid @RequestBody List<Question> questions, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         final List<Question> savedQuestions = questionService.save(questions);
@@ -37,14 +37,14 @@ public class QuestionController {
     }
 
     @GetMapping
-    final public ResponseEntity<?> getQuestionsOfScheme(@PathVariable long companyId, @PathVariable long schemeId) {
-        final List<Question> questions = questionService.findBySchemeId(schemeId);
+    final public ResponseEntity<?> getQuestionsOfScheme(@PathVariable long loanConfigId) {
+        final List<Question> questions = questionService.findByLoanConfigId(loanConfigId);
         return new RestResponseDto().successModel(questions);
     }
 
     @PutMapping("/{id}")
-    final public ResponseEntity<?> updateQuestions(@PathVariable long companyId, @PathVariable long schemeId
-            , @PathVariable long id, @Valid @RequestBody Question question, BindingResult bindingResult) {
+    final public ResponseEntity<?> updateQuestions(@PathVariable long loanConfigId, @PathVariable long id
+            , @Valid @RequestBody Question question, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         final Question updatedQuestion = questionService.update(question);
         return new RestResponseDto().successModel(updatedQuestion);

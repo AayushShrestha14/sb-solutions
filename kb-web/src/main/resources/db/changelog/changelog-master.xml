@@ -791,6 +791,8 @@
         <constraints nullable="false"/>
       </column>
       <column name="is_renewable" type="boolean"/>
+      <column name="total_points" type="BIGINT"/>
+      <column name="eligibility_percentage" type="DOUBLE"/>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_config_created_by_id"
@@ -1637,7 +1639,6 @@
     </sql>
   </changeSet>
 
-    <include file="20190503_scheme.xml" relativeToChangelogFile="true"/>
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>
     <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190503_applicant.xml" relativeToChangelogFile="true"/>

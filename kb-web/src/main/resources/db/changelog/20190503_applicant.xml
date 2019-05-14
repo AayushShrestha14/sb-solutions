@@ -25,7 +25,7 @@
             <column name="request_amount" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
-            <column name="scheme_id" type="BIGINT"/>
+            <column name="loan_config_id" type="BIGINT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
@@ -40,12 +40,12 @@
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="scheme_id"
+        <addForeignKeyConstraint baseColumnNames="loan_config_id"
                                  baseTableName="applicant"
-                                 constraintName="fk_applicant_scheme_id"
+                                 constraintName="fk_applicant_loan_config_id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  referencedColumnNames="id"
-                                 referencedTableName="scheme"/>
+                                 referencedTableName="loan_config"/>
     </changeSet>
 </databaseChangeLog>

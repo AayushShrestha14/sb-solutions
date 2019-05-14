@@ -21,7 +21,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/v1/companies/{companyId}/schemes/{schemeId}/applicants/{applicantId}/documents")
+@RequestMapping("/v1/loan-configs/{loanConfigId}/applicants/{applicantId}/documents")
 public class SubmissionDocumentController {
 
     private final Logger logger = LoggerFactory.getLogger(SubmissionDocumentController.class);
@@ -31,8 +31,7 @@ public class SubmissionDocumentController {
     private final GlobalExceptionHandler globalExceptionHandler;
 
     @PostMapping
-    public final ResponseEntity<?> saveDocuments(@PathVariable long companyId, @PathVariable long schemeId,
-                                                 @PathVariable long applicantId,
+    public final ResponseEntity<?> saveDocuments(@PathVariable long loanConfigId, @PathVariable long applicantId,
                                                  @Valid @RequestBody List<DocumentDTO> documents,
                                                  BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
