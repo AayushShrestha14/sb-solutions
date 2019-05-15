@@ -1650,4 +1650,5 @@
     <include file="20190503_applicant_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190504_submission_document.xml" relativeToChangelogFile="true"/>
     <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
