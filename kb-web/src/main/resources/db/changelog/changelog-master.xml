@@ -1414,12 +1414,12 @@
                                  referencedTableName="entity_info"
                                  referencedColumnNames="id"/>
     </changeSet>
-    <changeSet id="6-create-client-info-table" author="anil">
-        <createTable tableName="client_info">
+    <changeSet id="6-create-dms-loan-file-table" author="anil">
+        <createTable tableName="dms_loan_file">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(256)">
+            <column name="customer_name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="citizenship_number" type="VARCHAR(256)">
@@ -1431,18 +1431,36 @@
             <column name="interest_rate" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
+            <column name="proposed_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
             <column name="security" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_path" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recommendation_conclusion" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tenure" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="waiver" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_client_info_created_by_id"
+                             foreignKeyName="fk_dms_loan_file_created_by_id"
                              referencedTableName="user"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_client_info_modified_by_id"
+                             foreignKeyName="fk_dms_loan_file_modified_by_id"
                              referencedTableName="user"
                              referencedColumnNames="id"/>
             </column>
@@ -1458,27 +1476,53 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="6-create-client-document-table" author="anil">
-        <createTable tableName="client_document">
+    <changeSet id="6-create-loan-document-table" author="anil">
+        <createTable tableName="loan_document">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(256)">
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_document_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_loan_document_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="url" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="client_info_id" type="BIGINT">
+            <column name="last_modified_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
-
         </createTable>
-        <addForeignKeyConstraint baseTableName="client_document"
-                                 baseColumnNames="client_info_id"
-                                 constraintName="fk_client_document_client_info_id"
-                                 referencedTableName="client_info"
+    </changeSet>
+
+    <changeSet id="6-create-dms-loan-file-documents-table" author="anil">
+        <createTable tableName="dms_loan_file_documents">
+            <column name="dms_loan_file_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documents_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="dms_loan_file_documents"
+                                 baseColumnNames="dms_loan_file_id"
+                                 constraintName="fk_dms_loan_file_documents_dms_loan_file_id"
+                                 referencedTableName="dms_loan_file"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="dms_loan_file_documents"
+                                 baseColumnNames="documents_id"
+                                 constraintName="fk_dms_loan_file_documents_documents_id"
+                                 referencedTableName="loan_document"
                                  referencedColumnNames="id"/>
     </changeSet>
     <changeSet id="3-create-memo-type-table" author="msucil">
