@@ -793,6 +793,7 @@
       <column name="is_renewable" type="boolean"/>
       <column name="total_points" type="BIGINT"/>
       <column name="eligibility_percentage" type="DOUBLE"/>
+      <column name="enable_eligibility" type="boolean"/>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_config_created_by_id"
@@ -1637,6 +1638,10 @@
       INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
       'Memo Type','/home/memo/type', 'fa fa-user',15);
     </sql>
+  </changeSet>
+
+  <changeSet id="1-load-data-for-eligibility" author="rawseek">
+    <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>

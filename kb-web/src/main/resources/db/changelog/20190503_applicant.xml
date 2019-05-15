@@ -25,7 +25,12 @@
             <column name="request_amount" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
+            <column name="eligibility_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remarks" type="VARCHAR(2000)"/>
             <column name="loan_config_id" type="BIGINT"/>
+            <column name="branch_id" type="BIGINT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
@@ -40,12 +45,12 @@
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="loan_config_id"
+        <addForeignKeyConstraint baseColumnNames="branch_id"
                                  baseTableName="applicant"
-                                 constraintName="fk_applicant_loan_config_id"
+                                 constraintName="fk_applicant_branch_id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  referencedColumnNames="id"
-                                 referencedTableName="loan_config"/>
+                                 referencedTableName="branch"/>
     </changeSet>
 </databaseChangeLog>

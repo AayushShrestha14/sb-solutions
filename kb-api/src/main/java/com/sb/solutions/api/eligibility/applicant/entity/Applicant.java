@@ -1,6 +1,8 @@
 package com.sb.solutions.api.eligibility.applicant.entity;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -37,6 +39,10 @@ public class Applicant extends BaseEntity<Long> {
 
     private double requestAmount;
 
+    private String remarks;
+
+    private EligibilityStatus eligibilityStatus;
+
     @ManyToOne
     @JoinColumn(name = "loan_config_id")
     private LoanConfig loanConfig;
@@ -50,4 +56,8 @@ public class Applicant extends BaseEntity<Long> {
     @JoinTable(name = "applicant_document", joinColumns = @JoinColumn(name = "applicant_id"), inverseJoinColumns =
     @JoinColumn(name = "submission_document_id"))
     private List<SubmissionDocument> documents;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

@@ -7,7 +7,10 @@ import com.sb.solutions.api.eligibility.question.repository.QuestionRepository;
 import com.sb.solutions.api.eligibility.question.service.QuestionService;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ import java.util.List;
 @Transactional
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
+
+    private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
 
     private final QuestionRepository questionRepository;
 
@@ -70,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> findByLoanConfigId(Long loanConfigId) {
-        return questionRepository.findByLoanConfigId(loanConfigId);
+        return questionRepository.findByLoanConfigIdAndStatus(loanConfigId, Status.ACTIVE);
     }
 
     @Override
@@ -93,5 +98,17 @@ public class QuestionServiceImpl implements QuestionService {
         loanConfig.setTotalPoints(allQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
         loanConfigService.save(loanConfig);
         return updatedQuestion;
+    }
+
+    @Override
+    public void delete(long id) {
+        logger.debug("Setting status to deleted for the question with id [{}].", id);
+        final Question question = questionRepository.getOne(id);
+        if (question != null) {
+            final List<Answer> answers = question.getAnswers();
+            answerService.delete(answers);
+            question.setStatus(Status.DELETED);
+            questionRepository.save(question);
+        }
     }
 }

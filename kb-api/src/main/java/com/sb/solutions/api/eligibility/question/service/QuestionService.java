@@ -12,4 +12,6 @@ public interface QuestionService extends BaseService<Question> {
     List<Question> findByLoanConfigId(Long loanConfigId);
 
     Question update(Question question);
+
+    void delete(long id);
 }

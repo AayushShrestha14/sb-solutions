@@ -12,6 +12,9 @@
             </column>
             <column name="maximum_points" type="BIGINT"/>
             <column name="appearance_order" type="BIGINT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="loan_config_id" type="BIGINT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>
