@@ -21,7 +21,7 @@ INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Template', 'fa fa-user', '/home/template', 61, 1);
 -- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Ui', 'fa fa-user', '/home/ui', 60, 1);
 -- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (16,  'Loan', 'fa fa-user', '/home/loan', 62, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Eligibility', 'fa fa-check-square', '/home/question', 62, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Eligibility', 'fa fa-check-square', '/home/eligibility', 62, 1);
 
 
 
