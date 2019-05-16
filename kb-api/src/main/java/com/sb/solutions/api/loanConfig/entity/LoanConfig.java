@@ -34,7 +34,7 @@ public class LoanConfig extends BaseEntity<Long> {
     @ManyToMany
     private List<Document> renew;
     @ManyToMany
-    private List<Document> eligibility;
+    private List<Document> eligibilityDocuments;
     private long totalPoints;
     private double eligibilityPercentage;
     private boolean enableEligibility;

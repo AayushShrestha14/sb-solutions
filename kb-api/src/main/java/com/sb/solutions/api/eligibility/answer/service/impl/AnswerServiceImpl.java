@@ -49,7 +49,10 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<Answer> save(List<Answer> answers) {
-        answers.forEach(answer -> answer.setLastModifiedAt(new Date()));
+        answers.forEach(answer -> {
+            answer.setLastModifiedAt(new Date());
+            answer.setStatus(Status.ACTIVE);
+        });
         return answerRepository.saveAll(answers);
     }
 

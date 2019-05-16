@@ -58,6 +58,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> savedQuestions = new ArrayList<>();
         for (Question question : questions) {
             question.setLastModifiedAt(new Date());
+            question.setStatus(Status.ACTIVE);
             final Question savedQuestion = questionRepository.save(question);
             question.getAnswers().forEach(answer -> answer.setQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
