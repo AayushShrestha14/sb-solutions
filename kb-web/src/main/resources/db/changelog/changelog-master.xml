@@ -1645,4 +1645,5 @@
     <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
     <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
     <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
