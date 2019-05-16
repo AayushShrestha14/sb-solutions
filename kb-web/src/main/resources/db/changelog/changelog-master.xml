@@ -313,12 +313,12 @@
             </column>
             <column name="front_url" type="VARCHAR(256)"/>
             <column name="fa_icon" type="VARCHAR(256)"/>
-            <column name="permission_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_sub-nav_permission_id"
-                             referencedTableName="permission"
-                             referencedColumnNames="id"/>
-            </column>
+            <!--<column name="permission_id" type="BIGINT">-->
+            <!--<constraints nullable="true"-->
+            <!--foreignKeyName="fk_sub-nav_permission_id"-->
+            <!--referencedTableName="permission"-->
+            <!--referencedColumnNames="id"/>-->
+            <!--</column>-->
         </createTable>
     </changeSet>
 
@@ -356,20 +356,28 @@
     <changeSet id="5-permission-sub-navs" author="rujan">
         <createTable tableName="permission_sub_navs">
             <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_permission_nav_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"
+                />
 
             </column>
             <column name="sub_navs_id" type="BIGINT">
-                <constraints unique="true"/>
+                <constraints unique="true"
+                             foreignKeyName="fk_sub_nav_id"
+                             referencedTableName="sub_nav"
+                             referencedColumnNames="id"/>
             </column>
 
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="permission_id"
-                                 baseTableName="permission_sub_navs"
-                                 constraintName="fk_permission_sub_navs_permission_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="sub_nav"/>
+        <!--<addForeignKeyConstraint baseColumnNames="permission_id"-->
+        <!--baseTableName="permission_sub_navs"-->
+        <!--constraintName="fk_permission_sub_navs_permission_id"-->
+        <!--onDelete="CASCADE"-->
+        <!--onUpdate="CASCADE"-->
+        <!--referencedColumnNames="id"-->
+        <!--referencedTableName="sub_nav"/>-->
     </changeSet>
 
     <changeSet id="5-create-role-permission-rights" author="david">
@@ -1632,8 +1640,8 @@
 
     <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
         <sql>
-            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
-            'Memo Type','/home/memo/type', 'fa fa-user',15);
+            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (1,
+            'Memo Type','/home/memo/type', 'fa fa-user');
         </sql>
     </changeSet>
 
