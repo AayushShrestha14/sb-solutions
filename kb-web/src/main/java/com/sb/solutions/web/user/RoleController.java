@@ -62,7 +62,7 @@ public class RoleController {
 
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
-    public ResponseEntity<?> getBranchStatusCount() {
+    public ResponseEntity<?> getRoleStatusCount() {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
     }
 
