@@ -365,13 +365,6 @@
             </column>
 
         </createTable>
-        <!--<addForeignKeyConstraint baseColumnNames="permission_id"-->
-        <!--baseTableName="permission_sub_navs"-->
-        <!--constraintName="fk_permission_sub_navs_permission_id"-->
-        <!--onDelete="CASCADE"-->
-        <!--onUpdate="CASCADE"-->
-        <!--referencedColumnNames="id"-->
-        <!--referencedTableName="sub_nav"/>-->
     </changeSet>
 
     <changeSet id="5-create-role-permission-rights" author="david">
@@ -1417,7 +1410,7 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
- <changeSet id="3-create-memo-type-table" author="msucil">
+    <changeSet id="3-create-memo-type-table" author="msucil">
         <createTable tableName="memo_type">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
