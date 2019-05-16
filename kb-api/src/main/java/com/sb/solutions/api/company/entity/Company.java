@@ -17,7 +17,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 public class Company extends BaseEntity<Long> {
 
-    @Column(name="company_name")
+
     private String name;
 
     private Status status;
