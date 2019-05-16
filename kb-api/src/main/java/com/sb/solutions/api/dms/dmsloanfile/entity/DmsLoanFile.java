@@ -30,8 +30,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private String security;
     @Column(columnDefinition = "text")
     private String documentPath;
-//    @OneToOne
-//    private LoanConfig loanType;
+    @OneToOne
+    private LoanConfig loanType;
     @Transient
     private List<String> documentPaths;
     @Transient
@@ -41,7 +41,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @Transient
     private Set<Securities> securities;
     @Transient
-    private List<Map<Object, Object>> documentPathDocument;
+    private List<Map<Object, Object>> documentPathMaps;
     private Date tenure;
     private Priority priority;
     private String recommendationConclusion;

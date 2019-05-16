@@ -2,6 +2,7 @@ package com.sb.solutions.web.DmsloanFile.controller;
 
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
+import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
@@ -80,8 +81,10 @@ public class DmsLoanFileController {
 
     }
 
-    @PostMapping("/download")
+    @GetMapping("/download")
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path, HttpServletResponse response) throws FileNotFoundException {
+        FilePath filePath = new FilePath();
+        path = filePath.getOSPath()+path;
         File file = new File(path);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();
