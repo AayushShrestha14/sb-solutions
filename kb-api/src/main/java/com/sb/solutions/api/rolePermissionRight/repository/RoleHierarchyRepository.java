@@ -21,7 +21,7 @@ public interface RoleHierarchyRepository extends JpaRepository<RoleHierarchy,Lon
     @Query("select r from RoleHierarchy r where r.role.id=:id ")
     RoleHierarchy findByRole(@Param("id")Long id);
 
-    @Query("select r from RoleHierarchy r where r.id <> 1 order by r.roleOrder ASC ")
+    @Query("select r from RoleHierarchy r where r.role.id <> 1 order by r.roleOrder ASC ")
     List<RoleHierarchy> findAll();
 
 }
