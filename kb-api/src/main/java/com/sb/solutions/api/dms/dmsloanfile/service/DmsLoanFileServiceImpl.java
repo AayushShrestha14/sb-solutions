@@ -1,7 +1,7 @@
 package com.sb.solutions.api.dms.dmsloanfile.service;
 
 import com.google.gson.Gson;
-import com.sb.solutions.api.dms.dmsloanfile.entity.DateValidation;
+import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
 import com.sb.solutions.core.dto.SearchDto;

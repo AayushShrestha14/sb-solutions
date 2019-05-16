@@ -1,4 +1,4 @@
-package com.sb.solutions.api.dms.dmsloanfile.entity;
+package com.sb.solutions.core.date.validation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
