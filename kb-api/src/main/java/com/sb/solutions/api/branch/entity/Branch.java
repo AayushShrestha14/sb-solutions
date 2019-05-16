@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -24,7 +25,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @EntityListeners(AuditingEntityListener.class)
-public class Branch extends BaseEntity<Long> {
+public class Branch extends BaseEntity<Long> implements Serializable {
+
 
     @NotNull(message = "Name should not be null")
     private String name;

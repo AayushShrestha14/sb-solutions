@@ -1,0 +1,42 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="1-create-role-hierarchy" author="rujan">
+        <createTable tableName="role_hierarchy">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_hierarchy_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="role_order" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_hierarchy_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_role_hierarchy_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+
+    </changeSet>
+</databaseChangeLog>

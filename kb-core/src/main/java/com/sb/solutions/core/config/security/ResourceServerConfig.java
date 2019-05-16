@@ -23,7 +23,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/v1/login")
+                .antMatchers("/oauth/token")
                 .permitAll()
                 .antMatchers("/v1/users/register")
                 .permitAll()
@@ -32,12 +32,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
-                .antMatchers("/v1/**").hasAuthority("admin")
-                //.antMatchers("/actuator/**").hasAuthority("admin")
-                .antMatchers("/v1/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/v1/**")
-                .permitAll()
+                .antMatchers("/v1/*")
+                .authenticated()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout")).logoutSuccessUrl("/api/language")

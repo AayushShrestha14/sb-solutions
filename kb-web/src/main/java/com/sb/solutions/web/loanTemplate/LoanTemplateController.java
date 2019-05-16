@@ -35,7 +35,7 @@ public class LoanTemplateController {
     GlobalExceptionHandler globalExceptionHandler;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanTemplate loanTemplate,
+    public ResponseEntity<?> saveTemplate(@Valid @RequestBody LoanTemplate loanTemplate,
         BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         LoanTemplate template = loanTemplateService.save(loanTemplate);

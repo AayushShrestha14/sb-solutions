@@ -2,6 +2,9 @@ package com.sb.solutions.web.loanConfig;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.web.eligibility.scheme.SchemeController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,8 +21,10 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Rujan Maharjan on 2/25/2019
@@ -28,16 +33,21 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping("/v1/config")
 public class LoanConfigController {
 
+    private final Logger logger = LoggerFactory.getLogger(LoanConfigController.class);
+
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
     @Autowired
     LoanConfigService loanConfigService;
+    @Autowired
+    private UploadFile uploadFile;
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanConfig config,
+    public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config,
         BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
+        logger.debug("Request to save new loan.");
         LoanConfig loanConfig = loanConfigService.save(config);
         if (loanConfig == null) {
             return new RestResponseDto().failureModel("Error Occurs");

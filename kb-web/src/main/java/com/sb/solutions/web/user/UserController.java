@@ -1,4 +1,4 @@
-package com.sb.solutions.web.user.controller;
+package com.sb.solutions.web.user;
 
 
 import java.util.Collection;
@@ -14,13 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
@@ -78,7 +71,7 @@ public class UserController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type) {
+                                          @RequestParam("type") String type) {
         System.out.println();
         return uploadFile.uploadFile(multipartFile, type);
     }
@@ -90,10 +83,10 @@ public class UserController {
             value = "Number of records per page.")})
     @PostMapping(value = "/get")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                    @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findAllPageable(searchDto, PaginationUtils
-                .pageable(page, size)));
+                .successModel(userService.findAllPageable(searchDto, PaginationUtils
+                        .pageable(page, size)));
     }
 
     @ApiImplicitParams({
@@ -103,9 +96,9 @@ public class UserController {
             value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
     public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                           @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
+                .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")

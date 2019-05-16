@@ -10,13 +10,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class District {
+public class District implements Serializable {
     @Id
     @GeneratedValue
     private long id;
@@ -24,16 +25,5 @@ public class District {
     @ManyToOne
     @JoinColumn(name = "province_id")
     private Province province;
-    @JsonIgnore
-    @OneToMany(mappedBy = "district")
-    private Set<MunicipalityVdc> municipalityVdcs;
-    @JsonIgnore
-    @OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
-    private Set<Branch> branch;
-    @JsonIgnore
-    @OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
-    private Set<Valuator> valuator;
-    @JsonIgnore
-    @OneToMany(mappedBy = "siteDistrict", fetch = FetchType.LAZY)
-    private Set<Valuator> valuatorSite;
+
 }
