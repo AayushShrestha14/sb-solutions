@@ -31,5 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select b from User b where b.name like concat(:name,'%')")
     List<User> userCsvFilter(@Param("name") String name);
+
+    @Query(value = "select ifNull(a.type,'a') from user u join role r left join role_permission_rights rpr on rpr.role_id = r.id left join role_permission_rights_api_rights rprar on rprar.role_permission_rights_id=rpr.id left join url_api a on rprar.api_rights_id = a.id where r.id = :id\n" +
+            "and u.user_name=:username and a.type is not null;",nativeQuery = true)
+    List<Object> userApiAuthorities(@Param("id")Long id,@Param("username")String username);
 }
 

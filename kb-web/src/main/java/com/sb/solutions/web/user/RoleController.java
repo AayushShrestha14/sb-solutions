@@ -1,6 +1,8 @@
-package com.sb.solutions.web.user.controller;
+package com.sb.solutions.web.user;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
+import com.sb.solutions.api.rolePermissionRight.service.RoleHierarchyService;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -26,6 +29,8 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    RoleHierarchyService roleHierarchyService;
 
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
@@ -38,6 +43,13 @@ public class RoleController {
         if (r == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
+            if (role.getId() != null) {
+                List<RoleHierarchy> roleHierarchies = roleHierarchyService.findAll();
+                RoleHierarchy roleHierarchy = new RoleHierarchy();
+                roleHierarchy.setRole(r);
+                roleHierarchy.setRoleOrder((roleHierarchies.size())+1L);
+                roleHierarchyService.save(roleHierarchy);
+            }
             return new RestResponseDto().successModel(r.getRoleName());
         }
     }

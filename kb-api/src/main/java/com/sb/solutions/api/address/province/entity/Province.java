@@ -9,27 +9,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Province {
+public class Province implements Serializable {
     @Id
     @GeneratedValue
     private long id;
     private String name;
-    @JsonIgnore
-    @OneToMany(mappedBy = "province")
-    private Set<District> districts;
-    @JsonIgnore
-    @OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
-    private Set<Branch> branch;
-    @JsonIgnore
-    @OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
-    private Set<Valuator> valuator;
-    @JsonIgnore
-    @OneToMany(mappedBy = "siteProvince", fetch = FetchType.LAZY)
-    private Set<Valuator> valuatorSite;
+
 }

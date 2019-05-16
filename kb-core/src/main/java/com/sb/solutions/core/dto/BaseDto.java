@@ -13,5 +13,9 @@ public abstract class BaseDto<PK> {
 
     private Date lastModifiedAt = new Date();
 
+    private Long createdBy;
+
+    private Long modifiedBy;
+
     private int version;
 }

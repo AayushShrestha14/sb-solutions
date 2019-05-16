@@ -1,10 +1,6 @@
 package com.sb.solutions.api.user.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -16,9 +12,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity<Long> implements UserDetails {
+public class User extends BaseEntity<Long> implements UserDetails,Serializable {
 
     private String name;
 
@@ -54,10 +50,18 @@ public class User extends BaseEntity<Long> implements UserDetails {
     private String signatureImage;
     private String profilePicture;
 
+
+    @Transient
+    @JsonIgnore
+    private List<String> authorityList;
+
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(this.role.getRoleName()));
+       for(String a: this.getAuthorityList()){
+            authorities.add(new SimpleGrantedAuthority(a));
+        }
         return authorities;
     }
 
