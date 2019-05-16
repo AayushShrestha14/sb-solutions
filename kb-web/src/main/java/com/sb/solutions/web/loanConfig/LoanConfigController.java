@@ -2,6 +2,9 @@ package com.sb.solutions.web.loanConfig;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.web.eligibility.scheme.SchemeController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -30,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/v1/config")
 public class LoanConfigController {
 
+    private final Logger logger = LoggerFactory.getLogger(LoanConfigController.class);
+
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
     @Autowired
@@ -39,9 +44,10 @@ public class LoanConfigController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody LoanConfig config,
+    public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config,
         BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
+        logger.debug("Request to save new loan.");
         LoanConfig loanConfig = loanConfigService.save(config);
         if (loanConfig == null) {
             return new RestResponseDto().failureModel("Error Occurs");

@@ -16,6 +16,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "(select  count(id) from Company) companys\n", nativeQuery = true)
     Map<Object, Object> companyStatusCount();
 
-    @Query(value = "select c from Company c where c.companyName like concat(:companyName,'%')")
+    @Query(value = "select c from Company c where c.name like concat(:companyName,'%')")
     Page<Company> companyFilter(@Param("companyName") String companyName, Pageable pageable);
 }

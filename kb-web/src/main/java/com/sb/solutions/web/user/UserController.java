@@ -1,4 +1,4 @@
-package com.sb.solutions.web.user.controller;
+package com.sb.solutions.web.user;
 
 
 import java.util.Collection;

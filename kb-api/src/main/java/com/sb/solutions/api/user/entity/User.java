@@ -1,10 +1,6 @@
 package com.sb.solutions.api.user.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -13,6 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -22,7 +27,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity<Long> {
+public class User extends BaseEntity<Long> implements UserDetails,Serializable {
 
     private String name;
 
@@ -44,4 +49,45 @@ public class User extends BaseEntity<Long> {
     private Branch branch;
     private String signatureImage;
     private String profilePicture;
+
+
+    @Transient
+    @JsonIgnore
+    private List<String> authorityList;
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+       for(String a: this.getAuthorityList()){
+            authorities.add(new SimpleGrantedAuthority(a));
+        }
+        return authorities;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return this.userName;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

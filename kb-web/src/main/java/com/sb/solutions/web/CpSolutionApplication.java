@@ -4,12 +4,14 @@ package com.sb.solutions.web;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,6 +36,7 @@ import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@EnableConfigurationProperties({FileStorageProperties.class})
 public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired

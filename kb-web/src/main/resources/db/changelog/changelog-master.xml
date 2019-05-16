@@ -313,12 +313,12 @@
             </column>
             <column name="front_url" type="VARCHAR(256)"/>
             <column name="fa_icon" type="VARCHAR(256)"/>
-            <column name="permission_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_sub-nav_permission_id"
-                             referencedTableName="permission"
-                             referencedColumnNames="id"/>
-            </column>
+            <!--<column name="permission_id" type="BIGINT">-->
+            <!--<constraints nullable="true"-->
+            <!--foreignKeyName="fk_sub-nav_permission_id"-->
+            <!--referencedTableName="permission"-->
+            <!--referencedColumnNames="id"/>-->
+            <!--</column>-->
         </createTable>
     </changeSet>
 
@@ -356,20 +356,28 @@
     <changeSet id="5-permission-sub-navs" author="rujan">
         <createTable tableName="permission_sub_navs">
             <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_permission_nav_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"
+                />
 
             </column>
             <column name="sub_navs_id" type="BIGINT">
-                <constraints unique="true"/>
+                <constraints unique="true"
+                             foreignKeyName="fk_sub_nav_id"
+                             referencedTableName="sub_nav"
+                             referencedColumnNames="id"/>
             </column>
 
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="permission_id"
-                                 baseTableName="permission_sub_navs"
-                                 constraintName="fk_permission_sub_navs_permission_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="sub_nav"/>
+        <!--<addForeignKeyConstraint baseColumnNames="permission_id"-->
+        <!--baseTableName="permission_sub_navs"-->
+        <!--constraintName="fk_permission_sub_navs_permission_id"-->
+        <!--onDelete="CASCADE"-->
+        <!--onUpdate="CASCADE"-->
+        <!--referencedColumnNames="id"-->
+        <!--referencedTableName="sub_nav"/>-->
     </changeSet>
 
     <changeSet id="5-create-role-permission-rights" author="david">
@@ -1414,6 +1422,7 @@
                                  referencedTableName="entity_info"
                                  referencedColumnNames="id"/>
     </changeSet>
+
     <changeSet id="6-create-dms-loan-file-table" author="anil">
         <createTable tableName="dms_loan_file">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -1452,6 +1461,8 @@
             <column name="waiver" type="TEXT">
                 <constraints nullable="false"/>
             </column>
+            <column name="loan_type_id" type="BIGINT">
+            </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_dms_loan_file_created_by_id"
@@ -1472,10 +1483,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
-
         </createTable>
+        <addForeignKeyConstraint baseTableName="dms_loan_file"
+                                 baseColumnNames="loan_type_id"
+                                 constraintName="fk_dms_loan_file_loan_type_id"
+                                 referencedTableName="loan_config"
+                                 referencedColumnNames="id"/>
     </changeSet>
-
     <changeSet id="6-create-loan-document-table" author="anil">
         <createTable tableName="loan_document">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -1525,6 +1539,8 @@
                                  referencedTableName="loan_document"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+
     <changeSet id="3-create-memo-type-table" author="msucil">
         <createTable tableName="memo_type">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -1535,21 +1551,6 @@
             </column>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
-            </column>
-
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -1709,6 +1710,10 @@
         <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="3-load-permission-api-file" author="msucil">
+        <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     <changeSet id="3-load-district-file" author="msucil">
         <sqlFile path="data/district.sql" relativeToChangelogFile="true"/>
     </changeSet>
@@ -1738,9 +1743,18 @@
 
     <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
         <sql>
-            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon, permission_id) VALUES (1,
-            'Memo Type','/home/memo/type', 'fa fa-user',15);
+            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (1,
+            'Memo Type','/home/memo/type', 'fa fa-user');
         </sql>
     </changeSet>
 
+    <include file="20190503_scheme.xml" relativeToChangelogFile="true"/>
+    <include file="20190503_question.xml" relativeToChangelogFile="true"/>
+    <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
+    <include file="20190503_applicant.xml" relativeToChangelogFile="true"/>
+    <include file="20190503_applicant_answer.xml" relativeToChangelogFile="true"/>
+    <include file="20190504_submission_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
+    <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
