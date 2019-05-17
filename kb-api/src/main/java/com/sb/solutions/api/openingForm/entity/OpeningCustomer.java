@@ -14,7 +14,6 @@ public class OpeningCustomer {
     private String firstName;
     private String middleName;
     private String lastName;
-    private String proposeOfAccount;
     private String maritalStatus;
     private String gender;
     private OpeningKyc kyc;
@@ -59,6 +58,8 @@ public class OpeningCustomer {
     private String salariedEmployedWith;
     private String selfEmployedWith;
     private String otherSourceOfIncome;
+    private boolean accountInAnotherBank;
+    private String bankName;
     private String education;
     private String map;
     private boolean usResident;
@@ -71,6 +72,4 @@ public class OpeningCustomer {
     private String convictedCrime;
     private boolean residentialPermitOfForeign;
     private String residentialPermitOfForeignType;
-    private boolean accountInAnotherBank;
-    private String bankName;
 }
