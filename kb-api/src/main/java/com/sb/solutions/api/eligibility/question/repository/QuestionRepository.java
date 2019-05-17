@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    List<Question> findByLoanConfigIdAndStatus(@Param("loanConfigId") Long loadConfigId, Status status);
+    List<Question> findByLoanConfigIdAndStatusNot(@Param("loanConfigId") Long loadConfigId, Status status);
 
 }

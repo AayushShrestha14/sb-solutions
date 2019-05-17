@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    List<Answer> findAllByQuestionIdAndStatus(long questionId, Status status);
+    List<Answer> findAllByQuestionIdAndStatusNot(long questionId, Status status);
 
 }

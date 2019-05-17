@@ -59,7 +59,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     @Override
     public List<Answer> update(List<Answer> answers, Question question) {
-        final List<Answer> savedAnswers = answerRepository.findAllByQuestionIdAndStatus(question.getId(), Status.ACTIVE);
+        final List<Answer> savedAnswers = answerRepository.findAllByQuestionIdAndStatusNot(question.getId(),
+                Status.DELETED);
         final List<Answer> newAnswers = answers.stream().filter(answer -> answer.getId() == null || answer.getId() == 0)
                 .collect(Collectors.toList());
         final List<Answer> modifiedAnswers = answers.stream().filter(answer -> !newAnswers.contains(answer)

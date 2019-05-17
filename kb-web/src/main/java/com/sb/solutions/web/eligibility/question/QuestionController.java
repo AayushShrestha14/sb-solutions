@@ -38,7 +38,7 @@ public class QuestionController {
     }
 
     @GetMapping
-    public final ResponseEntity<?> getQuestionsOfScheme(@PathVariable long loanConfigId) {
+    public final ResponseEntity<?> getQuestionsOfLoanConfig(@PathVariable long loanConfigId) {
         final List<Question> questions = questionService.findByLoanConfigId(loanConfigId);
         return new RestResponseDto().successModel(questions);
     }

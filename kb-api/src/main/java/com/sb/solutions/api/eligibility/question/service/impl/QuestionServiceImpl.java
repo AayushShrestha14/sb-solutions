@@ -76,7 +76,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> findByLoanConfigId(Long loanConfigId) {
-        return questionRepository.findByLoanConfigIdAndStatus(loanConfigId, Status.ACTIVE);
+        return questionRepository.findByLoanConfigIdAndStatusNot(loanConfigId, Status.DELETED);
     }
 
     @Override
