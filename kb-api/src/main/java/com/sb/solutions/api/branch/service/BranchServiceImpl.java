@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -43,6 +44,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADD BRANCH') or hasAuthority('EDIT BRANCH')")
     public Branch save(Branch branch) {
         branch.setLastModifiedAt(new Date());
         if (branch.getId() == null) {
@@ -53,6 +55,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('VIEW BRANCH')")
     public Page<Branch> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(object, Map.class);
@@ -67,6 +70,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
         List branchList = branchRepository.branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());

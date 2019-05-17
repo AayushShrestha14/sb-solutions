@@ -6,6 +6,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 
 
-public interface UserService extends BaseService<User> {
+public interface UserService extends BaseService<User> ,UserDetailsService {
 
     User getAuthenticated();
 

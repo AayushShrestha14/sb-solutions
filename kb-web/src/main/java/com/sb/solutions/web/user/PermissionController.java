@@ -1,4 +1,4 @@
-package com.sb.solutions.web.user.controller;
+package com.sb.solutions.web.user;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Permission;
 import com.sb.solutions.api.rolePermissionRight.service.PermissionService;

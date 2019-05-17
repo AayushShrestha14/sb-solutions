@@ -12,13 +12,18 @@ import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -43,19 +48,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            User user = (User) authentication.getPrincipal();
 
-        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            org.springframework.security.core.userdetails.User userDetail = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-            User u = this.getByUsername(userDetail.getUsername());
-            return u;
+            return user;
         } else {
-            throw new UsernameNotFoundException("User is not authenticated; Found " + authentication.getPrincipal() + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
+            throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
         }
     }
+
 
     @Override
     public User getByUsername(String username) {
         return userRepository.getUsersByUserName(username);
+
     }
 
     @Override
@@ -94,7 +100,7 @@ public class UserServiceImpl implements UserService {
         header.put("branch,address", "Branch Address");
         header.put("role,roleName", "Role");
         header.put("status", "Status");
-        String url = csvMaker.csv("user", header, branchList, UploadDir.branchCsv);
+        String url = csvMaker.csv("user", header, branchList, UploadDir.userCsv);
         return baseHttpService.getBaseUrl() + url;
     }
 
@@ -106,4 +112,30 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        User u = userRepository.getUsersByUserName(username);
+        if (u != null) {
+            List<String> authorityList = userRepository.userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
+                    .map(object -> Objects.toString(object, null))
+                    .collect(Collectors.toList());
+            Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+            List<GrantedAuthority> updatedAuthorities = new ArrayList<GrantedAuthority>();
+            for (String a : authorityList) {
+                updatedAuthorities.add(new SimpleGrantedAuthority("a"));
+            }
+            updatedAuthorities.addAll(oldAuthorities);
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken(
+                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                            u.getPassword(),
+                            updatedAuthorities)
+            );
+
+
+            u.setAuthorityList(authorityList);
+
+        }
+        return u;
+    }
 }

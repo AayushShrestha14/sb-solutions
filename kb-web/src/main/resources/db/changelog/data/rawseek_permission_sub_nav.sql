@@ -3,7 +3,7 @@ INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (5, 'New Reques
 INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (6, 'Eligible ','/home/eligibility/eligible', 'fa fa-check-circle');
 INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (7, 'Non Eligible','/home/eligibility/non-eligible', 'fa fa-exclamation-circle');
 
-INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (17, 4);
-INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (17, 5);
-INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (17, 6);
-INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (17, 7);
+INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (18, 4);
+INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (18, 5);
+INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (18, 6);
+INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (18, 7);

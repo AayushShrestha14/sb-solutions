@@ -350,10 +350,18 @@
     <changeSet id="5-permission-sub-navs" author="rujan">
         <createTable tableName="permission_sub_navs">
             <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_permission_nav_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"
+                />
 
             </column>
             <column name="sub_navs_id" type="BIGINT">
-                <constraints unique="true"/>
+                <constraints unique="true"
+                             foreignKeyName="fk_sub_nav_id"
+                             referencedTableName="sub_nav"
+                             referencedColumnNames="id"/>
             </column>
 
         </createTable>
@@ -1640,5 +1648,9 @@
     <include file="20190503_applicant_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190504_submission_document.xml" relativeToChangelogFile="true"/>
     <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
+    <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
+    <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
+
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

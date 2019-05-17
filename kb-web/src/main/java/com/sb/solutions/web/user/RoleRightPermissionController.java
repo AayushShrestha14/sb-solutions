@@ -1,10 +1,12 @@
-package com.sb.solutions.web.user.controller;
+package com.sb.solutions.web.user;
 
 import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
 import com.sb.solutions.api.rolePermissionRight.service.RightService;
 import com.sb.solutions.api.rolePermissionRight.service.RolePermissionRightService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/roleRightPermission")
 public class RoleRightPermissionController {
+
+    private final Logger logger = LoggerFactory.getLogger(RoleRightPermissionController.class);
 
     @Autowired
     RolePermissionRightService rolePermissionRightService;
