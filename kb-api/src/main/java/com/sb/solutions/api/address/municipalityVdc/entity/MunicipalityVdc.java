@@ -20,6 +20,7 @@ public class MunicipalityVdc {
     @GeneratedValue
     private long id;
     private String name;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "district_id")
     private District district;
