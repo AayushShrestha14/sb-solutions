@@ -2,6 +2,7 @@ package com.sb.solutions.api.dms.dmsloanfile.entity;
 
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
+import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
@@ -46,6 +47,5 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
-
-
+    private Stage stage;
 }

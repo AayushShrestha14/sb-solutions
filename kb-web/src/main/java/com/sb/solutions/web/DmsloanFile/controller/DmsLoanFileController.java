@@ -1,7 +1,9 @@
 package com.sb.solutions.web.DmsloanFile.controller;
 
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
+import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
+import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
@@ -36,6 +38,8 @@ public class DmsLoanFileController {
     private GlobalExceptionHandler globalExceptionHandler;
     @Autowired
     private UploadFile uploadFile;
+    @Autowired
+    private DmsLoanFileRepository dmsLoanFileRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFileController.class);
 
@@ -84,7 +88,7 @@ public class DmsLoanFileController {
     @GetMapping("/download")
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path, HttpServletResponse response) throws FileNotFoundException {
         FilePath filePath = new FilePath();
-        path = filePath.getOSPath()+path;
+        path = filePath.getOSPath() + path;
         File file = new File(path);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();
@@ -96,5 +100,10 @@ public class DmsLoanFileController {
         ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers).contentLength(file.length()).contentType(
                 MediaType.parseMediaType("application/txt")).body(resource);
         return responseEntity;
+    }
+
+    @GetMapping("/getLoan")
+    public ResponseEntity<?> getLoanByStage(@RequestParam("stage") Stage stage) {
+        return new RestResponseDto().successModel(dmsLoanFileRepository.findAllByStage(stage));
     }
 }
