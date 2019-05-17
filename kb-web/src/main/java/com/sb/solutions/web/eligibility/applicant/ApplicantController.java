@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/companies/{companyId}/schemes/{schemeId}/applicants")
+@RequestMapping("/v1/loan-configs/{loanConfigId}/applicants")
 @AllArgsConstructor
 public class ApplicantController {
 
@@ -34,8 +34,8 @@ public class ApplicantController {
     private final ApplicantService applicantService;
 
     @PostMapping
-    public final ResponseEntity<?> saveApplicant(@Valid @RequestBody Applicant applicant
-            , @PathVariable long companyId, @PathVariable long schemeId, BindingResult bindingResult) {
+    public final ResponseEntity<?> saveApplicant(@Valid @RequestBody Applicant applicant,
+                                                 @PathVariable long loanConfigId, BindingResult bindingResult) {
         logger.debug("Rest request to save the applicant information.");
         globalExceptionHandler.constraintValidation(bindingResult);
         final Applicant savedApplicant = applicantService.save(applicant);
@@ -50,15 +50,14 @@ public class ApplicantController {
                     value = "Number of records per page.")})
     @GetMapping
     public final ResponseEntity<?> getApplicants(@RequestParam("page") int page, @RequestParam("size") int size
-            , @PathVariable long companyId, @PathVariable long schemeId) {
+            , @PathVariable long loanConfigId) {
         logger.debug("Request to get all the applicants.");
         return new RestResponseDto().successModel(applicantService
                 .findAllPageable(null, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(path = "/{id}")
-    public final ResponseEntity<?> getApplicant(@PathVariable long id, @PathVariable long companyId
-            , @PathVariable long schemeId) {
+    public final ResponseEntity<?> getApplicant(@PathVariable long id, @PathVariable long loanConfigId) {
         logger.debug("Request to get the applicant with id [{}].", id);
         final Applicant applicant = applicantService.findOne(id);
         if (applicant == null) return new RestResponseDto().failureModel("Not Found.");

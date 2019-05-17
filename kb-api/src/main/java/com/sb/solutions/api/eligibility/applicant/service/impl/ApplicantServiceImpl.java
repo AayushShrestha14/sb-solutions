@@ -62,10 +62,9 @@ public class ApplicantServiceImpl implements ApplicantService {
         List<SubmissionDocument> submittedDocuments = new ArrayList<>();
         for (DocumentDTO document : documents) {
             String destinationPath = fileStorageService.getFilePath(EligibilityConstants.ELIGIBILITY_DIRECTORY,
-                    EligibilityConstants.COMPANY_DIRECTORY,
-                    String.valueOf(applicant.getScheme().getCompany().getId()), EligibilityConstants.SCHEME_DIRECTORY
-                    , String.valueOf(applicant.getScheme().getId()), EligibilityConstants.APPLICANT_DIRECTORY,
-                    String.valueOf(applicant.getId()), document.getType().toLowerCase());
+                    EligibilityConstants.LOAN_CONFIG_DIRECTORY, String.valueOf(applicant.getLoanConfig().getId()),
+                    EligibilityConstants.APPLICANT_DIRECTORY,
+                    String.valueOf(applicant.getId()));
             String imageUrl = "/applicant-documents/" + fileStorageService.storeDocument(document.getImage(),
                     document.getName(), destinationPath);
             submittedDocuments.add(getSubmissionDocument(document, imageUrl));

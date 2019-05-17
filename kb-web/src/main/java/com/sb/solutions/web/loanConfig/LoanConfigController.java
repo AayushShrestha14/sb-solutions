@@ -1,8 +1,14 @@
 package com.sb.solutions.web.loanConfig;
 
-import javax.validation.Valid;
-
-import com.sb.solutions.web.eligibility.scheme.SchemeController;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.uploadFile.UploadFile;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
-import com.sb.solutions.api.loanConfig.service.LoanConfigService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.core.utils.uploadFile.UploadFile;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.web.multipart.MultipartFile;
+import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 2/25/2019

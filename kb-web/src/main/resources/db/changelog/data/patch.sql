@@ -20,6 +20,7 @@ INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/document', 55, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  '   Role Hierarchy', 'fas fa-sitemap', '/home/roleHierarchy', 20, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fa fa-dashboard', '/home/dashboard', 1, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (18,  'Eligibility', 'fa fa-check-square', '/home/eligibility', 62, 1);
 
 
 
@@ -69,6 +70,9 @@ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permissi
 
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (17, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  17, 1);
+ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (18 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  18, 1);
+
 
 
 
