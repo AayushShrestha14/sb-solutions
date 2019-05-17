@@ -28,4 +28,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
             "and p.id <>:id group by p.id", nativeQuery = true)
     List<Map<Object, Object>> activeRole(@Param("id") Long id);
 
+    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.userName from User u where r.createdBy=u.id),(SELECT u.userName from User u where r.modifiedBy=u.id)) from Role r")
+    List<Role>  findAll();
+
 }

@@ -29,4 +29,9 @@ public class Role extends BaseEntity<Long> implements Serializable {
 
     private Status status = Status.ACTIVE;
 
+    @Transient
+    private String createdByName;
+
+    @Transient
+    private String modifiedByName;
 }
