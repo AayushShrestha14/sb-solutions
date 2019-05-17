@@ -313,12 +313,6 @@
             </column>
             <column name="front_url" type="VARCHAR(256)"/>
             <column name="fa_icon" type="VARCHAR(256)"/>
-            <!--<column name="permission_id" type="BIGINT">-->
-            <!--<constraints nullable="true"-->
-            <!--foreignKeyName="fk_sub-nav_permission_id"-->
-            <!--referencedTableName="permission"-->
-            <!--referencedColumnNames="id"/>-->
-            <!--</column>-->
         </createTable>
     </changeSet>
 
@@ -371,13 +365,6 @@
             </column>
 
         </createTable>
-        <!--<addForeignKeyConstraint baseColumnNames="permission_id"-->
-        <!--baseTableName="permission_sub_navs"-->
-        <!--constraintName="fk_permission_sub_navs_permission_id"-->
-        <!--onDelete="CASCADE"-->
-        <!--onUpdate="CASCADE"-->
-        <!--referencedColumnNames="id"-->
-        <!--referencedTableName="sub_nav"/>-->
     </changeSet>
 
     <changeSet id="5-create-role-permission-rights" author="david">
@@ -452,7 +439,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="company_name" type="VARCHAR(256)">
+            <column name="name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="INT">
@@ -799,6 +786,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="is_renewable" type="boolean"/>
+      <column name="total_points" type="BIGINT"/>
+      <column name="eligibility_percentage" type="DOUBLE"/>
+      <column name="enable_eligibility" type="boolean"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_config_created_by_id"
@@ -1423,124 +1413,6 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="6-create-dms-loan-file-table" author="anil">
-        <createTable tableName="dms_loan_file">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="customer_name" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="citizenship_number" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="contact_number" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="interest_rate" type="DOUBLE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="proposed_amount" type="DOUBLE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="security" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="document_path" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="priority" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="recommendation_conclusion" type="TEXT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="tenure" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="waiver" type="TEXT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="loan_type_id" type="BIGINT">
-            </column>
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_dms_loan_file_created_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_dms_loan_file_modified_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-        <addForeignKeyConstraint baseTableName="dms_loan_file"
-                                 baseColumnNames="loan_type_id"
-                                 constraintName="fk_dms_loan_file_loan_type_id"
-                                 referencedTableName="loan_config"
-                                 referencedColumnNames="id"/>
-    </changeSet>
-    <changeSet id="6-create-loan-document-table" author="anil">
-        <createTable tableName="loan_document">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="VARCHAR(256)">
-            </column>
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_loan_document_created_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_loan_document_modified_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="6-create-dms-loan-file-documents-table" author="anil">
-        <createTable tableName="dms_loan_file_documents">
-            <column name="dms_loan_file_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="documents_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseTableName="dms_loan_file_documents"
-                                 baseColumnNames="dms_loan_file_id"
-                                 constraintName="fk_dms_loan_file_documents_dms_loan_file_id"
-                                 referencedTableName="dms_loan_file"
-                                 referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="dms_loan_file_documents"
-                                 baseColumnNames="documents_id"
-                                 constraintName="fk_dms_loan_file_documents_documents_id"
-                                 referencedTableName="loan_document"
-                                 referencedColumnNames="id"/>
-    </changeSet>
-
-
     <changeSet id="3-create-memo-type-table" author="msucil">
         <createTable tableName="memo_type">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -1551,6 +1423,21 @@
             </column>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -1725,30 +1612,36 @@
     <changeSet id="3-add-entry-for-memo-permission" author="msucil">
         <sql>
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (15,
-            'Memo', 'fa fa-user', '/home/memo', 62, 1);
+            'Memo', 'fa fa-envelope', null, 62, 1);
 
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (15 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 15, 1);
-        </sql>
-    </changeSet>
-    <changeSet id="3-add-nav-entry-for-memo-type" author="msucil">
-        <sql>
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (16,
-            'Memo Type', 'fa fa-user', '/home/memo/type', 62, 1);
-
-            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-            VALUES (16 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 16, 1);
         </sql>
     </changeSet>
 
     <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
         <sql>
             INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (1,
-            'Memo Type','/home/memo/type', 'fa fa-user');
+            'Under Review','/home/memo/underReview', 'fa fa-envelope-open');
+            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (2,
+            'Compose','/home/memo/compose', 'fa fa-edit');
+            INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (3,
+            'Memo Type','/home/memo/type', 'fa fa-bookmark');
         </sql>
     </changeSet>
 
-    <include file="20190503_scheme.xml" relativeToChangelogFile="true"/>
+    <changeSet id="3-add-permission-sub-navs-entry-for-memo" author="elvin">
+        <sql>
+            INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 1);
+            INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 2);
+            INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 3);
+        </sql>
+    </changeSet>
+
+  <changeSet id="1-load-data-for-eligibility" author="rawseek">
+    <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>
     <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190503_applicant.xml" relativeToChangelogFile="true"/>
@@ -1757,4 +1650,7 @@
     <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
     <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
     <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
+    <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
+
+    <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

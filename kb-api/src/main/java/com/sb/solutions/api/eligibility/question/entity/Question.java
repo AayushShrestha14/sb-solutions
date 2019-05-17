@@ -1,8 +1,9 @@
 package com.sb.solutions.api.eligibility.question.entity;
 
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
-import com.sb.solutions.api.eligibility.scheme.entity.Scheme;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,9 +27,11 @@ public class Question extends BaseEntity<Long> {
 
     private long appearanceOrder;
 
+    private Status status;
+
     @ManyToOne
-    @JoinColumn(name = "scheme_id")
-    private Scheme scheme;
+    @JoinColumn(name = "loan_config_id")
+    private LoanConfig loanConfig;
 
     @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();

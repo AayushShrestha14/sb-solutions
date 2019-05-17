@@ -9,7 +9,9 @@ public interface QuestionService extends BaseService<Question> {
 
     List<Question> save(List<Question> questions);
 
-    List<Question> findBySchemeId(Long schemeId);
+    List<Question> findByLoanConfigId(Long loanConfigId);
 
     Question update(Question question);
+
+    void delete(long id);
 }

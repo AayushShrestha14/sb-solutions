@@ -12,4 +12,7 @@ public interface AnswerService extends BaseService<Answer> {
 
     List<Answer> update(List<Answer> answers, Question question);
 
+    void delete(long id);
+
+    void delete(List<Answer> answers);
 }
