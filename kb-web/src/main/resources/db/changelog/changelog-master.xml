@@ -350,10 +350,18 @@
     <changeSet id="5-permission-sub-navs" author="rujan">
         <createTable tableName="permission_sub_navs">
             <column name="permission_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_permission_nav_id"
+                             referencedTableName="permission"
+                             referencedColumnNames="id"
+                />
 
             </column>
             <column name="sub_navs_id" type="BIGINT">
-                <constraints unique="true"/>
+                <constraints unique="true"
+                             foreignKeyName="fk_sub_nav_id"
+                             referencedTableName="sub_nav"
+                             referencedColumnNames="id"/>
             </column>
 
         </createTable>
@@ -778,6 +786,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="is_renewable" type="boolean"/>
+      <column name="total_points" type="BIGINT"/>
+      <column name="eligibility_percentage" type="DOUBLE"/>
+      <column name="enable_eligibility" type="boolean"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_config_created_by_id"
@@ -1683,11 +1694,19 @@
   </changeSet>
 
 
-    <include file="20190503_scheme.xml" relativeToChangelogFile="true"/>
+  <changeSet id="1-load-data-for-eligibility" author="rawseek">
+    <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>
     <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190503_applicant.xml" relativeToChangelogFile="true"/>
     <include file="20190503_applicant_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190504_submission_document.xml" relativeToChangelogFile="true"/>
     <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
+    <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
+    <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
+
+    <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

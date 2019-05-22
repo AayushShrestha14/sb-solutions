@@ -9,7 +9,7 @@ import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dateValidation.DateValidation;
+import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ApiException;
 import com.sb.solutions.core.utils.JsonConverter.JsonConverter;

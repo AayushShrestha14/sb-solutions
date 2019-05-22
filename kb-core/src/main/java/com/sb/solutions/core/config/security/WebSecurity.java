@@ -27,6 +27,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Value("${spring.queries.roles-query}")
     private String rolesQuery;
 
+    @Autowired
+    UserDetailsService userDetailsService;
+
 
     @Bean
     @Override
@@ -42,12 +45,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
-        auth.
-                jdbcAuthentication()
-                .usersByUsernameQuery(usersQuery)
-                .authoritiesByUsernameQuery(rolesQuery)
-                .dataSource(dataSource)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
+//        auth.
+//                jdbcAuthentication()
+//                .usersByUsernameQuery(usersQuery)
+//                .authoritiesByUsernameQuery(rolesQuery)
+//                .dataSource(dataSource)
+//                .passwordEncoder(passwordEncoder());
     }
 
     @Bean

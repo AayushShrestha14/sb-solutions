@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import java.io.Serializable;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.
@@ -19,7 +20,7 @@ import javax.persistence.Transient;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity<Long> {
+public class Role extends BaseEntity<Long> implements Serializable {
 
     @Transient
     private Long id;
@@ -28,4 +29,9 @@ public class Role extends BaseEntity<Long> {
 
     private Status status = Status.ACTIVE;
 
+    @Transient
+    private String createdByName;
+
+    @Transient
+    private String modifiedByName;
 }

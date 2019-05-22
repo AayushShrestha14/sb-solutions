@@ -11,6 +11,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="points" type="BIGINT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="question_id" type="BIGINT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>

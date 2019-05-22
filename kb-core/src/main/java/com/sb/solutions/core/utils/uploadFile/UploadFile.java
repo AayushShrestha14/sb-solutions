@@ -100,4 +100,45 @@ public class UploadFile {
             return new RestResponseDto().failureModel("Fail");
         }
     }
+
+    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
+        FilePath filePath = new FilePath();
+        String returnImagePath = null;
+        if (multipartFile.isEmpty()) {
+            return new RestResponseDto().failureModel("No image is selected");
+        }
+//         else if (multipartFile.getSize() > 307200) {
+//            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
+//        }
+
+        try {
+            byte[] bytes = multipartFile.getBytes();
+
+            url = filePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
+            String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
+
+            Path path = Paths.get(url);
+            if (!Files.exists(path)) {
+                new File(url).mkdirs();
+            }
+            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            if (fileExtension.equals("jpg")) {
+                String imagePath = url + name + "_" + documentName + ".jpg";
+                returnImagePath = returnUrl + name + "_" + documentName + ".jpg";
+                path = Paths.get(imagePath);
+                Files.write(path, bytes);
+                return new RestResponseDto().successModel(returnImagePath);
+            } else {
+                String imagePath = url + name + "_" + documentName + ".png";
+                returnImagePath = returnUrl + name + "_" + documentName + ".png";
+                path = Paths.get(imagePath);
+                Files.write(path, bytes);
+                return new RestResponseDto().successModel(returnImagePath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new RestResponseDto().failureModel("Fail");
+        }
+    }
 }
+

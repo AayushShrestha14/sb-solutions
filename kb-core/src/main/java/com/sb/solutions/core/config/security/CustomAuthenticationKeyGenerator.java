@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -14,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenerator {
+public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenerator,Serializable {
 
     private static final String CLIENT_ID = "client_id";
 

@@ -19,7 +19,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     @Query(value = "select\n" +
             "  (select  count(id) from role where status=1) active,\n" +
             "(select  count(id) from role where status=0) inactive,\n" +
-            "(select  count(id) from role) branches\n", nativeQuery = true)
+            "(select  count(id) from role) roles\n", nativeQuery = true)
     Map<Object, Object> roleStatusCount();
 
     @Query(value = "Select distinct p.id as id,p.role_name as roleName from role p\n" +
@@ -27,5 +27,8 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
             "where p.status=1\n" +
             "and p.id <>:id group by p.id", nativeQuery = true)
     List<Map<Object, Object>> activeRole(@Param("id") Long id);
+
+    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.userName from User u where r.createdBy=u.id),(SELECT u.userName from User u where r.modifiedBy=u.id)) from Role r")
+    List<Role>  findAll();
 
 }

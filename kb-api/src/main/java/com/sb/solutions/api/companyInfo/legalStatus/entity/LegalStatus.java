@@ -24,7 +24,7 @@ public class LegalStatus extends BaseEntity<Long> {
 
     private String registeredUnderAct;
 
-    private String registrationNo;
+        private String registrationNo;
 
     private Date registrationDate;
 

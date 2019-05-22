@@ -5,9 +5,12 @@ import com.sb.solutions.api.eligibility.answer.service.AnswerService;
 import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.api.eligibility.question.repository.QuestionRepository;
 import com.sb.solutions.api.eligibility.question.service.QuestionService;
-import com.sb.solutions.api.eligibility.scheme.entity.Scheme;
-import com.sb.solutions.api.eligibility.scheme.service.SchemeService;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,13 @@ import java.util.List;
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
+    private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
+
     private final QuestionRepository questionRepository;
 
     private final AnswerService answerService;
 
-    private final SchemeService schemeService;
-
+    private final LoanConfigService loanConfigService;
     @Override
     public List<Question> findAll() {
         return questionRepository.findAll();
@@ -54,6 +58,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> savedQuestions = new ArrayList<>();
         for (Question question : questions) {
             question.setLastModifiedAt(new Date());
+            question.setStatus(Status.ACTIVE);
             final Question savedQuestion = questionRepository.save(question);
             question.getAnswers().forEach(answer -> answer.setQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
@@ -61,17 +66,17 @@ public class QuestionServiceImpl implements QuestionService {
                     .map(Answer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
-        Scheme scheme = schemeService.findOne(savedQuestions.stream()
-                .map(Question::getScheme).distinct().findAny().orElse(null).getId());
-        scheme.setTotalPoints(scheme.getTotalPoints() + savedQuestions.stream().map(Question::getMaximumPoints)
+        LoanConfig loanConfig = loanConfigService.findOne(savedQuestions.stream()
+                .map(Question::getLoanConfig).distinct().findAny().orElse(null).getId());
+        loanConfig.setTotalPoints(loanConfig.getTotalPoints() + savedQuestions.stream().map(Question::getMaximumPoints)
                 .mapToLong(Long::longValue).sum());
-        schemeService.save(scheme);
+        loanConfigService.save(loanConfig);
         return savedQuestions;
     }
 
     @Override
-    public List<Question> findBySchemeId(Long schemeId) {
-        return questionRepository.findBySchemeId(schemeId);
+    public List<Question> findByLoanConfigId(Long loanConfigId) {
+        return questionRepository.findByLoanConfigIdAndStatusNot(loanConfigId, Status.DELETED);
     }
 
     @Override
@@ -89,10 +94,22 @@ public class QuestionServiceImpl implements QuestionService {
                 .max(Comparator.comparing(Long::valueOf)).orElse(0L));
         updatedQuestion.setAnswers(updatedAnswers);
         updatedQuestion = questionRepository.save(updatedQuestion);
-        Scheme scheme = schemeService.findOne(updatedQuestion.getScheme().getId());
-        List<Question> allQuestions = findBySchemeId(scheme.getId());
-        scheme.setTotalPoints(allQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
-        schemeService.save(scheme);
+        LoanConfig loanConfig = loanConfigService.findOne(updatedQuestion.getLoanConfig().getId());
+        List<Question> allQuestions = findByLoanConfigId(loanConfig.getId());
+        loanConfig.setTotalPoints(allQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
+        loanConfigService.save(loanConfig);
         return updatedQuestion;
+    }
+
+    @Override
+    public void delete(long id) {
+        logger.debug("Setting status to deleted for the question with id [{}].", id);
+        final Question question = questionRepository.getOne(id);
+        if (question != null) {
+            final List<Answer> answers = question.getAnswers();
+            answerService.delete(answers);
+            question.setStatus(Status.DELETED);
+            questionRepository.save(question);
+        }
     }
 }

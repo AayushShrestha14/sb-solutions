@@ -5,22 +5,22 @@ INSERT INTO `user` (`id`, `created_at`, `last_modified_at`, `account_no`, `email
 (1, CURRENT_DATE , CURRENT_DATE , NULL, 'admin@admin.com', 'SPADMIN', '$2a$10$cSqKGvZvEGEzQhRFRyDVyuCR3Lf0e7FcpIfxd/0t5IOG9U.3flG8m', NULL, NULL, 1, 'SPADMIN', NULL, 1, NULL, NULL);
 
 
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'BRANCH', 'fa fa-dashboard', '/home/branch', 10, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-edit', '/home/config', 30, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-edit', '/home/role', 20, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (4, 'VALUATOR', 'fa fa-airplane', '/home/valuator', 25, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (5,  'Sector', 'fa fa-airplane', '/home/sector', 50, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fa fa-bank', '/home/branch', 10, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-gear', '/home/config', 30, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-exchange', '/home/role', 19, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (4, '   Valuator', 'fas fa-money-check', '/home/valuator', 25, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (5,  '  Sector', 'fas fa-hands-helping', '/home/sector', 50, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (6, 'Users', 'fa fa-user', '/home/user', 1, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (7, 'Approval Limit', 'fa fa-user', '/home/approvalLimit', 2, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (8, 'Nepse Company', 'fa fa-user', '/home/nepse', 21, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (7, '   Approval Limit', 'fas fa-indent', '/home/approvalLimit', 2, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (8, '   Nepse Company', 'fas fa-money-bill-wave', '/home/nepse', 21, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (9,  'Segment', 'fa fa-user', '/home/segment', 22, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (10,  'Sub Segment', 'fa fa-user', '/home/sub-segment', 23, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, 'Company', 'fa fa-user', '/home/company', 24, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, ' Company', 'fas fa-desktop', '/home/company', 24, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (12,  'SubSector', 'fa fa-user', '/home/subSector', 51, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-user', '/home/document', 55, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Template', 'fa fa-user', '/home/template', 61, 1);
--- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (14,  'Ui', 'fa fa-user', '/home/ui', 60, 1);
--- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (16,  'Loan', 'fa fa-user', '/home/loan', 62, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/document', 55, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  '   Role Hierarchy', 'fas fa-sitemap', '/home/roleHierarchy', 20, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fa fa-dashboard', '/home/dashboard', 1, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (18,  'Eligibility', 'fa fa-check-square', '/home/eligibility', 62, 1);
 
 
 
@@ -64,8 +64,14 @@ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permissi
   INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (13, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  13, 1);
 
+INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (100, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  100, 1);
+
+
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (14 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  14, 1);
+ VALUES (17, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  17, 1);
+ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (18 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  18, 1);
 
 
 

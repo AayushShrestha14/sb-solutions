@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
@@ -15,6 +16,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Company extends BaseEntity<Long> {
+
 
     private String name;
 

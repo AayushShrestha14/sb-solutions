@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Valuator extends BaseEntity<Long> {
+public class Valuator extends BaseEntity<Long> implements Serializable {
     private String name;
     private String contactNo;
     private Status status;
