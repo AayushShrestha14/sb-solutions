@@ -6,6 +6,9 @@ import com.sb.solutions.core.service.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 public interface OpeningFormService extends BaseService<OpeningForm> {
     Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus);
+    Map<Object, Object> openingFormCount();
 }

@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OpeningFormServiceImpl implements OpeningFormService {
@@ -152,5 +153,10 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             openingForm.setOpeningAccount(jsonConverter.convertToJson(openingForm.getCustomerDetailsJson(), OpeningAccount.class));
         }
         return openingForms;
+    }
+
+    @Override
+    public Map<Object, Object> openingFormCount() {
+        return openingFormRepository.openingFormStatusCount();
     }
 }

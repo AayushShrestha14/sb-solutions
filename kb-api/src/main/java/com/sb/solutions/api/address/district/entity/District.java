@@ -1,6 +1,5 @@
 package com.sb.solutions.api.address.district.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +15,8 @@ import java.io.Serializable;
 public class District implements Serializable {
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
     private String name;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "province_id")
     private Province province;

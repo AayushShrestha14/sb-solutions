@@ -77,7 +77,7 @@ public class DmsLoanFileController {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("id") int id, @RequestParam("customerName") String name, @RequestParam("documentName") String documentName) {
-            return uploadFile.uploadFile(multipartFile, type, id, name, documentName);
+        return uploadFile.uploadFile(multipartFile, type, id, name, documentName);
 
     }
 
