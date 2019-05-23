@@ -1,9 +1,11 @@
 package com.sb.solutions.api.eligibility.applicant.service.impl;
 
+import com.sb.solutions.api.eligibility.answer.entity.Answer;
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.repository.ApplicantRepository;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityConstants;
+import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.api.eligibility.document.dto.DocumentDTO;
 import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
@@ -46,6 +48,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public Applicant save(Applicant applicant) {
         logger.debug("Saving the applicant information.");
+        applicant.setObtainedMarks(applicant.getAnswers().stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
         return applicantRepository.save(applicant);
     }
 

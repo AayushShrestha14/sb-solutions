@@ -27,21 +27,19 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Applicant extends BaseEntity<Long> {
 
-    private String firstName;
-
-    private String lastName;
+    private String fullName;
 
     private long age;
 
     private long phoneNumber;
-
-    private String nationality;
 
     private double requestAmount;
 
     private String remarks;
 
     private EligibilityStatus eligibilityStatus;
+
+    private long obtainedMarks;
 
     @ManyToOne
     @JoinColumn(name = "loan_config_id")
@@ -60,4 +58,5 @@ public class Applicant extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
 }
