@@ -4,8 +4,10 @@ import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.repository.LoanConfigRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ import java.util.Map;
  */
 
 @Service
+@AllArgsConstructor
 public class LoanConfigServiceImpl implements LoanConfigService {
 
-    @Autowired
-    LoanConfigRepository loanConfigRepository;
+    private final Logger logger = LoggerFactory.getLogger(LoanConfigServiceImpl.class);
+
+    private final LoanConfigRepository loanConfigRepository;
 
     @Override
     public List<LoanConfig> findAll() {
@@ -54,5 +58,11 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     @Override
     public Map<Object, Object> loanStatusCount() {
         return loanConfigRepository.loanStatusCount();
+    }
+
+    @Override
+    public List<LoanConfig> getLoanConfigsActivatedForEligbility() {
+        logger.debug("Getting list of loan configuration activated for eligibility.");
+        return loanConfigRepository.findAllByEnableEligibility(true);
     }
 }

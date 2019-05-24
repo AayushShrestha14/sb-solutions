@@ -1,7 +1,8 @@
-package com.sb.solutions.web.eligibility.applicant;
+package com.sb.solutions.web.eligibility.v1.applicant;
 
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
+import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/loan-configs/{loanConfigId}/applicants")
+@RequestMapping(ApplicantController.URL)
 @AllArgsConstructor
 public class ApplicantController {
+
+    static final String URL = "/v1/loan-configs/{loanConfigId}/applicants";
 
     private final Logger logger = LoggerFactory.getLogger(ApplicantController.class);
 
@@ -38,6 +41,7 @@ public class ApplicantController {
                                                  @PathVariable long loanConfigId, BindingResult bindingResult) {
         logger.debug("Rest request to save the applicant information.");
         globalExceptionHandler.constraintValidation(bindingResult);
+        applicant.setEligibilityStatus(EligibilityStatus.NEW_REQUEST);
         final Applicant savedApplicant = applicantService.save(applicant);
         if (savedApplicant == null) return new RestResponseDto().failureModel("Oops! Something went wrong.");
         return new RestResponseDto().successModel(savedApplicant);

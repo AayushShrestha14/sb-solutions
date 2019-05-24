@@ -19,6 +19,9 @@
             <column name="request_amount" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
+            <column name="obtained_marks" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="eligibility_status" type="INT">
                 <constraints nullable="false"/>
             </column>

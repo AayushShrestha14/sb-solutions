@@ -1,4 +1,4 @@
-package com.sb.solutions.web.eligibility.document;
+package com.sb.solutions.web.eligibility.v1.document;
 
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;

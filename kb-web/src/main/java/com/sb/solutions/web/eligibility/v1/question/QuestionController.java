@@ -1,4 +1,4 @@
-package com.sb.solutions.web.eligibility.question;
+package com.sb.solutions.web.eligibility.v1.question;
 
 import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.api.eligibility.question.service.QuestionService;
