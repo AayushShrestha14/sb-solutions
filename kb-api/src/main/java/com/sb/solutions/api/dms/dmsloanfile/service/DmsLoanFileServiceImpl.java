@@ -76,7 +76,10 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     public Page<DmsLoanFile> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return dmsLoanFileRepository.DmsLoanFileFilter(s.getName() == null ? "" : s.getName(), pageable);
-
+        if (s.getName() == null && s.getDate() == null && s.getLoanType() == null) {
+            return dmsLoanFileRepository.findBySearch("", new Date(), "", pageable);
+        } else {
+            return dmsLoanFileRepository.findBySearch(s.getName(), s.getDate(), s.getLoanType(), pageable);
+        }
     }
 }

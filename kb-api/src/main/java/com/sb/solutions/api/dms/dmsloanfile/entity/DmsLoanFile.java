@@ -34,8 +34,6 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @OneToOne
     private LoanConfig loanType;
     @Transient
-    private List<String> documentPaths;
-    @Transient
     private List<String> documentMap;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<LoanDocument> documents;

@@ -42,6 +42,10 @@
             <constraints nullable="false"/>
         </column>
         <column name="loan_type_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="stage" type="INT">
+
         </column>
         <column name="created_by_id" type="BIGINT">
             <constraints nullable="true"

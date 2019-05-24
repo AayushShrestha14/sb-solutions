@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -106,4 +107,9 @@ public class DmsLoanFileController {
     public ResponseEntity<?> getLoanByStage(@RequestParam("stage") Stage stage) {
         return new RestResponseDto().successModel(dmsLoanFileRepository.findAllByStage(stage));
     }
+
+//    @GetMapping("/getDmsBySearch")
+//    public ResponseEntity<?> getLoanBySearch(@RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam("loanType") String loanType, @RequestParam("name") String name) {
+//        return new RestResponseDto().successModel(dmsLoanFileRepository.findBySearch(name, date, loanType));
+//    }
 }
