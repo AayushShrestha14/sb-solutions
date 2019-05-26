@@ -7,6 +7,7 @@ import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.uploadFile.UploadFile;
@@ -104,8 +105,8 @@ public class DmsLoanFileController {
     }
 
     @GetMapping("/getLoan")
-    public ResponseEntity<?> getLoanByStage(@RequestParam("stage") Stage stage) {
-        return new RestResponseDto().successModel(dmsLoanFileRepository.findAllByStage(stage));
+    public ResponseEntity<?> getLoanByStage(@RequestParam("status") DocStatus status) {
+        return new RestResponseDto().successModel(dmsLoanFileRepository.findAllByDocumentStatus(status));
     }
 
 //    @GetMapping("/getDmsBySearch")

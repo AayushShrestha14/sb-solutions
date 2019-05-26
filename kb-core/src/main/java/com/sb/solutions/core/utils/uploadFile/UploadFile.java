@@ -61,9 +61,9 @@ public class UploadFile {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
         }
-//         else if (multipartFile.getSize() > 307200) {
-//            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
-//        }
+         else if (multipartFile.getSize() > 20000) {
+            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
+        }
 
             try {
                 byte[] bytes = multipartFile.getBytes();

@@ -1,7 +1,8 @@
 package com.sb.solutions.api.dms.dmsloanfile.repository;
 
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
-import com.sb.solutions.api.memo.enums.Stage;
+
+import com.sb.solutions.core.enums.DocStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,10 +16,10 @@ import java.util.List;
 @Repository
 public interface DmsLoanFileRepository extends JpaRepository<DmsLoanFile, Long> {
 
-    List<DmsLoanFile> findAllByStage(Stage stage);
+    List<DmsLoanFile> findAllByDocumentStatus(DocStatus status);
 
-    @Query(value = "SELECT * FROM dms_loan_file d JOIN loan_config l ON d.loan_type_id=l.id " +
-            "WHERE d.customer_name LIKE CONCAT(:name,'%') OR d.created_at=:date OR l.name=:loanType", nativeQuery = true)
-    Page<DmsLoanFile> findBySearch(@Param("name") String name, @Param("date") Date date, @Param("loanType") String loanType, Pageable pageable);
+    @Query(value = "SELECT * FROM dms_loan_file d JOIN loan_config l ON d.loan_config_id=l.id " +
+            "WHERE d.customer_name LIKE CONCAT(:name,'%') OR d.created_at=:date OR l.name=:loanConfig", nativeQuery = true)
+    Page<DmsLoanFile> findBySearch(@Param("name") String name, @Param("date") Date date, @Param("loanConfig") String loanConfig, Pageable pageable);
 
 }
