@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/v1/roleHierarchy")
+@RequestMapping("/v1/role-hierarchy")
 public class RoleHierarchyController {
 
 
@@ -55,7 +55,7 @@ public class RoleHierarchyController {
     }
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getRoleHierarchyList() {
         return new RestResponseDto().successModel(roleHierarchyMapper.mapEntitiesToDtos(roleHierarchyService.findAll()));
     }

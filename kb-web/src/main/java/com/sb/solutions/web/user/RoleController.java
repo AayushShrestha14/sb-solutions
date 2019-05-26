@@ -1,22 +1,24 @@
 package com.sb.solutions.web.user;
 
+import java.util.List;
+import javax.validation.Valid;
+import javax.ws.rs.Produces;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
 import com.sb.solutions.api.rolePermissionRight.service.RoleHierarchyService;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -47,21 +49,21 @@ public class RoleController {
                 List<RoleHierarchy> roleHierarchies = roleHierarchyService.findAll();
                 RoleHierarchy roleHierarchy = new RoleHierarchy();
                 roleHierarchy.setRole(r);
-                roleHierarchy.setRoleOrder((roleHierarchies.size())+1L);
+                roleHierarchy.setRoleOrder((roleHierarchies.size()) + 1L);
                 roleHierarchyService.save(roleHierarchy);
             }
             return new RestResponseDto().successModel(r.getRoleName());
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-        @Produces("application/json")
+    @GetMapping("/all")
+    @Produces("application/json")
     public ResponseEntity<?> getRole() {
         return new RestResponseDto().successModel(roleService.findAll());
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
+    @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getRoleStatusCount() {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
     }
