@@ -36,6 +36,11 @@ public class AccountOpeningController {
         }
     }
 
+    @GetMapping(value = "statusCount")
+    public ResponseEntity<?> getStatus(){
+        return new RestResponseDto().successModel(openingFormService.getStatus());
+    }
+
     @GetMapping(value = "/getList")
     public ResponseEntity<?> getCustomer() {
         return new RestResponseDto().successModel(openingFormService.findAll());

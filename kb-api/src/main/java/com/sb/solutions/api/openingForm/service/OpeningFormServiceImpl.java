@@ -58,7 +58,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         String jsonPath = "";
         if (openingForm.getId() == null) {
             openingForm.setRequestedDate(new Date());
-            openingForm.setAccountStatus(AccountStatus.NEW_REQUEST);
+            openingForm.setStatus(AccountStatus.NEW_REQUEST);
         }
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
@@ -148,7 +148,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus) {
         AccountStatus a = AccountStatus.valueOf(accountStatus);
-        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranchAndAccountStatus(branch, pageable, a);
+        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranchAndStatus(branch, pageable, a);
         for (OpeningForm openingForm : openingForms) {
             openingForm.setOpeningAccount(jsonConverter.convertToJson(openingForm.getCustomerDetailsJson(), OpeningAccount.class));
         }
@@ -156,7 +156,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     }
 
     @Override
-    public Map<Object, Object> openingFormCount() {
+    public Map<Object, Object> getStatus() {
         return openingFormRepository.openingFormStatusCount();
     }
 }

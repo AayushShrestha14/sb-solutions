@@ -1684,7 +1684,7 @@
                      referencedTableName="branch"
                      referencedColumnNames="id"/>
       </column>
-      <column name="account_status" type="INT">
+      <column name="status" type="INT">
         <constraints nullable="false"/>
       </column>
       <column name="full_name" type="VARCHAR(256)"/>
