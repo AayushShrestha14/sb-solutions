@@ -1,48 +1,57 @@
-package com.sb.solutions.web.loanTemplate;
+package com.sb.solutions.web.loanConfig.v1;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
-import com.sb.solutions.api.loanTemplate.service.LoanTemplateService;
+
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
 /**
  * @author Rujan Maharjan on 2/25/2019
  */
-
 @RestController
-@RequestMapping("/v1/loan-template")
-public class LoanTemplateController {
+@RequestMapping("/v1/loan-configs")
+public class LoanConfigController {
 
-    @Autowired
-    LoanTemplateService loanTemplateService;
+    private final Logger logger = LoggerFactory.getLogger(LoanConfigController.class);
 
     @Autowired
     GlobalExceptionHandler globalExceptionHandler;
+    @Autowired
+    LoanConfigService loanConfigService;
+    @Autowired
+    private UploadFile uploadFile;
+
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveTemplate(@Valid @RequestBody LoanTemplate loanTemplate,
+    public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config,
         BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
-        LoanTemplate template = loanTemplateService.save(loanTemplate);
-        if (template == null) {
+        logger.debug("Request to save new loan.");
+        LoanConfig loanConfig = loanConfigService.save(config);
+        if (loanConfig == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
-            return new RestResponseDto().successModel(template);
+            return new RestResponseDto().successModel(loanConfig);
         }
     }
 
@@ -52,16 +61,26 @@ public class LoanTemplateController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/list")
-    public ResponseEntity<?> getPageableLoanTemplate(@RequestBody SearchDto searchDto,
+    public ResponseEntity<?> getPageableLoanConfig(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(loanTemplateService
+        return new RestResponseDto().successModel(loanConfigService
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 
+    @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
+    public ResponseEntity<?> getLoanStatusCount() {
+        return new RestResponseDto().successModel(loanConfigService.loanStatusCount());
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/all")
-    public ResponseEntity<?> getLoanTemplate() {
-        return new RestResponseDto().successModel(loanTemplateService.findAll());
+    public ResponseEntity<?> getLoanAll() {
+        return new RestResponseDto().successModel(loanConfigService.findAll());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+    public ResponseEntity<?> getLoanOne(@PathVariable Long id) {
+        return new RestResponseDto().successModel(loanConfigService.findOne(id));
     }
 
 }
