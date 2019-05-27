@@ -1,17 +1,21 @@
 package com.sb.solutions.api.dms.dmsloanfile.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sb.solutions.api.Loan.LoanStage;
+import com.sb.solutions.api.common.entity.Stage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -48,5 +52,11 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private String waiver;
     private DocStatus documentStatus;
     @OneToOne
-    private LoanFileStage loanFileStage;
+    @JsonIgnore
+    private LoanStage currentStage;
+    @ElementCollection
+    @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<LoanStage> previousStageList;
+    private LoanType loanType;
 }
