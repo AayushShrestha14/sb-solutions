@@ -11,7 +11,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class OpeningAccount {
     private String accountType;
-    private String accountNo;
+    private boolean haveExistingAccountNo;
+    private String existingAccountNo;
     private String purposeOfAccount;
     private String currency;
     private boolean haveJoint;
@@ -25,6 +26,7 @@ public class OpeningAccount {
     private boolean internetBanking;
     private boolean mobileBanking;
     private boolean debitCard;
+    private boolean statement;
     private String statementFrequency;
     private String statementMode;
 
