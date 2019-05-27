@@ -26,7 +26,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
     private String customerName;
     private String citizenshipNumber;
