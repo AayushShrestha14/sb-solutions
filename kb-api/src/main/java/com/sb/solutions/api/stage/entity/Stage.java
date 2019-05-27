@@ -1,4 +1,4 @@
-package com.sb.solutions.api.common.entity;
+package com.sb.solutions.api.stage.entity;
 
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
