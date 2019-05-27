@@ -19,7 +19,4 @@ public class RoleHierarchyDto extends BaseDto<Long> {
 
     private Role role;
     private Long roleOrder;
-
-
-
 }

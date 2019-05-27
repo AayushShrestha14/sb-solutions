@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/v1/nepseCompany")
+@RequestMapping(value = "/v1/nepse-company")
 public class NepseCompanyController {
 
     private NepseCompanyService nepseCompanyService;
@@ -50,14 +50,14 @@ public class NepseCompanyController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @PostMapping(value = "/get")
+    @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(nepseCompanyService
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
-    @GetMapping("/get/statusCount")
+    @GetMapping("/statusCount")
     public ResponseEntity<?> getNepseCompanyStatusCount() {
         return new RestResponseDto().successModel(nepseCompanyService.nepseStatusCount());
     }
