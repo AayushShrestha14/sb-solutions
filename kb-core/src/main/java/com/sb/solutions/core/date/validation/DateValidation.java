@@ -12,7 +12,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DateValidation {
-    private Date date;
 
     public boolean checkDate(Date date) {
         if(date.before(new Date())){

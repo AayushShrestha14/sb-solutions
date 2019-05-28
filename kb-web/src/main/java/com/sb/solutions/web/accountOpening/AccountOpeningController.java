@@ -27,6 +27,7 @@ public class AccountOpeningController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
+        System.out.println(openingForm.toString());
         globalExceptionHandler.constraintValidation(bindingResult);
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
