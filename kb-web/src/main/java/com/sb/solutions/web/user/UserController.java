@@ -81,7 +81,7 @@ public class UserController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @PostMapping(value = "/get")
+    @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
                                     @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
@@ -107,7 +107,7 @@ public class UserController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get/statusCount")
+    @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getUserStatusCount() {
         return new RestResponseDto().successModel(userService.userStatusCount());
     }
