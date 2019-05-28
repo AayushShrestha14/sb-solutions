@@ -2,7 +2,6 @@ package com.sb.solutions.api.dms.dmsloanfile.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.Loan.LoanStage;
-import com.sb.solutions.api.common.entity.Stage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;

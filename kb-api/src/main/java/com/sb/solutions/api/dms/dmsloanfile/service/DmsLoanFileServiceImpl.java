@@ -3,6 +3,7 @@ package com.sb.solutions.api.dms.dmsloanfile.service;
 import com.google.gson.Gson;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
+
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocStatus;
@@ -58,7 +59,7 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
         if (dmsLoanFile.getId() == null) {
             dmsLoanFile.setDocumentStatus(DocStatus.PENDING);
         }
-        if (!dateValidation.checkDate(dmsLoanFile.getTenure())) {
+        if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
             throw new ApiException("Invalid Date");
         }
         dmsLoanFile.setDocumentPath(gson.toJson(dmsLoanFile.getDocumentMap()));

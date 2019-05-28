@@ -9,6 +9,7 @@ import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +44,7 @@ public class PermissionController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping("/all")
     public ResponseEntity<?> getPermission() {
         return new RestResponseDto().successModel(permissionService.findAll());
     }
