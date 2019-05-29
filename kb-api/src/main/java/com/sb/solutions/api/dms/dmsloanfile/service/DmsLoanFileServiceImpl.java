@@ -54,7 +54,7 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
 
     @Override
     public DmsLoanFile save(DmsLoanFile dmsLoanFile) {
-        if (!dateValidation.checkDate(dmsLoanFile.getTenure())) {
+        if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
             throw new ApiException("Invalid Date");
         }
         dmsLoanFile.setDocumentPath(gson.toJson(dmsLoanFile.getDocumentMap()));
