@@ -3,6 +3,7 @@ package com.sb.solutions.web.user;
 
 import java.util.Collection;
 
+import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,6 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
@@ -36,10 +36,10 @@ public class UserController {
 
     private final UserService userService;
     private RoleService roleService;
-    private UploadFile uploadFile;
+    private FileUploadUtils uploadFile;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService, UploadFile uploadFile) {
+    public UserController(UserService userService, RoleService roleService, FileUploadUtils uploadFile) {
         this.userService = userService;
         this.roleService = roleService;
         this.uploadFile = uploadFile;

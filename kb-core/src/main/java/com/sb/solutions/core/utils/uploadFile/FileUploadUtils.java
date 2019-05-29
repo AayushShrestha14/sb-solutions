@@ -17,11 +17,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
-public class UploadFile {
-    String url;
+public class FileUploadUtils {
     private static final int MAX_FILE_SIZE = 2000000;
+    private static String url;
 
-    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
@@ -54,7 +54,7 @@ public class UploadFile {
         }
     }
 
-    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
         FilePath filePath = new FilePath();
         String returnImagePath = null;
         if (multipartFile.isEmpty()) {
@@ -74,19 +74,11 @@ public class UploadFile {
                 new File(url).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            if (fileExtension.equals("jpg")) {
-                String imagePath = url + name + "_" + documentName + ".jpg";
-                returnImagePath = returnUrl + name + "_" + documentName + ".jpg";
-                path = Paths.get(imagePath);
-                Files.write(path, bytes);
-                return new RestResponseDto().successModel(returnImagePath);
-            } else {
-                String imagePath = url + name + "_" + documentName + ".png";
-                returnImagePath = returnUrl + name + "_" + documentName + ".png";
-                path = Paths.get(imagePath);
-                Files.write(path, bytes);
-                return new RestResponseDto().successModel(returnImagePath);
-            }
+            String imagePath = url + name + "_" + documentName + "." + fileExtension;
+            returnImagePath = returnUrl + name + "_" + documentName + "." + fileExtension;
+            path = Paths.get(imagePath);
+            Files.write(path, bytes);
+            return new RestResponseDto().successModel(returnImagePath);
         } catch (IOException e) {
             e.printStackTrace();
             return new RestResponseDto().failureModel("Fail");

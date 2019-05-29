@@ -3,10 +3,10 @@ package com.sb.solutions.api.dms.dmsloanfile.service;
 import com.google.gson.Gson;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
-
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Securities;
 import com.sb.solutions.core.exception.ApiException;
 import lombok.AllArgsConstructor;
@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -57,7 +58,10 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     @Override
     public DmsLoanFile save(DmsLoanFile dmsLoanFile) {
         if (dmsLoanFile.getId() == null) {
+            dmsLoanFile.setCurrentStage(null);
+            dmsLoanFile.setPreviousStageList(null);
             dmsLoanFile.setDocumentStatus(DocStatus.PENDING);
+            dmsLoanFile.setLoanType(LoanType.NEW_LOAN);
         }
         if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
             throw new ApiException("Invalid Date");
@@ -77,7 +81,7 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     public Page<DmsLoanFile> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        if (s.getName() == null && s.getDate() == null && s.getLoanType() == null) {
+        if (StringUtils.isEmpty(s.getName()) && StringUtils.isEmpty(s.getDate()) && StringUtils.isEmpty(s.getLoanType())) {
             return dmsLoanFileRepository.findBySearch("", new Date(), "", pageable);
         } else {
             return dmsLoanFileRepository.findBySearch(s.getName(), s.getDate(), s.getLoanType(), pageable);

@@ -2,6 +2,7 @@ package com.sb.solutions.web.loanConfig.v1;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.core.utils.uploadFile.UploadFile;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
@@ -39,7 +39,7 @@ public class LoanConfigController {
     @Autowired
     LoanConfigService loanConfigService;
     @Autowired
-    private UploadFile uploadFile;
+    private FileUploadUtils uploadFile;
 
 
     @RequestMapping(method = RequestMethod.POST)
