@@ -1,8 +1,6 @@
 package com.sb.solutions.web.loanConfig.v1;
 
 import javax.validation.Valid;
-
-import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +36,6 @@ public class LoanConfigController {
     GlobalExceptionHandler globalExceptionHandler;
     @Autowired
     LoanConfigService loanConfigService;
-    @Autowired
-    private FileUploadUtils uploadFile;
-
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config,
         BindingResult bindingResult) {

@@ -5,7 +5,6 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import org.apache.maven.shared.utils.io.FileUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Component
 public class FileUploadUtils {
     private static final int MAX_FILE_SIZE = 2000000;
     private static String url;
