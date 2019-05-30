@@ -159,4 +159,11 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public Map<Object, Object> getStatus() {
         return openingFormRepository.openingFormStatusCount();
     }
+
+    @Override
+    public OpeningForm updateOpeningCustomer(Long id, String status) {
+        OpeningForm openingForm = openingFormRepository.getOne(id);
+        openingForm.setStatus(AccountStatus.valueOf(status));
+        return openingFormRepository.save(openingForm);
+    }
 }

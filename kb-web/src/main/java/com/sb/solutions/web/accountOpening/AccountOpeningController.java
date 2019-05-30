@@ -25,9 +25,8 @@ public class AccountOpeningController {
     private GlobalExceptionHandler globalExceptionHandler;
     private UploadFile uploadFile;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
-        System.out.println(openingForm.toString());
         globalExceptionHandler.constraintValidation(bindingResult);
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
@@ -37,12 +36,17 @@ public class AccountOpeningController {
         }
     }
 
-    @GetMapping(value = "statusCount")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody String status) {
+        return new RestResponseDto().successModel(openingFormService.updateOpeningCustomer(id,status));
+    }
+
+    @GetMapping(value = "/statusCount")
     public ResponseEntity<?> getStatus(){
         return new RestResponseDto().successModel(openingFormService.getStatus());
     }
 
-    @GetMapping(value = "/getList")
+    @GetMapping(value = "/all")
     public ResponseEntity<?> getCustomer() {
         return new RestResponseDto().successModel(openingFormService.findAll());
     }
@@ -52,9 +56,14 @@ public class AccountOpeningController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @PostMapping(value = "/get")
+    @PostMapping(value = "/list")
     public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("accountStatus") String accountStatus) {
         return new RestResponseDto().successModel(openingFormService.findAllByBranchAndAccountStatus(branch, PaginationUtils.pageable(page, size), accountStatus));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id) {
+        return new RestResponseDto().successModel(openingFormService.findOne(id));
     }
 
     @PostMapping(value = "/uploadFile")

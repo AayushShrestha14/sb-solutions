@@ -12,9 +12,7 @@ public class DateValidation {
     public boolean checkDate(Date date) {
         if(date.before(new Date())){
             return true;
-        }else {
-            return false;
         }
-
+        return false;
     }
 }

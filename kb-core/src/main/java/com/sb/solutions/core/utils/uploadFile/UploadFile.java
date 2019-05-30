@@ -34,7 +34,7 @@ public class UploadFile {
         }
         try {
             byte[] bytes = multipartFile.getBytes();
-            url = filePath.getOSPath() + UploadDir.accountRequest + branch + "/";
+            url = UploadDir.accountRequest + branch + "/";
 
             Path path = Paths.get(url);
             if (!Files.exists(path)) {
@@ -68,9 +68,9 @@ public class UploadFile {
         try {
             byte[] bytes = multipartFile.getBytes();
             if (type.equals("profile")) {
-                url = filePath.getOSPath() + UploadDir.userProfile;
+                url = UploadDir.userProfile;
             } else if (type.equals("signature")) {
-                url = filePath.getOSPath() + UploadDir.userSignature;
+                url = UploadDir.userSignature;
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
@@ -105,7 +105,7 @@ public class UploadFile {
         try {
             byte[] bytes = multipartFile.getBytes();
 
-            url = filePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
+            url = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
 
             Path path = Paths.get(url);
