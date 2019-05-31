@@ -2,6 +2,50 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<changeSet id="6-create-loan-stage-table" author="anil">
+    <createTable tableName="loan_stage">
+        <column name="id" type="BIGINT" autoIncrement="true">
+            <constraints  primaryKey="true"/>
+        </column>
+        <column name="created_by_id" type="BIGINT">
+            <constraints nullable="true"
+                         foreignKeyName="fk_loan_stage_created_by_id"
+                         referencedTableName="user"
+                         referencedColumnNames="id"/>
+        </column>
+        <column name="modified_by_id" type="BIGINT">
+            <constraints nullable="true"
+                         foreignKeyName="fk_loan_stage_modified_by_id"
+                         referencedTableName="user"
+                         referencedColumnNames="id"/>
+        </column>
+        <column name="created_at" type="DATE">
+            <constraints nullable="false"/>
+        </column>
+        <column name="last_modified_at" type="DATE">
+            <constraints nullable="false"/>
+        </column>
+        <column name="comment" type="TEXT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="from_user_id" type="BIGINT">
+            <constraints nullable="true"
+                         foreignKeyName="fk_loan_stage_from_user_id"
+                         referencedTableName="user"
+                         referencedColumnNames="id"/>
+        </column>
+        <column name="to_user_id" type="BIGINT">
+            <constraints nullable="true"
+                         foreignKeyName="fk_loan_stage_to_user_id"
+                         referencedTableName="user"
+                         referencedColumnNames="id"/>
+        </column>
+        <column name="doc_action" type="int">
+            <constraints nullable="false"/>
+        </column>
+        <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+</changeSet>
 
 <changeSet id="6-create-dms-loan-file-table" author="anil">
     <createTable tableName="dms_loan_file">
@@ -41,7 +85,10 @@
         <column name="waiver" type="TEXT">
             <constraints nullable="false"/>
         </column>
-        <column name="loan_type_id" type="BIGINT">
+        <column name="loan_config_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="document_status" type="INT">
         </column>
         <column name="created_by_id" type="BIGINT">
             <constraints nullable="true"
@@ -62,14 +109,46 @@
         <column name="last_modified_at" type="DATE">
             <constraints nullable="false"/>
         </column>
+        <column name="loan_type" type="INT">
+            <constraints nullable="false"/>
+        </column>
+        <column name="current_stage_id" type="BIGINT">
+            <constraints nullable="true"/>
+        </column>
         <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
     <addForeignKeyConstraint baseTableName="dms_loan_file"
-                             baseColumnNames="loan_type_id"
-                             constraintName="fk_dms_loan_file_loan_type_id"
+                             baseColumnNames="loan_config_id"
+                             constraintName="fk_dms_loan_file_loan_config_id"
                              referencedTableName="loan_config"
                              referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="dms_loan_file"
+                             baseColumnNames="current_stage_id"
+                             constraintName="fk_dms_loan_file_current_stage_id"
+                             referencedTableName="loan_stage"
+                             referencedColumnNames="id"/>
 </changeSet>
+    <changeSet id="6-create-dms-loan-file-previous-stage-list" author="anil">
+        <createTable tableName="dms_loan_file_previous_stage_list">
+            <column name="dms_loan_file_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_stage_list_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="dms_loan_file_id"
+                                 baseTableName="dms_loan_file_previous_stage_list"
+                                 constraintName="fk_dms_loan_file_previous_stage_list_dms_loan_file_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="dms_loan_file"/>
+        <addForeignKeyConstraint baseColumnNames="previous_stage_list_id"
+                                 baseTableName="dms_loan_file_previous_stage_list"
+                                 constraintName="fk_dms_loan_file_previous_stage_list_previous_stage_list_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="loan_stage"/>
+    </changeSet>
+    
 <changeSet id="6-create-loan-document-table" author="anil">
 <createTable tableName="loan_document">
     <column name="id" type="BIGINT" autoIncrement="true">
