@@ -71,6 +71,7 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
         String mapSecurity = "";
         for (Securities securities : dmsLoanFile.getSecurities()) {
             mapSecurity += securities.ordinal() + ",";
+            System.out.println(mapSecurity);
         }
         mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
         dmsLoanFile.setSecurity(mapSecurity);

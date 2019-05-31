@@ -4,6 +4,8 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import org.apache.maven.shared.utils.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FileUploadUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+
     private static final int MAX_FILE_SIZE = 2000000;
     private static String url;
 
@@ -47,7 +52,7 @@ public class FileUploadUtils {
             System.out.println(imagePath);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error wile writing file", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
@@ -78,7 +83,7 @@ public class FileUploadUtils {
             Files.write(path, bytes);
             return new RestResponseDto().successModel(returnImagePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error while saving file", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
