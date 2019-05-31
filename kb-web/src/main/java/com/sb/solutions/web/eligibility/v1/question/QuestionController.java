@@ -18,7 +18,9 @@ import com.sb.solutions.api.eligibility.question.service.QuestionService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @RequestMapping("/v1/loan-configs/{loanConfigId}/questions")
 @AllArgsConstructor
 public class QuestionController {

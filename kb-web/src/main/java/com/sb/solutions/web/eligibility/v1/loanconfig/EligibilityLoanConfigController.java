@@ -3,7 +3,7 @@ package com.sb.solutions.web.eligibility.v1.loanconfig;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.web.eligibility.v1.loanconfig.dto.LoanConfigDTO;
+import com.sb.solutions.web.eligibility.v1.loanconfig.dto.LoanConfigDto;
 import com.sb.solutions.web.eligibility.v1.loanconfig.mapper.EligibilityLoanConfigMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -32,8 +32,8 @@ public class EligibilityLoanConfigController {
     public final ResponseEntity<?> getLoanConfigsForEligiblity() {
         logger.debug("Request to get the loan configs activated for eligibility.");
         final List<LoanConfig> loanConfigs = loanConfigService.getLoanConfigsActivatedForEligbility();
-        final List<LoanConfigDTO> loanConfigDTOS = eligibilityLoanConfigMapper.mapEntitiesToDtos(loanConfigs);
-        return new RestResponseDto().successModel(loanConfigDTOS);
+        final List<LoanConfigDto> loanConfigDtos = eligibilityLoanConfigMapper.mapEntitiesToDtos(loanConfigs);
+        return new RestResponseDto().successModel(loanConfigDtos);
     }
 
 }
