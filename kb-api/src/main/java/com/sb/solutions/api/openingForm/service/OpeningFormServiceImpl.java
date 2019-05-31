@@ -56,10 +56,6 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm save(OpeningForm openingForm) {
         String jsonPath = "";
-        if (openingForm.getId() == null) {
-            openingForm.setRequestedDate(new Date());
-            openingForm.setStatus(AccountStatus.NEW_REQUEST);
-        }
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
             if (!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
@@ -120,23 +116,45 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 }
             }
         }
-        try {
-            FilePath filePath = new FilePath();
-            String url = filePath.getOSPath() + UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
-            Path path = Paths.get(url);
-            if (!Files.exists(path)) {
-                new File(url).mkdirs();
-            }
-            jsonPath = url + openingForm.getFullName() + "_" + System.currentTimeMillis() + ".json";
-            File file = new File(jsonPath);
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
-            writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
-            writer.flush();
-        } catch (Exception exception) {
+        if (openingForm.getId() == null) {
+            openingForm.setRequestedDate(new Date());
+            openingForm.setStatus(AccountStatus.NEW_REQUEST);
+            try {
+                FilePath filePath = new FilePath();
+                String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
+                Path path = Paths.get(url);
+                if (!Files.exists(path)) {
+                    new File(url).mkdirs();
+                }
+                jsonPath = url + openingForm.getFullName() + "_" + System.currentTimeMillis() + ".json";
+                File file = new File(jsonPath);
+                file.getParentFile().mkdirs();
+                FileWriter writer = new FileWriter(file);
+                writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
+                writer.flush();
+            } catch (Exception exception) {
 
+            }
+            openingForm.setCustomerDetailsJson(jsonPath);
+        }else{
+            try {
+                FilePath filePath = new FilePath();
+                String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
+                Path path = Paths.get(url);
+                if (!Files.exists(path)) {
+                    new File(url).mkdirs();
+                }
+                jsonPath = openingForm.getCustomerDetailsJson();
+                File file = new File(jsonPath);
+                file.getParentFile().mkdirs();
+                FileWriter writer = new FileWriter(file);
+                writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
+                writer.flush();
+            } catch (Exception exception) {
+
+            }
         }
-        openingForm.setCustomerDetailsJson(jsonPath);
+
         return openingFormRepository.save(openingForm);
     }
 
