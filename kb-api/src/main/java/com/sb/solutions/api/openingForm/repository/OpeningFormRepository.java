@@ -13,9 +13,9 @@ import java.util.Map;
 public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long> {
     Page<OpeningForm> findAllByBranchAndStatus(Branch branch, Pageable pageable, AccountStatus accountStatus);
     @Query(value = "select\n" +
-            "  (select  count(id) from opening_form where status=0) newed,\n" +
-            "(select  count(id) from opening_form where status=1) approval,\n" +
-            "(select  count(id) from opening_form where status=2) rejected,\n" +
-            "(select  count(id) from opening_form) total\n", nativeQuery = true)
-    Map<Object, Object> openingFormStatusCount();
+            "  (select  count(id) from opening_form where status=0 and opening_form.branch_id = :branchId) newed,\n" +
+            "(select  count(id) from opening_form where status=1 and opening_form.branch_id = :branchId) approval,\n" +
+            "(select  count(id) from opening_form where status=2 and opening_form.branch_id = :branchId) rejected,\n" +
+            "(select  count(id) from opening_form where opening_form.branch_id = :branchId) total\n", nativeQuery = true)
+    Map<Object, Object> openingFormStatusCount(Long branchId);
 }

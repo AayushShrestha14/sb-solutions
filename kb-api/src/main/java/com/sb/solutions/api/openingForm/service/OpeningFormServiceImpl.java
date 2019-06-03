@@ -7,7 +7,6 @@ import com.sb.solutions.api.openingForm.entity.OpeningCustomer;
 import com.sb.solutions.api.openingForm.entity.OpeningCustomerRelative;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
-import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,7 +55,6 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public OpeningForm save(OpeningForm openingForm) {
-        String jsonPath = "";
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
             if (!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
@@ -120,38 +119,18 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             openingForm.setRequestedDate(new Date());
             openingForm.setStatus(AccountStatus.NEW_REQUEST);
             try {
-                FilePath filePath = new FilePath();
                 String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
-                Path path = Paths.get(url);
-                if (!Files.exists(path)) {
-                    new File(url).mkdirs();
-                }
-                jsonPath = url + openingForm.getFullName() + "_" + System.currentTimeMillis() + ".json";
-                File file = new File(jsonPath);
-                file.getParentFile().mkdirs();
-                FileWriter writer = new FileWriter(file);
-                writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
-                writer.flush();
+                openingForm.setCustomerDetailsJson(writeJsonFile(url, openingForm));
             } catch (Exception exception) {
-
+                throw new ApiException("File Fail to Save");
             }
-            openingForm.setCustomerDetailsJson(jsonPath);
+
         }else{
             try {
-                FilePath filePath = new FilePath();
                 String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
-                Path path = Paths.get(url);
-                if (!Files.exists(path)) {
-                    new File(url).mkdirs();
-                }
-                jsonPath = openingForm.getCustomerDetailsJson();
-                File file = new File(jsonPath);
-                file.getParentFile().mkdirs();
-                FileWriter writer = new FileWriter(file);
-                writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
-                writer.flush();
+                writeJsonFile(url, openingForm);
             } catch (Exception exception) {
-
+                throw new ApiException("File Fail to Save");
             }
         }
 
@@ -165,17 +144,13 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus) {
-        AccountStatus a = AccountStatus.valueOf(accountStatus);
-        Page<OpeningForm> openingForms = openingFormRepository.findAllByBranchAndStatus(branch, pageable, a);
-        for (OpeningForm openingForm : openingForms) {
-            openingForm.setOpeningAccount(jsonConverter.convertToJson(openingForm.getCustomerDetailsJson(), OpeningAccount.class));
-        }
-        return openingForms;
+        AccountStatus status = AccountStatus.valueOf(accountStatus);
+        return openingFormRepository.findAllByBranchAndStatus(branch, pageable, status);
     }
 
     @Override
-    public Map<Object, Object> getStatus() {
-        return openingFormRepository.openingFormStatusCount();
+    public Map<Object, Object> getStatus(Long branchId) {
+        return openingFormRepository.openingFormStatusCount(branchId);
     }
 
     @Override
@@ -183,5 +158,34 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         OpeningForm openingForm = openingFormRepository.getOne(id);
         openingForm.setStatus(AccountStatus.valueOf(status));
         return openingFormRepository.save(openingForm);
+    }
+
+    public String writeJsonFile(String url, OpeningForm openingForm){
+        String jsonPath;
+        Path path = Paths.get(url);
+        if (!Files.exists(path)) {
+            new File(url).mkdirs();
+        }
+        jsonPath = url + openingForm.getFullName() + "_" + System.currentTimeMillis() + ".json";
+        File file = new File(jsonPath);
+        file.getParentFile().mkdirs();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.flush();
+            return jsonPath;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -10,6 +10,6 @@ import java.util.Map;
 
 public interface OpeningFormService extends BaseService<OpeningForm> {
     Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus);
-    Map<Object, Object> getStatus();
+    Map<Object, Object> getStatus(Long branchId);
     OpeningForm updateOpeningCustomer(Long id, String status);
 }
