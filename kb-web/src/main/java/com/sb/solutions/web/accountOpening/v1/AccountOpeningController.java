@@ -1,4 +1,4 @@
-package com.sb.solutions.web.accountOpening;
+package com.sb.solutions.web.accountOpening.v1;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
@@ -23,7 +23,6 @@ import javax.validation.Valid;
 public class AccountOpeningController {
     private OpeningFormService openingFormService;
     private GlobalExceptionHandler globalExceptionHandler;
-    private FileUploadUtils uploadFile;
 
     @PostMapping
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
@@ -66,6 +65,6 @@ public class AccountOpeningController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile, @RequestParam("type") String type, @RequestParam("name") String name, @RequestParam("branch") String branch) {
-        return uploadFile.uploadAccountOpeningFile(multipartFile, branch, type, name);
+        return FileUploadUtils.uploadAccountOpeningFile(multipartFile, branch, type, name);
     }
 }

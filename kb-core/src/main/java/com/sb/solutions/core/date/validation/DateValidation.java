@@ -10,7 +10,7 @@ import java.util.Date;
 public class DateValidation {
 
     public boolean checkDate(Date date) {
-        if(date.before(new Date())){
+        if (date.before(new Date())) {
             return true;
         }
         return false;
