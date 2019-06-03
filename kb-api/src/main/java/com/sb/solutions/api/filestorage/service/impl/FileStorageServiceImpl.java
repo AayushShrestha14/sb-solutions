@@ -53,7 +53,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public String encodeFileUrl(String filePath) {
-        String sourcePath = filePath.substring(filePath.indexOf(File.separatorChar) + 1);
+        String sourcePath = filePath.substring(fileStorageProperties.getUploadDirectory().length());
         String imageName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
         sourcePath = sourcePath.substring(0, sourcePath.lastIndexOf(File.separator));
         sourcePath = sourcePath.replace(File.separatorChar, '_');
