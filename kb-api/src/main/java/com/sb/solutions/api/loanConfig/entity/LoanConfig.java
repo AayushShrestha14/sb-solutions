@@ -26,16 +26,16 @@ public class LoanConfig extends BaseEntity<Long> {
     private String name;
     @ManyToMany
     private List<LoanTemplate> templateList;
-    private boolean isFundable;
+    private Boolean isFundable;
     private Status status;
-    private boolean isRenewable;
+    private Boolean isRenewable;
     @ManyToMany
     private List<Document> initial;
     @ManyToMany
     private List<Document> renew;
     @ManyToMany
     private List<Document> eligibilityDocuments;
-    private long totalPoints;
-    private double eligibilityPercentage;
-    private boolean enableEligibility;
+    private Long totalPoints;
+    private Double eligibilityPercentage;
+    private Boolean enableEligibility;
 }

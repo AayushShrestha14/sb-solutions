@@ -4,9 +4,9 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import org.apache.maven.shared.utils.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -15,14 +15,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
-@Component
-public class UploadFile {
-    String url;
+public class FileUploadUtils {
 
-    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
+    private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+
+    private static final int MAX_FILE_SIZE = 2000000;
+    private static String url;
+
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
@@ -50,49 +52,40 @@ public class UploadFile {
             System.out.println(imagePath);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error wile writing file", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
 
-    public ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
         FilePath filePath = new FilePath();
         String returnImagePath = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
+        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
+            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
         }
-//         else if (multipartFile.getSize() > 307200) {
-//            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
-//        }
 
-            try {
-                byte[] bytes = multipartFile.getBytes();
+        try {
+            byte[] bytes = multipartFile.getBytes();
 
-                url = filePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-                String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
+            url = filePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
+            String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
 
-                Path path = Paths.get(url);
-                if (!Files.exists(path)) {
-                    new File(url).mkdirs();
-                }
-                String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-                if (fileExtension.equals("jpg")) {
-                    String imagePath = url + name + "_" + documentName + ".jpg";
-                    returnImagePath = returnUrl + name + "_" + documentName + ".jpg";
-                    path = Paths.get(imagePath);
-                    Files.write(path, bytes);
-                    return new RestResponseDto().successModel(returnImagePath);
-                } else {
-                    String imagePath = url + name + "_" + documentName + ".png";
-                     returnImagePath = returnUrl + name + "_" + documentName + ".png";
-                    path = Paths.get(imagePath);
-                    Files.write(path, bytes);
-                    return new RestResponseDto().successModel(returnImagePath);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new RestResponseDto().failureModel("Fail");
+            Path path = Paths.get(url);
+            if (!Files.exists(path)) {
+                new File(url).mkdirs();
             }
+            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            String imagePath = url + name + "_" + documentName + "." + fileExtension;
+            returnImagePath = returnUrl + name + "_" + documentName + "." + fileExtension;
+            path = Paths.get(imagePath);
+            Files.write(path, bytes);
+            return new RestResponseDto().successModel(returnImagePath);
+        } catch (IOException e) {
+            log.error("Error while saving file", e);
+            return new RestResponseDto().failureModel("Fail");
         }
     }
+}
 
