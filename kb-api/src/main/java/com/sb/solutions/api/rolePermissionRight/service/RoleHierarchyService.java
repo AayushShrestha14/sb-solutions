@@ -13,4 +13,5 @@ public interface RoleHierarchyService extends BaseService<RoleHierarchy> {
     List<RoleHierarchy> SaveList(List<RoleHierarchy> roleHierarchyList);
 
     List<RoleHierarchy> roleHierarchyByCurrentRole(Long id);
+    List<RoleHierarchy> roleHierarchyByCurrentRoleBackward(Long id);
 }
