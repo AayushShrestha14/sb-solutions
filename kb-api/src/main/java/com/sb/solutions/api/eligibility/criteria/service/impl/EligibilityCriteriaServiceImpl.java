@@ -3,6 +3,8 @@ package com.sb.solutions.api.eligibility.criteria.service.impl;
 import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
 import com.sb.solutions.api.eligibility.criteria.repository.EligibilityCriteriaRepository;
 import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +38,8 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
     @Override
     public EligibilityCriteria save(EligibilityCriteria eligibilityCriteria) {
         logger.debug("Saving the eligibility criteria in database.");
+        eligibilityCriteria.getQuestions()
+                .forEach(eligibilityQuestion -> eligibilityQuestion.setEligibilityCriteria(eligibilityCriteria));
         return eligibilityCriteriaRepository.save(eligibilityCriteria);
     }
 
@@ -42,5 +47,28 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
     public Page<EligibilityCriteria> findAllPageable(Object t, Pageable pageable) {
         logger.debug("Retrieving a page of eligibility criteria.");
         return eligibilityCriteriaRepository.findAll(pageable);
+    }
+
+    @Override
+    public void delete(Long id) {
+        logger.debug("Deleting the eligibility criteria.");
+        final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaRepository.getOne(id);
+        eligibilityCriteria.setStatus(Status.DELETED);
+        eligibilityCriteriaRepository.save(eligibilityCriteria);
+    }
+
+    @Override
+    public EligibilityCriteria update(EligibilityCriteria eligibilityCriteria, Long id) {
+        logger.debug("Updating the eligiblity criteria.");
+        EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaRepository.getOne(id);
+        List<EligibilityQuestion> deletedEligibilityQuestions =
+                savedEligibilityCriteria.getQuestions().stream()
+                        .filter(eligibilityQuestion -> eligibilityCriteria.getQuestions().stream()
+                                .noneMatch(modifiedQuestions -> eligibilityQuestion.getId().equals(modifiedQuestions.getId())))
+                        .collect(Collectors.toList());
+        deletedEligibilityQuestions.forEach(eligibilityQuestion -> eligibilityQuestion.setStatus(Status.DELETED));
+        eligibilityCriteria.getQuestions().addAll(deletedEligibilityQuestions);
+        eligibilityCriteria.getQuestions().forEach(eligibilityQuestion -> eligibilityQuestion.setEligibilityCriteria(eligibilityCriteria));
+        return eligibilityCriteriaRepository.save(eligibilityCriteria);
     }
 }

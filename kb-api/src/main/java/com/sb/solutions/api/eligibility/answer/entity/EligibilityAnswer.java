@@ -24,6 +24,6 @@ public class EligibilityAnswer extends BaseEntity<Long> {
     @JoinColumn(name = "eligibility_question_id")
     private EligibilityQuestion eligibilityQuestion;
 
-    private double answer;
+    private double value;
 
 }

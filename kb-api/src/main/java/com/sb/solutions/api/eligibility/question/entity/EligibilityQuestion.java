@@ -1,7 +1,9 @@
 package com.sb.solutions.api.eligibility.question.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +26,12 @@ public class EligibilityQuestion extends BaseEntity<Long> {
 
     private String operandCharacter;
 
+    private long appearanceOrder;
+
+    private Status status;
+
     @ManyToOne
     @JoinColumn(name = "eligibility_criteria_id")
+    @JsonIgnore
     private EligibilityCriteria eligibilityCriteria;
 }

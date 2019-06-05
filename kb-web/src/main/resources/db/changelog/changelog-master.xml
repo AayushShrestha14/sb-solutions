@@ -1653,4 +1653,7 @@
     <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
 
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true" />
+    <include file="20190605_eligibility_criteria.xml" relativeToChangelogFile="true" />
+    <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true" />
+    <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

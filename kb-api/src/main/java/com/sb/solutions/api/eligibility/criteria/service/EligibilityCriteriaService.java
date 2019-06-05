@@ -5,4 +5,8 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface EligibilityCriteriaService extends BaseService<EligibilityCriteria> {
 
+    void delete(Long id);
+
+    EligibilityCriteria update(EligibilityCriteria eligibilityCriteria, Long id);
+
 }
