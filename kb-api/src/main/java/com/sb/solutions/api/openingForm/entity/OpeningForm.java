@@ -22,6 +22,7 @@ public class OpeningForm {
     private Branch branch;
     private Date requestedDate;
     private String fullName;
+    private String accountType;
     private AccountStatus status;
     @Column(columnDefinition = "text")
     private String customerDetailsJson;

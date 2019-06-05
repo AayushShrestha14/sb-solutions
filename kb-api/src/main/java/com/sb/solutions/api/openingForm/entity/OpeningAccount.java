@@ -10,7 +10,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeningAccount {
-    private String accountType;
     private boolean haveExistingAccountNo;
     private String existingAccountNo;
     private String purposeOfAccount;

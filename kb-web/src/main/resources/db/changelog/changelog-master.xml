@@ -1687,6 +1687,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="full_name" type="VARCHAR(256)"/>
+            <column name="account_type" type="VARCHAR(256)"/>
             <column name="requested_date" type="DATE"/>
             <column name="customer_details_json" type="TEXT"/>
         </createTable>
@@ -1700,6 +1701,9 @@
     <changeSet id="1-opening-account-sub-nav" author="david">
         <sqlFile path="data/david_permission_sub_nav.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="1-loan-cycle" author="david">
+        <sqlFile path="data/david_loan_cycle.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>
     <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
@@ -1710,6 +1714,5 @@
     <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
     <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
     <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
-
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
