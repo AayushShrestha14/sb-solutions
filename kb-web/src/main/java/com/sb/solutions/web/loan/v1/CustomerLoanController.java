@@ -57,6 +57,7 @@ public class CustomerLoanController {
 
     @PostMapping("/status")
     public ResponseEntity<?> getByDocStatus(@RequestBody CustomerLoan customerLoan) {
+        logger.debug("getByDocStatus Customer Loan {}",customerLoan);
         return new RestResponseDto().successModel(service.getCustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
     }
 
