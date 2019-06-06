@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
-
+            user = this.getByUsername(user.getUsername());
             return user;
         } else {
             throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
