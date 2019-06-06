@@ -66,7 +66,7 @@ public class DocumentController {
     }
     @ApiImplicitParams({
             @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)")})
+                    value = "Loan Cycle id")})
     @PostMapping(value="/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,@RequestParam("loanCycleId") long loanCycleId){
         LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);

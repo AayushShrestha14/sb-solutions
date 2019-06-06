@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
-            user = userRepository.getUsersByUserName(user.getUsername());
+            user = userRepository.getUsersByUsername(user.getUsername());
             return user;
         } else {
             throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.getUsersByUserName(username);
+        return userRepository.getUsersByUsername(username);
 
     }
 
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepository.getUsersByUserName(username);
+        User u = userRepository.getUsersByUsername(username);
         if (u != null) {
             List<String> authorityList = userRepository.userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
                     .map(object -> Objects.toString(object, null))
