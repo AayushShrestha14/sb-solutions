@@ -36,7 +36,9 @@ public class CustomerLoanController {
     @PostMapping(value = "/action")
     public ResponseEntity<?> loanAction(@RequestBody LoanActionDto actionDto, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
-        service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
+        CustomerLoan c = mapper.ActionMapper(actionDto);
+        this.save(c,bindingResult);
+       // service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
         return new RestResponseDto().successModel(actionDto);
     }
 
@@ -44,8 +46,8 @@ public class CustomerLoanController {
     public ResponseEntity<?> save(@RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         logger.debug("saving Customer Loan {}",customerLoan);
-        service.save(customerLoan);
-        return new RestResponseDto().successModel(customerLoan);
+
+        return new RestResponseDto().successModel(service.save(customerLoan));
     }
 
 

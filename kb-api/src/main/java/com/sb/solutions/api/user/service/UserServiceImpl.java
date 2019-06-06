@@ -1,6 +1,7 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
@@ -87,6 +88,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Object, Object> userStatusCount() {
         return userRepository.userStatusCount();
+    }
+
+    @Override
+    public User findByRoleAndBranch(Long roleId, Branch branchId) {
+        return userRepository.findByRoleIdAndBranch(roleId,branchId);
     }
 
     @Override

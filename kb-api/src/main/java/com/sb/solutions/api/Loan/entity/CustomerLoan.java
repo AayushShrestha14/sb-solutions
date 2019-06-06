@@ -1,6 +1,5 @@
 package com.sb.solutions.api.Loan.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.basicInfo.customer.entity.Customer;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
@@ -38,6 +37,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private EntityInfo entityInfo;
+
     private LoanType loanType;
 
     private DocStatus documentStatus = DocStatus.PENDING;
@@ -46,12 +46,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @OneToOne
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 
     @ElementCollection
-    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<LoanStage> previousStageList;
 
