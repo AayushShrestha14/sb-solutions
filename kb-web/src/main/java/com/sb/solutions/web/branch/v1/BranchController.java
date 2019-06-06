@@ -54,6 +54,7 @@ public class BranchController {
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
     }
+
     @GetMapping(value = "/all")
     public ResponseEntity<?> getBranch() {
         return new RestResponseDto().successModel(branchService.findAll());

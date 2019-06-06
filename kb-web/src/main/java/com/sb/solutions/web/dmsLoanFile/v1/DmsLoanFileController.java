@@ -68,7 +68,7 @@ public class DmsLoanFileController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/list")
-    public ResponseEntity<?> getPageableLoanFile(@RequestBody SearchDto searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<?> getPageableLoanFile(@RequestBody Object searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(dmsLoanFileService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
@@ -80,8 +80,6 @@ public class DmsLoanFileController {
 
     @GetMapping("/download")
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path, HttpServletResponse response) throws FileNotFoundException {
-        FilePath filePath = new FilePath();
-        path = filePath.getOSPath() + path;
         File file = new File(path);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();

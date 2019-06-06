@@ -3,8 +3,8 @@ package com.sb.solutions.api.dms.dmsloanfile.service;
 import com.google.gson.Gson;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
+import com.sb.solutions.api.dms.dmsloanfile.repository.specification.DmsSpecBuilder;
 import com.sb.solutions.core.date.validation.DateValidation;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Securities;
@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -81,11 +81,9 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     @Override
     public Page<DmsLoanFile> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        if (StringUtils.isEmpty(s.getName()) && StringUtils.isEmpty(s.getDate()) && StringUtils.isEmpty(s.getLoanType())) {
-            return dmsLoanFileRepository.findBySearch("", new Date(), "", pageable);
-        } else {
-            return dmsLoanFileRepository.findBySearch(s.getName(), s.getDate(), s.getLoanType(), pageable);
-        }
+        Map<String, String> s = objectMapper.convertValue(object, Map.class);
+        final DmsSpecBuilder dmsSpecBuilder = new DmsSpecBuilder(s);
+        final Specification<DmsLoanFile> specification = dmsSpecBuilder.build();
+        return dmsLoanFileRepository.findAll(specification, pageable);
     }
 }
