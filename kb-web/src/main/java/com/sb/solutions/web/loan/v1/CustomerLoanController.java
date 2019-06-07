@@ -44,7 +44,6 @@ public class CustomerLoanController {
     public ResponseEntity<?> save(@RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         logger.debug("saving Customer Loan {}",customerLoan);
-        service.save(customerLoan);
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 

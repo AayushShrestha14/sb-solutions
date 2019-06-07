@@ -33,25 +33,25 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     @Override
     public DmsLoanFile findOne(Long id) {
         DmsLoanFile d = dmsLoanFileRepository.getOne(id);
-        List<Map<Object, Object>> mapList = new ArrayList<>();
-        String tempPath = d.getDocumentPath();
-        List tempList = gson.fromJson(tempPath, List.class);
-        List<String> documentNames = new ArrayList<>();
-        List<String> documentPaths = new ArrayList<>();
-        int count = 0;
-        for (Object list : tempList) {
-            String toString = list.toString();
-            String[] arrayOfString = toString.split(":");
-            documentNames.add(arrayOfString[0]);
-            documentPaths.add(arrayOfString[1]);
-        }
-        for (String documentPath : documentPaths) {
-            Map<Object, Object> map = new LinkedHashMap<>();
-            map.put(documentNames.get(count), documentPath);
-            count++;
-            mapList.add(map);
-        }
-        d.setDocumentPathMaps(mapList);
+//        List<Map<Object, Object>> mapList = new ArrayList<>();
+//        String tempPath = d.getDocumentPath();
+//        List tempList = gson.fromJson(tempPath, List.class);
+//        List<String> documentNames = new ArrayList<>();
+//        List<String> documentPaths = new ArrayList<>();
+//        int count = 0;
+//        for (Object list : tempList) {
+//            String toString = list.toString();
+//            String[] arrayOfString = toString.split(":");
+//            documentNames.add(arrayOfString[0]);
+//            documentPaths.add(arrayOfString[1]);
+//        }
+//        for (String documentPath : documentPaths) {
+//            Map<Object, Object> map = new LinkedHashMap<>();
+//            map.put(documentNames.get(count), documentPath);
+//            count++;
+//            mapList.add(map);
+//        }
+//        d.setDocumentPathMaps(mapList);
         return d;
     }
 

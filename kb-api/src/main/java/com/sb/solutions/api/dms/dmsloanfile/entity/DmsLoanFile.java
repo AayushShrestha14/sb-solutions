@@ -1,4 +1,5 @@
 package com.sb.solutions.api.dms.dmsloanfile.entity;
+import com.google.gson.Gson;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
@@ -9,10 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -40,4 +38,30 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
+
+
+
+    public  List<Map<Object, Object>> getDocumentPathMaps() {
+        Gson gson = new Gson();
+        List<Map<Object, Object>> mapList = new ArrayList<>();
+        String tempPath = this.getDocumentPath();
+        List tempList = gson.fromJson(tempPath, List.class);
+        List<String> documentNames = new ArrayList<>();
+        List<String> documentPaths = new ArrayList<>();
+        int count = 0;
+        for (Object list : tempList) {
+            String toString = list.toString();
+            String[] arrayOfString = toString.split(":");
+            documentNames.add(arrayOfString[0]);
+            documentPaths.add(arrayOfString[1]);
+        }
+        for (String documentPath : documentPaths) {
+            Map<Object, Object> map = new LinkedHashMap<>();
+            map.put(documentNames.get(count), documentPath);
+            count++;
+            mapList.add(map);
+        }
+        this.setDocumentPathMaps(mapList);
+       return this.documentPathMaps;
+    }
 }
