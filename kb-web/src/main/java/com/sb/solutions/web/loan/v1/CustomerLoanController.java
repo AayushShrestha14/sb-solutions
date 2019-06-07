@@ -9,7 +9,6 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,9 @@ public class CustomerLoanController {
     @PostMapping(value = "/action")
     public ResponseEntity<?> loanAction(@RequestBody LoanActionDto actionDto, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
-        service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
+        CustomerLoan c = mapper.ActionMapper(actionDto);
+        this.save(c,bindingResult);
+       // service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
         return new RestResponseDto().successModel(actionDto);
     }
 
@@ -44,6 +45,7 @@ public class CustomerLoanController {
     public ResponseEntity<?> save(@RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         logger.debug("saving Customer Loan {}",customerLoan);
+
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 

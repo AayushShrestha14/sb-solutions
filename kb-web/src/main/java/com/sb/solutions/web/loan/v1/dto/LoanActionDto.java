@@ -22,7 +22,7 @@ public class LoanActionDto extends BaseDto<Long> {
     private Long customerId;
 
     @NotNull
-    private Long LoanType;
+    private Long LoanConfigId;
 
     @NotNull
     private DocAction docAction;
