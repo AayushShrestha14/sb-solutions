@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.gson.Gson;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.service.CustomerLoanService;
@@ -29,7 +28,6 @@ public class Mapper {
 
     private final CustomerLoanService customerLoanService;
     private final UserService userService;
-    private final Gson gson;
 
 
     public CustomerLoan ActionMapper(LoanActionDto loanActionDto) {
@@ -47,18 +45,16 @@ public class Mapper {
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             Map<String, String> tempLoanStage = objectMapper.convertValue(customerLoan.getCurrentStage(), Map.class);
             try {
+                previousList.forEach(p -> {
+                    try {
+                        Map<String, String> previous = objectMapper.convertValue(p, Map.class);
 
-                if (previousList != null) {
-                    for (int i = 0; i < previousList.size(); i++) {
-                        try {
-                            Map<String, String> previous = objectMapper.convertValue(previousList.get(i), Map.class);
-
-                            previousListTemp.add(objectMapper.writeValueAsString(previous));
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
+                        previousListTemp.add(objectMapper.writeValueAsString(previous));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
                     }
-                }
+                });
+
                 String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
@@ -72,6 +68,7 @@ public class Mapper {
 
         loanStage.setFromUser(currentUser);
         loanStage.setToUser(receivedBy);
+        loanStage.setComment(loanActionDto.getComments() );
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
