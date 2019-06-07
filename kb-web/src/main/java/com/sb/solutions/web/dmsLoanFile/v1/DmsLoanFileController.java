@@ -93,10 +93,7 @@ public class DmsLoanFileController {
         return responseEntity;
     }
 
-    @GetMapping("/getLoanByStatus")
-    public ResponseEntity<?> getLoanByStage(@RequestParam("status") DocStatus status) {
-        return new RestResponseDto().successModel(dmsLoanFileRepository.findFirst5ByDocumentStatusOrderByIdDesc(status));
-    }
+
 
     @GetMapping("/statusCount")
     public ResponseEntity<?> getPendingStatusCount() {

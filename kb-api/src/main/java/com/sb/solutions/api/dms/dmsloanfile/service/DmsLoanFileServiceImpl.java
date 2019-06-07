@@ -57,12 +57,12 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
 
     @Override
     public DmsLoanFile save(DmsLoanFile dmsLoanFile) {
-        if (dmsLoanFile.getId() == null) {
-            dmsLoanFile.setCurrentStage(null);
-            dmsLoanFile.setPreviousStageList(null);
-            dmsLoanFile.setDocumentStatus(DocStatus.PENDING);
-            dmsLoanFile.setLoanType(LoanType.NEW_LOAN);
-        }
+//        if (dmsLoanFile.getId() == null) {
+//            dmsLoanFile.setCurrentStage(null);
+//            dmsLoanFile.setPreviousStageList(null);
+//            dmsLoanFile.setDocumentStatus(DocStatus.PENDING);
+//            dmsLoanFile.setLoanType(LoanType.NEW_LOAN);
+//        }
         if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
             throw new ApiException("Invalid Date");
         }

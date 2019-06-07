@@ -7,7 +7,6 @@ import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
-import com.sb.solutions.web.loan.v1.dto.LoanDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,7 @@ public class Mapper {
 
     }
 
-    public CustomerLoan loanMapper(LoanDto loanDto) {
+    public CustomerLoan loanMapper(LoanActionDto loanDto) {
         CustomerLoan customerLoan = new CustomerLoan();
         customerLoan = customerLoanService.findOne(loanDto.getId());
 

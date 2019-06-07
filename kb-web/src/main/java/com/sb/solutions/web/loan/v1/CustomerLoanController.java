@@ -9,6 +9,7 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,6 @@ public class CustomerLoanController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
     private GlobalExceptionHandler globalExceptionHandler;
-
     private CustomerLoanService service;
 
     private Mapper mapper;
@@ -45,7 +45,7 @@ public class CustomerLoanController {
         globalExceptionHandler.constraintValidation(bindingResult);
         logger.debug("saving Customer Loan {}",customerLoan);
         service.save(customerLoan);
-        return new RestResponseDto().successModel(customerLoan);
+        return new RestResponseDto().successModel(service.save(customerLoan));
     }
 
 

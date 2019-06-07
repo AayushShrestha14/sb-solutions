@@ -12,7 +12,6 @@ import java.util.Map;
 @Repository
 public interface DmsLoanFileRepository extends JpaRepository<DmsLoanFile, Long>, JpaSpecificationExecutor<DmsLoanFile> {
 
-    List<DmsLoanFile> findFirst5ByDocumentStatusOrderByIdDesc(DocStatus status);
 
     @Query(value = "select\n" +
             "(select  count(id) from dms_loan_file) pendings", nativeQuery = true)
