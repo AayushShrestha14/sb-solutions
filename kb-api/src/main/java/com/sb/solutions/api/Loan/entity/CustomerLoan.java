@@ -63,33 +63,22 @@ public class CustomerLoan extends BaseEntity<Long> {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String previousStageList;
 
-    public List getPreviousList()  {
+    public List getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                this.previousList= objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
+                this.previousList = objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             this.previousList = new ArrayList();
         }
         return this.previousList;
     }
-
-
-
-
-
-
-
-/*    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<LoanStage> previousStageList;*/
 
 
 }
