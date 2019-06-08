@@ -1,6 +1,5 @@
 package com.sb.solutions.core.utils.NepaliDateConvertor;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -16,7 +15,6 @@ import java.util.List;
  */
 
 @NoArgsConstructor
-@AllArgsConstructor
 public class Converter {
 
     //Change this when you get more previous database.
