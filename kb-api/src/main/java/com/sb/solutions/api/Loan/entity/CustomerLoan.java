@@ -13,6 +13,7 @@ import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.Priority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,6 +56,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 
+    private Priority priority;
 
     @Transient
     private List previousList;
