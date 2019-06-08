@@ -27,7 +27,6 @@ public class CustomerLoanController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
     private GlobalExceptionHandler globalExceptionHandler;
-
     private CustomerLoanService service;
 
     private Mapper mapper;

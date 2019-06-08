@@ -10,6 +10,8 @@ import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.csv.CsvReader;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,7 @@ import java.util.Map;
  */
 @Service
 public class BranchServiceImpl implements BranchService {
+    private static final Logger log = LoggerFactory.getLogger(BranchServiceImpl.class);
 
     @Autowired
     BranchRepository branchRepository;
