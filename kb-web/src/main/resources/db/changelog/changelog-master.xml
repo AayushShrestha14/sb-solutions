@@ -1715,4 +1715,8 @@
     <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
     <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190608_account_type.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1-account-type" author="david">
+        <sqlFile path="data/david_account_type.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>
