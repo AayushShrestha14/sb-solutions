@@ -113,7 +113,10 @@ public class FileUploadUtils {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_passport.jpg";
             } else if (type.equals("id")) {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_id.jpg";
-            } else {
+            } else if (type.equals("photo")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo.jpg";
+            }
+            else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
             path = Paths.get(imagePath);
