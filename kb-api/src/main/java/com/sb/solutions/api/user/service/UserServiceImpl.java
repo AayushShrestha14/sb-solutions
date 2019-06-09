@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.getUsersByUserName(username);
+        return userRepository.getUsersByUsername(username);
 
     }
 
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepository.getUsersByUserName(username);
+        User u = userRepository.getUsersByUsername(username);
         if (u != null) {
             List<String> authorityList = userRepository.userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
                     .map(object -> Objects.toString(object, null))

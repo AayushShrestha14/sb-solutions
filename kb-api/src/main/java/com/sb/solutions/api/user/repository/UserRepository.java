@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select b from User b where b.name like concat(:name,'%')")
     Page<User> userFilter(@Param("name") String name, Pageable pageable);
 
-    User getUsersByUserName(String username);
+    User getUsersByUsername(String username);
 
     User findByRoleIdAndBranch(Long role, Branch branch);
 
