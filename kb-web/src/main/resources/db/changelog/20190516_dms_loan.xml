@@ -104,9 +104,6 @@
             <column name="last_modified_at" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="loan_type" type="INT">
-                <constraints nullable="false"/>
-            </column>
             <column name="current_stage_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
@@ -206,6 +203,9 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="previous_stage_list" type="LONGTEXT"/>
+            <column name="priority" type="INT">
+                <constraints nullable="true"/>
+            </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_loan_created_by_id"

@@ -1,5 +1,6 @@
 package com.sb.solutions.api.address.municipalityVdc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.address.district.entity.District;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class MunicipalityVdc implements Serializable {
     @GeneratedValue
     private long id;
     private String name;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "district_id")
     private District district;
