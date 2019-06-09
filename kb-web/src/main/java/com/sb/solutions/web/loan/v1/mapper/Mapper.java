@@ -38,8 +38,9 @@ public class Mapper {
         customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
-
-        if (customerLoan.getCurrentStage().getId() != null) {
+        LoanStage loanStage = new LoanStage();
+        if (customerLoan.getCurrentStage() != null) {
+            loanStage = customerLoan.getCurrentStage();
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -63,12 +64,12 @@ public class Mapper {
         }
 
         customerLoan.setPreviousStageList(previousListTemp.toString());
-        LoanStage loanStage = customerLoan.getCurrentStage();
+
         loanStage.setDocAction(loanActionDto.getDocAction());
 
         loanStage.setFromUser(currentUser);
         loanStage.setToUser(receivedBy);
-        loanStage.setComment(loanActionDto.getComments() );
+        loanStage.setComment(loanActionDto.getComment() );
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;

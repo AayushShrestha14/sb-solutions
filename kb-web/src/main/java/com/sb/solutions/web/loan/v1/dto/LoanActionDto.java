@@ -28,5 +28,5 @@ public class LoanActionDto extends BaseDto<Long> {
     private DocAction docAction;
     private Long sendBy;
     private Long toUser;
-    private String comments;
+    private String comment;
 }

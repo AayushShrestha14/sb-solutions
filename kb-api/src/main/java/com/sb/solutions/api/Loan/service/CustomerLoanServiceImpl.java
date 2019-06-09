@@ -2,13 +2,17 @@ package com.sb.solutions.api.Loan.service;
 
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.core.enums.DocStatus;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -37,7 +41,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
-        return null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification, pageable);
     }
 
     @Override

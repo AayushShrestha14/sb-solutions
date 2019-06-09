@@ -4,8 +4,11 @@ import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.service.CustomerLoanService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,7 @@ public class CustomerLoanController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
     private GlobalExceptionHandler globalExceptionHandler;
+
     private CustomerLoanService service;
 
     private Mapper mapper;
@@ -60,6 +64,16 @@ public class CustomerLoanController {
     public ResponseEntity<?> getByDocStatus(@RequestBody CustomerLoan customerLoan) {
         logger.debug("getByDocStatus Customer Loan {}",customerLoan);
         return new RestResponseDto().successModel(service.getCustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
+    @PostMapping(value = "/list")
+    public ResponseEntity<?> getAllByPagination(@RequestBody Object searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 }

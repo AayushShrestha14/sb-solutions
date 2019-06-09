@@ -13,6 +13,7 @@ import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.Priority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,6 +56,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 
+    private Priority priority;
 
     @Transient
     private List previousList;
@@ -63,33 +65,22 @@ public class CustomerLoan extends BaseEntity<Long> {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String previousStageList;
 
-    public List getPreviousList()  {
+    public List getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                this.previousList= objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
+                this.previousList = objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             this.previousList = new ArrayList();
         }
         return this.previousList;
     }
-
-
-
-
-
-
-
-/*    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<LoanStage> previousStageList;*/
 
 
 }
