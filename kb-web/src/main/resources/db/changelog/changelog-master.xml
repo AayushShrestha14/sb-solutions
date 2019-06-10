@@ -1075,7 +1075,7 @@
                              referencedTableName="district"
                              referencedColumnNames="id"/>
             </column>
-            <column name="municipalities_or_vdc_id" type="BIGINT">
+            <column name="municipalities_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_municipality_vdc_id"
                              referencedTableName="municipality_vdc"
