@@ -1,26 +1,27 @@
 package com.sb.solutions.api.dms.dmsloanfile.service;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.Gson;
-import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
-import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
-import com.sb.solutions.api.dms.dmsloanfile.repository.specification.DmsSpecBuilder;
-import com.sb.solutions.core.date.validation.DateValidation;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.core.enums.Securities;
-import com.sb.solutions.core.exception.ApiException;
-import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
+import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
+import com.sb.solutions.api.dms.dmsloanfile.repository.specification.DmsSpecBuilder;
+import com.sb.solutions.core.date.validation.DateValidation;
+import com.sb.solutions.core.enums.Securities;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class DmsLoanFileServiceImpl implements DmsLoanFileService {
+
     DmsLoanFileRepository dmsLoanFileRepository;
     private Gson gson;
     private DateValidation dateValidation;
@@ -64,8 +65,9 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
 //            dmsLoanFile.setLoanType(LoanType.NEW_LOAN);
 //        }
         if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
-            throw new ApiException("Invalid Date");
+            throw new RuntimeException("Invalid Date");
         }
+
         dmsLoanFile.setDocumentPath(gson.toJson(dmsLoanFile.getDocumentMap()));
         dmsLoanFile.setCreatedAt(new Date());
         String mapSecurity = "";

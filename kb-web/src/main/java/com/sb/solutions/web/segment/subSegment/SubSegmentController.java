@@ -22,12 +22,12 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/v1/sub-segment")
 public class SubSegmentController {
 
-    private final SubSegmentService subSegmentSetvice;
+    private final SubSegmentService subSegmentService;
 
     @PostMapping
     public ResponseEntity<?> saveSubSegment(@RequestBody SubSegment subSegment) {
         System.out.println(subSegment);
-        return new RestResponseDto().successModel(subSegmentSetvice.save(subSegment));
+        return new RestResponseDto().successModel(subSegmentService.save(subSegment));
     }
 
     @ApiImplicitParams({
@@ -38,12 +38,12 @@ public class SubSegmentController {
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(subSegmentSetvice
+        return new RestResponseDto().successModel(subSegmentService
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping("/statusCount")
     public ResponseEntity<?> getSubSegmentStatusCount() {
-        return new RestResponseDto().successModel(subSegmentSetvice.subSegmentStatusCount());
+        return new RestResponseDto().successModel(subSegmentService.subSegmentStatusCount());
     }
 }
