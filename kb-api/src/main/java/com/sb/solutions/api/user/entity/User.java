@@ -32,7 +32,7 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
     private String name;
 
     @Column(name = "user_name", unique = true, nullable = false)
-    private String userName;
+    private String username;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
@@ -68,7 +68,7 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.username;
     }
 
     @Override

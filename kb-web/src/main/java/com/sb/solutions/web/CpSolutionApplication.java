@@ -1,9 +1,10 @@
 package com.sb.solutions.web;
 
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
+import com.sb.solutions.api.basehttp.BaseHttp;
+import com.sb.solutions.api.basehttp.BaseHttpRepo;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,13 +21,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.sb.solutions.api.address.district.service.DistrictService;
-import com.sb.solutions.api.address.municipalityVdc.service.MunicipalityVdcService;
-import com.sb.solutions.api.address.province.service.ProvinceService;
-import com.sb.solutions.api.basehttp.BaseHttp;
-import com.sb.solutions.api.basehttp.BaseHttpRepo;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -50,12 +46,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     BCryptPasswordEncoder passwordEncoder;
     @Autowired
     DataSource dataSource;
-    @Autowired
-    ProvinceService provinceService;
-    @Autowired
-    DistrictService districtService;
-    @Autowired
-    MunicipalityVdcService municipalityVdcService;
+
     @Value("${server.port}")
     private String port;
 

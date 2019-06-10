@@ -1,5 +1,8 @@
 package com.sb.solutions.api.basicInfo.customer.entity;
 
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -17,13 +20,19 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Customer extends BaseEntity<Long> {
+
     private String title;
     private String customerName;
     private String accountNo;
-    private String province;
-    private String district;
-    @Column(name = "municipalities_or_vdc")
-    private String municipalitiesOrVDC;
+
+    @ManyToOne
+    private Province province;
+
+    @ManyToOne
+    private District district;
+
+    @ManyToOne
+    private MunicipalityVdc municipalitiesOrVDC;
     private String telephone;
     private String mobile;
     private String email;

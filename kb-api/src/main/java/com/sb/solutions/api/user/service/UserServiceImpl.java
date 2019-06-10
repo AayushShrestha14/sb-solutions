@@ -1,12 +1,14 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.ApiException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
-
+            user = this.getByUsername(user.getUsername());
             return user;
         } else {
             throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
@@ -60,13 +62,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.getUsersByUserName(username);
+        return userRepository.getUsersByUsername(username);
 
     }
 
     @Override
     public User save(User user) {
-        System.out.println(user.getPassword());
         user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -74,7 +75,12 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
-        return userRepository.save(user);
+        User u = userRepository.findByRoleIdAndBranch(user.getRole().getId(), user.getBranch());
+        if (u == null) {
+            return userRepository.save(user);
+        } else {
+            throw new ApiException("USER OF ROLE " + u.getRole().getRoleName() + " ALREADY EXIST IN BRANCH " + u.getBranch().getName());
+        }
 
     }
 
@@ -87,6 +93,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Object, Object> userStatusCount() {
         return userRepository.userStatusCount();
+    }
+
+    @Override
+    public User findByRoleAndBranch(Long roleId, Branch branchId) {
+        return userRepository.findByRoleIdAndBranch(roleId, branchId);
     }
 
     @Override
@@ -114,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepository.getUsersByUserName(username);
+        User u = userRepository.getUsersByUsername(username);
         if (u != null) {
             List<String> authorityList = userRepository.userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
                     .map(object -> Objects.toString(object, null))

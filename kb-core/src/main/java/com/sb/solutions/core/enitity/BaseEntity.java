@@ -7,6 +7,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -35,10 +36,12 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt = new Date();
 
     @LastModifiedDate
     @Column(name = "last_modified_at", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date lastModifiedAt = new Date();
 
     @CreatedBy
