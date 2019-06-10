@@ -1,12 +1,14 @@
 package com.sb.solutions.api.loanConfig.repository;
 
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,4 +24,6 @@ public interface LoanConfigRepository extends JpaRepository<LoanConfig, Long> {
 
     @Query(value = "select l from LoanConfig l where l.name like  concat(:name,'%')")
     Page<LoanConfig> LoanConfigFilter(@Param("name") String name, Pageable pageable);
+
+    List<LoanConfig> getByStatus(Status status);
 }

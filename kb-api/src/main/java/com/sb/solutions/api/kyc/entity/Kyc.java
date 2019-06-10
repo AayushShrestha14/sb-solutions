@@ -1,7 +1,7 @@
 package com.sb.solutions.api.kyc.entity;
 
-import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
+import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -58,8 +58,7 @@ public class FileUploadUtils {
     }
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
-        FilePath filePath = new FilePath();
-        String returnImagePath = null;
+        String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
         } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
@@ -69,19 +68,17 @@ public class FileUploadUtils {
         try {
             byte[] bytes = multipartFile.getBytes();
 
-            url = filePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
 
-            Path path = Paths.get(url);
+            Path path = Paths.get(returnUrl);
             if (!Files.exists(path)) {
-                new File(url).mkdirs();
+                new File(returnUrl).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            String imagePath = url + name + "_" + documentName + "." + fileExtension;
-            returnImagePath = returnUrl + name + "_" + documentName + "." + fileExtension;
-            path = Paths.get(imagePath);
+            url = returnUrl + name + "_" + documentName + "." + fileExtension;
+            path = Paths.get(url);
             Files.write(path, bytes);
-            return new RestResponseDto().successModel(returnImagePath);
+            return new RestResponseDto().successModel(url);
         } catch (IOException e) {
             log.error("Error while saving file", e);
             return new RestResponseDto().failureModel("Fail");

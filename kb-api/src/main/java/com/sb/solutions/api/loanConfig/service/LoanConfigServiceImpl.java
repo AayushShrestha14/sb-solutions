@@ -55,4 +55,9 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     public Map<Object, Object> loanStatusCount() {
         return loanConfigRepository.loanStatusCount();
     }
+
+    @Override
+    public List<LoanConfig> getAllByStatus(Status status) {
+        return loanConfigRepository.getByStatus(status);
+    }
 }

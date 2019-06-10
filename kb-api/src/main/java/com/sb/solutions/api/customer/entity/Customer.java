@@ -2,6 +2,9 @@ package com.sb.solutions.api.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.kyc.entity.Kyc;
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -19,13 +22,19 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "customer")
 public class Customer extends BaseEntity<Long> {
+
     private String title;
     private String customerName;
     private String accountNo;
-    private String province;
-    private String district;
-    @Column(name = "municipalities_or_vdc")
-    private String municipalitiesOrVDC;
+
+    @ManyToOne
+    private Province province;
+
+    @ManyToOne
+    private District district;
+
+    @ManyToOne
+    private MunicipalityVdc municipalitiesOrVDC;
     private String telephone;
     private String mobile;
     private String email;

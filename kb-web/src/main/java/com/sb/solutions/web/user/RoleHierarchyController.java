@@ -60,9 +60,15 @@ public class RoleHierarchyController {
         return new RestResponseDto().successModel(roleHierarchyMapper.mapEntitiesToDtos(roleHierarchyService.findAll()));
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<?> getRoleHierarchyListPerRole() {
+    @GetMapping("/getForward")
+    public ResponseEntity<?> getRoleHierarchyListPerRoleForward() {
         User u = userService.getAuthenticated();
         return new RestResponseDto().successModel(roleHierarchyService.roleHierarchyByCurrentRole(u.getRole().getId()));
+    }
+
+    @GetMapping("/getBackward")
+    public ResponseEntity<?> getRoleHierarchyListPerRoleBackward() {
+        User u = userService.getAuthenticated();
+        return new RestResponseDto().successModel(roleHierarchyService.roleHierarchyByCurrentRoleBackward(u.getRole().getId()));
     }
 }
