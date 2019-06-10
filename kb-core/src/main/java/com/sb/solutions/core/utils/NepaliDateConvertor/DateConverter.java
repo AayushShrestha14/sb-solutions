@@ -22,7 +22,7 @@ public class DateConverter {
         Map<Object, Object> map = new HashMap<>();
         try {
             try {
-                String Date[] = id.split("-");
+                String[] Date = id.split("-");
                 try {
                     int day = Integer.parseInt(Date[0]);
                     int months = Integer.parseInt(Date[1]);
@@ -56,7 +56,7 @@ public class DateConverter {
         Map<Object, Object> map = new HashMap<>();
         try {
             try {
-                String Date[] = id.split("-");
+                String[] Date = id.split("-");
                 try {
                     int day = Integer.parseInt(Date[0]);
                     int months = Integer.parseInt(Date[1]);

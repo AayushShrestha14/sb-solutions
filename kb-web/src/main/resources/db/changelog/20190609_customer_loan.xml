@@ -1,0 +1,71 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="5-create-customer-loan" author="david">
+        <createTable tableName="customer_loan">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="customer_info_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_customer_info_id"
+                             referencedTableName="customer"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="loan_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_loan_id"
+                             referencedTableName="loan_config"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="entity_info_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_entity_customer_info_id"
+                             referencedTableName="entity_info"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="loan_type" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="document_status" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="dms_loan_file_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_dms_loan_file_id"
+                             referencedTableName="dms_loan_file"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="current_stage_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_current_stage_id"
+                             referencedTableName="loan_stage"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="previous_stage_list" type="LONGTEXT"/>
+            <column name="priority" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_created_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_modified_by_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

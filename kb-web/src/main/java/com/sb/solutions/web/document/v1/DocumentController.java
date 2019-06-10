@@ -60,7 +60,7 @@ public class DocumentController {
         return new RestResponseDto().successModel(loanCycleService.findAll());
     }
 
-    @GetMapping(value="/getStatusCount")
+    @GetMapping(value="/statusCount")
     public ResponseEntity<?> getCount(){
         return new RestResponseDto().successModel(documentService.documentStatusCount());
     }
