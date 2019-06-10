@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.validation.constraint.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class MemoTypeDto extends BaseDto<Long> {
 
     @NotNull
+    @NotEmpty
     private String name;
 
     @NotNull
