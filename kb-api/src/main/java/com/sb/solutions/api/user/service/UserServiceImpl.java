@@ -8,6 +8,7 @@ import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.ApiException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -67,7 +68,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        System.out.println(user.getPassword());
         user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -75,7 +75,12 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
-        return userRepository.save(user);
+        User u = userRepository.findByRoleIdAndBranch(user.getRole().getId(), user.getBranch());
+        if (u == null) {
+            return userRepository.save(user);
+        } else {
+            throw new ApiException("USER OF ROLE " + u.getRole().getRoleName() + " ALREADY EXIST IN BRANCH " + u.getBranch().getName());
+        }
 
     }
 
@@ -92,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByRoleAndBranch(Long roleId, Branch branchId) {
-        return userRepository.findByRoleIdAndBranch(roleId,branchId);
+        return userRepository.findByRoleIdAndBranch(roleId, branchId);
     }
 
     @Override

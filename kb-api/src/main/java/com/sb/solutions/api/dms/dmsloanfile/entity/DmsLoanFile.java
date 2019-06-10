@@ -27,7 +27,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private double interestRate;
     private double proposedAmount;
 
-    @NotNull
+
     private String security;
     @Column(columnDefinition = "text")
     private String documentPath;
