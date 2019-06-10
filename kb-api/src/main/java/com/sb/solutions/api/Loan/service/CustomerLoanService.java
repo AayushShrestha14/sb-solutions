@@ -5,6 +5,7 @@ import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -12,6 +13,8 @@ import java.util.List;
 public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
+
+    Map<Object, Object> statusCount();
 
     List<CustomerLoan> getCustomerLoanByDocumentStatus(DocStatus status);
 }

@@ -1,27 +1,22 @@
 package com.sb.solutions.web.loanConfig.v1;
 
-import javax.validation.Valid;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.core.utils.PaginationUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
-import com.sb.solutions.api.loanConfig.service.LoanConfigService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.PaginationUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
+import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 2/25/2019
@@ -75,6 +70,11 @@ public class LoanConfigController {
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<?> getLoanOne(@PathVariable Long id) {
         return new RestResponseDto().successModel(loanConfigService.findOne(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/status")
+    public ResponseEntity<?> getLoanByStatus(@RequestBody Status status) {
+        return new RestResponseDto().successModel(loanConfigService.getAllByStatus(status));
     }
 
 }

@@ -4,6 +4,7 @@ import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ApiException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
+        if(customerLoan.getLoan() == null){
+            throw new ApiException("Loan Cannot be null");
+        }
+
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -51,6 +56,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public void sendForwardBackwardLoan(CustomerLoan customerLoan) {
         customerLoanRepository.save(customerLoan);
+    }
+
+    @Override
+    public Map<Object, Object> statusCount() {
+        return customerLoanRepository.statusCount();
     }
 
     @Override
