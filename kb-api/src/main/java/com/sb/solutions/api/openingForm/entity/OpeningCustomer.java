@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class OpeningCustomer {
     private String title;
+    private String imagePath;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -67,7 +68,7 @@ public class OpeningCustomer {
     private boolean greenCardHolder;
     private boolean exposeToPep;
     private String pepName;
-    private String pepRelationToYou;
+    private String pepDesignation;
     private boolean convictedOfCrime;
     private String convictedCrime;
     private boolean residentialPermitOfForeign;

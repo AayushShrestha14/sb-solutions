@@ -15,6 +15,7 @@ public class OpeningBeneficiary {
     private Date dateOfBirth;
     private String citizenNumber;
     private String issuedPlace;
+    private String citizenImagePath;
     private String temporaryAddress;
     private String permanentAddress;
     private String contactNumber;
