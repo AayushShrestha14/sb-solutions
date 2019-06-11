@@ -84,16 +84,14 @@ public class FileUploadUtils {
             return new RestResponseDto().failureModel("Fail");
         }
     }
+
     public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile, String branch, String type, String name) {
         FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
             return new RestResponseDto().failureModel("Image Size more than 400kb");
-        }
-        if (FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") || FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
-            //return new RestResponseDto().failureModel("Invalid file format");
-        } else {
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {

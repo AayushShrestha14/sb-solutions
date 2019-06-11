@@ -22,13 +22,33 @@
             <column name="name" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-account-type-account-purpose" author="david">
+        <createTable tableName="account_type_account_purpose">
+            <column name="account_type_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="account_purpose_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_account_type_account_purpose_id"
-                             referencedTableName="account_purpose"
-                             referencedColumnNames="id"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="account_type_id"
+                                 baseTableName="account_type_account_purpose"
+                                 constraintName="fk_account_type_account_purpose_account_type"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="account_type"/>
+        <addForeignKeyConstraint baseColumnNames="account_purpose_id"
+                                 baseTableName="account_type_account_purpose"
+                                 constraintName="fk_account_type_account_purpose_account_purpose"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="account_purpose"/>
     </changeSet>
 
     <changeSet id="13-create-opening_form" author="david">

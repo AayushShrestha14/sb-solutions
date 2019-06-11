@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,7 +19,10 @@ public class AccountType {
     private Long id;
     private String name;
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "account_purpose_id")
-    private AccountPurpose accountPurpose;
+    @ManyToMany
+    @JoinTable(name = "account_type_account_purpose",
+            joinColumns = {@JoinColumn(name = "account_type_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_purpose_id", referencedColumnName = "id")}
+    )
+    private Set<AccountPurpose> accountPurpose;
 }

@@ -1,5 +1,6 @@
 package com.sb.solutions.api.openingForm.entity;
 
+import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.Set;
 public class OpeningAccount {
     private boolean haveExistingAccountNo;
     private String existingAccountNo;
-    private String purposeOfAccount;
+    private AccountPurpose purposeOfAccount;
     private String currency;
     private boolean haveJoint;
     private boolean haveNominee;
