@@ -1,14 +1,21 @@
 package com.sb.solutions.api.eligibility.applicant.service.impl;
 
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.api.eligibility.answer.entity.EligibilityAnswer;
+import com.sb.solutions.api.eligibility.answer.service.AnswerService;
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.repository.ApplicantRepository;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityConstants;
+import com.sb.solutions.api.eligibility.common.EligibilityStatus;
+import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
+import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
 import com.sb.solutions.api.eligibility.document.dto.DocumentDTO;
 import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
+import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,6 +40,10 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final FileStorageService fileStorageService;
 
     private final SubmissionDocumentService submissionDocumentService;
+
+    private final AnswerService answerService;
+
+    private final EligibilityCriteriaService eligibilityCriteriaService;
 
     @Override
     public List<Applicant> findAll() {
@@ -48,6 +61,39 @@ public class ApplicantServiceImpl implements ApplicantService {
     public Applicant save(Applicant applicant) {
         logger.debug("Saving the applicant information.");
         applicant.setObtainedMarks(applicant.getAnswers().stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
+        return applicantRepository.save(applicant);
+    }
+
+    @Override
+    public Applicant save(Applicant applicant, Long loanConfigId) {
+        logger.debug("Saving the applicant information.");
+        final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaService.getByStatus(Status.ACTIVE);
+        String formula = eligibilityCriteria.getFormula();
+        Map<String, Long> operands = EligibilityUtility.extractOperands(formula, eligibilityCriteria.getQuestions());
+        for (Map.Entry<String, Long> operand: operands.entrySet()) {
+            for (EligibilityAnswer eligibilityAnswer: applicant.getEligibilityAnswers()) {
+                if (eligibilityAnswer.getEligibilityQuestion().getId().equals(operand.getValue())) {
+                    formula = formula.replace(operand.getKey(), String.valueOf(eligibilityAnswer.getValue()));
+                }
+            }
+        }
+        double remainingAmount = EligibilityUtility.evaluateExpression(formula);
+        if (remainingAmount <= 0) {
+            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
+            return applicantRepository.save(applicant);
+        }
+        double annualAmount = remainingAmount * 12;
+        double eligibleAmount = (annualAmount * eligibilityCriteria.getPercentageOfAmount()) / 100;
+        if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
+            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
+            return applicantRepository.save(applicant);
+        }
+        applicant.setEligibleAmount(eligibleAmount);
+        applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
+        List<Answer> answers =
+                answerService.findByIds(applicant.getAnswers().stream().map(Answer::getId).collect(Collectors.toList()));
+        applicant.setObtainedMarks(answers.stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
+        applicant.getEligibilityAnswers().forEach(eligibilityAnswer -> eligibilityAnswer.setApplicant(applicant));
         return applicantRepository.save(applicant);
     }
 

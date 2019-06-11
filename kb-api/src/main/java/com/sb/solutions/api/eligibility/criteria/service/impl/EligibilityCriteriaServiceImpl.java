@@ -71,4 +71,11 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
         eligibilityCriteria.getQuestions().forEach(eligibilityQuestion -> eligibilityQuestion.setEligibilityCriteria(eligibilityCriteria));
         return eligibilityCriteriaRepository.save(eligibilityCriteria);
     }
+
+    @Override
+    public EligibilityCriteria getByStatus(Status status) {
+        logger.debug("Retrieving the active eligibility criteria.");
+        final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaRepository.findByStatus(Status.ACTIVE);
+        return eligibilityCriteria;
+    }
 }

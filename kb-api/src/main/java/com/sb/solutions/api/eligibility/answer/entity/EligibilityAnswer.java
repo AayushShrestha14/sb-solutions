@@ -1,5 +1,6 @@
 package com.sb.solutions.api.eligibility.answer.entity;
 
+import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -25,5 +26,9 @@ public class EligibilityAnswer extends BaseEntity<Long> {
     private EligibilityQuestion eligibilityQuestion;
 
     private double value;
+
+    @ManyToOne
+    @JoinColumn(name = "applicant_id")
+    private Applicant applicant;
 
 }

@@ -31,6 +31,10 @@ public class ApplicantDto extends BaseDto<Long> {
 
     private List<SubmissionDocumentDto> documents = new ArrayList<>();
 
+    private List<EligibilityAnswerDto> eligibilityAnswers = new ArrayList<>();
+
     private BranchDto branch;
+
+    private double eligibleAmount;
 
 }

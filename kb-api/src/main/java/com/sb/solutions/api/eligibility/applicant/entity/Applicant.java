@@ -2,6 +2,7 @@ package com.sb.solutions.api.eligibility.applicant.entity;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.api.eligibility.answer.entity.EligibilityAnswer;
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -41,6 +44,8 @@ public class Applicant extends BaseEntity<Long> {
 
     private long obtainedMarks;
 
+    private double eligibleAmount;
+
     @ManyToOne
     @JoinColumn(name = "loan_config_id")
     private LoanConfig loanConfig;
@@ -58,5 +63,9 @@ public class Applicant extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+    @OneToMany(mappedBy = "applicant")
+    @Cascade({CascadeType.PERSIST, CascadeType.MERGE})
+    private List<EligibilityAnswer> eligibilityAnswers = new ArrayList<>();
 
 }

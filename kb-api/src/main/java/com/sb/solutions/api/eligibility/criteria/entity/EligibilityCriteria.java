@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -29,6 +30,7 @@ public class EligibilityCriteria extends BaseEntity<Long> {
     private double percentageOfAmount;
 
     @OneToMany(mappedBy = "eligibilityCriteria")
+    @Where(clause = "status != 'DELETED'")
     @Cascade({CascadeType.PERSIST, CascadeType.MERGE})
     private List<EligibilityQuestion> questions = new ArrayList<>();
 

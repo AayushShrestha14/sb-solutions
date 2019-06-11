@@ -5,6 +5,7 @@ import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +32,17 @@ public class ApplicantController {
 
     private final ApplicantService applicantService;
 
+    private final ApplicantMapper applicantMapper;
+
     @PostMapping
     public final ResponseEntity<?> saveApplicant(@Valid @RequestBody Applicant applicant,
                                                  @PathVariable long loanConfigId, BindingResult bindingResult) {
         logger.debug("Rest request to save the applicant information.");
         globalExceptionHandler.constraintValidation(bindingResult);
         applicant.setEligibilityStatus(EligibilityStatus.NEW_REQUEST);
-        final Applicant savedApplicant = applicantService.save(applicant);
+        final Applicant savedApplicant = applicantService.save(applicant, loanConfigId);
         if (savedApplicant == null) return new RestResponseDto().failureModel("Oops! Something went wrong.");
-        return new RestResponseDto().successModel(savedApplicant);
+        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(savedApplicant));
     }
 
 }

@@ -10,10 +10,8 @@
             <column name="value" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="INT">
-                <constraints nullable="false"/>
-            </column>
             <column name="eligibility_question_id" type="BIGINT"/>
+            <column name="applicant_id" type="BIGINT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
@@ -35,5 +33,12 @@
                                  onUpdate="CASCADE"
                                  referencedColumnNames="id"
                                  referencedTableName="eligibility_question"/>
+        <addForeignKeyConstraint baseColumnNames="applicant_id"
+                                 baseTableName="eligibility_answer"
+                                 constraintName="fk_eligibility_answer_applicant_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="applicant"/>
     </changeSet>
 </databaseChangeLog>

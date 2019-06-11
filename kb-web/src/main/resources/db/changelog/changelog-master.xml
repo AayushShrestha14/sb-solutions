@@ -787,7 +787,6 @@
             </column>
             <column name="is_renewable" type="boolean"/>
       <column name="total_points" type="BIGINT"/>
-      <column name="eligibility_percentage" type="DOUBLE"/>
       <column name="enable_eligibility" type="boolean"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"

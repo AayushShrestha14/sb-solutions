@@ -14,7 +14,4 @@ public class LoanConfigDto {
     private List<DocumentDto> eligibilityDocuments;
 
     private long totalPoints;
-
-    private double eligibilityPercentage;
-
 }
