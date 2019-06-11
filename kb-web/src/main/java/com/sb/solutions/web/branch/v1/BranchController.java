@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -40,6 +41,14 @@ public class BranchController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST,value = "/upload")
+    public ResponseEntity<?> uploadBranchExcel(@RequestParam("file") MultipartFile multipartFile) {
+        branchService.saveExcel(multipartFile);
+
+        return new RestResponseDto().successModel(null);
+
+    }
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
                     value = "Results page you want to retrieve (0..N)"),
@@ -54,6 +63,7 @@ public class BranchController {
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
     }
+
     @GetMapping(value = "/all")
     public ResponseEntity<?> getBranch() {
         return new RestResponseDto().successModel(branchService.findAll());

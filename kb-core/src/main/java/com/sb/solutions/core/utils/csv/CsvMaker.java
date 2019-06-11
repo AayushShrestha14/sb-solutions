@@ -99,7 +99,7 @@ public class CsvMaker {
         Date date = new Date();
         String filename = "/" + file + date.getTime() + ".xls";
 
-        File dir = new File(FilePath.getOSPath() + uploadDir );
+        File dir = new File(FilePath.getOSPath() + uploadDir);
 
         if (!dir.exists())
             dir.mkdirs();
@@ -145,7 +145,7 @@ public class CsvMaker {
             wb.write(os);
             wb.close();
         } catch
-                (Exception e) {
+        (Exception e) {
         }
 
         return uploadDir + filename;
