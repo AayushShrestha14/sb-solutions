@@ -16,5 +16,5 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     Map<Object, Object> statusCount();
 
-    List<CustomerLoan> getCustomerLoanByDocumentStatus(DocStatus status);
+    List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status);
 }
