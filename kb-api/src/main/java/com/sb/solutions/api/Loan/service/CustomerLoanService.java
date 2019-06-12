@@ -14,4 +14,6 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
     List<CustomerLoan> getCustomerLoanByDocumentStatus(DocStatus status);
+
+
 }

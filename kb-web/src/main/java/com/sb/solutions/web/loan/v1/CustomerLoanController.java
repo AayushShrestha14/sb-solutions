@@ -1,20 +1,20 @@
 package com.sb.solutions.web.loan.v1;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.service.CustomerLoanService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
-import com.sb.solutions.web.loan.v1.mapper.Mapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+        import com.sb.solutions.api.Loan.entity.CustomerLoan;
+        import com.sb.solutions.api.Loan.service.CustomerLoanService;
+        import com.sb.solutions.core.dto.RestResponseDto;
+        import com.sb.solutions.core.exception.GlobalExceptionHandler;
+        import com.sb.solutions.core.utils.PaginationUtils;
+        import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
+        import com.sb.solutions.web.loan.v1.mapper.Mapper;
+        import io.swagger.annotations.ApiImplicitParam;
+        import io.swagger.annotations.ApiImplicitParams;
+        import lombok.AllArgsConstructor;
+        import org.slf4j.Logger;
+        import org.slf4j.LoggerFactory;
+        import org.springframework.http.ResponseEntity;
+        import org.springframework.validation.BindingResult;
+        import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -40,15 +40,15 @@ public class CustomerLoanController {
     public ResponseEntity<?> loanAction(@RequestBody LoanActionDto actionDto, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
         CustomerLoan c = mapper.ActionMapper(actionDto);
-        this.save(c,bindingResult);
-       // service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
+        this.save(c, bindingResult);
+        // service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
         return new RestResponseDto().successModel(actionDto);
     }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
         globalExceptionHandler.constraintValidation(bindingResult);
-        logger.debug("saving Customer Loan {}",customerLoan);
+        logger.debug("saving Customer Loan {}", customerLoan);
 
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
@@ -62,9 +62,13 @@ public class CustomerLoanController {
 
     @PostMapping("/status")
     public ResponseEntity<?> getByDocStatus(@RequestBody CustomerLoan customerLoan) {
-        logger.debug("getByDocStatus Customer Loan {}",customerLoan);
+        logger.debug("getByDocStatus Customer Loan {}", customerLoan);
         return new RestResponseDto().successModel(service.getCustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
     }
+//    @GetMapping("/pie-chart")
+//    public ResponseEntity<?> getChartData(){
+//        return new RestResponseDto().successModel(null);
+//    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
