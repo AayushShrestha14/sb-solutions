@@ -65,10 +65,7 @@ public class CustomerLoanController {
         logger.debug("getByDocStatus Customer Loan {}", customerLoan);
         return new RestResponseDto().successModel(service.getCustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
     }
-//    @GetMapping("/pie-chart")
-//    public ResponseEntity<?> getChartData(){
-//        return new RestResponseDto().successModel(null);
-//    }
+
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",

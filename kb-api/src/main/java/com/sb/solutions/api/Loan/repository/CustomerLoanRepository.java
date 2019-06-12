@@ -15,5 +15,4 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
 
     List<CustomerLoan> findFirst5ByDocumentStatusOrderByIdDesc(DocStatus status);
-//    Map<Object, Object> proposedAmount();
 }
