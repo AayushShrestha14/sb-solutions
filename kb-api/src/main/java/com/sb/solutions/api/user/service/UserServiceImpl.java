@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByRoleAndBranch(Long roleId, Branch branchId) {
-        return userRepository.findByRoleIdAndBranch(roleId, branchId);
+    public List<User> findByRoleAndBranch(Long roleId, Long branchId) {
+        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
     }
 
     @Override

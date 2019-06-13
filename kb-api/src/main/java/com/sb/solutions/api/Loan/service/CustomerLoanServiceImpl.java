@@ -45,7 +45,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if(customerLoan.getLoan() == null){
             throw new ApiException("Loan Cannot be null");
         }
-
+        customerLoan.setBranch(userService.getAuthenticated().getBranch());
         return customerLoanRepository.save(customerLoan);
     }
 

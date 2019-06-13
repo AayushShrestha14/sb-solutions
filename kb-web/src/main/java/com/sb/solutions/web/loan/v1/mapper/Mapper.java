@@ -2,17 +2,20 @@ package com.sb.solutions.web.loan.v1.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
+import com.sb.solutions.web.common.stage.dto.StageDto;
+import com.sb.solutions.web.common.stage.mapper.StageMapper;
+import com.sb.solutions.web.user.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +27,14 @@ import java.util.Map;
 @Component
 public class Mapper {
 
-    public CustomerLoan ActionMapper(LoanActionDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
+    @Autowired
+    StageMapper stageMapper;
+
+    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) throws InvocationTargetException, IllegalAccessException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
@@ -56,45 +63,26 @@ public class Mapper {
 
         customerLoan.setPreviousStageList(previousListTemp.toString());
 
-        loanStage.setDocAction(loanActionDto.getDocAction());
-        User toUser = new User();
-        Role toRole = new Role();
-        toUser.setId(loanActionDto.getToUser());
-        loanStage.setFromUser(currentUser);
-        loanStage.setFromRole(currentUser.getRole());
 
-        if (loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
+        StageDto currentStage = objectMapper.convertValue(loanStage, StageDto.class);
 
-
-            previousList.forEach(p -> {
-                LoanStage maker = (LoanStage) previousList.get(0);
-                if (maker.getFromUser().getId().equals(customerLoan.getCreatedBy())) {
-                    toRole.setId(maker.getFromUser().getRole().getId());
-                    toUser.setId(maker.getFromUser().getId());
-                }
-            });
-
-
-        } else {
-
-            toRole.setId(loanActionDto.getToRole());
-
+        try {
+            UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
+            loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
-        loanStage.setToUser(toUser);
-        loanStage.setToRole(toRole);
-        loanStage.setComment(loanActionDto.getComment());
+
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
-        customerLoan.setBranch(currentUser.getBranch());
-
-
         return customerLoan;
 
     }
 
-    public CustomerLoan loanMapper(LoanActionDto loanDto) {
-        CustomerLoan customerLoan = new CustomerLoan();
 
-        return null;
+    public LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        LoanStage s = stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+        return s;
     }
 }

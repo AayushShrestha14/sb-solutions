@@ -6,6 +6,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -40,22 +42,21 @@ public class CustomerLoanController {
 
     private Mapper mapper;
 
-    public CustomerLoanController(@Autowired  GlobalExceptionHandler globalExceptionHandler,
+    public CustomerLoanController(@Autowired GlobalExceptionHandler globalExceptionHandler,
                                   @Autowired CustomerLoanService service,
                                   @Autowired Mapper mapper,
                                   @Autowired UserService userService) {
         this.globalExceptionHandler = globalExceptionHandler;
         this.service = service;
         this.mapper = mapper;
-        this.userService =userService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/action")
-    public ResponseEntity<?> loanAction(@Valid @RequestBody LoanActionDto actionDto, BindingResult bindingResult) {
+    public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto, BindingResult bindingResult) throws InvocationTargetException, IllegalAccessException {
         globalExceptionHandler.constraintValidation(bindingResult);
-        CustomerLoan c = mapper.ActionMapper(actionDto,service.findOne(actionDto.getCustomerId()),userService.getAuthenticated());
-        this.save(c, bindingResult);
-        // service.sendForwardBackwardLoan(mapper.ActionMapper(actionDto));
+        CustomerLoan c = mapper.ActionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()), userService.getAuthenticated());
+        service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
 

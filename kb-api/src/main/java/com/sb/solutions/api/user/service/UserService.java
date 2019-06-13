@@ -32,7 +32,7 @@ public interface UserService extends BaseService<User> ,UserDetailsService {
 
     List<User>  findByRoleId(Long id);
 
-    List<User> findByRoleAndBranch(Long roleId,Branch branchId);
+    List<User> findByRoleAndBranch(Long roleId,Long branchId);
 
     String csv(SearchDto searchDto);
 

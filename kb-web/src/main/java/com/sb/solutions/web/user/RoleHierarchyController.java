@@ -63,7 +63,7 @@ public class RoleHierarchyController {
     @GetMapping("/getForward")
     public ResponseEntity<?> getRoleHierarchyListPerRoleForward() {
         User u = userService.getAuthenticated();
-        return new RestResponseDto().successModel(roleHierarchyService.roleHierarchyByCurrentRole(u.getRole().getId()));
+        return new RestResponseDto().successModel(roleHierarchyService.roleHierarchyByCurrentRoleForward(u.getRole().getId()));
     }
 
     @GetMapping("/getBackward")
