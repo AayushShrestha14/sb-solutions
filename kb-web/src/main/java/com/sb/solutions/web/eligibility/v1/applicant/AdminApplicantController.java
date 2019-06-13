@@ -48,10 +48,12 @@ public class AdminApplicantController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @GetMapping
-    public final ResponseEntity<?> getApplicants(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public final ResponseEntity<?> getApplicants(@RequestParam(value = "search", required = false) String search,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
         logger.debug("Request to get all the applicants.");
         final Pageable pageable = PaginationUtils.pageable(page, size);
-        final Page<Applicant> applicants = applicantService.findAllPageable(null, pageable);
+        final Page<Applicant> applicants = applicantService.findAllPageable(search, pageable);
         final Page<ApplicantDto> applicantDtos =
                 new PageImpl<>(applicantMapper.mapEntitiesToDtos(applicants.getContent()), pageable,
                         applicants.getTotalElements());

@@ -5,6 +5,7 @@ import com.sb.solutions.api.eligibility.answer.entity.EligibilityAnswer;
 import com.sb.solutions.api.eligibility.answer.service.AnswerService;
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.repository.ApplicantRepository;
+import com.sb.solutions.api.eligibility.applicant.repository.specification.ApplicantSpecificationBuilder;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityConstants;
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
@@ -21,11 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -100,7 +104,12 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public Page<Applicant> findAllPageable(Object t, Pageable pageable) {
         logger.debug("Retrieving a page of applicant list.");
-        return applicantRepository.findAll(pageable);
+        ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+        Matcher matcher = pattern.matcher(String.valueOf(t) + ",");
+        while (matcher.find()) applicantSpecificationBuilder.with(matcher.group(1), matcher.group(3), matcher.group(2));
+        Specification<Applicant> specification = applicantSpecificationBuilder.build();
+        return applicantRepository.findAll(specification, pageable);
     }
 
     @Override
