@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CustomerRelative extends BaseEntity<Long> {
-    private String customerRelation;
+    private String customerRelative;
     private String customerRelativeName;
     private String citizenshipNumber;
     private String citizenshipIssuedPlace;

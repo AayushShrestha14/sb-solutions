@@ -32,7 +32,7 @@ public class Customer extends BaseEntity<Long> {
     private District district;
 
     @ManyToOne
-    private MunicipalityVdc municipalitiesOrVDC;
+    private MunicipalityVdc municipalities;
     private String telephone;
     private String mobile;
     private String email;

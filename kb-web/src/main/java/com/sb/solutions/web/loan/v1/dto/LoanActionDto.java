@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -26,7 +27,13 @@ public class LoanActionDto extends BaseDto<Long> {
 
     @NotNull
     private DocAction docAction;
+
     private Long sendBy;
+
+
     private Long toUser;
+
+    private Long toRole;
+
     private String comment;
 }

@@ -84,7 +84,7 @@ public class UserController {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
-    public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
+    public ResponseEntity<?> getUserListByRole(@RequestBody Collection<Role> roles,
                                            @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
                 .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
@@ -93,6 +93,12 @@ public class UserController {
     @GetMapping(value = "listRole")
     public ResponseEntity<?> getRoleList() {
         return new RestResponseDto().successModel(roleService.findAll());
+    }
+
+    @GetMapping(value = "/{id}/users")
+    public ResponseEntity<?> getUserList(@PathVariable Long id) {
+        User u = userService.getAuthenticated();
+        return new RestResponseDto().successModel(userService.findByRoleAndBranch(id,u.getBranch()));
     }
 
 

@@ -3,6 +3,8 @@ package com.sb.solutions.api.Loan.service;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ApiException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,6 +26,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Autowired
     CustomerLoanRepository customerLoanRepository;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public List<CustomerLoan> findAll() {
@@ -48,6 +53,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        s.put("currentUserRole",userService.getAuthenticated().getRole().getId().toString());
+        s.put("createdBy",userService.getAuthenticated().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -64,7 +71,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public List<CustomerLoan> getCustomerLoanByDocumentStatus(DocStatus status) {
-        return customerLoanRepository.findFirst5ByDocumentStatusOrderByIdDesc(status);
+    public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
+        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdOrderByIdDesc(status,userService.getAuthenticated().getRole().getId());
     }
 }

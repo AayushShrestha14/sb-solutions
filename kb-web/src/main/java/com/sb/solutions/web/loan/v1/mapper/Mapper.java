@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.service.CustomerLoanService;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,27 +22,19 @@ import java.util.Map;
  */
 
 @Component
-@AllArgsConstructor
 public class Mapper {
 
-    private final CustomerLoanService customerLoanService;
-    private final UserService userService;
-
-
-    public CustomerLoan ActionMapper(LoanActionDto loanActionDto) {
-
-        CustomerLoan customerLoan = customerLoanService.findOne(loanActionDto.getCustomerId());
-        User currentUser = userService.getAuthenticated();
-        User receivedBy = userService.findByRoleAndBranch(loanActionDto.getToUser(), currentUser.getBranch());
+    public CustomerLoan ActionMapper(LoanActionDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();
         if (customerLoan.getCurrentStage() != null) {
             loanStage = customerLoan.getCurrentStage();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
             Map<String, String> tempLoanStage = objectMapper.convertValue(customerLoan.getCurrentStage(), Map.class);
             try {
                 previousList.forEach(p -> {
@@ -66,19 +57,43 @@ public class Mapper {
         customerLoan.setPreviousStageList(previousListTemp.toString());
 
         loanStage.setDocAction(loanActionDto.getDocAction());
-
+        User toUser = new User();
+        Role toRole = new Role();
+        toUser.setId(loanActionDto.getToUser());
         loanStage.setFromUser(currentUser);
-        loanStage.setToUser(receivedBy);
-        loanStage.setComment(loanActionDto.getComment() );
+        loanStage.setFromRole(currentUser.getRole());
+
+        if (loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
+
+
+            previousList.forEach(p -> {
+                LoanStage maker = (LoanStage) previousList.get(0);
+                if (maker.getFromUser().getId().equals(customerLoan.getCreatedBy())) {
+                    toRole.setId(maker.getFromUser().getRole().getId());
+                    toUser.setId(maker.getFromUser().getId());
+                }
+            });
+
+
+        } else {
+
+            toRole.setId(loanActionDto.getToRole());
+
+        }
+        loanStage.setToUser(toUser);
+        loanStage.setToRole(toRole);
+        loanStage.setComment(loanActionDto.getComment());
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
+        customerLoan.setBranch(currentUser.getBranch());
+
+
         return customerLoan;
 
     }
 
     public CustomerLoan loanMapper(LoanActionDto loanDto) {
         CustomerLoan customerLoan = new CustomerLoan();
-        customerLoan = customerLoanService.findOne(loanDto.getId());
 
         return null;
     }
