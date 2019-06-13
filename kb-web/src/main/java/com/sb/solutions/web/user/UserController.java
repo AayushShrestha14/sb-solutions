@@ -98,7 +98,7 @@ public class UserController {
     @GetMapping(value = "/{id}/users")
     public ResponseEntity<?> getUserList(@PathVariable Long id) {
         User u = userService.getAuthenticated();
-        return new RestResponseDto().successModel(userService.findByRoleAndBranch(id,u.getBranch()));
+        return new RestResponseDto().successModel(userService.findByRoleAndBranch(id,u.getBranch().getId()));
     }
 
 
