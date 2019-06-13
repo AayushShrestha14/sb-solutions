@@ -14,7 +14,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_LOAN = "loanConfigId";
     private static final String FILTER_BY_DOC_STATUS = "documentStatus";
     private static final String FILTER_BY_CURRENT_USER_ROLE = "currentUserRole";
-    private static final String FILTER_BY_CURRENT_USER_MAKER = "createdBy";
+    private static final String FILTER_BY_ROLE_MAKER = "createdBy";
 
     private final String property;
     private final String value;
@@ -38,11 +38,12 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
 
 
-//            case FILTER_BY_CURRENT_USER_ROLE:
-//               return criteriaBuilder.or(criteriaBuilder.equal(root.join("currentStage",JoinType.LEFT).join("toRole").get("id"), Long.valueOf(value)),criteriaBuilder.equal(root.get("createdBy"), value));
-//
-//
+            case FILTER_BY_CURRENT_USER_ROLE:
+                return criteriaBuilder.equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"), Long.valueOf(value));
 
+            case FILTER_BY_ROLE_MAKER:
+
+                return null;
 
 
 //

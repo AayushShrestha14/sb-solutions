@@ -6,6 +6,7 @@ package com.sb.solutions.core.enums;
  * Collections of Action that can be performed on Loan Document
  */
 public enum DocAction {
+    INITIATE("Initiate"),
     FORWARD("Forward"),
     BACKWARD("Backward"),
     APPROVED("Approved"),

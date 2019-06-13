@@ -1,10 +1,12 @@
 package com.sb.solutions.api.Loan.service;
 
+import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ApiException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -45,7 +47,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if(customerLoan.getLoan() == null){
             throw new ApiException("Loan Cannot be null");
         }
+        if(customerLoan.getId() == null){
         customerLoan.setBranch(userService.getAuthenticated().getBranch());
+        LoanStage stage = new LoanStage();
+        stage.setToRole(userService.getAuthenticated().getRole());
+        stage.setFromRole(userService.getAuthenticated().getRole());
+        stage.setFromUser(userService.getAuthenticated());
+        stage.setToUser(userService.getAuthenticated());
+        stage.setComment(DocAction.INITIATE.name());
+        stage.setDocAction(DocAction.INITIATE);
+        customerLoan.setCurrentStage(stage);}
         return customerLoanRepository.save(customerLoan);
     }
 
