@@ -19,7 +19,7 @@ import com.sb.solutions.core.validation.validator.NotEmptyValidator;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotEmpty {
 
-    String message() default "Must not be empty";
+    String message() default "must not be empty";
 
     Class<?>[] groups() default {};
 
