@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = "com.sb.solutions")
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
-//@EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties({FileStorageProperties.class})
 public class CpSolutionApplication {
 
