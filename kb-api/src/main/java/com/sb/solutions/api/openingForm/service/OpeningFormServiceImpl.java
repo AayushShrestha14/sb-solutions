@@ -125,10 +125,10 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 throw new ApiException("File Fail to Save");
             }
 
-        }else{
+        } else {
             try {
-                String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
-                writeJsonFile(url, openingForm);
+                String url = openingForm.getCustomerDetailsJson();
+                openingForm.setCustomerDetailsJson(updateJsonFile(url, openingForm));
             } catch (Exception exception) {
                 throw new ApiException("File Fail to Save");
             }
@@ -160,7 +160,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         return openingFormRepository.save(openingForm);
     }
 
-    public String writeJsonFile(String url, OpeningForm openingForm){
+    public String writeJsonFile(String url, OpeningForm openingForm) {
         String jsonPath;
         Path path = Paths.get(url);
         if (!Files.exists(path)) {
@@ -185,6 +185,28 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             return jsonPath;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String updateJsonFile(String url, OpeningForm openingForm) {
+        String jsonPath = url;
+        try {
+            FileWriter writer = new FileWriter(url);
+            try {
+                writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                writer.flush();
+                return jsonPath;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            jsonPath = writeJsonFile(url, openingForm);
+            return jsonPath;
         }
         return null;
     }
