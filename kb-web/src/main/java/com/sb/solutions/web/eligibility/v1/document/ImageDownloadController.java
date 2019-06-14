@@ -1,4 +1,4 @@
-package com.sb.solutions.web.eligibility.document;
+package com.sb.solutions.web.eligibility.v1.document;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
