@@ -1,14 +1,5 @@
 package com.sb.solutions.web.eligibility.v1.applicant;
 
-import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
-import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
-import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,6 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
+import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
+import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping(AdminApplicantController.URL)

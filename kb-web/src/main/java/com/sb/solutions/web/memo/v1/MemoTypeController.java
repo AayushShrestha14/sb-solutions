@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.memo.service.MemoTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.memo.v1.dto.MemoTypeDto;
 import com.sb.solutions.web.memo.v1.mapper.MemoTypeMapper;
@@ -36,22 +34,16 @@ public class MemoTypeController {
 
     private final MemoTypeService service;
 
-    private final GlobalExceptionHandler exceptionHandler;
-
     private final MemoTypeMapper mapper;
 
     public MemoTypeController(@Autowired MemoTypeService service,
-        @Autowired GlobalExceptionHandler exceptionHandler,
         @Autowired MemoTypeMapper mapper) {
         this.service = service;
-        this.exceptionHandler = exceptionHandler;
         this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody MemoTypeDto type,
-        BindingResult bindingResult) {
-        exceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> save(@Valid @RequestBody MemoTypeDto type) {
 
         final MemoType memoType = mapper.mapDtoToEntity(type);
 
@@ -71,9 +63,7 @@ public class MemoTypeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody MemoTypeDto dto,
-        BindingResult bindingResult) {
-        exceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody MemoTypeDto dto) {
 
         final MemoType type = mapper.mapDtoToEntity(dto);
         type.setLastModifiedAt(new Date());
@@ -94,13 +84,6 @@ public class MemoTypeController {
 
         return ResponseEntity.ok().build();
     }
-
-    /*@GetMapping
-    public ResponseEntity<?> getAll() {
-        final List<MemoType> types = service.findAll();
-        return new RestResponseDto()
-            .successModel(types);
-    }*/
 
     @GetMapping
     public ResponseEntity<?> getAll(

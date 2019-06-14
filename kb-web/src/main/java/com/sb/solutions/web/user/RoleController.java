@@ -1,19 +1,22 @@
 package com.sb.solutions.web.user;
 
+import java.util.List;
+import javax.validation.Valid;
+import javax.ws.rs.Produces;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
 import com.sb.solutions.api.rolePermissionRight.service.RoleHierarchyService;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -21,22 +24,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/role")
-public class  RoleController {
+public class RoleController {
 
-    @Autowired
-    RoleService roleService;
+    private final RoleService roleService;
 
-    @Autowired
-    RoleHierarchyService roleHierarchyService;
+    private final RoleHierarchyService roleHierarchyService;
 
-    @Autowired
-    GlobalExceptionHandler globalExceptionHandler;
+    public RoleController(
+        @Autowired RoleService roleService,
+        @Autowired RoleHierarchyService roleHierarchyService) {
+        this.roleService = roleService;
+        this.roleHierarchyService = roleHierarchyService;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
 
-    public ResponseEntity<?> saveRole(@Valid @RequestBody Role role, BindingResult bindingResult) {
-        globalExceptionHandler.constraintValidation(bindingResult);
-        Role r = roleService.save(role);
+    public ResponseEntity<?> saveRole(@Valid @RequestBody Role role) {
+        final Role r = roleService.save(role);
+
         if (r == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
@@ -57,7 +62,6 @@ public class  RoleController {
         return new RestResponseDto().successModel(roleService.findAll());
     }
 
-
     @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getRoleStatusCount() {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
@@ -67,6 +71,4 @@ public class  RoleController {
     public ResponseEntity<?> getActiveRole() {
         return new RestResponseDto().successModel(roleService.activeRole());
     }
-
-
 }

@@ -19,8 +19,5 @@ public class StageController {
     @PostMapping("/stage")
     public ResponseEntity<?> performActionOnDocument(@RequestBody StageDto stageDto) {
         return null;
-
     }
-
-
 }

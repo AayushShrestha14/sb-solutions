@@ -1,10 +1,8 @@
 package com.sb.solutions.api.Loan.service;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.exception.ApiException;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,8 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -37,8 +38,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
-        if(customerLoan.getLoan() == null){
-            throw new ApiException("Loan Cannot be null");
+        if (customerLoan.getLoan() == null) {
+            throw new ServiceValidationException("Loan can not be null");
         }
 
         return customerLoanRepository.save(customerLoan);

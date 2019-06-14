@@ -26,8 +26,8 @@ import lombok.AllArgsConstructor;
 @RequestMapping(value = "/v1/nepse-company")
 public class NepseCompanyController {
 
-    private NepseCompanyService nepseCompanyService;
-    private BulkConverter bulkConverter;
+    private final NepseCompanyService nepseCompanyService;
+    private final BulkConverter bulkConverter;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody NepseCompany nepseCompany) {

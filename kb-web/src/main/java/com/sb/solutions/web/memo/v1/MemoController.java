@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.api.memo.entity.Memo;
 import com.sb.solutions.api.memo.service.MemoService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.memo.v1.dto.MemoDto;
 import com.sb.solutions.web.memo.v1.mapper.MemoMapper;
@@ -42,19 +40,14 @@ public class MemoController {
 
     private final MemoMapper mapper;
 
-    private final GlobalExceptionHandler exceptionHandler;
-
     public MemoController(@Autowired MemoService service,
-        @Autowired GlobalExceptionHandler exceptionHandler,
         @Autowired MemoMapper mapper) {
         this.service = service;
-        this.exceptionHandler = exceptionHandler;
         this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody MemoDto dto, BindingResult bindingResult) {
-        exceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> save(@Valid @RequestBody MemoDto dto) {
 
         final Memo savedMemo = service.save(mapper.mapDtoToEntity(dto));
 
@@ -89,9 +82,7 @@ public class MemoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable long id, @RequestBody MemoDto dto,
-        BindingResult bindingResult) {
-        exceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> update(@PathVariable long id, @RequestBody MemoDto dto) {
 
         final Memo savedMemo = service.save(mapper.mapDtoToEntity(dto));
 
