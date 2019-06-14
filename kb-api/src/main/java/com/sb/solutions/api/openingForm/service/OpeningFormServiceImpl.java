@@ -166,7 +166,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         if (!Files.exists(path)) {
             new File(url).mkdirs();
         }
-        jsonPath = url + openingForm.getFullName() + "_" + System.currentTimeMillis() + ".json";
+        jsonPath = url + System.currentTimeMillis() + ".json";
         File file = new File(jsonPath);
         file.getParentFile().mkdirs();
         FileWriter writer = null;
