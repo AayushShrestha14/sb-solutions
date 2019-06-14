@@ -785,9 +785,8 @@
                 <constraints nullable="false"/>
             </column>
             <column name="is_renewable" type="boolean"/>
-            <column name="total_points" type="BIGINT"/>
-            <column name="eligibility_percentage" type="DOUBLE"/>
-            <column name="enable_eligibility" type="boolean"/>
+      <column name="total_points" type="BIGINT"/>
+      <column name="enable_eligibility" type="boolean"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_config_created_by_id"
@@ -1668,4 +1667,7 @@
     <include file="20190609_customer_loan.xml" relativeToChangelogFile="true"/>
 
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true"/>
+    <include file="20190605_eligibility_criteria.xml" relativeToChangelogFile="true" />
+    <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true" />
+    <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

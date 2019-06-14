@@ -1,10 +1,11 @@
-package com.sb.solutions.web.eligibility.document;
+package com.sb.solutions.web.eligibility.v1.document;
 
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.document.dto.DocumentDTO;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.exception.GlobalExceptionHandler;
+import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ public class SubmissionDocumentController {
 
     private final GlobalExceptionHandler globalExceptionHandler;
 
+    private final ApplicantMapper applicantMapper;
+
     @PostMapping
     public final ResponseEntity<?> saveDocuments(@PathVariable long loanConfigId, @PathVariable long applicantId,
                                                  @Valid @RequestBody List<DocumentDTO> documents,
@@ -37,7 +40,7 @@ public class SubmissionDocumentController {
         globalExceptionHandler.constraintValidation(bindingResult);
         logger.debug("Request to submit document for the applicant with id [{}].", applicantId);
         final Applicant updatedApplicant = applicantService.saveDocuments(documents, applicantId);
-        return new RestResponseDto().successModel(updatedApplicant);
+        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(updatedApplicant));
     }
 
 }

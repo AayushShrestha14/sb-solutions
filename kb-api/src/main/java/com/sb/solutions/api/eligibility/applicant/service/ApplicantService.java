@@ -10,4 +10,6 @@ public interface ApplicantService extends BaseService<Applicant> {
 
     Applicant saveDocuments(List<DocumentDTO> documents, long applicantId);
 
+    Applicant save(Applicant applicant, Long loanConfigId);
+
 }

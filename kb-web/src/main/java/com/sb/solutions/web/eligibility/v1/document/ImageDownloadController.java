@@ -1,4 +1,4 @@
-package com.sb.solutions.web.eligibility.document;
+package com.sb.solutions.web.eligibility.v1.document;
 
 import com.sb.solutions.api.filestorage.service.FileStorageService;
 import com.sb.solutions.core.dto.RestResponseDto;
