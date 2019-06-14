@@ -14,6 +14,7 @@ import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -38,7 +39,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
         if (customerLoan.getLoan() == null) {
-            throw new RuntimeException("Loan Cannot be null");
+            throw new ServiceValidationException("Loan can not be null");
         }
 
         return customerLoanRepository.save(customerLoan);
