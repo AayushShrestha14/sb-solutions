@@ -16,9 +16,9 @@ public class ServiceValidationException extends RuntimeException {
         super(message, throwable);
     }
 
-    public ServiceValidationException(String message, Throwable throwable,
+    public ServiceValidationException(String message,
         List<Violation> violations) {
-        super(message, throwable);
+        super(message);
         this.violations = violations;
     }
 
