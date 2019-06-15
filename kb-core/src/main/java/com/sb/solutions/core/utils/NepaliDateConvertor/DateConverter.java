@@ -1,10 +1,9 @@
 package com.sb.solutions.core.utils.NepaliDateConvertor;
 
 
-import org.joda.time.IllegalFieldValueException;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +34,7 @@ public class DateConverter {
                     map.put("nepGate", nepaliDate.getGatey());
                     map.put("nepDateMonth", nepaliDate.getMahinaInWords());
                     map.put("nepDateYear", nepaliDate.getSaal());
+                    map.put("baar", nepaliDate.getBaar());
 
                     return map;
                 } catch (Exception e) {
@@ -45,74 +45,74 @@ public class DateConverter {
                 map.put("error", e);
                 return map;
             }
-        } catch (IllegalFieldValueException e) {
+        } catch (Exception e) {
             map.put("error", e.getMessage());
             return map;
         }
     }
 
 
-    public Map<Object, Object> getEnglishDate(@PathVariable String id) throws ParseException {
-        Map<Object, Object> map = new HashMap<>();
-        try {
-            try {
-                String[] Date = id.split("-");
-                try {
-                    int day = Integer.parseInt(Date[0]);
-                    int months = Integer.parseInt(Date[1]);
-                    int year = Integer.parseInt(Date[2]);
-                    Converter converter = new Converter();
-                    EnglishDate englishDate = converter.getEnglishDate(year, months, day);
-                    map.put("engDate", englishDate.getDate() + "-" + englishDate.getMonth() + "-" + englishDate.getYear());
-                    return map;
-                } catch (Exception e) {
-                    map.put("error", e.getLocalizedMessage());
-                    return map;
-                }
+//    public Map<Object, Object> getEnglishDate(@PathVariable String id) throws ParseException {
+//        Map<Object, Object> map = new HashMap<>();
+//        try {
+//            try {
+//                String[] Date = id.split("-");
+//                try {
+//                    int day = Integer.parseInt(Date[0]);
+//                    int months = Integer.parseInt(Date[1]);
+//                    int year = Integer.parseInt(Date[2]);
+//                    Converter converter = new Converter();
+//                    EnglishDate englishDate = converter.getEnglishDate(year, months, day);
+//                    map.put("engDate", englishDate.getDate() + "-" + englishDate.getMonth() + "-" + englishDate.getYear());
+//                    return map;
+//                } catch (Exception e) {
+//                    map.put("error", e.getLocalizedMessage());
+//                    return map;
+//                }
+//
+//            } catch (ArrayIndexOutOfBoundsException e) {
+//                map.put("error", e.getMessage());
+//                return map;
+//            }
+//
+//        } catch (IllegalFieldValueException e) {
+//            map.put("error", e.getMessage());
+//            return map;
+//        }
+//    }
 
-            } catch (ArrayIndexOutOfBoundsException e) {
-                map.put("error", e.getMessage());
-                return map;
-            }
 
-        } catch (IllegalFieldValueException e) {
-            map.put("error", e.getMessage());
-            return map;
-        }
-    }
-
-
-    public DateFormat getNumberDaysInNepaliMonth(@RequestParam("year") String year, @RequestParam("month") String month) throws ParseException {
-        Map<Object, Object> map = new HashMap<>();
-
-        int mnth = Integer.parseInt(nepMnthMapper().get(month));
-        NepaliDate np = new NepaliDate();
-        int noOfDays = np.getDaysOf(Integer.parseInt(year), mnth);
-        map.put("startNepDate", 1);
-        map.put("endNepDate", noOfDays);
-        map.put("yearNep", year);
-        map.put("monthNep", month);
-        //convertor
-        Converter converter = new Converter();
-        EnglishDate startEnDate = converter.getEnglishDate(Integer.parseInt(year), mnth, 1);
-        EnglishDate endEnDate = converter.getEnglishDate(Integer.parseInt(year), mnth, noOfDays);
-        map.put("startEnDate", startEnDate);
-        map.put("endEnDate", endEnDate);
-        DateFormat dateFormat = new DateFormat();
-        String startDate = startEnDate.getYear() + "-" + startEnDate.getMonth() + "-" + startEnDate.getDate();
-        String endDate = endEnDate.getYear() + "-" + endEnDate.getMonth() + "-" + endEnDate.getDate();
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Date start = df.parse(startDate);
-        Date end = df.parse(endDate);
-
-        dateFormat.setMonth(month);
-        dateFormat.setYear(year);
-        dateFormat.setStartDate(start);
-        dateFormat.setEndDate(end);
-        return dateFormat;
-
-    }
+//    public DateFormat getNumberDaysInNepaliMonth(@RequestParam("year") String year, @RequestParam("month") String month) throws ParseException {
+//        Map<Object, Object> map = new HashMap<>();
+//
+//        int mnth = Integer.parseInt(nepMnthMapper().get(month));
+//        NepaliDate np = new NepaliDate();
+//        int noOfDays = np.getDaysOf(Integer.parseInt(year), mnth);
+//        map.put("startNepDate", 1);
+//        map.put("endNepDate", noOfDays);
+//        map.put("yearNep", year);
+//        map.put("monthNep", month);
+//        //convertor
+//        Converter converter = new Converter();
+//        EnglishDate startEnDate = converter.getEnglishDate(Integer.parseInt(year), mnth, 1);
+//        EnglishDate endEnDate = converter.getEnglishDate(Integer.parseInt(year), mnth, noOfDays);
+//        map.put("startEnDate", startEnDate);
+//        map.put("endEnDate", endEnDate);
+//        DateFormat dateFormat = new DateFormat();
+//        String startDate = startEnDate.getYear() + "-" + startEnDate.getMonth() + "-" + startEnDate.getDate();
+//        String endDate = endEnDate.getYear() + "-" + endEnDate.getMonth() + "-" + endEnDate.getDate();
+//
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        Date start = df.parse(startDate);
+//        Date end = df.parse(endDate);
+//
+//        dateFormat.setMonth(month);
+//        dateFormat.setYear(year);
+//        dateFormat.setStartDate(start);
+//        dateFormat.setEndDate(end);
+//        return dateFormat;
+//
+//    }
 
     public Map<String, String> nepMnthMapper() {
         Map<String, String> map = new HashMap<>();

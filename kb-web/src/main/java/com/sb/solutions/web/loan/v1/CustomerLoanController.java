@@ -55,7 +55,7 @@ public class CustomerLoanController {
     @PostMapping(value = "/action")
     public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto, BindingResult bindingResult) throws InvocationTargetException, IllegalAccessException {
         globalExceptionHandler.constraintValidation(bindingResult);
-        CustomerLoan c = mapper.ActionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()), userService.getAuthenticated());
+      final CustomerLoan c = mapper.ActionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()), userService.getAuthenticated());
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }

@@ -66,6 +66,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         s.put("currentUserRole",userService.getAuthenticated().getRole().getId().toString());
         s.put("createdBy",userService.getAuthenticated().getId().toString());
+        s.put("branchId",userService.getAuthenticated().getBranch().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -78,11 +79,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Map<Object, Object> statusCount() {
-        return customerLoanRepository.statusCount();
+        User u = userService.getAuthenticated();
+        return customerLoanRepository.statusCount(u.getRole().getId(),u.getBranch().getId());
     }
 
     @Override
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
-        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdOrderByIdDesc(status,userService.getAuthenticated().getRole().getId());
+        User u = userService.getAuthenticated();
+        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,u.getRole().getId(),u.getBranch().getId());
     }
 }
