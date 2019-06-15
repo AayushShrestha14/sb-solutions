@@ -26,4 +26,6 @@ public interface LoanConfigRepository extends JpaRepository<LoanConfig, Long> {
     Page<LoanConfig> LoanConfigFilter(@Param("name") String name, Pageable pageable);
 
     List<LoanConfig> getByStatus(Status status);
+
+    List<LoanConfig> findAllByEnableEligibility(boolean enableEligibility);
 }

@@ -12,6 +12,8 @@ public interface AnswerService extends BaseService<Answer> {
 
     List<Answer> update(List<Answer> answers, Question question);
 
+    List<Answer> findByIds(List<Long> ids);
+
     void delete(long id);
 
     void delete(List<Answer> answers);

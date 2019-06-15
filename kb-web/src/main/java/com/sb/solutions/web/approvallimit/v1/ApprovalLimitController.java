@@ -1,7 +1,6 @@
 package com.sb.solutions.web.approvallimit.v1;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,6 @@ import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -24,16 +22,13 @@ import lombok.AllArgsConstructor;
 public class ApprovalLimitController {
 
     private final ApprovalLimitService approvalLimitService;
-    private final GlobalExceptionHandler globalExceptionHandler;
 
     @PostMapping
-    public ResponseEntity<?> addApprovalLimit(@RequestBody ApprovalLimit approvalLimit,
-        BindingResult bindingResult) {
+    public ResponseEntity<?> addApprovalLimit(@RequestBody ApprovalLimit approvalLimit) {
+        final ApprovalLimit saved = approvalLimitService.save(approvalLimit);
 
-        globalExceptionHandler.constraintValidation(bindingResult);
-        ApprovalLimit aproLimit = approvalLimitService.save(approvalLimit);
-        if (aproLimit != null) {
-            return new RestResponseDto().successModel(aproLimit);
+        if (saved != null) {
+            return new RestResponseDto().successModel(saved);
         } else {
             return new RestResponseDto().failureModel("Error Occurred");
         }
