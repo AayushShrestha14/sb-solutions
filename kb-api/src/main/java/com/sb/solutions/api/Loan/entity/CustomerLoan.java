@@ -2,11 +2,13 @@ package com.sb.solutions.api.Loan.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.basicInfo.customer.entity.Customer;
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
@@ -61,9 +63,14 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     private List previousList;
 
+    @OneToOne
+    private Branch branch;
+
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String previousStageList;
+
+    private Boolean isValidated = false;
 
     public List getPreviousList() {
         if (this.getPreviousStageList() != null) {
@@ -71,8 +78,9 @@ public class CustomerLoan extends BaseEntity<Long> {
             objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
-                this.previousList = objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
+                this.previousList = objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, LoanStage.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }

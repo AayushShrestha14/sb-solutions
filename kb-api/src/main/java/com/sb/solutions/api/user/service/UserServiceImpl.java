@@ -67,7 +67,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        System.out.println(user.getPassword());
         user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -75,7 +74,9 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
+
         return userRepository.save(user);
+
 
     }
 
@@ -91,8 +92,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByRoleAndBranch(Long roleId, Branch branchId) {
-        return userRepository.findByRoleIdAndBranch(roleId,branchId);
+    public List<User> findByRoleId(Long id) {
+        return userRepository.findByRoleId(id);
+    }
+
+    @Override
+    public List<User> findByRoleAndBranch(Long roleId, Branch branchId) {
+        return userRepository.findByRoleIdAndBranch(roleId, branchId);
     }
 
     @Override
