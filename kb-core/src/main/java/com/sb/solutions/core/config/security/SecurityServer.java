@@ -1,6 +1,5 @@
 package com.sb.solutions.core.config.security;
 
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableAuthorizationServer
-
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityServer extends AuthorizationServerConfigurerAdapter {
 
@@ -64,14 +62,43 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         // clients.jdbc(dataSource);
         clients.inMemory()
-                .withClient("cp-solution")
-                /*.accessTokenValiditySeconds(99999911)        // expire time for access token
-                .refreshTokenValiditySeconds(900000000)         // expire time for refresh token*/
-                .authorizedGrantTypes("authorization_code", "refresh_token", "password", "client_credentials")
-                .secret(passwordEncoder.encode("cpsolution123*#"))
-                .scopes("read", "write", "trust")
-                .redirectUris("/error")
-                .resourceIds("resources.solution.com");
+            .withClient("cp-solution")
+            /*.accessTokenValiditySeconds(99999911)        // expire time for access token
+            .refreshTokenValiditySeconds(900000000)         // expire time for refresh token*/
+            .authorizedGrantTypes("authorization_code", "refresh_token", "password",
+                "client_credentials")
+            .secret(passwordEncoder.encode("cpsolution123*#"))
+            .scopes("read", "write", "trust")
+            .redirectUris("/error")
+            .resourceIds("resources.solution.com");
+    }
+
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        endpoints
+            .authenticationManager(authenticationManager)
+            .tokenStore(tokenStore())
+
+            .userDetailsService(userDetailsService)
+            .tokenServices(customTokenServices())
+            .exceptionTranslator(e -> {
+                if (e instanceof OAuth2Exception) {
+                    final OAuth2Exception oauthException = (OAuth2Exception) e;
+
+                    return ResponseEntity
+                        .status(oauthException.getHttpErrorCode())
+                        .body(new CustomOauthException(oauthException.getMessage()));
+                } else if (e instanceof InternalAuthenticationServiceException) {
+                    final InternalAuthenticationServiceException serviceException
+                        = (InternalAuthenticationServiceException) e;
+                    return ResponseEntity
+                        .status(401)
+                        .body(new CustomOauthException(
+                            serviceException.getMessage()));
+                }
+
+                throw e;
+            });
     }
 
     public AuthorizationServerTokenServices customTokenServices() {
@@ -83,36 +110,12 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
         return tokenServices;
     }
 
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints
-                .authenticationManager(authenticationManager)
-                .tokenStore(tokenStore())
-
-                .userDetailsService(userDetailsService)
-                .tokenServices(customTokenServices())
-                .exceptionTranslator(e -> {
-                    if (e instanceof OAuth2Exception) {
-                        OAuth2Exception oAuth2Exception = (OAuth2Exception) e;
-
-                        return ResponseEntity
-                                .status(oAuth2Exception.getHttpErrorCode())
-                                .body(new CustomOauthException(oAuth2Exception.getMessage()));
-                    } else if (e instanceof InternalAuthenticationServiceException) {
-                        InternalAuthenticationServiceException internalAuthenticationServiceException = (InternalAuthenticationServiceException) e;
-                        return ResponseEntity
-                                .status(401)
-                                .body(new CustomOauthException(internalAuthenticationServiceException.getMessage()));
-                    }
-                    throw e;
-                });
-    }
-
 
     @Bean
     public FilterRegistrationBean customCorsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
@@ -120,6 +123,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+
         return bean;
     }
 }

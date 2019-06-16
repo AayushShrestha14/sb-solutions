@@ -1,11 +1,12 @@
 package com.sb.solutions.api.loanTemplate.repository;
 
-import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 
 /**
  * @author Rujan Maharjan on 2/25/2019

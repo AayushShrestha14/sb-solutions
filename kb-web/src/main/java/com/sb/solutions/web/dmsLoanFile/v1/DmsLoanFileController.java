@@ -28,7 +28,7 @@ import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 

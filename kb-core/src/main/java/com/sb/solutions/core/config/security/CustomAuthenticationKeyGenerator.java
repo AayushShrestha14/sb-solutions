@@ -1,11 +1,5 @@
 package com.sb.solutions.core.config.security;
 
-import org.springframework.security.oauth2.common.util.OAuth2Utils;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -14,8 +8,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.security.oauth2.common.util.OAuth2Utils;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
+import org.springframework.stereotype.Component;
+
 @Component
-public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenerator,Serializable {
+public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenerator, Serializable {
 
     private static final String CLIENT_ID = "client_id";
 
@@ -29,7 +29,7 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
         OAuth2Request authorizationRequest = authentication.getOAuth2Request();
         if (!authentication.isClientOnly()) {
             values.put(USERNAME, authentication.getName());
-            values.put("principal",authentication.getPrincipal().toString());
+            values.put("principal", authentication.getPrincipal().toString());
         }
         values.put(CLIENT_ID, authorizationRequest.getClientId());
         if (authorizationRequest.getScope() != null) {
@@ -47,14 +47,16 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
+            throw new IllegalStateException(
+                "MD5 algorithm not available.  Fatal (should be in the JDK).");
         }
 
         try {
             byte[] bytes = digest.digest(values.toString().getBytes("UTF-8"));
             return String.format("%032x", new BigInteger(1, bytes));
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not available.  Fatal (should be in the JDK).");
+            throw new IllegalStateException(
+                "UTF-8 encoding not available.  Fatal (should be in the JDK).");
         }
 
 

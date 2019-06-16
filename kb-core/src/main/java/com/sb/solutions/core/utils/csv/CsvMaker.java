@@ -1,16 +1,28 @@
 package com.sb.solutions.core.utils.csv;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.core.constant.FilePath;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sb.solutions.core.constant.FilePath;
 
 /**
  * Created by Rujan Maharjan on 3/4/2019.
@@ -46,7 +58,8 @@ public class CsvMaker {
                     String d = "";
 
                     ObjectMapper tempMapper = new ObjectMapper();
-                    tempMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);
+                    tempMapper
+                        .configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);
                     List<String> myList = new ArrayList<String>(Arrays.asList(a.split(",")));
 
                     for (int q = 0; q < myList.size() - 1; q++) {
@@ -61,14 +74,16 @@ public class CsvMaker {
                             for (Object k : list) {
                                 ObjectMapper kMapper = new ObjectMapper();
                                 Map<String, Object> newMapper = kMapper.convertValue(k, Map.class);
-                                d = d + newMapper.get(myList.get(q + 1).toString()).toString() + "," + "\r\n";
+                                d = d + newMapper.get(myList.get(q + 1).toString()).toString() + ","
+                                    + "\r\n";
                             }
                             d = d.substring(0, d.length() - 3);
                             map1.put(a, d);
                         } else {
 
                             ObjectMapper modelMapper = new ObjectMapper();
-                            Map<String, Object> newMapper = modelMapper.convertValue(obj, Map.class);
+                            Map<String, Object> newMapper = modelMapper
+                                .convertValue(obj, Map.class);
                             try {
                                 map1.put(a, newMapper.get(myList.get(q + 1).toString()).toString());
                             } catch (Exception e) {
@@ -91,7 +106,6 @@ public class CsvMaker {
 
     public String csv(String file, Map<String, String> head, List pojo, String uploadDir) {
 
-
         List<CsvHeader> csvHeaders = mapperToHeader(head);
         List<CsvMakerDto> csvMakerDtos = ModelToMapperData(pojo, head);
         Workbook wb = new HSSFWorkbook();
@@ -101,14 +115,14 @@ public class CsvMaker {
 
         File dir = new File(FilePath.getOSPath() + uploadDir);
 
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
         try (OutputStream os = new FileOutputStream(dir + filename)) {
             Sheet sheet = wb.createSheet("New Sheet");
             CellStyle cellStyle = wb.createCellStyle();
 
             cellStyle.setAlignment(HorizontalAlignment.CENTER);
-
 
             Font header = wb.createFont();
             header.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -131,12 +145,11 @@ public class CsvMaker {
                 for (int j = 0; j < tempHeaderList.size(); j++) {
                     Object o = csvMakerDto.getMap().get(tempHeaderList.get(j));
                     row.createCell(j)
-                            .setCellValue(o == null ? "-" : o.toString());
+                        .setCellValue(o == null ? "-" : o.toString());
                 }
 
 
             }
-
 
             for (int i = 0; i < headerCount; i++) {
                 sheet.autoSizeColumn(i);

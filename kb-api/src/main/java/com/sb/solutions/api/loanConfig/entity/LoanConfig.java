@@ -1,5 +1,10 @@
 package com.sb.solutions.api.loanConfig.entity;
 
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -8,11 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 
 @Entity

@@ -13,9 +13,7 @@ public class UploadDir {
     public static String userProfile = "images/userProfile/";
     public static String userSignature = "images/userSignature/";
 
-    public static String initialDocument= "images/";
-
-
+    public static String initialDocument = "images/";
 
 
 }

@@ -1,14 +1,15 @@
 package com.sb.solutions.api.memo.repository.specification;
 
-import com.sb.solutions.api.memo.entity.Memo;
-import com.sb.solutions.api.memo.enums.Stage;
-import com.sb.solutions.core.enums.Status;
-import org.springframework.data.jpa.domain.Specification;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.sb.solutions.api.memo.entity.Memo;
+import com.sb.solutions.api.memo.enums.Stage;
+import com.sb.solutions.core.enums.Status;
 
 public class MemoSpec implements Specification<Memo> {
 
@@ -32,7 +33,7 @@ public class MemoSpec implements Specification<Memo> {
 
     @Override
     public Predicate toPredicate(Root<Memo> root, CriteriaQuery<?> criteriaQuery,
-                                 CriteriaBuilder criteriaBuilder) {
+        CriteriaBuilder criteriaBuilder) {
 
         switch (property) {
             case FILTER_BY_SUBJECT:

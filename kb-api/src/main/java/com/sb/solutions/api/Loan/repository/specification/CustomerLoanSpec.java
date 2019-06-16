@@ -1,13 +1,14 @@
 package com.sb.solutions.api.Loan.repository.specification;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.core.enums.DocStatus;
-import org.springframework.data.jpa.domain.Specification;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.core.enums.DocStatus;
 
 /**
  * @author Rujan Maharjan on 6/8/2019
@@ -27,14 +28,16 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
 
     @Override
-    public Predicate toPredicate(Root<CustomerLoan> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<CustomerLoan> root, CriteriaQuery<?> criteriaQuery,
+        CriteriaBuilder criteriaBuilder) {
         switch (property) {
 
             case FILTER_BY_DOC_STATUS:
                 return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
 
             case FILTER_BY_LOAN:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
+                return criteriaBuilder
+                    .and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
             default:
                 return null;
         }

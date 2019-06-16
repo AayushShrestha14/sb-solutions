@@ -1,5 +1,10 @@
 package com.sb.solutions.api.segments.segment.entity;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.segments.subSegment.entity.SubSegment;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -8,11 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
 
 @Entity
 @Data
@@ -26,7 +26,7 @@ public class Segment extends BaseEntity<Long> {
     private Status status;
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "segment")
+        cascade = CascadeType.ALL,
+        mappedBy = "segment")
     private SubSegment subSegment;
 }

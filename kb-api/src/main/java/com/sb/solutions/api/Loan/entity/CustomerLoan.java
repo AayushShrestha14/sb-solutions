@@ -1,5 +1,16 @@
 package com.sb.solutions.api.Loan.entity;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,12 +29,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Rujan Maharjan on 6/4/2019
  */
@@ -35,14 +40,14 @@ import java.util.Map;
 public class CustomerLoan extends BaseEntity<Long> {
 
     @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Customer customerInfo;
 
     @OneToOne
     private LoanConfig loan;
 
     @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private EntityInfo entityInfo;
 
     private LoanType loanType;
@@ -72,7 +77,8 @@ public class CustomerLoan extends BaseEntity<Long> {
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             try {
-                this.previousList = objectMapper.readValue(this.getPreviousStageList(), typeFactory.constructCollectionType(List.class, Map.class));
+                this.previousList = objectMapper.readValue(this.getPreviousStageList(),
+                    typeFactory.constructCollectionType(List.class, Map.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }

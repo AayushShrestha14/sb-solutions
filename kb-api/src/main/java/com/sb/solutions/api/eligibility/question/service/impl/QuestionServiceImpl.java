@@ -1,5 +1,17 @@
 package com.sb.solutions.api.eligibility.question.service.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
 import com.sb.solutions.api.eligibility.answer.service.AnswerService;
 import com.sb.solutions.api.eligibility.question.entity.Question;
@@ -9,17 +21,6 @@ import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 @Service
 @Transactional
@@ -33,6 +34,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerService answerService;
 
     private final LoanConfigService loanConfigService;
+
     @Override
     public List<Question> findAll() {
         return questionRepository.findAll();
@@ -63,12 +65,13 @@ public class QuestionServiceImpl implements QuestionService {
             question.getAnswers().forEach(answer -> answer.setQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
             savedQuestion.setMaximumPoints(question.getAnswers().stream()
-                    .map(Answer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
+                .map(Answer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
         LoanConfig loanConfig = loanConfigService.findOne(savedQuestions.stream()
-                .map(Question::getLoanConfig).distinct().findAny().orElse(null).getId());
-        loanConfig.setTotalPoints(loanConfig.getTotalPoints() + savedQuestions.stream().map(Question::getMaximumPoints)
+            .map(Question::getLoanConfig).distinct().findAny().orElse(null).getId());
+        loanConfig.setTotalPoints(
+            loanConfig.getTotalPoints() + savedQuestions.stream().map(Question::getMaximumPoints)
                 .mapToLong(Long::longValue).sum());
         loanConfigService.save(loanConfig);
         return savedQuestions;
@@ -91,12 +94,13 @@ public class QuestionServiceImpl implements QuestionService {
         }
         final List<Answer> updatedAnswers = answerService.update(answers, updatedQuestion);
         updatedQuestion.setMaximumPoints(updatedAnswers.stream().map(Answer::getPoints)
-                .max(Comparator.comparing(Long::valueOf)).orElse(0L));
+            .max(Comparator.comparing(Long::valueOf)).orElse(0L));
         updatedQuestion.setAnswers(updatedAnswers);
         updatedQuestion = questionRepository.save(updatedQuestion);
         LoanConfig loanConfig = loanConfigService.findOne(updatedQuestion.getLoanConfig().getId());
         List<Question> allQuestions = findByLoanConfigId(loanConfig.getId());
-        loanConfig.setTotalPoints(allQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
+        loanConfig.setTotalPoints(
+            allQuestions.stream().map(Question::getMaximumPoints).mapToLong(Long::longValue).sum());
         loanConfigService.save(loanConfig);
         return updatedQuestion;
     }

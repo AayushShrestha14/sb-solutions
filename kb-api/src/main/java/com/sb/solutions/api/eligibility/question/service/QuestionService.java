@@ -1,9 +1,9 @@
 package com.sb.solutions.api.eligibility.question.service;
 
+import java.util.List;
+
 import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.core.service.BaseService;
-
-import java.util.List;
 
 public interface QuestionService extends BaseService<Question> {
 

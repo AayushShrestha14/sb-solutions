@@ -1,22 +1,24 @@
 package com.sb.solutions.api.sector.sector.service;
 
-import com.sb.solutions.api.sector.sector.entity.Sector;
-import com.sb.solutions.api.sector.sector.repository.SectorRepository;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.api.sector.sector.entity.Sector;
+import com.sb.solutions.api.sector.sector.repository.SectorRepository;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class SectorServiceImpl implements SectorService {
+
     private final SectorRepository sectorRepository;
 
     @Override

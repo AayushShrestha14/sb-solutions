@@ -60,7 +60,7 @@ public class Utility {
         return null;
     }
 
-    public String randomStringGenerator(int length){
+    public String randomStringGenerator(int length) {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();

@@ -6,8 +6,9 @@ import java.util.Map;
  * Created by Rujan Maharjan on 3/4/2019.
  */
 public class CsvHeader {
+
     private String header;
-    private Map<String,Object> map;
+    private Map<String, Object> map;
 
     public Map<String, Object> getMap() {
         return map;
@@ -20,7 +21,6 @@ public class CsvHeader {
     public CsvHeader(String header) {
         this.header = header;
     }
-
 
 
     public CsvHeader() {

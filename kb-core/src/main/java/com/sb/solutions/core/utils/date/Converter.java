@@ -1,14 +1,15 @@
-package com.sb.solutions.core.utils.NepaliDateConvertor;
-
-import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.DurationFieldType;
+package com.sb.solutions.core.utils.date;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.DurationFieldType;
+
+import lombok.NoArgsConstructor;
 
 /**
  * @author Rujan Maharjan on 6/7/2019
@@ -27,14 +28,14 @@ public class Converter {
     public static final int START_NEPALI_DAY = 1;
 
 
-
     /*
         English units start with e
         Nepali units start with n
     */
     public NepaliDate getNepaliDate(int eYear, int eMonth, int eDay) {
         int nDay = START_NEPALI_DAY, nMonth = START_NEPALI_MONTH, nYear = START_NEPALI_YEAR;
-        DateTime start = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0, 0);
+        DateTime start = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0,
+            0);
         DateTime end = new DateTime(eYear, eMonth, eDay, 0, 0);
         int deltaDays = Days.daysBetween(start, end).getDays();
         NepaliDate nepaliDate = new NepaliDate();
@@ -80,7 +81,8 @@ public class Converter {
             }
         }
 
-        DateTime dateTime = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0 , 0);
+        DateTime dateTime = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY,
+            0, 0);
         return new EnglishDate(dateTime.withFieldAdded(DurationFieldType.days(), deltaDays));
     }
 
@@ -96,7 +98,7 @@ public class Converter {
         int weekIndex = EnglishDate.getWeekIndex(nWeekDay);
         for (int i = nDay; i > 0; i--) {
             nepaliDates.add(new NepaliDate(nYear, nMonth, i,
-                    EnglishDate.WEEK_DAYS[weekIndex - 1]));
+                EnglishDate.WEEK_DAYS[weekIndex - 1]));
             if (weekIndex > 1) {
                 weekIndex--;
             } else {
@@ -111,7 +113,7 @@ public class Converter {
         }
         for (int i = nDay + 1; i <= temp.getDaysOf(nYear, nMonth); i++) {
             nepaliDates.add(new NepaliDate(nYear, nMonth, i,
-                    EnglishDate.WEEK_DAYS[weekIndex - 1]));
+                EnglishDate.WEEK_DAYS[weekIndex - 1]));
             if (weekIndex < 7) {
                 weekIndex++;
             } else {

@@ -1,13 +1,4 @@
-package com.sb.solutions.core.utils.uploadFile;
-
-import com.sb.solutions.core.constant.FilePath;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.RestResponseDto;
-import org.apache.maven.shared.utils.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
+package com.sb.solutions.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.maven.shared.utils.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sb.solutions.core.constant.FilePath;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.RestResponseDto;
 
 public class FileUploadUtils {
 
@@ -31,7 +32,7 @@ public class FileUploadUtils {
         }
 
         try {
-            byte[] bytes = multipartFile.getBytes();
+            final byte[] bytes = multipartFile.getBytes();
             if (type.equals("profile")) {
                 url = filePath.getOSPath() + UploadDir.userProfile;
             } else if (type.equals("signature")) {
@@ -57,7 +58,8 @@ public class FileUploadUtils {
         }
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id,
+        String name, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
@@ -66,7 +68,7 @@ public class FileUploadUtils {
         }
 
         try {
-            byte[] bytes = multipartFile.getBytes();
+            final byte[] bytes = multipartFile.getBytes();
 
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
 
@@ -74,7 +76,8 @@ public class FileUploadUtils {
             if (!Files.exists(path)) {
                 new File(returnUrl).mkdirs();
             }
-            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
+                .toLowerCase();
             url = returnUrl + name + "_" + documentName + "." + fileExtension;
             path = Paths.get(url);
             Files.write(path, bytes);

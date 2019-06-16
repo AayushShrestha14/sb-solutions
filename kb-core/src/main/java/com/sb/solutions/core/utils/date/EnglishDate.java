@@ -1,9 +1,9 @@
-package com.sb.solutions.core.utils.NepaliDateConvertor;
+package com.sb.solutions.core.utils.date;
 
-
-import org.joda.time.DateTime;
 
 import java.util.Arrays;
+
+import org.joda.time.DateTime;
 
 /**
  * @author Rujan Maharjan on 6/7/2019
@@ -11,14 +11,13 @@ import java.util.Arrays;
 public class EnglishDate {
 
     public static final String WEEK_DAYS[] = {"Sunday", "Monday", "Tuesday",
-            "Wednesday", "Thursday", "Friday", "Saturday"};
+        "Wednesday", "Thursday", "Friday", "Saturday"};
 
     private DateTime englishDate;
 
     public EnglishDate(DateTime englishDate) {
         this.englishDate = englishDate;
     }
-
 
 
     public int getYear() {
@@ -39,7 +38,7 @@ public class EnglishDate {
 
     public String toString() {
         return englishDate.getYear() + " / " + englishDate.getMonthOfYear() + " / " +
-                englishDate.getDayOfMonth() + " " + WEEK_DAYS[englishDate.getDayOfWeek()];
+            englishDate.getDayOfMonth() + " " + WEEK_DAYS[englishDate.getDayOfWeek()];
     }
 
     public static int getWeekIndex(String weekDay) {

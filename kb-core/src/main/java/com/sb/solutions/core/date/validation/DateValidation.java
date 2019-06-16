@@ -1,15 +1,17 @@
 package com.sb.solutions.core.date.validation;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Component
 @Data
 @NoArgsConstructor
 public class DateValidation {
+
     public boolean checkDate(Date date) {
         if (date.before(new Date())) {
             return true;

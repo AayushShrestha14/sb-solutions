@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
  * Created by bishallama on 4/26/2018.
  */
 public interface BaseHttpRepo extends JpaRepository<BaseHttp, Integer> {
+
     @Query(value = "select base_url from base_http where flag = 1", nativeQuery = true)
     public String baseUrl();
 

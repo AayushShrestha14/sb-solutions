@@ -1,16 +1,17 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.service.UserService;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
