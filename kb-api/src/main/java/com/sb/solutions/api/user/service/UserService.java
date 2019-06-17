@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,9 +29,7 @@ public interface UserService extends BaseService<User> ,UserDetailsService {
 
     Map<Object, Object> userStatusCount();
 
-    List<User>  findByRoleId(Long id);
-
-    List<User> findByRoleAndBranch(Long roleId,Branch branchId);
+    User findByRoleAndBranch(Long roleId,Branch branchId);
 
     String csv(SearchDto searchDto);
 
