@@ -67,18 +67,18 @@ public class FileUploadUtils {
 
         try {
             byte[] bytes = multipartFile.getBytes();
-
+            FilePath filePath = new FilePath();
+            url = filePath.getOSPath()+UploadDir.initialDocument+ "customer_" + id + "/" + type + "/";
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-
             Path path = Paths.get(returnUrl);
             if (!Files.exists(path)) {
-                new File(returnUrl).mkdirs();
+                new File(url).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            url = returnUrl + name + "_" + documentName + "." + fileExtension;
+            url = url + name + "_" + documentName + "." + fileExtension;
             path = Paths.get(url);
             Files.write(path, bytes);
-            return new RestResponseDto().successModel(url);
+            return new RestResponseDto().successModel(returnUrl);
         } catch (IOException e) {
             log.error("Error while saving file", e);
             return new RestResponseDto().failureModel("Fail");
