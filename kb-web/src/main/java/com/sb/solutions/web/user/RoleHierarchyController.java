@@ -7,6 +7,13 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.web.user.dto.RoleHierarchyDto;
 import com.sb.solutions.web.user.mapper.RoleHierarchyMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 5/13/2019

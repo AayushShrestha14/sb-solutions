@@ -4,13 +4,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
@@ -52,10 +46,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        System.out.println("here");
-        if (profilePath != null) {
-            user.setProfilePicture(profilePath);
-            profilePath = null;
+        if (profiePath != null) {
+            user.setProfilePicture(profiePath);
+            profiePath = null;
         }
         if (signaturePath != null) {
             user.setSignatureImage(signaturePath);

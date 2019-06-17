@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.basicInfo.customer.entity.Customer;
@@ -18,13 +17,19 @@ import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Priority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -34,6 +39,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class CustomerLoan extends BaseEntity<Long> {
 
     @ManyToOne(cascade = {
@@ -72,10 +78,12 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private Boolean isValidated = false;
 
+    @Transient
+    private List distinctPreviousList;
+
     public List getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -88,6 +96,21 @@ public class CustomerLoan extends BaseEntity<Long> {
             this.previousList = new ArrayList();
         }
         return this.previousList;
+    }
+
+    public List getDistinctPreviousList() {
+        Collection<LoanStage> list = this.getPreviousList() == null || this.getPreviousList().isEmpty() ? new ArrayList<>() : this.getPreviousList();
+
+        return list.stream()
+                .filter(distinctByKey(p -> p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId()))
+                .collect(Collectors.toList());
+
+    }
+
+    //Utility function
+    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 

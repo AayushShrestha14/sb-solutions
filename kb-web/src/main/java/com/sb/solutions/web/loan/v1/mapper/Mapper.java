@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
@@ -27,12 +27,15 @@ import java.util.Map;
 @Component
 public class Mapper {
 
-    @Autowired
-    StageMapper stageMapper;
 
-    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) throws InvocationTargetException, IllegalAccessException {
+    private final StageMapper stageMapper;
+
+    public Mapper(@Autowired StageMapper stageMapper) {
+        this.stageMapper = stageMapper;
+    }
+
+    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser){
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         customerLoan.setLoanType(LoanType.NEW_LOAN);
@@ -63,15 +66,15 @@ public class Mapper {
 
         customerLoan.setPreviousStageList(previousListTemp.toString());
 
+        customerLoan.setDocumentStatus(loanActionDto.getDocumentStatus());
+
 
         StageDto currentStage = objectMapper.convertValue(loanStage, StageDto.class);
 
-        try {
-            UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
-            loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+
+        UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
+        loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
+
 
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
@@ -80,9 +83,18 @@ public class Mapper {
     }
 
 
-    public LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) {
+        if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
+                currentStage.getDocAction().equals(DocAction.APPROVED) ||
+                currentStage.getDocAction().equals(DocAction.REJECT)) {
+            throw new RuntimeException("Cant Perform the action");
+        }
+        if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
+            if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
+                throw new RuntimeException("Cant Perform the action");
+            }
+        }
+        return stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
 
-        LoanStage s = stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
-        return s;
     }
 }

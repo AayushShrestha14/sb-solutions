@@ -6,7 +6,6 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
-import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,36 +31,32 @@ public class CustomerLoanController {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
-    private GlobalExceptionHandler globalExceptionHandler;
+    private final CustomerLoanService service;
 
+    private final UserService userService;
 
-    private CustomerLoanService service;
+    private final Mapper mapper;
 
-    private UserService userService;
+    public CustomerLoanController(
+            @Autowired CustomerLoanService service,
+            @Autowired Mapper mapper,
+            @Autowired UserService userService) {
 
-    private Mapper mapper;
-
-    public CustomerLoanController(@Autowired GlobalExceptionHandler globalExceptionHandler,
-                                  @Autowired CustomerLoanService service,
-                                  @Autowired Mapper mapper,
-                                  @Autowired UserService userService) {
-        this.globalExceptionHandler = globalExceptionHandler;
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
     }
 
     @PostMapping(value = "/action")
-    public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto, BindingResult bindingResult) throws InvocationTargetException, IllegalAccessException {
-        globalExceptionHandler.constraintValidation(bindingResult);
-      final CustomerLoan c = mapper.ActionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()), userService.getAuthenticated());
+    public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto) {
+        final CustomerLoan c = mapper.ActionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()), userService.getAuthenticated());
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
-        globalExceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan, BindingResult bindingResult) {
+
         logger.debug("saving Customer Loan {}", customerLoan);
 
         return new RestResponseDto().successModel(service.save(customerLoan));

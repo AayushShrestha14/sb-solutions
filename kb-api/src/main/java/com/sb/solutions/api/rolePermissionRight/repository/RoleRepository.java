@@ -2,6 +2,8 @@ package com.sb.solutions.api.rolePermissionRight.repository;
 
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,5 +32,10 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.username from User u where r.createdBy=u.id),(SELECT u.username from User u where r.modifiedBy=u.id),r.roleType) from Role r")
     List<Role>  findAll();
+
+    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Role c WHERE c.roleType = :roleType")
+    boolean chkByRoleType(@Param("roleType") RoleType roleType);
+
+    List<Role>  getByRoleTypeAndStatus(RoleType roleType,Status status);
 
 }
