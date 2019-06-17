@@ -41,10 +41,7 @@ public class FileUploadUtils {
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
-            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//dd/MM/yyyy
-            Date now = new Date();
-            String strDate = sdfDate.format(now);
-            String imagePath = url + strDate + multipartFile.getOriginalFilename();
+            String imagePath = url + System.currentTimeMillis() + "." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
             path = Paths.get(FilePath.getOSPath() + imagePath);
             Files.write(path, bytes);
             System.out.println(imagePath);
@@ -100,13 +97,13 @@ public class FileUploadUtils {
             }
             String imagePath;
             if (type.equals("citizen")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen.jpg";
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
             } else if (type.equals("passport")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport.jpg";
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
             } else if (type.equals("id")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_id.jpg";
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
             } else if (type.equals("photo")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo.jpg";
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
