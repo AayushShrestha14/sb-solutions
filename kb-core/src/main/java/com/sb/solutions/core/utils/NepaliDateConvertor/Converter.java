@@ -1,14 +1,9 @@
 package com.sb.solutions.core.utils.NepaliDateConvertor;
 
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.DurationFieldType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 /**
  * @author Rujan Maharjan on 6/7/2019
@@ -27,18 +22,19 @@ public class Converter {
     public static final int START_NEPALI_DAY = 1;
 
 
-
     /*
         English units start with e
         Nepali units start with n
     */
     public NepaliDate getNepaliDate(int eYear, int eMonth, int eDay) {
         int nDay = START_NEPALI_DAY, nMonth = START_NEPALI_MONTH, nYear = START_NEPALI_YEAR;
-        DateTime start = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0, 0);
-        DateTime end = new DateTime(eYear, eMonth, eDay, 0, 0);
-        int deltaDays = Days.daysBetween(start, end).getDays();
+        Calendar start = Calendar.getInstance();
+        start.set(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY);
+        Calendar end = Calendar.getInstance();
+        end.set(eYear, eMonth, eDay);
+        int tempDeltaDays = Math.toIntExact(ChronoUnit.DAYS.between(start.toInstant(), end.toInstant()))+1;
         NepaliDate nepaliDate = new NepaliDate();
-        for (int i = 0; i < deltaDays; i++) {
+        for (int i = 0; i < tempDeltaDays; i++) {
             if (nDay < nepaliDate.getDaysOf(nYear, nMonth)) {
                 nDay++;
             } else if (nMonth < 12) {
@@ -51,38 +47,40 @@ public class Converter {
             }
         }
 
-        String week_day = "" + end.dayOfWeek().getAsText();
+
+        String week_day = "" + end.get(Calendar.DAY_OF_WEEK);
+        System.out.println(week_day);
         return new NepaliDate(nYear, nMonth, nDay, week_day);
     }
 
 
-    public EnglishDate getEnglishDate(int nYear, int nMonth, int nDay) {
-        int l_day = START_NEPALI_DAY, l_month = START_NEPALI_MONTH, l_year = START_NEPALI_YEAR;
-        int deltaDays = 0;
-        boolean isReached = false;
-        NepaliDate nepaliDate = new NepaliDate();
-        while (!isReached) {
-            if (nYear == l_year && nMonth == l_month && nDay == l_day) {
-                isReached = true;
-                deltaDays--;
-            }
-            deltaDays++;
-            if (l_day < nepaliDate.getDaysOf(l_year, l_month)) {
-                l_day++;
-            } else if (l_month < 12) {
-                l_day = 1;
-                l_month++;
-            } else if (l_month == 12) {
-                l_year++;
-                l_month = 1;
-                l_day = 1;
-                System.out.println();
-            }
-        }
-
-        DateTime dateTime = new DateTime(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0 , 0);
-        return new EnglishDate(dateTime.withFieldAdded(DurationFieldType.days(), deltaDays));
-    }
+//    public EnglishDate getEnglishDate(int nYear, int nMonth, int nDay) {
+//        int l_day = START_NEPALI_DAY, l_month = START_NEPALI_MONTH, l_year = START_NEPALI_YEAR;
+//        int deltaDays = 0;
+//        boolean isReached = false;
+//        NepaliDate nepaliDate = new NepaliDate();
+//        while (!isReached) {
+//            if (nYear == l_year && nMonth == l_month && nDay == l_day) {
+//                isReached = true;
+//                deltaDays--;
+//            }
+//            deltaDays++;
+//            if (l_day < nepaliDate.getDaysOf(l_year, l_month)) {
+//                l_day++;
+//            } else if (l_month < 12) {
+//                l_day = 1;
+//                l_month++;
+//            } else if (l_month == 12) {
+//                l_year++;
+//                l_month = 1;
+//                l_day = 1;
+//                System.out.println();
+//            }
+//        }
+//
+//        Date Date = new Date(START_ENGLISH_YEAR, START_ENGLISH_MONTH, START_ENGLISH_DAY, 0 , 0);
+//        return new EnglishDate(Date.withFieldAdded(DurationFieldType.days(), deltaDays));
+//    }
 
     public List<NepaliDate> getFullNepaliMonthOf(int eYear, int eMonth, int eDay) {
 

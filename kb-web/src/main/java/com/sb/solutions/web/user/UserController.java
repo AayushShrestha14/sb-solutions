@@ -1,5 +1,12 @@
 package com.sb.solutions.web.user;
 
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
@@ -10,12 +17,6 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Collection;
 
 
 /**
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     private String signaturePath = null;
-    private String profilePath = null;
+    private String profiePath = null;
 
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
@@ -45,10 +46,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        System.out.println("here");
-        if (profilePath != null) {
-            user.setProfilePicture(profilePath);
-            profilePath = null;
+        if (profiePath != null) {
+            user.setProfilePicture(profiePath);
+            profiePath = null;
         }
         if (signaturePath != null) {
             user.setSignatureImage(signaturePath);
@@ -93,6 +93,12 @@ public class UserController {
     @GetMapping(value = "listRole")
     public ResponseEntity<?> getRoleList() {
         return new RestResponseDto().successModel(roleService.findAll());
+    }
+
+    @GetMapping(value = "/{id}/users")
+    public ResponseEntity<?> getUserList(@PathVariable Long id) {
+        User u = userService.getAuthenticated();
+        return new RestResponseDto().successModel(userService.findByRoleAndBranch(id,u.getBranch().getId()));
     }
 
 

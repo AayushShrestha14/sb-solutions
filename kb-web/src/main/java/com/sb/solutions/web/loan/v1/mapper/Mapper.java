@@ -2,16 +2,19 @@ package com.sb.solutions.web.loan.v1.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.service.CustomerLoanService;
+import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
+import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.web.loan.v1.dto.LoanActionDto;
-import lombok.AllArgsConstructor;
+import com.sb.solutions.web.common.stage.dto.StageDto;
+import com.sb.solutions.web.common.stage.mapper.StageMapper;
+import com.sb.solutions.web.user.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,27 +26,41 @@ import java.util.Map;
  */
 
 @Component
-@AllArgsConstructor
 public class Mapper {
 
-    private final CustomerLoanService customerLoanService;
-    private final UserService userService;
 
+    private final StageMapper stageMapper;
 
-    public CustomerLoan ActionMapper(LoanActionDto loanActionDto) {
+    private final ApprovalLimitService approvalLimitService;
 
-        CustomerLoan customerLoan = customerLoanService.findOne(loanActionDto.getCustomerId());
-        User currentUser = userService.getAuthenticated();
-        User receivedBy = userService.findByRoleAndBranch(loanActionDto.getToUser(), currentUser.getBranch());
+    public Mapper(@Autowired StageMapper stageMapper,
+                  @Autowired ApprovalLimitService approvalLimitService) {
+        this.stageMapper = stageMapper;
+        this.approvalLimitService = approvalLimitService;
+    }
+
+    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
+        if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
+            ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(customerLoan.getLoan().getId(), currentUser.getRole().getId());
+            if (approvalLimit == null) {
+                throw new RuntimeException("Authority Limit Error");
+            }
+            if (customerLoan.getDmsLoanFile() != null) {
+                if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
+                    throw new RuntimeException("Authority Limit Error");
+                }
+            }
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();
         if (customerLoan.getCurrentStage() != null) {
             loanStage = customerLoan.getCurrentStage();
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
             Map<String, String> tempLoanStage = objectMapper.convertValue(customerLoan.getCurrentStage(), Map.class);
             try {
                 previousList.forEach(p -> {
@@ -65,21 +82,35 @@ public class Mapper {
 
         customerLoan.setPreviousStageList(previousListTemp.toString());
 
-        loanStage.setDocAction(loanActionDto.getDocAction());
+        customerLoan.setDocumentStatus(loanActionDto.getDocumentStatus());
 
-        loanStage.setFromUser(currentUser);
-        loanStage.setToUser(receivedBy);
-        loanStage.setComment(loanActionDto.getComment() );
+
+        StageDto currentStage = objectMapper.convertValue(loanStage, StageDto.class);
+
+
+        UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
+        loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
+
+
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
 
     }
 
-    public CustomerLoan loanMapper(LoanActionDto loanDto) {
-        CustomerLoan customerLoan = new CustomerLoan();
-        customerLoan = customerLoanService.findOne(loanDto.getId());
 
-        return null;
+    private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) {
+        if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
+                currentStage.getDocAction().equals(DocAction.APPROVED) ||
+                currentStage.getDocAction().equals(DocAction.REJECT)) {
+            throw new RuntimeException("Cant Perform the action");
+        }
+        if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
+            if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
+                throw new RuntimeException("Cant Perform the action");
+            }
+        }
+        return stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+
     }
 }

@@ -4,6 +4,8 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +21,16 @@ import java.util.Map;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
-    RoleRepository roleRepository;
 
-    @Autowired
-    UserService userService;
+    private final RoleRepository roleRepository;
+
+    private final UserService userService;
+
+    public RoleServiceImpl(@Autowired RoleRepository roleRepository,
+                           @Autowired UserService userService) {
+        this.roleRepository = roleRepository;
+        this.userService = userService;
+    }
 
     @Override
     public List<Role> findAll() {
@@ -63,6 +70,17 @@ public class RoleServiceImpl implements RoleService {
         User u = userService.getAuthenticated();
         Role r = u.getRole();
         return roleRepository.activeRole(r.getId());
+    }
+
+    @Override
+    public Boolean chkMaker() {
+        return roleRepository.chkByRoleType(RoleType.MAKER);
+
+    }
+
+    @Override
+    public List<Role> getApproval() {
+        return roleRepository.getByRoleTypeAndStatus(RoleType.APPROVAL, Status.ACTIVE);
     }
 
 

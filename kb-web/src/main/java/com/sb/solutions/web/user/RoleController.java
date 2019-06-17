@@ -71,4 +71,16 @@ public class RoleController {
     public ResponseEntity<?> getActiveRole() {
         return new RestResponseDto().successModel(roleService.activeRole());
     }
+
+
+    @GetMapping(value = "chkMaker")
+    public ResponseEntity<?> chkMaker(){
+        return new RestResponseDto().successModel(roleService.chkMaker());
+    }
+
+
+    @GetMapping(value = "getApproval")
+    public ResponseEntity<?> getApproval(){
+        return new RestResponseDto().successModel(roleService.getApproval());
+    }
 }
