@@ -15,14 +15,6 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
         jsr250Enabled = true)
 public class  WebConfig implements WebMvcConfigurer {
 
-//    @Autowired
-//    RoleAndPermisionInterceptor roleAndPermisionInterceptor;
-//
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(roleAndPermisionInterceptor);
-//    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String myExternalFilePath = "file:///" + FilePath.getOSPath() + "/images/";
@@ -46,10 +38,4 @@ public class  WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }
-/*
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-    }*/
-
 }

@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User getUsersByUsername(String username);
 
-    List<User> findByRoleIdAndBranch(Long role, Branch branch);
+    User findByRoleIdAndBranch(Long role, Branch branch);
 
     List<User> findByRoleId(Long roleId);
 

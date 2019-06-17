@@ -24,9 +24,9 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/v1/user")
 public class UserController {
-    private final UserService userService;
-    private RoleService roleService;
 
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
     public UserController(UserService userService, RoleService roleService) {
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     private String signaturePath = null;
-    private String profiePath = null;
+    private String profilePath = null;
 
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
@@ -46,9 +46,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         System.out.println("here");
-        if (profiePath != null) {
-            user.setProfilePicture(profiePath);
-            profiePath = null;
+        if (profilePath != null) {
+            user.setProfilePicture(profilePath);
+            profilePath = null;
         }
         if (signaturePath != null) {
             user.setSignatureImage(signaturePath);
@@ -60,45 +60,39 @@ public class UserController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
-                                          @RequestParam("type") String type) {
+        @RequestParam("type") String type) {
         System.out.println();
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
-                                    @RequestParam("page") int page, @RequestParam("size") int size) {
+        @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-                .successModel(userService.findAllPageable(searchDto, PaginationUtils
-                        .pageable(page, size)));
+            .successModel(userService.findAllPageable(searchDto, PaginationUtils
+                .pageable(page, size)));
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
-    public ResponseEntity<?> getUserListByRole(@RequestBody Collection<Role> roles,
-                                           @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-                .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
+            .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")
     public ResponseEntity<?> getRoleList() {
         return new RestResponseDto().successModel(roleService.findAll());
-    }
-
-    @GetMapping(value = "/{id}/users")
-    public ResponseEntity<?> getUserList(@PathVariable Long id) {
-        User u = userService.getAuthenticated();
-        return new RestResponseDto().successModel(userService.findByRoleAndBranch(id,u.getBranch()));
     }
 
 

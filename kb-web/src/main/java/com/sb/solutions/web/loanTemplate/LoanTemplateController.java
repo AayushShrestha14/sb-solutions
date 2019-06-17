@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +14,6 @@ import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import com.sb.solutions.api.loanTemplate.service.LoanTemplateService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,17 +26,17 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping("/v1/loan-template")
 public class LoanTemplateController {
 
-    @Autowired
-    LoanTemplateService loanTemplateService;
+    private final LoanTemplateService loanTemplateService;
 
-    @Autowired
-    GlobalExceptionHandler globalExceptionHandler;
+    public LoanTemplateController(
+        @Autowired LoanTemplateService loanTemplateService) {
+        this.loanTemplateService = loanTemplateService;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveTemplate(@Valid @RequestBody LoanTemplate loanTemplate,
-        BindingResult bindingResult) {
-        globalExceptionHandler.constraintValidation(bindingResult);
-        LoanTemplate template = loanTemplateService.save(loanTemplate);
+    public ResponseEntity<?> saveTemplate(@Valid @RequestBody LoanTemplate loanTemplate) {
+        final LoanTemplate template = loanTemplateService.save(loanTemplate);
+
         if (template == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {

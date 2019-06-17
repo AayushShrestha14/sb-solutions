@@ -15,4 +15,6 @@ public interface LoanConfigService extends BaseService<LoanConfig> {
     Map<Object, Object> loanStatusCount();
 
     List<LoanConfig> getAllByStatus(Status status);
+
+    List<LoanConfig> getLoanConfigsActivatedForEligbility();
 }

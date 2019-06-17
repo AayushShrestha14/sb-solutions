@@ -1,17 +1,16 @@
 package com.sb.solutions.core.config.security.roleAndPermission;
 
-import com.sb.solutions.core.exception.ApiException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 4/19/2019
@@ -84,7 +83,7 @@ public class RoleAndPermissionDao {
             org.springframework.security.core.userdetails.User userDetail = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
             username = userDetail.getUsername();
         } else {
-            throw new ApiException("Invalid Token");
+            throw new RuntimeException("Invalid Token");
         }
         Map<String, Object> map = new HashMap<>();
         String query = "SELECT r.role_name from user u join role r on r.id = u.role_id where user_name = :username";

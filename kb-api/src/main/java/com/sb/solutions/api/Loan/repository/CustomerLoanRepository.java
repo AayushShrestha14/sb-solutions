@@ -16,7 +16,7 @@ import java.util.Map;
 public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long>, JpaSpecificationExecutor<CustomerLoan> {
 
 
-    List<CustomerLoan> findFirst5ByDocumentStatusAndCurrentStageToRoleIdOrderByIdDesc(DocStatus status, Long currentStageUserId);
+    List<CustomerLoan> findFirst5ByDocumentStatusOrderByIdDesc(DocStatus status);
 
     @Query(value = "select\n" +
             "(select  count(id) from customer_loan where document_status=0) pending,\n" +
