@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
+import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
@@ -15,7 +17,6 @@ import com.sb.solutions.web.user.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,26 @@ public class Mapper {
 
     private final StageMapper stageMapper;
 
-    public Mapper(@Autowired StageMapper stageMapper) {
+    private final ApprovalLimitService approvalLimitService;
+
+    public Mapper(@Autowired StageMapper stageMapper,
+                  @Autowired ApprovalLimitService approvalLimitService) {
         this.stageMapper = stageMapper;
+        this.approvalLimitService = approvalLimitService;
     }
 
-    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser){
+    public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
+        if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
+            ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(customerLoan.getLoan().getId(), currentUser.getRole().getId());
+            if (approvalLimit == null) {
+                throw new RuntimeException("Authority Limit Error");
+            }
+            if (customerLoan.getDmsLoanFile() != null) {
+                if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
+                    throw new RuntimeException("Authority Limit Error");
+                }
+            }
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
