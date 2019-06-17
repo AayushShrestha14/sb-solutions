@@ -80,7 +80,7 @@ public class CustomerLoanController {
                 .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
-    @GetMapping(value = "/count")
+    @GetMapping(value = "/statusCount")
     public ResponseEntity<?> countLoanStatus() {
         return new RestResponseDto().successModel(service.statusCount());
     }
