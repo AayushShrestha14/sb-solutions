@@ -7,6 +7,7 @@ import com.sb.solutions.api.openingForm.entity.OpeningCustomer;
 import com.sb.solutions.api.openingForm.entity.OpeningCustomerRelative;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
+import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
@@ -35,7 +36,8 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     private JsonConverter jsonConverter = new JsonConverter();
 
     @Autowired
-    public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository, DateValidation dateValidation, BranchService branchService) {
+    public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository, DateValidation dateValidation,
+                                  BranchService branchService) {
         this.openingFormRepository = openingFormRepository;
         this.dateValidation = dateValidation;
         this.branchService = branchService;
@@ -49,7 +51,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm findOne(Long id) {
         OpeningForm openingForm = openingFormRepository.getOne(id);
-        openingForm.setOpeningAccount(jsonConverter.convertToJson(openingForm.getCustomerDetailsJson(), OpeningAccount.class));
+        openingForm.setOpeningAccount(jsonConverter.convertToJson(FilePath.getOSPath() + openingForm.getCustomerDetailsJson(), OpeningAccount.class));
         return openingForm;
     }
 
@@ -162,12 +164,12 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     public String writeJsonFile(String url, OpeningForm openingForm) {
         String jsonPath;
-        Path path = Paths.get(url);
+        Path path = Paths.get(FilePath.getOSPath() + url);
         if (!Files.exists(path)) {
-            new File(url).mkdirs();
+            new File(FilePath.getOSPath() + url).mkdirs();
         }
         jsonPath = url + System.currentTimeMillis() + ".json";
-        File file = new File(jsonPath);
+        File file = new File(FilePath.getOSPath() + jsonPath);
         file.getParentFile().mkdirs();
         FileWriter writer = null;
         try {
@@ -192,7 +194,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public String updateJsonFile(String url, OpeningForm openingForm) {
         String jsonPath = url;
         try {
-            FileWriter writer = new FileWriter(url);
+            FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
             try {
                 writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
             } catch (IOException e) {
@@ -205,7 +207,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 e.printStackTrace();
             }
         } catch (Exception e) {
-            jsonPath = writeJsonFile(url, openingForm);
+            jsonPath = writeJsonFile(UploadDir.accountRequest + openingForm.getBranch().getName() + "/", openingForm);
             return jsonPath;
         }
         return null;
