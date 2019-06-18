@@ -1,11 +1,14 @@
-package com.sb.solutions.web.dmsLoanFile.v1;
+package com.sb.solutions.web.DmsloanFile.v1;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.sb.solutions.core.constant.FilePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +98,8 @@ public class DmsLoanFileController {
     @GetMapping("/download")
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path,
                                           HttpServletResponse response) throws FileNotFoundException {
+        Path paths = Paths.get(FilePath.getOSPath());
+        path = paths + path;
         File file = new File(path);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();

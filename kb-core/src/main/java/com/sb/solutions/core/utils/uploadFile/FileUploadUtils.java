@@ -67,12 +67,13 @@ public class FileUploadUtils {
             FilePath filePath = new FilePath();
             url = FilePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-            Path path = Paths.get(returnUrl);
+            Path path = Paths.get(url);
             if (!Files.exists(path)) {
                 new File(url).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
             url = url + name + "_" + documentName + "." + fileExtension;
+            returnUrl = returnUrl+ name + "_" + documentName + "." + fileExtension;
             path = Paths.get(url);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(returnUrl);
