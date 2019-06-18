@@ -31,8 +31,8 @@ public class RoleController {
     private final RoleHierarchyService roleHierarchyService;
 
     public RoleController(
-        @Autowired RoleService roleService,
-        @Autowired RoleHierarchyService roleHierarchyService) {
+            @Autowired RoleService roleService,
+            @Autowired RoleHierarchyService roleHierarchyService) {
         this.roleService = roleService;
         this.roleHierarchyService = roleHierarchyService;
     }
@@ -72,15 +72,13 @@ public class RoleController {
         return new RestResponseDto().successModel(roleService.activeRole());
     }
 
-
-    @GetMapping(value = "chkMaker")
-    public ResponseEntity<?> chkMaker(){
-        return new RestResponseDto().successModel(roleService.chkMaker());
+    @GetMapping(value = "maker")
+    public ResponseEntity<?> chkMaker() {
+        return new RestResponseDto().successModel(roleService.isMaker());
     }
 
-
     @GetMapping(value = "getApproval")
-    public ResponseEntity<?> getApproval(){
+    public ResponseEntity<?> getApproval() {
         return new RestResponseDto().successModel(roleService.getApproval());
     }
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-
     private final RoleRepository roleRepository;
 
     private final UserService userService;
@@ -44,13 +43,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role save(Role role) {
-//        User u = userService.getAuthenticated();
-//        role.setLastModifiedAt(new Date());
-//        if (role.getId() == null) {
-//            role.setCreatedBy(u);
-//        } else {
-//            role.setLastModifiedBy(u);
-//        }
         role.setRoleName(role.getRoleName().toUpperCase());
         return roleRepository.save(role);
     }
@@ -73,15 +65,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Boolean chkMaker() {
+    public boolean isMaker() {
         return roleRepository.chkByRoleType(RoleType.MAKER);
-
     }
 
     @Override
     public List<Role> getApproval() {
         return roleRepository.getByRoleTypeAndStatus(RoleType.APPROVAL, Status.ACTIVE);
     }
-
-
 }

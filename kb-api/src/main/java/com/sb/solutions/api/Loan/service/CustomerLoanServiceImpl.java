@@ -25,11 +25,7 @@ import java.util.Map;
 
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
-
-
     private final CustomerLoanRepository customerLoanRepository;
-
-
     private final UserService userService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -85,7 +81,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public Map<Object, Object> statusCount() {
+    public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
         return customerLoanRepository.statusCount(u.getRole().getId(), u.getBranch().getId());
     }
@@ -95,15 +91,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         User u = userService.getAuthenticated();
         return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().getId());
     }
+
     @Override
-    public List<Map<Object, Object>> proposedAmount() {
+    public List<Map<String, Double>> proposedAmount() {
         return customerLoanRepository.proposedAmount();
     }
 
     @Override
-    public List<Map<Object, Object>> proposedAmountByBranch(Long branchId) {
+    public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
     }
-
 }
 

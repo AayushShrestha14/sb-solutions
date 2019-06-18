@@ -14,6 +14,8 @@ import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
 import com.sb.solutions.web.user.dto.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +30,11 @@ import java.util.Map;
 @Component
 public class Mapper {
 
-
     private final StageMapper stageMapper;
 
     private final ApprovalLimitService approvalLimitService;
+    private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
+
 
     public Mapper(@Autowired StageMapper stageMapper,
                   @Autowired ApprovalLimitService approvalLimitService) {
@@ -60,7 +63,6 @@ public class Mapper {
         LoanStage loanStage = new LoanStage();
         if (customerLoan.getCurrentStage() != null) {
             loanStage = customerLoan.getCurrentStage();
-
             Map<String, String> tempLoanStage = objectMapper.convertValue(customerLoan.getCurrentStage(), Map.class);
             try {
                 previousList.forEach(p -> {
@@ -72,45 +74,35 @@ public class Mapper {
                         e.printStackTrace();
                     }
                 });
-
                 String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
-
         customerLoan.setPreviousStageList(previousListTemp.toString());
-
         customerLoan.setDocumentStatus(loanActionDto.getDocumentStatus());
-
-
         StageDto currentStage = objectMapper.convertValue(loanStage, StageDto.class);
-
-
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
         loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
-
-
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
-
     }
-
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) {
         if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
                 currentStage.getDocAction().equals(DocAction.APPROVED) ||
                 currentStage.getDocAction().equals(DocAction.REJECT)) {
-            throw new RuntimeException("Cant Perform the action");
+            logger.error("Error while performing the action");
+            throw new RuntimeException("Cannot Perform the action");
         }
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
-                throw new RuntimeException("Cant Perform the action");
+                logger.error("Error while performing the action");
+                throw new RuntimeException("Cannot Perform the action");
             }
         }
         return stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
-
     }
 }

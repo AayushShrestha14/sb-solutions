@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -57,7 +58,6 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private DocStatus documentStatus = DocStatus.PENDING;
 
-
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
@@ -79,9 +79,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Boolean isValidated = false;
 
     @Transient
-    private List distinctPreviousList;
+    private List<LoanStage> distinctPreviousList;
 
-    public List getPreviousList() {
+    public List<LoanStage> getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -98,16 +98,13 @@ public class CustomerLoan extends BaseEntity<Long> {
         return this.previousList;
     }
 
-    public List getDistinctPreviousList() {
-        Collection<LoanStage> list = this.getPreviousList() == null || this.getPreviousList().isEmpty() ? new ArrayList<>() : this.getPreviousList();
-
+    public List<LoanStage> getDistinctPreviousList() {
+        Collection<LoanStage> list = CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils.isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
         return list.stream()
                 .filter(distinctByKey(p -> p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId()))
                 .collect(Collectors.toList());
-
     }
 
-    //Utility function
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

@@ -14,13 +14,13 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
-    Map<Object, Object> statusCount();
+    Map<String, Integer> statusCount();
 
     List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status);
 
 
-    List<Map<Object, Object>> proposedAmount();
+    List<Map<String, Double>> proposedAmount();
 
-    List<Map<Object, Object>> proposedAmountByBranch(Long branchId);
+    List<Map<String, Double>> proposedAmountByBranch(Long branchId);
 
 }

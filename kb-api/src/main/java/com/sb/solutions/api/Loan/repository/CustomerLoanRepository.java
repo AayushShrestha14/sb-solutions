@@ -16,26 +16,25 @@ import java.util.Map;
  */
 public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long>, JpaSpecificationExecutor<CustomerLoan> {
 
+    List<CustomerLoan> findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(DocStatus status, Long currentStageRoleId, Long branchId);
 
-    List<CustomerLoan> findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(DocStatus status, Long currentStageRoleId,Long branchId);
+    @Query(value = "SELECT\n" +
+            "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=0 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid)) pending,\n" +
+            "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=1 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid)) Approved,\n" +
+            "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=2 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid) ) Rejected,\n" +
+            "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=3 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid) ) Closed,\n" +
+            "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE l.to_role_id IN (:id) AND cl.branch_id IN (:bid) )total\n", nativeQuery = true)
+    Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") Long bid);
 
-    @Query(value = "select\n" +
-            "(select  count(cl.id) from customer_loan cl left join loan_stage l on l.id=cl.current_stage_id where cl.document_status=0 and l.to_role_id in (:id) and cl.branch_id in (:bid)) pending,\n" +
-            "(select  count(cl.id) from customer_loan cl left join loan_stage l on l.id=cl.current_stage_id where cl.document_status=1 and l.to_role_id in (:id) and cl.branch_id in (:bid)) Approved,\n" +
-            "(select  count(cl.id) from customer_loan cl left join loan_stage l on l.id=cl.current_stage_id where cl.document_status=3 and l.to_role_id in (:id) and cl.branch_id in (:bid) ) Rejected,\n" +
-            "(select  count(cl.id) from customer_loan cl left join loan_stage l on l.id=cl.current_stage_id where cl.document_status=3 and l.to_role_id in (:id) and cl.branch_id in (:bid) ) Closed,\n" +
-            "(select  count(cl.id) from customer_loan cl left join loan_stage l on l.id=cl.current_stage_id where l.to_role_id in (:id) and cl.branch_id in (:bid) )total\n", nativeQuery = true)
-    Map<Object, Object> statusCount(@Param("id") Long id,@Param("bid") Long bid);
-
-    @Query(value = "select name, sum(proposed_amount) AS value from customer_loan c" +
-            " join dms_loan_file d on c.dms_loan_file_id = d.id" +
-            " join loan_config l on c.loan_id=l.id " +
+    @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c" +
+            " JOIN dms_loan_file d ON c.dms_loan_file_id = d.id" +
+            " JOIN loan_config l ON c.loan_id=l.id " +
             "GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<Object, Object>> proposedAmount();
+    List<Map<String, Double>> proposedAmount();
 
-    @Query(value = "select name, sum(proposed_amount) AS value from customer_loan c " +
-            "join dms_loan_file d on c.dms_loan_file_id = d.id " +
-            "join loan_config l on c.loan_id=l.id " +
-            "where c.branch_id =:branchId GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<Object, Object>> proposedAmountByBranchId(Long branchId);
+    @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c " +
+            "JOIN dms_loan_file d ON c.dms_loan_file_id = d.id " +
+            "JOIN loan_config l ON c.loan_id=l.id " +
+            "WHERE c.branch_id =:branchId GROUP BY c.loan_id", nativeQuery = true)
+    List<Map<String, Double>> proposedAmountByBranchId(Long branchId);
 }

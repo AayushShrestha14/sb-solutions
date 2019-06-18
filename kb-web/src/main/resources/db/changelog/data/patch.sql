@@ -25,7 +25,7 @@ INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status
 
 
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT******************************
-INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, rxole_id)
  VALUES (1, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  1, 1);
 
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)

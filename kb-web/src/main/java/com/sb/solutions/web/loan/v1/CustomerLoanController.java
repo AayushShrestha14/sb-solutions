@@ -17,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Rujan Maharjan on 5/10/2019

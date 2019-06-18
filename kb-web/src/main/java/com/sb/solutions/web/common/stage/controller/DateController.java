@@ -29,9 +29,8 @@ public class DateController {
 
     private DateConverter dateConverter;
 
-    @GetMapping(path = "/nepDate")
+    @GetMapping(path = "/nepali-date")
     public ResponseEntity<?> getCurrentNepDate() throws ParseException {
         return new RestResponseDto().successModel(dateConverter.getCurrentNepaliDate());
     }
-
 }

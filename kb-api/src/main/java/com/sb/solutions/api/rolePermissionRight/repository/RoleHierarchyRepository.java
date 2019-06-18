@@ -15,19 +15,16 @@ import java.util.List;
 @Repository
 public interface RoleHierarchyRepository extends JpaRepository<RoleHierarchy, Long> {
 
-    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy(r.roleOrder,r.role.roleName,r.role.id) from RoleHierarchy r   where r.roleOrder < :id and r.role.roleType <> 0 order by r.roleOrder")
+    @Query("SELECT new com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy(r.roleOrder,r.role.roleName,r.role.id) FROM RoleHierarchy r   WHERE r.roleOrder < :id AND r.role.roleType <> 0 ORDER BY r.roleOrder")
     List<RoleHierarchy> roleHierarchyByCurrentRoleForward(@Param("id") Long id);
 
-    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy(r.roleOrder,r.role.roleName,r.role.id) from RoleHierarchy r   where r.roleOrder < :id and r.role.roleType <> 0 order by r.roleOrder")
+    @Query("SELECT new com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy(r.roleOrder,r.role.roleName,r.role.id) FROM RoleHierarchy r   WHERE r.roleOrder < :id AND r.role.roleType <> 0 ORDER BY r.roleOrder")
     List<RoleHierarchy> roleHierarchyByCurrentRoleBackward(@Param("id") Long id);
 
-//    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy(r.roleOrder,r.role.roleName,r.role.id,u.id) from RoleHierarchy r join  User u on u.role.id = r.role.id  where r.roleOrder < :id  order by r.roleOrder")
-
-
-    @Query("select r from RoleHierarchy r where r.role.id=:id ")
+    @Query("SELECT r FROM RoleHierarchy r WHERE r.role.id=:id ")
     RoleHierarchy findByRole(@Param("id") Long id);
 
-    @Query("select r from RoleHierarchy r where r.role.id <> 1 order by r.roleOrder ASC ")
+    @Query("SELECT r FROM RoleHierarchy r WHERE r.role.id <> 1 ORDER BY r.roleOrder ASC ")
     List<RoleHierarchy> findAll();
 
 }
