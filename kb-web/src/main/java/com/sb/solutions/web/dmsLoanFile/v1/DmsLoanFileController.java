@@ -1,11 +1,14 @@
-package com.sb.solutions.web.dmsLoanFile.v1;
+package com.sb.solutions.web.DmsloanFile.v1;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.sb.solutions.core.constant.FilePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +46,8 @@ public class DmsLoanFileController {
     private final DmsLoanFileRepository dmsLoanFileRepository;
 
     public DmsLoanFileController(
-        @Autowired DmsLoanFileService dmsLoanFileService,
-        @Autowired DmsLoanFileRepository dmsLoanFileRepository) {
+            @Autowired DmsLoanFileService dmsLoanFileService,
+            @Autowired DmsLoanFileRepository dmsLoanFileRepository) {
         this.dmsLoanFileService = dmsLoanFileService;
         this.dmsLoanFileRepository = dmsLoanFileRepository;
     }
@@ -72,41 +75,43 @@ public class DmsLoanFileController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/list")
     public ResponseEntity<?> getPageableLoanFile(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                 @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            dmsLoanFileService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                dmsLoanFileService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping("/uploadFile")
     public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type, @RequestParam("id") int id,
-        @RequestParam("customerName") String name,
-        @RequestParam("documentName") String documentName) {
+                                            @RequestParam("type") String type, @RequestParam("id") int id,
+                                            @RequestParam("customerName") String name,
+                                            @RequestParam("documentName") String documentName) {
         return FileUploadUtils.uploadFile(multipartFile, type, id, name, documentName);
 
     }
 
     @GetMapping("/download")
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path,
-        HttpServletResponse response) throws FileNotFoundException {
+                                          HttpServletResponse response) throws FileNotFoundException {
+        Path paths = Paths.get(FilePath.getOSPath());
+        path = paths + path;
         File file = new File(path);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
-            String.format("attachment; filename=\"%s\"", file.getName()));
+                String.format("attachment; filename=\"%s\"", file.getName()));
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
 
         return ResponseEntity.ok().headers(headers)
-            .contentLength(file.length()).contentType(
-                MediaType.parseMediaType("application/txt")).<Object>body(resource);
+                .contentLength(file.length()).contentType(
+                        MediaType.parseMediaType("application/txt")).<Object>body(resource);
     }
 
 

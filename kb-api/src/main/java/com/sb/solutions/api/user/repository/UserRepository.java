@@ -1,8 +1,8 @@
 package com.sb.solutions.api.user.repository;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,8 +22,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User getUsersByUsername(String username);
 
-    User findByRoleIdAndBranch(Long role, Branch branch);
+    User getUsersByUsernameAndStatus(String username, Status status);
 
+    List<User> findByRoleIdAndBranchId(Long role, Long branch);
+
+    List<User> findByRoleId(Long roleId);
 
 
     Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
@@ -38,7 +41,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> userCsvFilter(@Param("name") String name);
 
     @Query(value = "select ifNull(a.type,'a') from user u join role r left join role_permission_rights rpr on rpr.role_id = r.id left join role_permission_rights_api_rights rprar on rprar.role_permission_rights_id=rpr.id left join url_api a on rprar.api_rights_id = a.id where r.id = :id\n" +
-            "and u.user_name=:username and a.type is not null;",nativeQuery = true)
-    List<Object> userApiAuthorities(@Param("id")Long id,@Param("username")String username);
+            "and u.user_name=:username and a.type is not null;", nativeQuery = true)
+    List<Object> userApiAuthorities(@Param("id") Long id, @Param("username") String username);
 }
 
