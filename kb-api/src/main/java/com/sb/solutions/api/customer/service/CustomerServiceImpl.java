@@ -29,9 +29,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer save(Customer customer) {
-        if(customer.getId() == null){
-            customer.setStatus(Status.ACTIVE);
-        }
         return customerRepository.save(customer);
     }
 

@@ -1056,32 +1056,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="5-create-kyc" author="david">
-        <createTable tableName="kyc">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_kyc_created_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_kyc_modified_by_id"
-                             referencedTableName="user"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-    </changeSet>
 
     <changeSet id="5-create-customer" author="david">
         <createTable tableName="customer">
@@ -1119,12 +1093,6 @@
             </column>
             <column name="citizenship_issued_date" type="DATE"/>
             <column name="issued_place" type="VARCHAR(256)"/>
-            <column name="kyc_id" type="BIGINT">
-                <constraints nullable="false"
-                             foreignKeyName="fk_customer_kyc_id"
-                             referencedTableName="kyc"
-                             referencedColumnNames="id"/>
-            </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_created_by_id"
@@ -1228,9 +1196,9 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="5-kyc-customer-relatives" author="david">
-        <createTable tableName="kyc_customer_relatives">
-            <column name="kyc_id" type="BIGINT">
+    <changeSet id="5-customer-customer-relatives" author="david">
+        <createTable tableName="customer_customer_relatives">
+            <column name="customer_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="customer_relatives_id" type="BIGINT">
@@ -1238,16 +1206,16 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="kyc_id"
-                                 baseTableName="kyc_customer_relatives"
-                                 constraintName="fk_kyc_customer_relatives_customer_kyc_id"
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="customer_customer_relatives"
+                                 constraintName="fk_customer_customer_relatives_customer_id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  referencedColumnNames="id"
-                                 referencedTableName="kyc"/>
+                                 referencedTableName="customer"/>
         <addForeignKeyConstraint baseColumnNames="customer_relatives_id"
-                                 baseTableName="kyc_customer_relatives"
-                                 constraintName="fk_kyc_customer_relatives_customer_relatives_id"
+                                 baseTableName="customer_customer_relatives"
+                                 constraintName="fk_customer_customer_relatives_customer_relatives_id"
                                  onDelete="RESTRICT"
                                  onUpdate="CASCADE"
                                  referencedColumnNames="id"
