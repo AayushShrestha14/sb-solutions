@@ -4,7 +4,6 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,11 +21,9 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class AccountOpeningController {
     private OpeningFormService openingFormService;
-    private GlobalExceptionHandler globalExceptionHandler;
 
     @PostMapping
     public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm, BindingResult bindingResult) {
-        globalExceptionHandler.constraintValidation(bindingResult);
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
             return new RestResponseDto().failureModel("Error Occurs");

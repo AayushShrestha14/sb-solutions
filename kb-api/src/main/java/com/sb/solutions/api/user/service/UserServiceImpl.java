@@ -1,17 +1,15 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.exception.ApiException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
-import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,12 +28,20 @@ import java.util.stream.Collectors;
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
-@Service
-@AllArgsConstructor
+@Service("userDetailService")
 public class UserServiceImpl implements UserService {
-    BaseHttpService baseHttpService;
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+
+    private final BaseHttpService baseHttpService;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
+                           @Autowired UserRepository userRepository,
+                           @Autowired BCryptPasswordEncoder passwordEncoder) {
+        this.baseHttpService = baseHttpService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<User> findAll() {
@@ -55,7 +61,9 @@ public class UserServiceImpl implements UserService {
             user = this.getByUsername(user.getUsername());
             return user;
         } else {
-            throw new UsernameNotFoundException("User is not authenticated; Found " + " of type " + authentication.getPrincipal().getClass() + "; Expected type User");
+            throw new UsernameNotFoundException(
+                    "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
+                            .getClass() + "; Expected type User");
         }
     }
 
@@ -75,12 +83,9 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
         }
-        User u = userRepository.findByRoleIdAndBranch(user.getRole().getId(), user.getBranch());
-        if (u == null) {
-            return userRepository.save(user);
-        } else {
-            throw new ApiException("USER OF ROLE " + u.getRole().getRoleName() + " ALREADY EXIST IN BRANCH " + u.getBranch().getName());
-        }
+
+        return userRepository.save(user);
+
 
     }
 
@@ -96,14 +101,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByRoleAndBranch(Long roleId, Branch branchId) {
-        return userRepository.findByRoleIdAndBranch(roleId, branchId);
+    public List<User> findByRoleId(Long id) {
+        return userRepository.findByRoleId(id);
+    }
+
+    @Override
+    public List<User> findByRoleAndBranch(Long roleId, Long branchId) {
+        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
     }
 
     @Override
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
-        List branchList = userRepository.userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        List branchList = userRepository
+                .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");
@@ -125,13 +136,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepository.getUsersByUsername(username);
+        User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
         if (u != null) {
-            List<String> authorityList = userRepository.userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
+            List<String> authorityList = userRepository
+                    .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
                     .map(object -> Objects.toString(object, null))
                     .collect(Collectors.toList());
-            Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-            List<GrantedAuthority> updatedAuthorities = new ArrayList<GrantedAuthority>();
+            Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
+                    .getContext().getAuthentication().getAuthorities();
+            List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
                 updatedAuthorities.add(new SimpleGrantedAuthority("a"));
             }
@@ -142,7 +155,6 @@ public class UserServiceImpl implements UserService {
                             u.getPassword(),
                             updatedAuthorities)
             );
-
 
             u.setAuthorityList(authorityList);
 

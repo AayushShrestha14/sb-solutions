@@ -44,7 +44,7 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
     }
 
     @Override
-    public List<RoleHierarchy> roleHierarchyByCurrentRole(Long id) {
+    public List<RoleHierarchy> roleHierarchyByCurrentRoleForward(Long id) {
         RoleHierarchy r = roleHierarchyRepository.findByRole(id);
         return roleHierarchyRepository.roleHierarchyByCurrentRoleForward(r.getRoleOrder());
     }

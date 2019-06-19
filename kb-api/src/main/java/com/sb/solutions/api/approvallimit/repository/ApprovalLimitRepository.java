@@ -12,4 +12,6 @@ public interface ApprovalLimitRepository extends JpaRepository<ApprovalLimit, Lo
     @Query(value = "select a from ApprovalLimit a")
     Page<ApprovalLimit> approvalLimitFilter(Pageable pageable);
 
+    ApprovalLimit  getByAuthoritiesIdAndLoanCategoryId(Long id,Long loanConfigId);
+
 }

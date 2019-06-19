@@ -1,10 +1,14 @@
 package com.sb.solutions.api.Loan.service;
 
+import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.exception.ApiException;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,9 +25,14 @@ import java.util.Map;
 
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
+    private final CustomerLoanRepository customerLoanRepository;
+    private final UserService userService;
 
-    @Autowired
-    CustomerLoanRepository customerLoanRepository;
+    public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
+                                   @Autowired UserService userService) {
+        this.customerLoanRepository = customerLoanRepository;
+        this.userService = userService;
+    }
 
     @Override
     public List<CustomerLoan> findAll() {
@@ -37,10 +46,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
-        if(customerLoan.getLoan() == null){
-            throw new ApiException("Loan Cannot be null");
+        if (customerLoan.getLoan() == null) {
+            throw new ServiceValidationException("Loan can not be null");
         }
-
+        if (customerLoan.getId() == null) {
+            customerLoan.setBranch(userService.getAuthenticated().getBranch());
+            LoanStage stage = new LoanStage();
+            stage.setToRole(userService.getAuthenticated().getRole());
+            stage.setFromRole(userService.getAuthenticated().getRole());
+            stage.setFromUser(userService.getAuthenticated());
+            stage.setToUser(userService.getAuthenticated());
+            stage.setComment(DocAction.DRAFT.name());
+            stage.setDocAction(DocAction.DRAFT);
+            customerLoan.setCurrentStage(stage);
+        }
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -48,6 +67,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        s.put("currentUserRole", userService.getAuthenticated().getRole() == null ? null : userService.getAuthenticated().getRole().getId().toString());
+        s.put("createdBy", userService.getAuthenticated() == null ? null : userService.getAuthenticated().getId().toString());
+        s.put("branchId", userService.getAuthenticated().getBranch() == null ? null : userService.getAuthenticated().getBranch().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -59,12 +81,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public Map<Object, Object> statusCount() {
-        return customerLoanRepository.statusCount();
+    public Map<String, Integer> statusCount() {
+        User u = userService.getAuthenticated();
+        return customerLoanRepository.statusCount(u.getRole().getId(), u.getBranch().getId());
     }
 
     @Override
-    public List<CustomerLoan> getCustomerLoanByDocumentStatus(DocStatus status) {
-        return customerLoanRepository.findFirst5ByDocumentStatusOrderByIdDesc(status);
+    public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
+        User u = userService.getAuthenticated();
+        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().getId());
+    }
+
+    @Override
+    public List<Map<String, Double>> proposedAmount() {
+        return customerLoanRepository.proposedAmount();
+    }
+
+    @Override
+    public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
+        return customerLoanRepository.proposedAmountByBranchId(branchId);
     }
 }
+

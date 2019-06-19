@@ -11,7 +11,7 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
-import com.sb.solutions.core.exception.ApiException;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.JsonConverter.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,59 +60,59 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
             if (!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
-                throw new ApiException("Invalid Date of Birth of Nominee");
+                throw new ServiceValidationException("Invalid Date of Birth of Nominee");
             }
         }
         if (openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth() != null) {
             if (!dateValidation.checkDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
-                throw new ApiException("Invalid Date of Birth of Beneficiaries");
+                throw new ServiceValidationException("Invalid Date of Birth of Beneficiaries");
             }
         }
         for (OpeningCustomer openingCustomer : openingForm.getOpeningAccount().getOpeningCustomers()) {
             if (openingCustomer.getDateOfBirthAD() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getDateOfBirthAD())) {
-                    throw new ApiException("Invalid Date of Birth of Customer");
+                    throw new ServiceValidationException("Invalid Date of Birth of Customer");
                 }
             }
             if (openingCustomer.getCitizenIssuedDate() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getCitizenIssuedDate())) {
-                    throw new ApiException("Invalid Citizen Issued Date of Customer");
+                    throw new ServiceValidationException("Invalid Citizen Issued Date of Customer");
                 }
             }
             if (openingCustomer.getPassportIssuedDate() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getPassportIssuedDate())) {
-                    throw new ApiException("Invalid Password Issued Date of Customer");
+                    throw new ServiceValidationException("Invalid Password Issued Date of Customer");
                 }
             }
             if (openingCustomer.getPassportExpireDate() != null) {
                 if (dateValidation.checkDate(openingCustomer.getPassportExpireDate())) {
-                    throw new ApiException("Invalid Passport Expire Date of Customer");
+                    throw new ServiceValidationException("Invalid Passport Expire Date of Customer");
                 }
             }
             if (openingCustomer.getIdCardIssuedDate() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getIdCardIssuedDate())) {
-                    throw new ApiException("Invalid Id Issued Date of Customer");
+                    throw new ServiceValidationException("Invalid Id Issued Date of Customer");
                 }
             }
             if (openingCustomer.getIdCardExpireDate() != null) {
                 if (dateValidation.checkDate(openingCustomer.getIdCardExpireDate())) {
-                    throw new ApiException("Invalid Id Expire Date of Customer");
+                    throw new ServiceValidationException("Invalid Id Expire Date of Customer");
                 }
             }
             if (openingCustomer.getVisaIssueDate() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getVisaIssueDate())) {
-                    throw new ApiException("Invalid Visa Issued Date of Customer");
+                    throw new ServiceValidationException("Invalid Visa Issued Date of Customer");
                 }
             }
             if (openingCustomer.getVisaValidity() != null) {
                 if (dateValidation.checkDate(openingCustomer.getVisaValidity())) {
-                    throw new ApiException("Invalid Visa Validity Date of Customer");
+                    throw new ServiceValidationException("Invalid Visa Validity Date of Customer");
                 }
             }
             for (OpeningCustomerRelative openingCustomerRelative : openingCustomer.getKyc().getCustomerRelatives()) {
                 if (openingCustomerRelative.getCitizenshipIssuedDate() != null) {
                     if (!dateValidation.checkDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
-                        throw new ApiException("Invalid Citizen Issued Date of Customer Relative");
+                        throw new ServiceValidationException("Invalid Citizen Issued Date of Customer Relative");
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
                 openingForm.setCustomerDetailsJson(writeJsonFile(url, openingForm));
             } catch (Exception exception) {
-                throw new ApiException("File Fail to Save");
+                throw new ServiceValidationException("File Fail to Save");
             }
 
         } else {
@@ -132,7 +132,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 String url = openingForm.getCustomerDetailsJson();
                 openingForm.setCustomerDetailsJson(updateJsonFile(url, openingForm));
             } catch (Exception exception) {
-                throw new ApiException("File Fail to Save");
+                throw new ServiceValidationException("File Fail to Save");
             }
         }
 

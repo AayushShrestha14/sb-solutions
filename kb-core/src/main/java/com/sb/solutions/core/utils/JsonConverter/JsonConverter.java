@@ -1,7 +1,7 @@
 package com.sb.solutions.core.utils.JsonConverter;
 
 import com.google.gson.Gson;
-import com.sb.solutions.core.exception.ApiException;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -24,7 +24,7 @@ public class JsonConverter {
             }
             return gson.fromJson(jsonCustomerData.toString(), T);
         } catch (Exception e) {
-            throw new ApiException(e.toString());
+            throw new ServiceValidationException(e.toString());
         }
     }
 }

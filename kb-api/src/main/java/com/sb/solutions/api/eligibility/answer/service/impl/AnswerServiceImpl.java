@@ -78,6 +78,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public List<Answer> findByIds(List<Long> ids) {
+        logger.debug("Finding answers with supplied list ids.");
+        return answerRepository.findByIdIn(ids);
+    }
+
+    @Override
     public void delete(long id) {
         logger.debug("Setting status to deleted for the answer with id [{}].", id);
         final Answer answer = answerRepository.getOne(id);

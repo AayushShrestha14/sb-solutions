@@ -1,4 +1,4 @@
-INSERT INTO role (id, created_at,  last_modified_at,  role_name, status) VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1);
+INSERT INTO role (id, created_at,  last_modified_at,  role_name, status,role_type) VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1,1);
 
 -- password = admin1234
 INSERT INTO `user` (`id`, `created_at`, `last_modified_at`, `account_no`, `email`, `name`, `password`, `profile_picture`, `signature_image`, `status`, `user_name`, `branch_id`, `role_id`, `created_by_id`, `modified_by_id`) VALUES
@@ -75,8 +75,6 @@ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permissi
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (18 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  18, 1);
 
-  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (19 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  19, 1);
 
 
 

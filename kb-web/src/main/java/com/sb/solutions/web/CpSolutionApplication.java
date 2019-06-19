@@ -33,7 +33,7 @@ import javax.sql.DataSource;
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties({FileStorageProperties.class})
-public class CpSolutionApplication extends SpringBootServletInitializer {
+public class CpSolutionApplication {
 
     @Autowired
     UserRepository userRepository;
@@ -44,6 +44,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
     DataSource dataSource;
 
@@ -52,11 +53,6 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(CpSolutionApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(CpSolutionApplication.class);
     }
 
 

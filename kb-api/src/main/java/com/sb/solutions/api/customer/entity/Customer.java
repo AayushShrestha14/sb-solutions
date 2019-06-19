@@ -1,6 +1,5 @@
 package com.sb.solutions.api.customer.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.kyc.entity.Kyc;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
@@ -34,7 +33,7 @@ public class Customer extends BaseEntity<Long> {
     private District district;
 
     @ManyToOne
-    private MunicipalityVdc municipalitiesOrVDC;
+    private MunicipalityVdc municipalities;
     private String telephone;
     private String mobile;
     private String email;
@@ -43,9 +42,7 @@ public class Customer extends BaseEntity<Long> {
     private Date citizenshipIssuedDate;
     private String issuedPlace;
     private Status status;
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "customer")
+    @OneToOne(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
     private Kyc kyc;
 }
