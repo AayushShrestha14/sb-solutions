@@ -30,7 +30,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
             "and p.id <>:id group by p.id", nativeQuery = true)
     List<Map<Object, Object>> activeRole(@Param("id") Long id);
 
-    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.username from User u where r.createdBy=u.id),(SELECT u.username from User u where r.modifiedBy=u.id),r.roleType) from Role r")
+    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.username from User u where r.createdBy=u.id),(SELECT u.username from User u where r.modifiedBy=u.id),r.roleType,r.roleAccess) from Role r")
     List<Role>  findAll();
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Role c WHERE c.roleType = :roleType")

@@ -1,6 +1,7 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -37,4 +38,6 @@ public class Role extends BaseEntity<Long> implements Serializable {
     private String modifiedByName;
 
     private RoleType roleType = RoleType.APPROVAL;
+
+    private RoleAccess roleAccess;
 }
