@@ -53,7 +53,6 @@ public class FileUploadUtils {
         }
     }
 
-
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
@@ -82,5 +81,43 @@ public class FileUploadUtils {
             return new RestResponseDto().failureModel("Fail");
         }
     }
+
+    public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile, String branch, String type, String name) {
+        if (multipartFile.isEmpty()) {
+            return new RestResponseDto().failureModel("Select Signature Image");
+        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
+            return new RestResponseDto().failureModel("Image Size more than 400kb");
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
+            return new RestResponseDto().failureModel("Invalid file format");
+        }
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            url = UploadDir.accountRequest + branch + "/";
+            Path path = Paths.get(FilePath.getOSPath() + url);
+            if (!Files.exists(path)) {
+                new File(FilePath.getOSPath() + url).mkdirs();
+            }
+            String imagePath;
+            if (type.equals("citizen")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("passport")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("id")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("photo")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else {
+                return new RestResponseDto().failureModel("wrong file type");
+            }
+            path = Paths.get(FilePath.getOSPath() + imagePath);
+            Files.write(path, bytes);
+            return new RestResponseDto().successModel(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new RestResponseDto().failureModel("Fail");
+        }
+    }
+
+
 }
 
