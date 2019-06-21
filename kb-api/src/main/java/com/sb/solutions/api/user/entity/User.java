@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,9 +45,8 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
     private Role role;
     private String accountNo;
 
-    @OneToOne
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
+    @ManyToMany
+    private List<Branch> branch;
     private String signatureImage;
     private String profilePicture;
 

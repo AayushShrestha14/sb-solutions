@@ -50,7 +50,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Loan can not be null");
         }
         if (customerLoan.getId() == null) {
-            customerLoan.setBranch(userService.getAuthenticated().getBranch());
+            customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
             LoanStage stage = new LoanStage();
             stage.setToRole(userService.getAuthenticated().getRole());
             stage.setFromRole(userService.getAuthenticated().getRole());
@@ -69,7 +69,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         s.put("currentUserRole", userService.getAuthenticated().getRole() == null ? null : userService.getAuthenticated().getRole().getId().toString());
         s.put("createdBy", userService.getAuthenticated() == null ? null : userService.getAuthenticated().getId().toString());
-        s.put("branchId", userService.getAuthenticated().getBranch() == null ? null : userService.getAuthenticated().getBranch().getId().toString());
+        s.put("branchId", userService.getAuthenticated().getBranch() == null ? null : userService.getAuthenticated().getBranch().get(0).getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -83,13 +83,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
-        return customerLoanRepository.statusCount(u.getRole().getId(), u.getBranch().getId());
+        return customerLoanRepository.statusCount(u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
-        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().getId());
+        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override

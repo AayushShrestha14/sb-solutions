@@ -75,6 +75,9 @@
             <column name="role_type" type="INT">
                 <constraints nullable="false"/>
             </column>
+            <column name="role_access" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
@@ -1673,4 +1676,5 @@
     <include file="20190605_eligibility_criteria.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true"/>
+    <include file="20190621_branch_user.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -39,5 +39,5 @@ public class Role extends BaseEntity<Long> implements Serializable {
 
     private RoleType roleType = RoleType.APPROVAL;
 
-    private RoleAccess roleAccess;
+    private RoleAccess roleAccess = RoleAccess.OWN;
 }

@@ -1,14 +1,18 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +38,16 @@ public class UserServiceImpl implements UserService {
     private final BaseHttpService baseHttpService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final BranchRepository branchRepository;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
                            @Autowired UserRepository userRepository,
+                           @Autowired BranchRepository branchRepository,
                            @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.branchRepository = branchRepository;
     }
 
     @Override
@@ -76,12 +83,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
+        }
+        if (user.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
+            if (user.getBranch().isEmpty() || (user.getBranch().size() > 1)) {
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null or multi selected");
+            }
+        }
+
+        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)) {
+            if (user.getBranch().isEmpty()) {
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
+            }
+        }
+
+        if (user.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+            if (!user.getBranch().isEmpty()) {
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be selected For role");
+            }
         }
 
         return userRepository.save(user);
@@ -106,8 +129,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByRoleAndBranch(Long roleId, Long branchId) {
-        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
+    public List<User> findByRoleAndBranch(Long roleId, String branchIds) {
+        return userRepository.findByRoleIdAndBranchIn(roleId, this.getRoleAccessFilterByBranch());
     }
 
     @Override
@@ -132,6 +155,30 @@ public class UserServiceImpl implements UserService {
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
 
+    }
+
+    @Override
+    public String getRoleAccessFilterByBranch() {
+        User u = this.getAuthenticated();
+        List<Long> branchIdList = new ArrayList<>();
+        String branchIdListTOString = null;
+        if (u.getRole().getRoleAccess() != null) {
+            if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
+                for (Branch b : u.getBranch()) {
+                    branchIdList.add(b.getId());
+                }
+            }
+
+            if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+                for (Branch b : this.branchRepository.findAll()) {
+                    branchIdList.add(b.getId());
+                }
+            }
+
+            branchIdListTOString = branchIdList.stream().map(Object::toString).collect(Collectors.joining(","));
+        }
+        System.out.println(branchIdListTOString);
+        return branchIdListTOString;
     }
 
     @Override

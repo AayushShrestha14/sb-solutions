@@ -68,7 +68,7 @@ public class StageMapper {
                 r.setId(maker.getFromRole().getId());
                 currentStage.setToRole(r);
                 try {
-                 final   List<User> users = userService.findByRoleAndBranch(r.getId(), currentUser.getBranch().getId());
+                 final   List<User> users = userService.findByRoleAndBranch(r.getId(), userService.getRoleAccessFilterByBranch());
 
                     currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
