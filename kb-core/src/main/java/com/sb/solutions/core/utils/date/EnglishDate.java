@@ -1,9 +1,10 @@
-package com.sb.solutions.core.utils.date;
+package com.sb.solutions.core.utils.NepaliDateConvertor;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-
-import org.joda.time.DateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Rujan Maharjan on 6/7/2019
@@ -11,11 +12,11 @@ import org.joda.time.DateTime;
 public class EnglishDate {
 
     public static final String WEEK_DAYS[] = {"Sunday", "Monday", "Tuesday",
-        "Wednesday", "Thursday", "Friday", "Saturday"};
+            "Wednesday", "Thursday", "Friday", "Saturday"};
 
-    private DateTime englishDate;
+    private Date englishDate;
 
-    public EnglishDate(DateTime englishDate) {
+    public EnglishDate(Date englishDate) {
         this.englishDate = englishDate;
     }
 
@@ -25,20 +26,23 @@ public class EnglishDate {
     }
 
     public String getMonthAsText() {
-        return englishDate.monthOfYear().getAsText();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM");
+        return dateFormat.format(englishDate);
     }
 
     public int getMonth() {
-        return englishDate.getMonthOfYear();
+        return englishDate.getMonth();
     }
 
     public int getDate() {
-        return englishDate.getDayOfMonth();
+        return englishDate.getDay();
     }
 
     public String toString() {
-        return englishDate.getYear() + " / " + englishDate.getMonthOfYear() + " / " +
-            englishDate.getDayOfMonth() + " " + WEEK_DAYS[englishDate.getDayOfWeek()];
+        Calendar c = Calendar.getInstance();
+        c.setTime(englishDate);
+        return c.get(Calendar.YEAR)+ " / " + getMonth() + " / " +
+                getDate() + " " + WEEK_DAYS[c.get(Calendar.DAY_OF_WEEK)];
     }
 
     public static int getWeekIndex(String weekDay) {

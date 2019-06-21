@@ -255,7 +255,6 @@ INSERT INTO role_permission_rights_api_rights values (17, 42);
 INSERT INTO role_permission_rights_api_rights values (17, 43);
 INSERT INTO role_permission_rights_api_rights values (17, 44);
 INSERT INTO role_permission_rights_api_rights values (17, 45);
-INSERT INTO role_permission_rights_api_rights values (17, 46);
 
 -- ************************COUNTVIEW*******************************************
 

@@ -1,15 +1,16 @@
 package com.sb.solutions.api.rolePermissionRight.repository;
 
 
-import java.util.List;
-import java.util.Map;
-
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.
@@ -18,18 +19,23 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query(value = "select\n" +
-        "  (select  count(id) from role where status=1) active,\n" +
-        "(select  count(id) from role where status=0) inactive,\n" +
-        "(select  count(id) from role) roles\n", nativeQuery = true)
+            "  (select  count(id) from role where status=1) active,\n" +
+            "(select  count(id) from role where status=0) inactive,\n" +
+            "(select  count(id) from role) roles\n", nativeQuery = true)
     Map<Object, Object> roleStatusCount();
 
     @Query(value = "Select distinct p.id as id,p.role_name as roleName from role p\n" +
-        "left join user u on p.id = u.role_id\n" +
-        "where p.status=1\n" +
-        "and p.id <>:id group by p.id", nativeQuery = true)
+            "left join user u on p.id = u.role_id\n" +
+            "where p.status=1\n" +
+            "and p.id <>:id group by p.id", nativeQuery = true)
     List<Map<Object, Object>> activeRole(@Param("id") Long id);
 
-    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.username from User u where r.createdBy=u.id),(SELECT u.username from User u where r.modifiedBy=u.id)) from Role r")
-    List<Role> findAll();
+    @Query("select new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,(SELECT u.username from User u where r.createdBy=u.id),(SELECT u.username from User u where r.modifiedBy=u.id),r.roleType) from Role r")
+    List<Role>  findAll();
+
+    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Role c WHERE c.roleType = :roleType")
+    boolean chkByRoleType(@Param("roleType") RoleType roleType);
+
+    List<Role>  getByRoleTypeAndStatus(RoleType roleType,Status status);
 
 }

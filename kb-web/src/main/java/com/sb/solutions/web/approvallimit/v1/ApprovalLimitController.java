@@ -1,11 +1,8 @@
 package com.sb.solutions.web.approvallimit.v1;
 
+import com.sb.solutions.api.user.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
@@ -22,6 +19,8 @@ import lombok.AllArgsConstructor;
 public class ApprovalLimitController {
 
     private final ApprovalLimitService approvalLimitService;
+
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<?> addApprovalLimit(@RequestBody ApprovalLimit approvalLimit) {
@@ -44,6 +43,12 @@ public class ApprovalLimitController {
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(approvalLimitService
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
+
+    @GetMapping(value="/{id}/role")
+    public ResponseEntity<?> getByRoleAndLoan(@PathVariable Long id){
+        return new RestResponseDto().successModel(approvalLimitService.getByRoleAndLoan(userService.getAuthenticated().getRole().getId(),id));
     }
 
 }

@@ -33,12 +33,15 @@ public class RoleHierarchy extends BaseEntity<Long> {
     private Long roleId;
 
     @Transient
+    private Long id;
+
+    @Transient
     private Long userId;
 
-    public RoleHierarchy(Long roleOrder, String roleName, Long roleId) {
+    public RoleHierarchy(Long roleOrder, String roleName, Long id) {
         this.roleOrder = roleOrder;
         this.roleName = roleName;
-        this.roleId = roleId;
+        this.id = id;
 
     }
 }

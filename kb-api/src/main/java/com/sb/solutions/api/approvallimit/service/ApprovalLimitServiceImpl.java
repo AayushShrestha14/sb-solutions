@@ -43,4 +43,8 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
         return approvalLimitRepository.approvalLimitFilter(pageable);
     }
 
+    @Override
+    public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId) {
+        return approvalLimitRepository.getByAuthoritiesIdAndLoanCategoryId(roleId,loanConfigId);
+    }
 }

@@ -69,7 +69,6 @@ public class DocumentServiceImpl implements DocumentService {
         for (Long id : ids) {
             System.out.println(id);
             Document doc = documentRepository.getOne(id);
-            doc.setLastModifiedAt(new Date());
             doc.getLoanCycle().add(loanCycle);
             documentRepository.save(doc);
         }
