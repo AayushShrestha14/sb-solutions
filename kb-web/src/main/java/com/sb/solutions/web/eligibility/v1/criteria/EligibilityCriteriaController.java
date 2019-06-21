@@ -1,12 +1,5 @@
 package com.sb.solutions.web.eligibility.v1.criteria;
 
-import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
-import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,8 +12,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
+import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping(EligibilityCriteriaController.URL)
@@ -35,14 +35,15 @@ public class EligibilityCriteriaController {
 
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                value = "Results page you want to retrieve (0..N)"),
+            value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                value = "Number of records per page.")})
+            value = "Number of records per page.")})
     @GetMapping
     public final ResponseEntity<?> getAllEligibilityCriteria(@RequestParam("page") int page,
-                                                             @RequestParam("size") int size) {
+        @RequestParam("size") int size) {
         logger.debug("REST request to get all the eligibility criteria.");
-        final Page<EligibilityCriteria> eligibilityCriteria = eligibilityCriteriaService.findAllPageable(null,
+        final Page<EligibilityCriteria> eligibilityCriteria = eligibilityCriteriaService
+            .findAllPageable(null,
                 PaginationUtils.pageable(page, size));
         return new RestResponseDto().successModel(eligibilityCriteria);
     }
@@ -51,25 +52,34 @@ public class EligibilityCriteriaController {
     public final ResponseEntity<?> getEligibilityCriteria(@PathVariable long id) {
         logger.debug("REST request to get criteria with id [{}].", id);
         final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaService.findOne(id);
-        if (eligibilityCriteria == null) return new RestResponseDto().failureModel("Not Found.");
+        if (eligibilityCriteria == null) {
+            return new RestResponseDto().failureModel("Not Found.");
+        }
         return new RestResponseDto().successModel(eligibilityCriteria);
     }
 
     @PostMapping
-    public final ResponseEntity<?> saveEligibilityCriteria(@RequestBody EligibilityCriteria eligibilityCriteria) {
+    public final ResponseEntity<?> saveEligibilityCriteria(
+        @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to save the eligibility criteria.");
-        final EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaService.save(eligibilityCriteria);
-        if (savedEligibilityCriteria == null) return new RestResponseDto().failureModel("Oops something went wrong.");
+        final EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaService
+            .save(eligibilityCriteria);
+        if (savedEligibilityCriteria == null) {
+            return new RestResponseDto().failureModel("Oops something went wrong.");
+        }
         return new RestResponseDto().successModel(savedEligibilityCriteria);
     }
 
     @PutMapping(path = "/{id}")
     public final ResponseEntity<?> updateEligibilityCriteria(@PathVariable long id,
-                                                             @RequestBody EligibilityCriteria eligibilityCriteria) {
+        @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to update the eligibility criteria.");
-        final EligibilityCriteria updatedEligibilityCriteria = eligibilityCriteriaService.update(eligibilityCriteria,
+        final EligibilityCriteria updatedEligibilityCriteria = eligibilityCriteriaService
+            .update(eligibilityCriteria,
                 id);
-        if (updatedEligibilityCriteria == null) return new RestResponseDto().failureModel("Oops something went wrong");
+        if (updatedEligibilityCriteria == null) {
+            return new RestResponseDto().failureModel("Oops something went wrong");
+        }
         return new RestResponseDto().successModel(updatedEligibilityCriteria);
     }
 

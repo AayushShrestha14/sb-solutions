@@ -1,4 +1,4 @@
-package com.sb.solutions.core.utils.uploadFile;
+package com.sb.solutions.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;

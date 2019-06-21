@@ -33,6 +33,7 @@ public class LoanConfigController {
 
     @Autowired
     LoanConfigService loanConfigService;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config) {
 

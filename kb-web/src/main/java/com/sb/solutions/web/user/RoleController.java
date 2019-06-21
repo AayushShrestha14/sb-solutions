@@ -31,8 +31,8 @@ public class RoleController {
     private final RoleHierarchyService roleHierarchyService;
 
     public RoleController(
-            @Autowired RoleService roleService,
-            @Autowired RoleHierarchyService roleHierarchyService) {
+        @Autowired RoleService roleService,
+        @Autowired RoleHierarchyService roleHierarchyService) {
         this.roleService = roleService;
         this.roleHierarchyService = roleHierarchyService;
     }

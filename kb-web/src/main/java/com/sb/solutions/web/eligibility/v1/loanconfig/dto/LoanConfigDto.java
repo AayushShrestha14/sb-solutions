@@ -1,8 +1,8 @@
 package com.sb.solutions.web.eligibility.v1.loanconfig.dto;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class LoanConfigDto {
