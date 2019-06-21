@@ -9,6 +9,5 @@ import com.sb.solutions.core.enums.Status;
 @Repository
 public interface EligibilityCriteriaRepository extends JpaRepository<EligibilityCriteria, Long> {
 
-    EligibilityCriteria findByStatus(Status Status);
-
+    EligibilityCriteria findByStatus(Status status);
 }

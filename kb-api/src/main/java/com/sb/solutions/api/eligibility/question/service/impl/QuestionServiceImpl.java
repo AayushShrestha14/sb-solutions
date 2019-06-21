@@ -51,11 +51,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Page<Question> findAllPageable(Object question, Pageable pageable) {
-        return questionRepository.findAll(pageable);
-    }
-
-    @Override
     public List<Question> save(List<Question> questions) {
         List<Question> savedQuestions = new ArrayList<>();
         for (Question question : questions) {
@@ -75,6 +70,11 @@ public class QuestionServiceImpl implements QuestionService {
                 .mapToLong(Long::longValue).sum());
         loanConfigService.save(loanConfig);
         return savedQuestions;
+    }
+
+    @Override
+    public Page<Question> findAllPageable(Object question, Pageable pageable) {
+        return questionRepository.findAll(pageable);
     }
 
     @Override

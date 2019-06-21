@@ -22,7 +22,4 @@ public class Proprietor extends BaseEntity<Long> {
     private String address;
 
     private double share;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "entity_info_id")
-//    private EntityInfo entityInfo;
 }

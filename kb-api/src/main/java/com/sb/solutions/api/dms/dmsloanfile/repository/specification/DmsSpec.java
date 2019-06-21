@@ -29,7 +29,7 @@ public class DmsSpec implements Specification<DmsLoanFile> {
     @Override
     public Predicate toPredicate(Root<DmsLoanFile> root, CriteriaQuery<?> criteriaQuery,
         CriteriaBuilder criteriaBuilder) {
-        Date date = new Date();
+        Date date;
         switch (property) {
             case FILTER_BY_DATE:
                 try {
@@ -37,6 +37,7 @@ public class DmsSpec implements Specification<DmsLoanFile> {
                     return criteriaBuilder.equal(root.get(property), date);
                 } catch (ParseException e) {
                     e.printStackTrace();
+                    return null;
                 }
             case FILTER_BY_NAME:
                 return criteriaBuilder.like(root.get(property), value + "%");
@@ -47,5 +48,4 @@ public class DmsSpec implements Specification<DmsLoanFile> {
                 return null;
         }
     }
-
 }

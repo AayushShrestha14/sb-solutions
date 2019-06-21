@@ -13,8 +13,7 @@ import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 public interface DmsLoanFileRepository extends JpaRepository<DmsLoanFile, Long>,
     JpaSpecificationExecutor<DmsLoanFile> {
 
-
-    @Query(value = "select\n" +
-        "(select  count(id) from dms_loan_file) pendings", nativeQuery = true)
+    @Query(value = "select "
+        + "(select  count(id) from dms_loan_file) pendings", nativeQuery = true)
     Map<Object, Object> pendingStatusCount();
 }

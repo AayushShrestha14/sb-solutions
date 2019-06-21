@@ -13,7 +13,7 @@ import com.sb.solutions.api.eligibility.common.SearchCriteria;
 
 public class ApplicantSpecification implements Specification<Applicant> {
 
-    private final static String FILTER_BY_ELIGIBILITY_STATUS = "eligibilityStatus";
+    private static final String FILTER_BY_ELIGIBILITY_STATUS = "eligibilityStatus";
 
     private final SearchCriteria searchCriteria;
 

@@ -1,19 +1,22 @@
 package com.sb.solutions.api.accountType.service;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
-import com.sb.solutions.api.accountType.entity.AccountType;
-import com.sb.solutions.api.accountType.repository.AccountTypeRepository;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
+import com.sb.solutions.api.accountType.entity.AccountType;
+import com.sb.solutions.api.accountType.repository.AccountTypeRepository;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class AccountTypeServiceImpl implements AccountTypeService {
+
     private AccountTypeRepository accountTypeRepository;
+
     @Override
     public List<AccountType> findAll() {
         return accountTypeRepository.findAll();

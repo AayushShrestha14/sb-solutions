@@ -81,6 +81,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
             }
             this.setDocumentPathMaps(mapList);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return this.documentPathMaps;

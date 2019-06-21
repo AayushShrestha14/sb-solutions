@@ -1,14 +1,14 @@
 package com.sb.solutions.api.stage.entity;
 
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocAction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
 
 /**
  * @author Sunil Babu Shrestha on 5/24/2019

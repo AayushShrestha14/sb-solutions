@@ -18,10 +18,10 @@ public interface NepseCompanyRepository extends JpaRepository<NepseCompany, Long
     Page<NepseCompany> nepseCompanyFilter(@Param("companyName") String companyName,
         Pageable pageable);
 
-    @Query(value = "select\n" +
-        "  (select  count(id) from Nepse_Company where status=1) active,\n" +
-        "(select  count(id) from Nepse_Company where status=0) inactive,\n" +
-        "(select  count(id) from Nepse_Company) nepses\n", nativeQuery = true)
+    @Query(value = "select "
+        + "  (select  count(id) from Nepse_Company where status=1) active,"
+        + "(select  count(id) from Nepse_Company where status=0) inactive,"
+        + "(select  count(id) from Nepse_Company) nepses", nativeQuery = true)
     Map<Object, Object> nepseCompanyStatusCount();
 
     List<NepseCompany> findByStatus(Status status);

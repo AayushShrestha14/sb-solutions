@@ -18,8 +18,4 @@ public class ManagementTeam extends BaseEntity<Long> {
     private String name;
     private String description = "test";
     private String designation;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "entity_info_id")
-//    private EntityInfo entityInfo;
-
 }

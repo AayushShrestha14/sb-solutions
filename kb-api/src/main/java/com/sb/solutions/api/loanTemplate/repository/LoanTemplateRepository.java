@@ -14,5 +14,5 @@ import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 public interface LoanTemplateRepository extends JpaRepository<LoanTemplate, Long> {
 
     @Query(value = "select l from LoanTemplate l where l.name like  concat(:name,'%')")
-    Page<LoanTemplate> LoanTemplateFilter(@Param("name") String name, Pageable pageable);
+    Page<LoanTemplate> loanTemplateFilter(@Param("name") String name, Pageable pageable);
 }

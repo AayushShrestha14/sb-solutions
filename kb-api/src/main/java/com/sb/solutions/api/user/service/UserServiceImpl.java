@@ -1,13 +1,14 @@
 package com.sb.solutions.api.user.service;
 
-import com.sb.solutions.api.basehttp.BaseHttpService;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.utils.csv.CsvMaker;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -36,8 +43,8 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
-                           @Autowired UserRepository userRepository,
-                           @Autowired BCryptPasswordEncoder passwordEncoder) {
+        @Autowired UserRepository userRepository,
+        @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -62,8 +69,8 @@ public class UserServiceImpl implements UserService {
             return user;
         } else {
             throw new UsernameNotFoundException(
-                    "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
-                            .getClass() + "; Expected type User");
+                "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
+                    .getClass() + "; Expected type User");
         }
     }
 
@@ -114,7 +121,7 @@ public class UserServiceImpl implements UserService {
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
         List branchList = userRepository
-                .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+            .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");
@@ -139,21 +146,21 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
         if (u != null) {
             List<String> authorityList = userRepository
-                    .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
-                    .map(object -> Objects.toString(object, null))
-                    .collect(Collectors.toList());
+                .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
             Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-                    .getContext().getAuthentication().getAuthorities();
+                .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
                 updatedAuthorities.add(new SimpleGrantedAuthority("a"));
             }
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-                            u.getPassword(),
-                            updatedAuthorities)
+                new UsernamePasswordAuthenticationToken(
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                    u.getPassword(),
+                    updatedAuthorities)
             );
 
             u.setAuthorityList(authorityList);

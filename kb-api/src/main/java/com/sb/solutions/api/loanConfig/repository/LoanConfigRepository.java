@@ -17,14 +17,14 @@ import com.sb.solutions.core.enums.Status;
  */
 public interface LoanConfigRepository extends JpaRepository<LoanConfig, Long> {
 
-    @Query(value = "select\n" +
-        "         (select  count(id) from loan_config where status=1) active,\n" +
-        "            (select  count(id) from loan_config where status=0) inactive,\n" +
-        "            (select  count(id) from loan_config) loans", nativeQuery = true)
+    @Query(value = "select"
+        + "         (select  count(id) from loan_config where status=1) active,"
+        + "            (select  count(id) from loan_config where status=0) inactive,"
+        + "            (select  count(id) from loan_config) loans", nativeQuery = true)
     Map<Object, Object> loanStatusCount();
 
     @Query(value = "select l from LoanConfig l where l.name like  concat(:name,'%')")
-    Page<LoanConfig> LoanConfigFilter(@Param("name") String name, Pageable pageable);
+    Page<LoanConfig> loanConfigFilter(@Param("name") String name, Pageable pageable);
 
     List<LoanConfig> getByStatus(Status status);
 

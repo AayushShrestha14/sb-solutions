@@ -12,10 +12,10 @@ import com.sb.solutions.api.valuator.entity.Valuator;
 
 public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
 
-    @Query(value = "select\n" +
-        "  (select  count(id) from valuator where status=1) active,\n" +
-        "(select  count(id) from valuator where status=0) inactive,\n" +
-        "(select  count(id) from valuator) valuators\n", nativeQuery = true)
+    @Query(value = "select "
+        + "  (select  count(id) from valuator where status=1) active,"
+        + "(select  count(id) from valuator where status=0) inactive,"
+        + "(select  count(id) from valuator) valuators", nativeQuery = true)
     Map<Object, Object> valuatorStatusCount();
 
     @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")

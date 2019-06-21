@@ -44,11 +44,6 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Page<Answer> findAllPageable(Object answer, Pageable pageable) {
-        return answerRepository.findAll(pageable);
-    }
-
-    @Override
     public List<Answer> save(List<Answer> answers) {
         answers.forEach(answer -> {
             answer.setLastModifiedAt(new Date());
@@ -56,6 +51,13 @@ public class AnswerServiceImpl implements AnswerService {
         });
         return answerRepository.saveAll(answers);
     }
+
+    @Override
+    public Page<Answer> findAllPageable(Object answer, Pageable pageable) {
+        return answerRepository.findAll(pageable);
+    }
+
+
 
     @Transactional
     @Override

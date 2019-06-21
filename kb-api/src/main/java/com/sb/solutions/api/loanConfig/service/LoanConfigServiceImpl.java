@@ -54,7 +54,7 @@ public class LoanConfigServiceImpl implements LoanConfigService {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(t, SearchDto.class);
         return loanConfigRepository
-            .LoanConfigFilter(s.getName() == null ? "" : s.getName(), pageable);
+            .loanConfigFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override

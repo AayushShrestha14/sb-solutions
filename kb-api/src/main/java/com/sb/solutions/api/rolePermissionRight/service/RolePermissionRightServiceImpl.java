@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,18 @@ import com.sb.solutions.api.rolePermissionRight.repository.UrlApiRepository;
 @Service
 public class RolePermissionRightServiceImpl implements RolePermissionRightService {
 
-    @Autowired
-    RolePermissionRightRepository rolePermissionRightRepository;
-    @Autowired
-    UrlApiRepository urlApiRepository;
+    private static final Logger logger = LoggerFactory
+        .getLogger(RolePermissionRightServiceImpl.class);
 
+    private final RolePermissionRightRepository rolePermissionRightRepository;
+    private final UrlApiRepository urlApiRepository;
+
+    public RolePermissionRightServiceImpl(
+        RolePermissionRightRepository rolePermissionRightRepository,
+        UrlApiRepository urlApiRepository) {
+        this.rolePermissionRightRepository = rolePermissionRightRepository;
+        this.urlApiRepository = urlApiRepository;
+    }
 
     @Override
     public List<RolePermissionRights> findAll() {
@@ -73,6 +81,7 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
                     try {
                         rolePermissionRightRepository.deleteById(r.getId() == null ? 0 : r.getId());
                     } catch (Exception e) {
+                        logger.error("Error", e);
                     }
                 }
                 rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(),
@@ -83,8 +92,6 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
                 r.setApiRights(tempUrlApis);
                 rolePermissionRightsList1.add(r);
             }
-
-
         }
 
         rolePermissionRightRepository.saveAll(rolePermissionRightsList1);

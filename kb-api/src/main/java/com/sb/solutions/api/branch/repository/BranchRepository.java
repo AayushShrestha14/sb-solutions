@@ -20,11 +20,10 @@ import com.sb.solutions.api.branch.entity.Branch;
 public interface BranchRepository extends JpaRepository<Branch, Long>,
     JpaSpecificationExecutor<Branch> {
 
-
-    @Query(value = "select\n" +
-        "  (select  count(id) from branch where status=1) active,\n" +
-        "(select  count(id) from branch where status=0) inactive,\n" +
-        "(select  count(id) from branch) branches\n", nativeQuery = true)
+    @Query(value = "select"
+        + "  (select  count(id) from branch where status=1) active,"
+        + "(select  count(id) from branch where status=0) inactive,"
+        + "(select  count(id) from branch) branches", nativeQuery = true)
     Map<Object, Object> branchStatusCount();
 
 

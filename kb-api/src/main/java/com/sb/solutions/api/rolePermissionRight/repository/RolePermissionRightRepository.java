@@ -1,6 +1,5 @@
 package com.sb.solutions.api.rolePermissionRight.repository;
 
-
 import java.util.List;
 import javax.transaction.Transactional;
 
@@ -19,11 +18,14 @@ import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
 @Repository
 public interface RolePermissionRightRepository extends JpaRepository<RolePermissionRights, Long> {
 
-    @Query("Select p from RolePermissionRights p where p.role.id=:id and p.role.status=1 AND p.permission.status=1 order by p.permission.orders ASC ")
+    @Query("Select p from RolePermissionRights p"
+        + " where p.role.id=:id and p.role.status=1 AND p.permission.status=1"
+        + " order by p.permission.orders ASC ")
     List<RolePermissionRights> findByRole(@Param("id") Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "delete from role_permission_rights where role_id=:id and permission_id=:pid", nativeQuery = true)
+    @Query(value = "delete from role_permission_rights where role_id=:id and permission_id=:pid",
+        nativeQuery = true)
     void deleteRolePermissionRightsByRole(@Param("id") Long i, @Param("pid") Long pid);
 }

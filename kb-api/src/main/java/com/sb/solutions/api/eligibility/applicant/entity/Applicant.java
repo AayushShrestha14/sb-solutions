@@ -52,13 +52,15 @@ public class Applicant extends BaseEntity<Long> {
     private LoanConfig loanConfig;
 
     @ManyToMany
-    @JoinTable(name = "applicant_answer", joinColumns = @JoinColumn(name = "applicant_id"), inverseJoinColumns =
-    @JoinColumn(name = "answer_id"))
+    @JoinTable(name = "applicant_answer",
+        joinColumns = @JoinColumn(name = "applicant_id"),
+        inverseJoinColumns = @JoinColumn(name = "answer_id"))
     private List<Answer> answers = new ArrayList<>();
 
     @OneToMany
-    @JoinTable(name = "applicant_document", joinColumns = @JoinColumn(name = "applicant_id"), inverseJoinColumns =
-    @JoinColumn(name = "submission_document_id"))
+    @JoinTable(name = "applicant_document",
+        joinColumns = @JoinColumn(name = "applicant_id"),
+        inverseJoinColumns = @JoinColumn(name = "submission_document_id"))
     private List<SubmissionDocument> documents;
 
     @ManyToOne

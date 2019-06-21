@@ -49,6 +49,6 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return loanTemplateRepository
-            .LoanTemplateFilter(s.getName() == null ? "" : s.getName(), pageable);
+            .loanTemplateFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 }
