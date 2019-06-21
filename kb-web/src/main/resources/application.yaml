@@ -11,7 +11,7 @@ spring:
         hibernate:
               enable_lazy_load_no_trans: true
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
+    url: jdbc:mysql://localhost:3306/cp_master309
     username: root
     password:
 
