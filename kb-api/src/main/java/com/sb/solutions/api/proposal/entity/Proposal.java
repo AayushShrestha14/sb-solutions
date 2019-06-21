@@ -1,15 +1,13 @@
 package com.sb.solutions.api.proposal.entity;
 
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.RepaymentMode;
+import com.sb.solutions.core.enums.ServiceChargeMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import java.util.Date;
 
 @Entity
@@ -19,13 +17,11 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
 
-    @OneToOne
-    private LoanConfig creditFacility;
     private int proposedLimit;
     private double interestRate;
     private double baseRate;
     private double premiumRateOnBaseRate;
-    private boolean percentOrFlat;
+    private ServiceChargeMethod serviceChargeMethod;
     private double serviceCharge;
     private Date tenureYear;
     private double cibCharge;

@@ -12,6 +12,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -71,6 +72,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     private String previousStageList;
 
     private Boolean isValidated = false;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Proposal proposal;
 
     public List getPreviousList() {
         if (this.getPreviousStageList() != null) {
