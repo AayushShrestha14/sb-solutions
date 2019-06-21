@@ -25,7 +25,7 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
 
     @Override
     public String extractKey(OAuth2Authentication authentication) {
-        Map<String, String> values = new LinkedHashMap<String, String>();
+        Map<String, String> values = new LinkedHashMap<>();
         OAuth2Request authorizationRequest = authentication.getOAuth2Request();
         if (!authentication.isClientOnly()) {
             values.put(USERNAME, authentication.getName());
@@ -36,8 +36,8 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
             values.put(SCOPE, OAuth2Utils.formatParameterList(authorizationRequest.getScope()));
         }
 
-    /*String deviceId = "111";
-    values.put("device_id", deviceId);*/
+        /*String deviceId = "111";
+        values.put("device_id", deviceId);*/
         String deviceId = authorizationRequest.getRequestParameters().get("device_id");
         if (deviceId != null && !deviceId.isEmpty()) {
             values.put("device_id", deviceId);
@@ -58,9 +58,5 @@ public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenera
             throw new IllegalStateException(
                 "UTF-8 encoding not available.  Fatal (should be in the JDK).");
         }
-
-
     }
-
-
 }

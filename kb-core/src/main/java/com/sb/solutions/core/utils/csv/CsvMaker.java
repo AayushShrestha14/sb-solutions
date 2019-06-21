@@ -18,6 +18,8 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -31,8 +33,10 @@ import com.sb.solutions.core.constant.FilePath;
 @Service
 public class CsvMaker {
 
+    private static final Logger logger = LoggerFactory.getLogger(CsvMaker.class);
+
     private List<CsvHeader> mapperToHeader(Map<String, String> header) {
-        List<String> tempMapList = new ArrayList<String>(header.values());
+        List<String> tempMapList = new ArrayList<>(header.values());
         List<CsvHeader> csvHeaders = new ArrayList<>();
         for (String a : tempMapList) {
             CsvHeader csvHeader = new CsvHeader();
@@ -42,7 +46,7 @@ public class CsvMaker {
         return csvHeaders;
     }
 
-    private List<CsvMakerDto> ModelToMapperData(List objects, Map<String, String> header) {
+    private List<CsvMakerDto> modelToMapperData(List objects, Map<String, String> header) {
         List<CsvMakerDto> csvMakerDtoList = new ArrayList<>();
         for (Object o : objects) {
 
@@ -87,6 +91,7 @@ public class CsvMaker {
                             try {
                                 map1.put(a, newMapper.get(myList.get(q + 1).toString()).toString());
                             } catch (Exception e) {
+                                logger.error("Error", e);
                             }
                         }
 
@@ -107,7 +112,7 @@ public class CsvMaker {
     public String csv(String file, Map<String, String> head, List pojo, String uploadDir) {
 
         List<CsvHeader> csvHeaders = mapperToHeader(head);
-        List<CsvMakerDto> csvMakerDtos = ModelToMapperData(pojo, head);
+        List<CsvMakerDto> csvMakerDtos = modelToMapperData(pojo, head);
         Workbook wb = new HSSFWorkbook();
 
         Date date = new Date();
@@ -119,7 +124,7 @@ public class CsvMaker {
             dir.mkdirs();
         }
         try (OutputStream os = new FileOutputStream(dir + filename)) {
-            Sheet sheet = wb.createSheet("New Sheet");
+            final Sheet sheet = wb.createSheet("New Sheet");
             CellStyle cellStyle = wb.createCellStyle();
 
             cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -147,8 +152,6 @@ public class CsvMaker {
                     row.createCell(j)
                         .setCellValue(o == null ? "-" : o.toString());
                 }
-
-
             }
 
             for (int i = 0; i < headerCount; i++) {
@@ -157,14 +160,10 @@ public class CsvMaker {
 
             wb.write(os);
             wb.close();
-        } catch
-        (Exception e) {
+        } catch (Exception e) {
+            logger.error("Error", e);
         }
 
         return uploadDir + filename;
-
-
     }
-
-
 }

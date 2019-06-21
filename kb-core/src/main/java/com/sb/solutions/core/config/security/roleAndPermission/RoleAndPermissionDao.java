@@ -115,8 +115,8 @@ public class RoleAndPermissionDao {
         List<Map<String, Object>> mapList = this.getRole();
         for (Map<String, Object> map : mapList) {
             if (map.get("api_url") != null) {
-                http.authorizeRequests().
-                    antMatchers(map.get("api_url").toString())
+                http.authorizeRequests()
+                    .antMatchers(map.get("api_url").toString())
                     .hasAnyAuthority(map.get("role_name").toString());
             }
         }

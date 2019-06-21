@@ -6,13 +6,16 @@ package com.sb.solutions.core.utils.date;
 
 public class NepaliDate {
 
-    private int mahina, gatey, saal;
+    private int mahina;
+    private int gatey;
+    private  int saal;
     private String baar;
-    public static final String MONTHS[] = {"Baisakh", "Jestha", "Ashar", "Shrawan",
+
+    public static final String[] MONTHS = {"Baisakh", "Jestha", "Ashar", "Shrawan",
         "Bhadra", "Ashoj", "Kartik", "Mangsir",
         "Poush", "Magh", "Falgun", "Chaitra"};
 
-    int[][] numberOfDaysPerYear = {
+    private int[][] numberOfDaysPerYear = {
         {31, 31, 32, 32, 31, 30, 30, 29, 30, 29, 30, 30},
         {31, 32, 31, 32, 31, 30, 30, 30, 29, 29, 30, 31},
         {31, 31, 31, 32, 31, 31, 29, 30, 30, 29, 30, 30},
@@ -128,7 +131,9 @@ public class NepaliDate {
     }
 
     public int getDaysOf(int year, int month) {
-        return numberOfDaysPerYear[year - Converter.START_NEPALI_YEAR][month - 1];
+        return numberOfDaysPerYear[year
+            - com.sb.solutions.core.utils.date.Converter.START_NEPALI_YEAR]
+            [month - 1];
     }
 
     public String toString() {

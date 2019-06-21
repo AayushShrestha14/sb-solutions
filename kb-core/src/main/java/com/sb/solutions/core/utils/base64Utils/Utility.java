@@ -61,16 +61,14 @@ public class Utility {
     }
 
     public String randomStringGenerator(int length) {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String saltValue = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < length) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
+            int index = (int) (rnd.nextFloat() * saltValue.length());
+            salt.append(saltValue.charAt(index));
         }
         return salt.toString();
 
     }
-
-
 }
