@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByRoleAndBranch(Long roleId, String branchIds) {
+    public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
         if (r.getRoleAccess().equals(RoleAccess.ALL)) {
             return userRepository.findByRoleRoleAccess(RoleAccess.ALL);
@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getRoleAccessFilterByBranch() {
+    public List<Long> getRoleAccessFilterByBranch() {
         User u = this.getAuthenticated();
         List<Long> branchIdList = new ArrayList<>();
         String branchIdListTOString = null;
@@ -185,10 +185,9 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-            branchIdListTOString = branchIdList.stream().map(Object::toString).collect(Collectors.joining(","));
         }
-        System.out.println(branchIdListTOString);
-        return branchIdListTOString;
+
+        return branchIdList;
     }
 
 

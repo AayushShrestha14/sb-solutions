@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -69,7 +70,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticated();
-        String branchAccess = userService.getRoleAccessFilterByBranch();
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }

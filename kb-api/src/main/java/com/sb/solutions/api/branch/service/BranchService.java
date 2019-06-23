@@ -20,4 +20,6 @@ public interface BranchService extends BaseService<Branch> {
     void saveExcel(MultipartFile file);
 
     List<Branch> getAccessBranchByCurrentUser();
+
+    List<Branch> getBranchNoTAssignUser(Long roleId);
 }

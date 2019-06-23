@@ -51,7 +51,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.and(predicate);
 
             case FILTER_BY_TO_USER:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("currentStage").join("toUser").get("id"), Long.valueOf(value)));
+                return null;
 
             default:
                 return null;

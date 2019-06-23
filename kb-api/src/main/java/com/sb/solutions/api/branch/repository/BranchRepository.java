@@ -32,4 +32,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,JpaSpecifi
     @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
     List<Branch> branchCsvFilter(@Param("name") String name);
 
+    @Query(value = "SELECT * FROM branch where id not in (:branchId)",nativeQuery = true)
+    List<Branch>  getByIdNotIn(@Param("branchId") List<Long> branchId);
 }

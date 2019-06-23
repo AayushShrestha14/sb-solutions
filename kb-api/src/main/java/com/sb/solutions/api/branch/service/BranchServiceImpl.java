@@ -4,6 +4,7 @@ import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
+import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
@@ -21,10 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -102,5 +101,17 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public List<Branch> getAccessBranchByCurrentUser() {
         return userService.getAuthenticated().getBranch();
+    }
+
+    @Override
+    public List<Branch> getBranchNoTAssignUser(Long roleId) {
+        List<User> userList = userService.findByRoleId(roleId);
+        List<Long> branches = new ArrayList<>();
+        for (User u : userList) {
+            for (Branch b : u.getBranch()) {
+                branches.add(b.getId());
+            }
+        }
+        return branchRepository.getByIdNotIn(branches);
     }
 }
