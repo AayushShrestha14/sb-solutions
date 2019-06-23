@@ -17,7 +17,9 @@ import com.sb.solutions.web.user.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.MethodNotAllowedException;
 
 import java.util.ArrayList;
 import java.util.List;

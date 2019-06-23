@@ -1,11 +1,13 @@
 package com.sb.solutions.core.exception.handler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -118,4 +120,19 @@ public class RequestExceptionHandler {
 
         return null;
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> DuplicateEntryExceptionHandler(
+            ConstraintViolationException ex) {
+
+        logger.error("Can not parse request", ex);
+
+        final Map<String, Object> response = Maps.newHashMap();
+        response.put("message", ex.getConstraintName());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.constant.UploadDir;
@@ -39,15 +40,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
+    private final RoleRepository roleRepository;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
                            @Autowired UserRepository userRepository,
                            @Autowired BranchRepository branchRepository,
+                           @Autowired RoleRepository roleRepository,
                            @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
+        this.roleRepository = roleRepository;
+
     }
 
     @Override
@@ -103,6 +108,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
             if (!user.getBranch().isEmpty()) {
+
                 throw new InvalidPropertyException(User.class, "Branch", "Branch can not be selected For role");
             }
         }
@@ -130,7 +136,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findByRoleAndBranch(Long roleId, String branchIds) {
-        return userRepository.findByRoleIdAndBranchIn(roleId, this.getRoleAccessFilterByBranch());
+        Role r = roleRepository.getOne(roleId);
+        if (r.getRoleAccess().equals(RoleAccess.ALL)) {
+            return userRepository.findByRoleRoleAccess(RoleAccess.ALL);
+        }
+        return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
 
     @Override
@@ -180,6 +190,7 @@ public class UserServiceImpl implements UserService {
         System.out.println(branchIdListTOString);
         return branchIdListTOString;
     }
+
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -5,6 +5,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,4 +18,6 @@ public interface BranchService extends BaseService<Branch> {
     String csv(SearchDto searchDto);
 
     void saveExcel(MultipartFile file);
+
+    List<Branch> getAccessBranchByCurrentUser();
 }

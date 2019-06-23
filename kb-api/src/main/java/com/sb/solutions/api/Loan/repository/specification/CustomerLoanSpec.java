@@ -5,6 +5,9 @@ import com.sb.solutions.core.enums.DocStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/8/2019
@@ -14,8 +17,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_LOAN = "loanConfigId";
     private static final String FILTER_BY_DOC_STATUS = "documentStatus";
     private static final String FILTER_BY_CURRENT_USER_ROLE = "currentUserRole";
-    private static final String FILTER_BY_ROLE_MAKER = "createdBy";
-    private static final String FILTER_BY_BRANCH = "branchId";
+    private static final String FILTER_BY_TO_USER = "toUser";
+    private static final String FILTER_BY_BRANCH = "branchIds";
 
     private final String property;
     private final String value;
@@ -39,10 +42,16 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"), Long.valueOf(value));
 
             case FILTER_BY_BRANCH:
-                return criteriaBuilder.equal(root.join("branch").get("id"), Long.valueOf(value));
+                Pattern pattern = Pattern.compile(",");
+                List<Long> list = pattern.splitAsStream(value)
+                        .map(Long::valueOf)
+                        .collect(Collectors.toList());
+                Expression<String> exp = root.join("branch").get("id");
+                Predicate predicate = exp.in(list);
+                return criteriaBuilder.and(predicate);
 
-            case FILTER_BY_ROLE_MAKER:
-                return null;
+            case FILTER_BY_TO_USER:
+                return criteriaBuilder.and(criteriaBuilder.equal(root.join("currentStage").join("toUser").get("id"), Long.valueOf(value)));
 
             default:
                 return null;

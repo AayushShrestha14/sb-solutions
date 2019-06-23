@@ -4,6 +4,7 @@ import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
@@ -37,6 +38,9 @@ public class BranchServiceImpl implements BranchService {
 
     @Autowired
     BaseHttpService baseHttpService;
+
+    @Autowired
+    UserService userService;
 
 
     @Override
@@ -93,5 +97,10 @@ public class BranchServiceImpl implements BranchService {
     public void saveExcel(MultipartFile file) {
         CsvReader csvReader = new CsvReader();
         csvReader.excelReader(file);
+    }
+
+    @Override
+    public List<Branch> getAccessBranchByCurrentUser() {
+        return userService.getAuthenticated().getBranch();
     }
 }

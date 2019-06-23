@@ -28,6 +28,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
 
+
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
                                    @Autowired UserService userService) {
         this.customerLoanRepository = customerLoanRepository;
@@ -67,9 +68,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
-        s.put("currentUserRole", userService.getAuthenticated().getRole() == null ? null : userService.getAuthenticated().getRole().getId().toString());
-        s.put("createdBy", userService.getAuthenticated() == null ? null : userService.getAuthenticated().getId().toString());
-        s.put("branchId", userService.getAuthenticated().getBranch() == null ? null : userService.getAuthenticated().getBranch().get(0).getId().toString());
+        User u = userService.getAuthenticated();
+        String branchAccess = userService.getRoleAccessFilterByBranch();
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
+        s.put("toUser", u == null ? null : u.getId().toString());
+        s.put("branchIds", branchAccess == null ? null : branchAccess);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);

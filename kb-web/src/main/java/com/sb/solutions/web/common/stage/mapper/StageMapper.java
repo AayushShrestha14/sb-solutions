@@ -73,6 +73,7 @@ public class StageMapper {
                     currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
                 } catch (Exception e) {
+
                 }
             }
         }

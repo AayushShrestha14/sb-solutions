@@ -78,4 +78,9 @@ public class BranchController {
     public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
         return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
+
+    @GetMapping(value = "/branch-current-user")
+    public ResponseEntity<?> getBranchAccessByCurrentUser() {
+        return new RestResponseDto().successModel(branchService.getAccessBranchByCurrentUser());
+    }
 }
