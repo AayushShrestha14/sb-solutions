@@ -38,6 +38,8 @@ public interface UserService extends BaseService<User> ,UserDetailsService {
 
     List<Long> getRoleAccessFilterByBranch();
 
+    String dismissAllBranchAndRole(User user);
+
 
 
 }

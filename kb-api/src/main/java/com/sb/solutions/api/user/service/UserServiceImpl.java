@@ -190,6 +190,15 @@ public class UserServiceImpl implements UserService {
         return branchIdList;
     }
 
+    @Override
+    public String dismissAllBranchAndRole(User user) {
+        user.setBranch(new ArrayList<Branch>());
+        user.setStatus(Status.INACTIVE);
+        user.setRole(null);
+        userRepository.save(user);
+        return "SUCCESS";
+    }
+
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
