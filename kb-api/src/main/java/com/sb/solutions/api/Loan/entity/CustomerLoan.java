@@ -72,6 +72,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Branch branch;
 
+    private String offerLetterUrl;
+
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String previousStageList;
