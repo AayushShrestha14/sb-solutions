@@ -7,6 +7,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.RoleAccess;
@@ -25,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -41,17 +43,20 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
+    private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
                            @Autowired UserRepository userRepository,
                            @Autowired BranchRepository branchRepository,
                            @Autowired RoleRepository roleRepository,
+                           @Autowired CustomJdbcTokenStore customJdbcTokenStore,
                            @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
         this.roleRepository = roleRepository;
+        this.customJdbcTokenStore = customJdbcTokenStore;
 
     }
 
@@ -196,6 +201,12 @@ public class UserServiceImpl implements UserService {
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
         userRepository.save(user);
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore.findTokensByUserName(user.getUsername());
+        for (OAuth2AccessToken tempToken : token)
+        {
+          customJdbcTokenStore.removeAccessToken(tempToken);
+          customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+        }
         return "SUCCESS";
     }
 
