@@ -1,10 +1,11 @@
-package com.sb.solutions.api.basicInfo.customer.entity;
+package com.sb.solutions.api.customer.entity;
 
+import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.api.basicInfo.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Table(name = "customer")
 public class Customer extends BaseEntity<Long> {
 
     private String title;
@@ -40,8 +42,7 @@ public class Customer extends BaseEntity<Long> {
     private String citizenshipNumber;
     private Date citizenshipIssuedDate;
     private String issuedPlace;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private Status status = Status.ACTIVE;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomerRelative> customerRelatives;
 }
-

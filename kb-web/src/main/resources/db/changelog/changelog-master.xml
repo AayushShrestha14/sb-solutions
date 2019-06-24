@@ -1091,6 +1091,9 @@
             <column name="email" type="VARCHAR(256)"/>
             <column name="citizenship_number" type="VARCHAR(256)"/>
             <column name="initial_relation_date" type="DATE"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="citizenship_issued_date" type="DATE"/>
             <column name="issued_place" type="VARCHAR(256)"/>
             <column name="created_by_id" type="BIGINT">
@@ -1126,12 +1129,6 @@
             <column name="citizenship_number" type="VARCHAR(256)"/>
             <column name="citizenship_issued_date" type="DATE"/>
             <column name="citizenship_issued_place" type="VARCHAR(256)"/>
-            <column name="customer_id" type="BIGINT">
-                <constraints nullable="false"
-                             foreignKeyName="fk_customer_relative_customer_id"
-                             referencedTableName="customer"
-                             referencedColumnNames="id"/>
-            </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_relative_created_by_id"
@@ -1200,6 +1197,32 @@
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="5-customer-customer-relatives" author="david">
+        <createTable tableName="customer_customer_relatives">
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_relatives_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="customer_customer_relatives"
+                                 constraintName="fk_customer_customer_relatives_customer_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer"/>
+        <addForeignKeyConstraint baseColumnNames="customer_relatives_id"
+                                 baseTableName="customer_customer_relatives"
+                                 constraintName="fk_customer_customer_relatives_customer_relatives_id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer_relative"/>
     </changeSet>
 
     <changeSet id="5-create-legal-status" author="david">
@@ -1657,8 +1680,16 @@
         </sql>
     </changeSet>
 
+
     <changeSet id="1-load-data-for-eligibility" author="rawseek">
         <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="1-opening-account-sub-nav" author="david">
+        <sqlFile path="data/david_permission_sub_nav.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="1-loan-cycle" author="david">
+        <sqlFile path="data/david_loan_cycle.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
     <include file="20190503_question.xml" relativeToChangelogFile="true"/>
@@ -1671,10 +1702,10 @@
     <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
     <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
     <include file="20190609_customer_loan.xml" relativeToChangelogFile="true"/>
-
     <include file="20190515_loan_config_document.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_criteria.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true"/>
+    <include file="20190610_opening_account.xml" relativeToChangelogFile="true"/>
     <include file="20190621_branch_user.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

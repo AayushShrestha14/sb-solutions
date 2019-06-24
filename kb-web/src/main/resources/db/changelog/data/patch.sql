@@ -8,19 +8,20 @@ INSERT INTO `user` (`id`, `created_at`, `last_modified_at`, `account_no`, `email
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fa fa-bank', '/home/admin/branch', 10, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-gear', '/home/admin/config', 30, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-exchange', '/home/admin/role', 19, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (4, '   Valuator', 'fas fa-money-check', '/home/admin/valuator', 25, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (5,  '  Sector', 'fas fa-hands-helping', '/home/admin/sector', 50, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (4, 'Valuator', 'fas fa-money-check', '/home/admin/valuator', 25, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (5,  'Sector', 'fas fa-hands-helping', '/home/admin/sector', 50, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 1, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (7, '   Approval Limit', 'fas fa-indent', '/home/admin/approvalLimit', 2, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (8, '   Nepse Company', 'fas fa-money-bill-wave', '/home/admin/nepse', 21, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (7, 'Approval Limit', 'fas fa-indent', '/home/admin/approvalLimit', 2, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (8, 'Nepse Company', 'fas fa-money-bill-wave', '/home/admin/nepse', 21, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (9,  'Segment', 'fa fa-user', '/home/admin/segment', 22, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (10,  'Sub Segment', 'fa fa-user', '/home/admin/sub-segment', 23, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, ' Company', 'fas fa-desktop', '/home/admin/company', 24, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (11, 'Company', 'fas fa-desktop', '/home/admin/company', 24, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (12,  'SubSector', 'fa fa-user', '/home/admin/subSector', 51, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/admin/document', 55, 1);
-INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  '   Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fa fa-dashboard', '/home/admin/dashboard', 1, 1);
 INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (18,  'Eligibility', 'fa fa-check-square', '/home/admin/eligibility', 62, 1);
+INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (19,  'Account Opening', 'fa fa-money-check', null, 56, 1);
 
 
 
@@ -70,8 +71,10 @@ INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permissi
 
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (17, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  17, 1);
+
  INSERT INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (18 , '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  18, 1);
+
 
 
 
