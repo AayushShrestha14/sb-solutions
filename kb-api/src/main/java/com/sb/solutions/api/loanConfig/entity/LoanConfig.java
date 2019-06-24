@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
+import com.sb.solutions.api.offerLetter.entity.OfferLetter;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class LoanConfig extends BaseEntity<Long> {
 
-    @NotNull(message = "name should not be null")
-    private String name;
+    private @NotNull(message = "name should not be null") String name;
     @ManyToMany
     private List<LoanTemplate> templateList;
     private Boolean isFundable;
@@ -37,4 +37,6 @@ public class LoanConfig extends BaseEntity<Long> {
     private List<Document> eligibilityDocuments;
     private Long totalPoints = 0L;
     private Boolean enableEligibility;
+    @ManyToMany
+    private List<OfferLetter> offerLetters;
 }

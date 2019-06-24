@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +22,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class LoanTemplate extends BaseEntity<Long> {
 
-    @NotNull
-    private String name;
-    @NotNull
-    private String templateUrl;
+    private @NotNull String name;
+    private @NotNull String templateUrl;
     private Integer orderUrl;
     @Lob
     private String templateView;
