@@ -4,14 +4,17 @@ import java.util.Date;
 import javax.persistence.Entity;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class Guarantor extends BaseEntity<Long> {
 
     private String name;

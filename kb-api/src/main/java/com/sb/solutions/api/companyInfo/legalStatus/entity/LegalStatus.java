@@ -2,7 +2,9 @@ package com.sb.solutions.api.companyInfo.legalStatus.entity;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
+import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,5 +35,8 @@ public class LegalStatus extends BaseEntity<Long> {
     private String panNumber;
 
     private Date panRegistrationDate;
+
+    @OneToOne(mappedBy = "legalStatus")
+    private EntityInfo entityInfo;
 
 }

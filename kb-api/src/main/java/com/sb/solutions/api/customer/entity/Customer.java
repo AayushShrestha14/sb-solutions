@@ -40,6 +40,8 @@ public class Customer extends BaseEntity<Long> {
 
     @ManyToOne
     private MunicipalityVdc municipalities;
+    private String street;
+    private String wardNo;
     private String telephone;
     private String mobile;
     private String email;

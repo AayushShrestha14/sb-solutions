@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class ManagementTeam extends BaseEntity<Long> {
 
     private String name;
-    private String description = "test";
+    private String description;
     private String designation;
 }

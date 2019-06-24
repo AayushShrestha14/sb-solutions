@@ -26,8 +26,10 @@ import lombok.NoArgsConstructor;
 public class EntityInfo extends BaseEntity<Long> {
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "legal_status_id", referencedColumnName = "id")
     private LegalStatus legalStatus;
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "capital_id", referencedColumnName = "id")
     private Capital capital;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "swot_id", referencedColumnName = "id")
