@@ -30,6 +30,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v1/user/test")
                 .permitAll()
+                .antMatchers("/v1/user/mail")
+                .permitAll()
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
                 .antMatchers("/v1/loan-configs/*/applicants").permitAll()

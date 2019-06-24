@@ -1,5 +1,6 @@
 package com.sb.solutions.web.approvallimit.v1;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class ApprovalLimitController {
 
     @GetMapping(value="/{id}/role")
     public ResponseEntity<?> getByRoleAndLoan(@PathVariable Long id){
-        return new RestResponseDto().successModel(approvalLimitService.getByRoleAndLoan(userService.getAuthenticated().getRole().getId(),id));
+        return new RestResponseDto().successModel(approvalLimitService.getByRoleAndLoan(userService.getAuthenticated().getRole().getId(),id,LoanApprovalType.PERSONAL_TYPE));
     }
 
 }

@@ -1685,6 +1685,10 @@
         <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="1-product_mode" author="rujan">
+        <sqlFile path="data/product_mode.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     <changeSet id="1-opening-account-sub-nav" author="david">
         <sqlFile path="data/david_permission_sub_nav.sql" relativeToChangelogFile="true"/>
     </changeSet>

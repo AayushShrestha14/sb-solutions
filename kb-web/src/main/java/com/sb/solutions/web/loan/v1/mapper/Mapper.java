@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.user.entity.User;
@@ -17,9 +18,7 @@ import com.sb.solutions.web.user.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.MethodNotAllowedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +45,13 @@ public class Mapper {
 
     public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
-            ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(customerLoan.getLoan().getId(), currentUser.getRole().getId());
+            ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(currentUser.getRole().getId(), customerLoan.getLoan().getId(),LoanApprovalType.PERSONAL_TYPE);
             if (approvalLimit == null) {
                 throw new RuntimeException("Authority Limit Error");
             }
             if (customerLoan.getDmsLoanFile() != null) {
                 if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
-                    throw new RuntimeException("Authority Limit Error");
+                    throw new RuntimeException("Amount Exceed");
                 }
             }
         }

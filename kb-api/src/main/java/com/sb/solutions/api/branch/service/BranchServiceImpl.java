@@ -11,6 +11,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.csv.CsvReader;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,9 @@ public class BranchServiceImpl implements BranchService {
             for (Branch b : u.getBranch()) {
                 branches.add(b.getId());
             }
+        }
+        if(branches.isEmpty()){
+            return branchRepository.findAll();
         }
         return branchRepository.getByIdNotIn(branches);
     }

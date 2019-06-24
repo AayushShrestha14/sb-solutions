@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Rujan Maharjan on 2/13/2019
  */
 @Repository
-public interface BranchRepository extends JpaRepository<Branch, Long>,JpaSpecificationExecutor<Branch> {
+public interface BranchRepository extends JpaRepository<Branch, Long>, JpaSpecificationExecutor<Branch> {
 
 
     @Query(value = "select\n" +
@@ -32,6 +32,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,JpaSpecifi
     @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
     List<Branch> branchCsvFilter(@Param("name") String name);
 
-    @Query(value = "SELECT * FROM branch where id not in (:branchId)",nativeQuery = true)
-    List<Branch>  getByIdNotIn(@Param("branchId") List<Long> branchId);
+    @Query(value = "SELECT b FROM Branch b where b.id not in (:branchId)")
+    List<Branch> getByIdNotIn(@Param("branchId") List<Long> branchId);
 }
