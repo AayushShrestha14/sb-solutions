@@ -1,20 +1,24 @@
 package com.sb.solutions.web.branch.v1;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -24,16 +28,16 @@ import javax.validation.Valid;
 @RequestMapping("/v1/branch")
 public class BranchController {
 
-    @Autowired
-    BranchService branchService;
+    private final BranchService branchService;
 
-    @Autowired
-    GlobalExceptionHandler globalExceptionHandler;
+    public BranchController(@Autowired BranchService branchService) {
+        this.branchService = branchService;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> saveBranch(@Valid @RequestBody Branch branch, BindingResult bindingResult) {
-        globalExceptionHandler.constraintValidation(bindingResult);
-        Branch b = branchService.save(branch);
+    public ResponseEntity<?> saveBranch(@Valid @RequestBody Branch branch) {
+        final Branch b = branchService.save(branch);
+
         if (b == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
@@ -41,22 +45,23 @@ public class BranchController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST,value = "/upload")
+    @RequestMapping(method = RequestMethod.POST, value = "/upload")
     public ResponseEntity<?> uploadBranchExcel(@RequestParam("file") MultipartFile multipartFile) {
         branchService.saveExcel(multipartFile);
 
         return new RestResponseDto().successModel(null);
-
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/list")
-    public ResponseEntity<?> getPageableBranch(@RequestBody Object searchDto, @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    public ResponseEntity<?> getPageableBranch(@RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(
+            branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
@@ -73,5 +78,4 @@ public class BranchController {
     public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
         return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
-
 }

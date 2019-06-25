@@ -1,5 +1,7 @@
 package com.sb.solutions.web.company.v1;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +27,9 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping
-    public ResponseEntity<?> saveCompany(@RequestBody Company company) {
+    public ResponseEntity<?> saveCompany(@Valid @RequestBody Company company) {
         return new RestResponseDto().successModel(companyService.save(company));
     }
-
 
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",

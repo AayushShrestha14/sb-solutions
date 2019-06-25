@@ -12,10 +12,6 @@ public class UploadDir {
     public static String userCsv = "images/userCsv";
     public static String userProfile = "images/userProfile/";
     public static String userSignature = "images/userSignature/";
-
+    public static String accountRequest = "accountRequest/";
     public static String initialDocument= "images/";
-
-
-
-
 }

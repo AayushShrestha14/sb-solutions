@@ -1,24 +1,25 @@
 package com.sb.solutions.web.basicInfo.v1;
 
-import com.sb.solutions.api.basicInfo.customer.entity.Customer;
-import com.sb.solutions.api.basicInfo.customer.service.CustomerService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.exception.GlobalExceptionHandler;
-import lombok.AllArgsConstructor;
+import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.service.CustomerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.sb.solutions.core.dto.RestResponseDto;
+import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/v1/basicInfo")
 public class BasicInfoController {
+
     private CustomerService customerService;
-    GlobalExceptionHandler globalExceptionHandler;
 
     @PostMapping
-    public ResponseEntity<?> saveBasicInfo(@RequestBody Customer customer, BindingResult bindingResult){
-        globalExceptionHandler.constraintValidation(bindingResult);
+    public ResponseEntity<?> saveBasicInfo(@RequestBody Customer customer) {
         return new RestResponseDto().successModel(customerService.save(customer));
     }
 }

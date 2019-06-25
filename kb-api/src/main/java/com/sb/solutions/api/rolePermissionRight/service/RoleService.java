@@ -14,6 +14,8 @@ public interface RoleService extends BaseService<Role> {
 
     List<Map<Object, Object>> activeRole();
 
+    boolean isMaker();
 
+    List<Role> getApproval();
 }
 

@@ -1,6 +1,7 @@
 package com.sb.solutions.core.config.security;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -31,10 +32,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/v1/user/resetPassword/")
                 .permitAll()
+                .antMatchers("/v1/loan-configs/*/applicants").permitAll()
+                .antMatchers("/v1/loan-configs").permitAll()
+                .antMatchers("/v1/loan-configs/*/applicants/*/documents").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/eligibility-criterias").permitAll()
                 .antMatchers("/v1/user/forgetPassword").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/v1/*")
-                .authenticated()
+                .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/oauth/logout")).logoutSuccessUrl("/api/language")

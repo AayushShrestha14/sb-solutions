@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.user.dto.RoleDto;
 import com.sb.solutions.web.user.dto.UserDto;
@@ -23,15 +24,15 @@ import java.util.List;
 public class StageMapper {
 
 
-    @Autowired
-    UserService userService;
 
+    private final UserService userService;
 
-    public StageMapper() {
+    public StageMapper(@Autowired UserService userService) {
+        this.userService = userService;
     }
 
 
-    public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy, StageDto currentStage, UserDto currentUser) throws IllegalAccessException, InstantiationException {
+    public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy, StageDto currentStage, UserDto currentUser){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -45,12 +46,17 @@ public class StageMapper {
             currentStage = this.sendBackward(previousList, currentStage, currentUser, createdBy);
         }
 
-        T o = objectMapper.convertValue(currentStage, classType);
-        return o;
+        if(stageDto.getDocAction().equals(DocAction.APPROVED) || stageDto.getDocumentStatus().equals(DocStatus.CLOSED)||
+                stageDto.getDocumentStatus().equals(DocStatus.REJECTED)){
+            currentStage = this.approvedCloseReject(currentStage,currentUser);
+        }
+
+        return objectMapper.convertValue(currentStage, classType);
+
     }
 
 
-    public StageDto sendBackward(List previousList, StageDto currentStage, UserDto currentUser, Long createdBy) {
+    private StageDto sendBackward(List previousList, StageDto currentStage, UserDto currentUser, Long createdBy) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -62,7 +68,7 @@ public class StageMapper {
                 r.setId(maker.getFromRole().getId());
                 currentStage.setToRole(r);
                 try {
-                    List<User> users = userService.findByRoleAndBranch(r.getId(), currentUser.getBranch().getId());
+                 final   List<User> users = userService.findByRoleAndBranch(r.getId(), currentUser.getBranch().getId());
 
                     currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
@@ -77,5 +83,9 @@ public class StageMapper {
         return currentStage;
     }
 
-
+    private StageDto approvedCloseReject(StageDto currentStage, UserDto currentUser){
+        currentStage.setToRole(currentUser.getRole());
+        currentStage.setToUser(currentUser);
+        return currentStage;
+    }
 }

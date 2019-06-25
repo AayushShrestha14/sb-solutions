@@ -25,7 +25,6 @@ public class FileUploadUtils {
     private static String url;
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
-        FilePath filePath = new FilePath();
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         }
@@ -33,21 +32,18 @@ public class FileUploadUtils {
         try {
             byte[] bytes = multipartFile.getBytes();
             if (type.equals("profile")) {
-                url = filePath.getOSPath() + UploadDir.userProfile;
+                url = UploadDir.userProfile;
             } else if (type.equals("signature")) {
-                url = filePath.getOSPath() + UploadDir.userSignature;
+                url = UploadDir.userSignature;
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
-            Path path = Paths.get(url);
+            Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
-                new File(url).mkdirs();
+                new File(FilePath.getOSPath() + url).mkdirs();
             }
-            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//dd/MM/yyyy
-            Date now = new Date();
-            String strDate = sdfDate.format(now);
-            String imagePath = url + strDate + multipartFile.getOriginalFilename();
-            path = Paths.get(imagePath);
+            String imagePath = url + System.currentTimeMillis() + "." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            path = Paths.get(FilePath.getOSPath() + imagePath);
             Files.write(path, bytes);
             System.out.println(imagePath);
             return new RestResponseDto().successModel(imagePath);
@@ -67,22 +63,61 @@ public class FileUploadUtils {
 
         try {
             byte[] bytes = multipartFile.getBytes();
-
+            FilePath filePath = new FilePath();
+            url = FilePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
             String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-
-            Path path = Paths.get(returnUrl);
+            Path path = Paths.get(url);
             if (!Files.exists(path)) {
-                new File(returnUrl).mkdirs();
+                new File(url).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            url = returnUrl + name + "_" + documentName + "." + fileExtension;
+            url = url + name + "_" + documentName + "." + fileExtension;
+            returnUrl = returnUrl+ name + "_" + documentName + "." + fileExtension;
             path = Paths.get(url);
             Files.write(path, bytes);
-            return new RestResponseDto().successModel(url);
+            return new RestResponseDto().successModel(returnUrl);
         } catch (IOException e) {
             log.error("Error while saving file", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
+
+    public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile, String branch, String type, String name) {
+        if (multipartFile.isEmpty()) {
+            return new RestResponseDto().failureModel("Select Signature Image");
+        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
+            return new RestResponseDto().failureModel("Image Size more than 400kb");
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
+            return new RestResponseDto().failureModel("Invalid file format");
+        }
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            url = UploadDir.accountRequest + branch + "/";
+            Path path = Paths.get(FilePath.getOSPath() + url);
+            if (!Files.exists(path)) {
+                new File(FilePath.getOSPath() + url).mkdirs();
+            }
+            String imagePath;
+            if (type.equals("citizen")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("passport")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("id")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else if (type.equals("photo")) {
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+            } else {
+                return new RestResponseDto().failureModel("wrong file type");
+            }
+            path = Paths.get(FilePath.getOSPath() + imagePath);
+            Files.write(path, bytes);
+            return new RestResponseDto().successModel(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new RestResponseDto().failureModel("Fail");
+        }
+    }
+
+
 }
 
