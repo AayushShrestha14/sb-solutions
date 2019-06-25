@@ -9,9 +9,13 @@ import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
+import com.sb.solutions.api.productMode.entity.ProductMode;
+import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.Product;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
 import com.sb.solutions.web.user.dto.UserDto;
@@ -34,24 +38,30 @@ public class Mapper {
     private final StageMapper stageMapper;
 
     private final ApprovalLimitService approvalLimitService;
+    private final ProductModeService productModeService;
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
 
 
     public Mapper(@Autowired StageMapper stageMapper,
-                  @Autowired ApprovalLimitService approvalLimitService) {
+                  @Autowired ApprovalLimitService approvalLimitService,
+                  @Autowired ProductModeService productModeService) {
         this.stageMapper = stageMapper;
         this.approvalLimitService = approvalLimitService;
+        this.productModeService = productModeService;
     }
 
     public CustomerLoan ActionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
-            ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(currentUser.getRole().getId(), customerLoan.getLoan().getId(),LoanApprovalType.PERSONAL_TYPE);
-            if (approvalLimit == null) {
-                throw new RuntimeException("Authority Limit Error");
-            }
-            if (customerLoan.getDmsLoanFile() != null) {
-                if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
-                    throw new RuntimeException("Amount Exceed");
+            ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
+            if (productMode != null) {
+                ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(currentUser.getRole().getId(), customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
+                if (approvalLimit == null) {
+                    throw new RuntimeException("Authority Limit Error");
+                }
+                if (customerLoan.getDmsLoanFile() != null) {
+                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
+                        throw new RuntimeException("Amount Exceed");
+                    }
                 }
             }
         }
@@ -101,7 +111,7 @@ public class Mapper {
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
-                throw new RuntimeException("Cannot Perform the action");
+                throw new RuntimeException("No user present of selected To:");
             }
         }
         return stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);

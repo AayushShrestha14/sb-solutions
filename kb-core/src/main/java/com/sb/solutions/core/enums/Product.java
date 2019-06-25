@@ -8,6 +8,7 @@ public enum Product {
     DMS("Dms"),
     MEMO("Memo"),
     ACCOUNT("Account"),
+    ELIGIBILITY("Eligibility"),
     LAS("Las");
 
     private final String value;

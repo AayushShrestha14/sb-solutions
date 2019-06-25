@@ -2,6 +2,8 @@ package com.sb.solutions.api.productMode.service;
 
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.repository.ProductModeRepository;
+import com.sb.solutions.core.enums.Product;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,5 +41,10 @@ public class ProductModeServiceImpl implements ProductModeService {
     @Override
     public Page<ProductMode> findAllPageable(Object t, Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public ProductMode getByProduct(Product product, Status status) {
+        return productModeRepository.getByProductAndStatus(product,status);
     }
 }

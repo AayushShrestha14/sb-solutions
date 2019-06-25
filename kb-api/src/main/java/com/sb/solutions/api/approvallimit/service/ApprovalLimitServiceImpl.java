@@ -35,13 +35,18 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
 
     @Override
     public ApprovalLimit save(ApprovalLimit approvalLimit) {
-        ApprovalLimit approvalLimit1 = approvalLimitRepository
-                .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(
-                        approvalLimit.getAuthorities().getId(),
-                        approvalLimit.getLoanCategory().getId(),
-                        approvalLimit.getLoanApprovalType());
-        if (approvalLimit1 != null) {
-            throw new ConstraintViolationException("Already Exist", null, "Approval Limit Already Exist");
+        if (approvalLimit.getId() == null) {
+            ApprovalLimit approvalLimit1 = approvalLimitRepository
+                    .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(
+                            approvalLimit.getAuthorities().getId(),
+                            approvalLimit.getLoanCategory().getId(),
+                            approvalLimit.getLoanApprovalType());
+            if (approvalLimit1 != null) {
+                throw new ConstraintViolationException("Already Exist", null, "Approval Limit Already Exist");
+            }
+        }else {
+            ApprovalLimit approvalLimit2 = approvalLimitRepository.getOne(approvalLimit.getId());
+
         }
         return approvalLimitRepository.save(approvalLimit);
 

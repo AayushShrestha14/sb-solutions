@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -37,7 +38,9 @@ public class Role extends BaseEntity<Long> implements Serializable {
     @Transient
     private String modifiedByName;
 
+
     private RoleType roleType = RoleType.APPROVAL;
 
+    @NotNull
     private RoleAccess roleAccess = RoleAccess.OWN;
 }

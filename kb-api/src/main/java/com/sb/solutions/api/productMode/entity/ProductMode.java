@@ -1,6 +1,7 @@
 package com.sb.solutions.api.productMode.entity;
 
 import com.sb.solutions.core.enums.Product;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,6 @@ public class ProductMode {
     private Long id;
 
     private Product product;
+
+    private Status status;
 }

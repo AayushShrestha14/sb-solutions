@@ -4,10 +4,3 @@ CREATE TABLE if not exists `product_mode` (
   `status`  int(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
-INSERT INTO `product_mode` (`id`, `product`,`status`)
- VALUES
-  ('1', '0',0),
-  ('2', '1',1),
-  ('3', '2',1),
-  ('4', '3',1);
