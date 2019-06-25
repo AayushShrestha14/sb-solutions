@@ -36,7 +36,5 @@ public class LegalStatus extends BaseEntity<Long> {
 
     private Date panRegistrationDate;
 
-    @OneToOne(mappedBy = "legalStatus")
-    private EntityInfo entityInfo;
 
 }

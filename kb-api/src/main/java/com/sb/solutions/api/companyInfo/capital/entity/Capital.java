@@ -31,6 +31,4 @@ public class Capital extends BaseEntity<Long> {
 
     private int numberOfShareholder;
 
-    @OneToOne(mappedBy = "capital")
-    private EntityInfo entityInfo;
 }

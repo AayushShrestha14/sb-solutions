@@ -30,25 +30,23 @@ public class Customer extends BaseEntity<Long> {
 
     private String title;
     private String customerName;
+    private String customerId;
     private String accountNo;
-
     @ManyToOne
     private Province province;
-
     @ManyToOne
     private District district;
-
     @ManyToOne
     private MunicipalityVdc municipalities;
     private String street;
-    private String wardNo;
+    private String wardNumber;
     private String telephone;
     private String mobile;
     private String email;
     private Date initialRelationDate;
     private String citizenshipNumber;
     private Date citizenshipIssuedDate;
-    private String issuedPlace;
+    private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomerRelative> customerRelatives;

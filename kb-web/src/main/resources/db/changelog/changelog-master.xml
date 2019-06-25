@@ -1064,6 +1064,7 @@
       </column>
       <column name="title" type="VARCHAR(256)"/>
       <column name="customer_name" type="VARCHAR(256)"/>
+      <column name="customer_id" type="VARCHAR(256)"/>
       <column name="account_no" type="VARCHAR(256)"/>
       <column name="province_id" type="BIGINT">
         <constraints nullable="true"
@@ -1084,17 +1085,17 @@
           referencedColumnNames="id"/>
       </column>
       <column name="street" type="VARCHAR(256)"/>
-      <column name="ward_no" type="VARCHAR(256)"/>
+      <column name="ward_number" type="VARCHAR(256)"/>
       <column name="telephone" type="VARCHAR(256)"/>
       <column name="mobile" type="VARCHAR(256)"/>
       <column name="email" type="VARCHAR(256)"/>
-      <column name="citizenship_number" type="VARCHAR(256)"/>
       <column name="initial_relation_date" type="DATE"/>
+      <column name="citizenship_number" type="VARCHAR(256)"/>
+      <column name="citizenship_issued_date" type="DATE"/>
+      <column name="citizenship_issued_place" type="VARCHAR(256)"/>
       <column name="status" type="INT">
         <constraints nullable="false"/>
       </column>
-      <column name="citizenship_issued_date" type="DATE"/>
-      <column name="issued_place" type="VARCHAR(256)"/>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_created_by_id"
@@ -1150,6 +1151,32 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="5-customer-customer-relatives" author="david">
+    <createTable tableName="customer_customer_relatives">
+      <column name="customer_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="customer_relatives_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseColumnNames="customer_id"
+      baseTableName="customer_customer_relatives"
+      constraintName="fk_customer_customer_relatives_customer_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="customer"/>
+    <addForeignKeyConstraint baseColumnNames="customer_relatives_id"
+      baseTableName="customer_customer_relatives"
+      constraintName="fk_customer_customer_relatives_customer_relatives_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="customer_relative"/>
+  </changeSet>
+
   <changeSet id="5-create-capital" author="david">
     <createTable tableName="capital">
       <column name="id" type="BIGINT" autoIncrement="true">
@@ -1196,32 +1223,6 @@
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
-  </changeSet>
-
-  <changeSet id="5-customer-customer-relatives" author="david">
-    <createTable tableName="customer_customer_relatives">
-      <column name="customer_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="customer_relatives_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-
-    <addForeignKeyConstraint baseColumnNames="customer_id"
-      baseTableName="customer_customer_relatives"
-      constraintName="fk_customer_customer_relatives_customer_id"
-      onDelete="CASCADE"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="customer"/>
-    <addForeignKeyConstraint baseColumnNames="customer_relatives_id"
-      baseTableName="customer_customer_relatives"
-      constraintName="fk_customer_customer_relatives_customer_relatives_id"
-      onDelete="RESTRICT"
-      onUpdate="CASCADE"
-      referencedColumnNames="id"
-      referencedTableName="customer_relative"/>
   </changeSet>
 
   <changeSet id="5-create-legal-status" author="david">
@@ -1323,16 +1324,22 @@
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="legal_status_id" type="BIGINT">
-        <constraints nullable="true"/>
-        <!--<constraints nullable="false"/>-->
+          <constraints nullable="false"
+            foreignKeyName="fk_entity_info_legal_status_id"
+            referencedTableName="legal_status"
+            referencedColumnNames="id"/>
       </column>
       <column name="capital_id" type="BIGINT">
-        <constraints nullable="true"/>
-        <!--<constraints nullable="false"/>-->
+        <constraints nullable="false"
+          foreignKeyName="fk_entity_info_capital_id"
+          referencedTableName="capital"
+          referencedColumnNames="id"/>
       </column>
       <column name="swot_id" type="BIGINT">
-        <constraints nullable="true"/>
-        <!--<constraints nullable="false"/>-->
+        <constraints nullable="false"
+          foreignKeyName="fk_entity_info_swot_id"
+          referencedTableName="swot"
+          referencedColumnNames="id"/>
       </column>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
@@ -1354,21 +1361,6 @@
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="capital_id"
-      constraintName="fk_entity_info_capital_id"
-      referencedTableName="capital"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="legal_status_id"
-      constraintName="fk_entity_info_legal_status_id"
-      referencedTableName="legal_status"
-      referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="entity_info"
-      baseColumnNames="swot_id"
-      constraintName="fk_entity_info_swot_id"
-      referencedTableName="swot"
-      referencedColumnNames="id"/>
   </changeSet>
 
   <changeSet id="5-create-management-team" author="david">
@@ -1404,7 +1396,6 @@
         <constraints nullable="false"/>
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
-
     </createTable>
   </changeSet>
 

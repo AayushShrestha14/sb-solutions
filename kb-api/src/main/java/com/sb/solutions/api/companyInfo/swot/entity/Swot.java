@@ -25,6 +25,5 @@ public class Swot extends BaseEntity<Long> {
     private String opportunity;
 
     private String threats;
-    @OneToOne(mappedBy = "swot")
-    private EntityInfo entityInfo;
+
 }
