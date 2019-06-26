@@ -77,7 +77,8 @@ public class CpSolutionApplication {
         ResourceDatabasePopulator populators = new ResourceDatabasePopulator(dataResourc);
         populators.execute(dataSource);
 
-
+        ProductMode productModeDMS = productModeRepository.getByProductAndStatus(Product.DMS, Status.ACTIVE);
+        ProductMode productModeLAS = productModeRepository.getByProductAndStatus(Product.LAS, Status.ACTIVE);
 
         List<ProductMode> productModes = productModeRepository.findAll();
 
@@ -125,8 +126,6 @@ public class CpSolutionApplication {
                 }
 
             } else {
-
-
                 if (productMode.getProduct().equals(Product.ACCOUNT)) {
                     ClassPathResource dataResource = new ClassPathResource("/loan_sql/patch_remove_account_opening.sql");
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
@@ -146,21 +145,28 @@ public class CpSolutionApplication {
                     populator.execute(dataSource);
                 }
 
-                if (productMode.getProduct().equals(Product.LAS)) {
-                    ClassPathResource dataResource = new ClassPathResource("/loan_sql/patch_remove_las_permission.sql");
-                    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
-                    populator.execute(dataSource);
-
-                }
-
-
             }
+
+            this.permissionRemoveForDMSandLAS(productModeDMS, productModeLAS);
         }
 
         ClassPathResource dataResourceGeneral = new ClassPathResource("/loan_sql/patch_general_permission.sql");
         ResourceDatabasePopulator populatorGeneral = new ResourceDatabasePopulator(dataResourceGeneral);
         populatorGeneral.execute(dataSource);
 
+    }
+
+    private void permissionRemoveForDMSandLAS(ProductMode dms, ProductMode las) {
+        if (dms != null && las == null) {
+            ClassPathResource dataResource = new ClassPathResource("/loan_sql/patch_remove_only_las.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
+            populator.execute(dataSource);
+        }
+        if (dms == null && las == null) {
+            ClassPathResource dataResource = new ClassPathResource("/loan_sql/patch_remove_dms_las_permission.sql");
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
+            populator.execute(dataSource);
+        }
     }
 
     @Bean
