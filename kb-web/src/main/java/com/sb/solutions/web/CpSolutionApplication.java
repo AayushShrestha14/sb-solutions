@@ -76,6 +76,9 @@ public class CpSolutionApplication {
         ClassPathResource dataResourc = new ClassPathResource("/loan_sql/patch_product_mode.sql");
         ResourceDatabasePopulator populators = new ResourceDatabasePopulator(dataResourc);
         populators.execute(dataSource);
+
+
+
         List<ProductMode> productModes = productModeRepository.findAll();
 
         for (ProductMode productMode : productModes) {
@@ -147,11 +150,16 @@ public class CpSolutionApplication {
                     ClassPathResource dataResource = new ClassPathResource("/loan_sql/patch_remove_las_permission.sql");
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
                     populator.execute(dataSource);
+
                 }
 
 
             }
         }
+
+        ClassPathResource dataResourceGeneral = new ClassPathResource("/loan_sql/patch_general_permission.sql");
+        ResourceDatabasePopulator populatorGeneral = new ResourceDatabasePopulator(dataResourceGeneral);
+        populatorGeneral.execute(dataSource);
 
     }
 

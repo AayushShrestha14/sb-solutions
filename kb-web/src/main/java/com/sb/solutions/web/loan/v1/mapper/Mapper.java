@@ -38,7 +38,9 @@ public class Mapper {
     private final StageMapper stageMapper;
 
     private final ApprovalLimitService approvalLimitService;
+
     private final ProductModeService productModeService;
+
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
 
 
