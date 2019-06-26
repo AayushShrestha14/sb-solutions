@@ -1,6 +1,7 @@
 package com.sb.solutions.api.loanConfig.entity;
 
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LoanConfig extends BaseEntity<Long> {
-
+    @Column(unique = true)
     private @NotNull(message = "name should not be null") String name;
     @ManyToMany
     private List<LoanTemplate> templateList;
