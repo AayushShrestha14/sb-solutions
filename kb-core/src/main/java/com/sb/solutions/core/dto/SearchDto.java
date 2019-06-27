@@ -21,4 +21,5 @@ public class SearchDto {
     private Long municipalityId;
     private Date date;
     private String loanType;
+    private String citizenship;
 }

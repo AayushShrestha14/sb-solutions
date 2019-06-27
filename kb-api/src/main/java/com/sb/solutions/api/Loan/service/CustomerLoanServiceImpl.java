@@ -102,12 +102,18 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<Map<String, Double>> proposedAmount() {
-        return customerLoanRepository.proposedAmount();
+        List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
+        return customerLoanRepository.proposedAmount(branchAccess);
     }
 
     @Override
     public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
+    }
+
+    @Override
+    public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
+        return customerLoanRepository.getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber, citizenshipNumber);
     }
 }
 

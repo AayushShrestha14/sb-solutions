@@ -22,6 +22,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
 
+import com.sb.solutions.core.utils.NumberToWordsConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +40,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private String contactNumber;
     private double interestRate;
     private double proposedAmount;
+    @Transient
+    private String proposedAmountWord;
     private String security;
     private String serviceChargeType;
     private double serviceChargeAmount;
@@ -49,7 +52,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
     @Transient
-    private List<Securities> securities;
+    private Set<Securities> securities;
     @Transient
     private List<Map<Object, Object>> documentPathMaps;
     private Date tenure;
@@ -82,10 +85,13 @@ public class DmsLoanFile extends BaseEntity<Long> {
             }
             this.setDocumentPathMaps(mapList);
         } catch (Exception e) {
-
         }
 
         return this.documentPathMaps;
+    }
+
+    public String getProposedAmountWord() {
+        return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
     }
 
     @PrePersist

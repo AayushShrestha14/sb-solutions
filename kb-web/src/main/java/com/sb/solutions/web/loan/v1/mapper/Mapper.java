@@ -45,24 +45,30 @@ public class Mapper {
 
 
     public Mapper(@Autowired StageMapper stageMapper,
-                  @Autowired ApprovalLimitService approvalLimitService,
-                  @Autowired ProductModeService productModeService) {
+        @Autowired ApprovalLimitService approvalLimitService,
+        @Autowired ProductModeService productModeService) {
         this.stageMapper = stageMapper;
         this.approvalLimitService = approvalLimitService;
         this.productModeService = productModeService;
     }
 
-    public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan, User currentUser) {
+    public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
+        User currentUser) {
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
-            if (productMode != null) {
-                ApprovalLimit approvalLimit = approvalLimitService.getByRoleAndLoan(currentUser.getRole().getId(), customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
-                if (approvalLimit == null) {
-                    throw new RuntimeException("Authority Limit Error");
-                }
-                if (customerLoan.getDmsLoanFile() != null) {
-                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit.getAmount()) {
-                        throw new RuntimeException("Amount Exceed");
+            if (!"Dms".equals(productMode.getProduct().toString())) {
+                if (productMode != null) {
+                    ApprovalLimit approvalLimit = approvalLimitService
+                        .getByRoleAndLoan(currentUser.getRole().getId(),
+                            customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
+                    if (approvalLimit == null) {
+                        throw new RuntimeException("Authority Limit Error");
+                    }
+                    if (customerLoan.getDmsLoanFile() != null) {
+                        if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
+                            .getAmount()) {
+                            throw new RuntimeException("Amount Exceed");
+                        }
                     }
                 }
             }
@@ -76,7 +82,8 @@ public class Mapper {
         LoanStage loanStage = new LoanStage();
         if (customerLoan.getCurrentStage() != null) {
             loanStage = customerLoan.getCurrentStage();
-            Map<String, String> tempLoanStage = objectMapper.convertValue(customerLoan.getCurrentStage(), Map.class);
+            Map<String, String> tempLoanStage = objectMapper
+                .convertValue(customerLoan.getCurrentStage(), Map.class);
             try {
                 previousList.forEach(p -> {
                     try {
@@ -97,16 +104,19 @@ public class Mapper {
         customerLoan.setDocumentStatus(loanActionDto.getDocumentStatus());
         StageDto currentStage = objectMapper.convertValue(loanStage, StageDto.class);
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
-        loanStage = this.loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage, currentUserDto);
+        loanStage = this
+            .loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage,
+                currentUserDto);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
     }
 
-    private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy, StageDto currentStage, UserDto currentUser) {
+    private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
+        StageDto currentStage, UserDto currentUser) {
         if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
-                currentStage.getDocAction().equals(DocAction.APPROVED) ||
-                currentStage.getDocAction().equals(DocAction.REJECT)) {
+            currentStage.getDocAction().equals(DocAction.APPROVED) ||
+            currentStage.getDocAction().equals(DocAction.REJECT)) {
             logger.error("Error while performing the action");
             throw new RuntimeException("Cannot Perform the action");
         }
@@ -116,6 +126,7 @@ public class Mapper {
                 throw new RuntimeException("No user present of selected To:");
             }
         }
-        return stageMapper.mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+        return stageMapper
+            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
     }
 }
