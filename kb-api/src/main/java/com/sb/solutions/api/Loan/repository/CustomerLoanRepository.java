@@ -38,5 +38,5 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             "WHERE c.branch_id =:branchId GROUP BY c.loan_id", nativeQuery = true)
     List<Map<String, Double>> proposedAmountByBranchId(@Param("branchId") Long branchId);
 
-
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(String generalCitizenShipNumber,String dmsCitizenShipNumber);
 }

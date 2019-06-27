@@ -99,6 +99,9 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.proposedAmountByBranch(id));
     }
 
-
+    @GetMapping(value = "/searchByCitizenship/{number}")
+    public ResponseEntity<?> getLoansByCitizenship(@PathVariable("number") String citizenshipNumber) {
+        logger.info("GET:/searchByCitizenship/{}", citizenshipNumber);
+        return new RestResponseDto().successModel(service.getByCitizenshipNumber(citizenshipNumber));
+    }
 }
-

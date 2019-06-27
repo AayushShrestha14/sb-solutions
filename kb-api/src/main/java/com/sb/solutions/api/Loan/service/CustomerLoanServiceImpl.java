@@ -113,6 +113,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
     }
 
-
+    @Override
+    public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
+        return customerLoanRepository.getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber, citizenshipNumber);
+    }
 }
 
