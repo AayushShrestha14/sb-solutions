@@ -109,5 +109,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
     }
+
+    @Override
+    public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
+        return customerLoanRepository.getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber, citizenshipNumber);
+    }
 }
 
