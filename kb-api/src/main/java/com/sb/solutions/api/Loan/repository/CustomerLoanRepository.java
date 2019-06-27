@@ -28,9 +28,9 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c" +
             " JOIN dms_loan_file d ON c.dms_loan_file_id = d.id" +
-            " JOIN loan_config l ON c.loan_id=l.id " +
+            " JOIN loan_config l ON c.loan_id=l.id where c.branch_id in (:branchId)" +
             "GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<String, Double>> proposedAmount();
+    List<Map<String, Double>> proposedAmount(@Param("branchId")List<Long> branchId);
 
     @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c " +
             "JOIN dms_loan_file d ON c.dms_loan_file_id = d.id " +
