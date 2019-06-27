@@ -79,8 +79,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     }
 
     public String getProposedAmountWord() {
-        NumberToWordsConverter numberToWordsConverter = new NumberToWordsConverter();
-        return numberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+        return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
     }
 
 

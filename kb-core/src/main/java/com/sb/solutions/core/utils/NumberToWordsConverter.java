@@ -19,10 +19,10 @@ public final class NumberToWordsConverter {
             "Eighty",    // 8
             "Ninety"    // 9
     };
-    public NumberToWordsConverter() {
+    private NumberToWordsConverter() {
     }
 
-    public  String calculateAmountInWords(String amount) {
+    public static String calculateAmountInWords(String amount) {
         if (amount.contains(".")) {
 
             String[] parts = amount.split("\\.");
