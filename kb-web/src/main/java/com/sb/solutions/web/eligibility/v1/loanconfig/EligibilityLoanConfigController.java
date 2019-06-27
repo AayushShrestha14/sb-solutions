@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EligibilityLoanConfigController {
 
-    static final String URL = "/v1/loan-configs";
+    static final String URL = "/v1/Loan-configs";
 
     private final Logger logger = LoggerFactory.getLogger(EligibilityLoanConfigController.class);
 
@@ -31,7 +31,7 @@ public class EligibilityLoanConfigController {
 
     @GetMapping
     public final ResponseEntity<?> getLoanConfigsForEligiblity() {
-        logger.debug("Request to get the loan configs activated for eligibility.");
+        logger.debug("Request to get the Loan configs activated for eligibility.");
         final List<LoanConfig> loanConfigs = loanConfigService
             .getLoanConfigsActivatedForEligbility();
         final List<LoanConfigDto> loanConfigDtos = eligibilityLoanConfigMapper

@@ -7,6 +7,8 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,6 +30,7 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     DmsLoanFileRepository dmsLoanFileRepository;
     private Gson gson;
     private DateValidation dateValidation;
+    private static final Logger logger = LoggerFactory.getLogger(DmsLoanFileServiceImpl.class);
 
     @Override
     public List<DmsLoanFile> findAll() {
@@ -42,23 +45,18 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
 
     @Override
     public DmsLoanFile save(DmsLoanFile dmsLoanFile) {
+        if (dmsLoanFile.getTenure() != null) {
+            if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
+                final Violation violation = new Violation("tenure", dmsLoanFile.getTenure(),
+                    "Invalid tenure date");
 
-        if (dateValidation.checkDate(dmsLoanFile.getTenure())) {
-            final Violation violation = new Violation("tenure", dmsLoanFile.getTenure(),
-                "Invalid tenure date");
-
-            throw new ServiceValidationException("Invalid dms loan", Lists.newArrayList(violation));
+                throw new ServiceValidationException("Invalid dms Loan",
+                    Lists.newArrayList(violation));
+            }
         }
-
+        logger.debug("docs {}", dmsLoanFile.getDocumentMap());
         dmsLoanFile.setDocumentPath(gson.toJson(dmsLoanFile.getDocumentMap()));
         dmsLoanFile.setCreatedAt(new Date());
-        String mapSecurity = "";
-        for (Securities securities : dmsLoanFile.getSecurities()) {
-            mapSecurity += securities.ordinal() + ",";
-            System.out.println(mapSecurity);
-        }
-        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-        dmsLoanFile.setSecurity(mapSecurity);
         return dmsLoanFileRepository.save(dmsLoanFile);
     }
 

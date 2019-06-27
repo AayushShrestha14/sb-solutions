@@ -1,8 +1,6 @@
 package com.sb.solutions.api.branch.repository;
 
-import java.util.List;
-import java.util.Map;
-
+import com.sb.solutions.api.branch.entity.Branch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,19 +9,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.sb.solutions.api.branch.entity.Branch;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
  */
 @Repository
-public interface BranchRepository extends JpaRepository<Branch, Long>,
-    JpaSpecificationExecutor<Branch> {
+public interface BranchRepository extends JpaRepository<Branch, Long>, JpaSpecificationExecutor<Branch> {
 
-    @Query(value = "select"
-        + "  (select  count(id) from branch where status=1) active,"
-        + "(select  count(id) from branch where status=0) inactive,"
-        + "(select  count(id) from branch) branches", nativeQuery = true)
+
+    @Query(value = "select\n" +
+            "  (select  count(id) from branch where status=1) active,\n" +
+            "(select  count(id) from branch where status=0) inactive,\n" +
+            "(select  count(id) from branch) branches\n", nativeQuery = true)
     Map<Object, Object> branchStatusCount();
 
 
@@ -33,4 +32,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
     @Query(value = "select b from Branch b where b.name like  concat(:name,'%')")
     List<Branch> branchCsvFilter(@Param("name") String name);
 
+    @Query(value = "SELECT b FROM Branch b where b.id not in (:branchId)")
+    List<Branch> getByIdNotIn(@Param("branchId") List<Long> branchId);
 }

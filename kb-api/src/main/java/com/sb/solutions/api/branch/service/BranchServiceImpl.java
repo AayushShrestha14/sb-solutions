@@ -1,10 +1,17 @@
 package com.sb.solutions.api.branch.service;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.core.utils.csv.CsvReader;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,22 +23,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sb.solutions.api.basehttp.BaseHttpService;
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.branch.repository.BranchRepository;
-import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.utils.csv.CsvMaker;
-import com.sb.solutions.core.utils.csv.CsvReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
  */
 @Service
 public class BranchServiceImpl implements BranchService {
-
     private static final Logger log = LoggerFactory.getLogger(BranchServiceImpl.class);
 
     @Autowired
@@ -39,6 +38,9 @@ public class BranchServiceImpl implements BranchService {
 
     @Autowired
     BaseHttpService baseHttpService;
+
+    @Autowired
+    UserService userService;
 
 
     @Override
@@ -81,8 +83,7 @@ public class BranchServiceImpl implements BranchService {
     @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
-        List branchList = branchRepository
-            .branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        List branchList = branchRepository.branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("province,name", "Province");
@@ -96,5 +97,25 @@ public class BranchServiceImpl implements BranchService {
     public void saveExcel(MultipartFile file) {
         CsvReader csvReader = new CsvReader();
         csvReader.excelReader(file);
+    }
+
+    @Override
+    public List<Branch> getAccessBranchByCurrentUser() {
+        return userService.getAuthenticated().getBranch();
+    }
+
+    @Override
+    public List<Branch> getBranchNoTAssignUser(Long roleId) {
+        List<User> userList = userService.findByRoleId(roleId);
+        List<Long> branches = new ArrayList<>();
+        for (User u : userList) {
+            for (Branch b : u.getBranch()) {
+                branches.add(b.getId());
+            }
+        }
+        if(branches.isEmpty()){
+            return branchRepository.findAll();
+        }
+        return branchRepository.getByIdNotIn(branches);
     }
 }

@@ -19,10 +19,10 @@
                              referencedTableName="user"
                              referencedColumnNames="id"/>
             </column>
-            <column name="created_at" type="DATE">
+            <column name="created_at" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_modified_at" type="DATE">
+            <column name="last_modified_at" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="comment" type="TEXT">
@@ -83,18 +83,15 @@
             <column name="security" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="document_path" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="document_path" type="VARCHAR(256)"/>
             <column name="priority" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="recommendation_conclusion" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="tenure" type="DATE">
-                <constraints nullable="false"/>
-            </column>
+            <column name="tenure" type="DATE"/>
+            <column name="tenure_duration" type="INT"/>
             <column name="waiver" type="TEXT">
                 <constraints nullable="false"/>
             </column>

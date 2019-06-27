@@ -59,6 +59,9 @@
                              referencedColumnNames="id"/>
             </column>
 
+            <column name="offer_letter_url" type="VARCHAR(100)">
+            </column>
+
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_loan_created_by_id"

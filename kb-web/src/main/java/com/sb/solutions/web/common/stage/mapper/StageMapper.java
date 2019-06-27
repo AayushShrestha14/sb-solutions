@@ -1,9 +1,5 @@
 package com.sb.solutions.web.common.stage.mapper;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -15,6 +11,10 @@ import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.user.dto.RoleDto;
 import com.sb.solutions.web.user.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 6/12/2019
@@ -24,6 +24,7 @@ import com.sb.solutions.web.user.dto.UserDto;
 public class StageMapper {
 
 
+
     private final UserService userService;
 
     public StageMapper(@Autowired UserService userService) {
@@ -31,8 +32,7 @@ public class StageMapper {
     }
 
 
-    public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy,
-        StageDto currentStage, UserDto currentUser) {
+    public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy, StageDto currentStage, UserDto currentUser){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -46,10 +46,9 @@ public class StageMapper {
             currentStage = this.sendBackward(previousList, currentStage, currentUser, createdBy);
         }
 
-        if (stageDto.getDocAction().equals(DocAction.APPROVED) || stageDto.getDocumentStatus()
-            .equals(DocStatus.CLOSED)
-            || stageDto.getDocumentStatus().equals(DocStatus.REJECTED)) {
-            currentStage = this.approvedCloseReject(currentStage, currentUser);
+        if(stageDto.getDocAction().equals(DocAction.APPROVED) || stageDto.getDocumentStatus().equals(DocStatus.CLOSED)||
+                stageDto.getDocumentStatus().equals(DocStatus.REJECTED)){
+            currentStage = this.approvedCloseReject(currentStage,currentUser);
         }
 
         return objectMapper.convertValue(currentStage, classType);
@@ -57,8 +56,7 @@ public class StageMapper {
     }
 
 
-    private StageDto sendBackward(List previousList, StageDto currentStage, UserDto currentUser,
-        Long createdBy) {
+    private StageDto sendBackward(List previousList, StageDto currentStage, UserDto currentUser, Long createdBy) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -70,13 +68,12 @@ public class StageMapper {
                 r.setId(maker.getFromRole().getId());
                 currentStage.setToRole(r);
                 try {
-                    final List<User> users = userService
-                        .findByRoleAndBranch(r.getId(), currentUser.getBranch().getId());
+                 final   List<User> users = userService.findByRoleAndBranch(r.getId(), userService.getRoleAccessFilterByBranch());
 
                     currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
             }
         }
@@ -87,7 +84,7 @@ public class StageMapper {
         return currentStage;
     }
 
-    private StageDto approvedCloseReject(StageDto currentStage, UserDto currentUser) {
+    private StageDto approvedCloseReject(StageDto currentStage, UserDto currentUser){
         currentStage.setToRole(currentUser.getRole());
         currentStage.setToUser(currentUser);
         return currentStage;

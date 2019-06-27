@@ -58,8 +58,8 @@ public class FileUploadUtils {
         }
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id,
-        String name, String documentName) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
+        String citizenNumber, String name, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
@@ -71,18 +71,18 @@ public class FileUploadUtils {
             final byte[] bytes = multipartFile.getBytes();
             final FilePath filePath = new FilePath();
 
-            url = FilePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type
+            url = UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type
                 + "/";
-            String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-            Path path = Paths.get(url);
+            String returnUrl = UploadDir.initialDocument + name+ "_" + citizenNumber + "/" + type + "/";
+            Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
-                new File(url).mkdirs();
+                new File(FilePath.getOSPath() + url).mkdirs();
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
                 .toLowerCase();
             url = url + name + "_" + documentName + "." + fileExtension;
             returnUrl = returnUrl + name + "_" + documentName + "." + fileExtension;
-            path = Paths.get(url);
+            path = Paths.get(FilePath.getOSPath() + url);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(returnUrl);
         } catch (IOException e) {

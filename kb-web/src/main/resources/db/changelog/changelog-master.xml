@@ -75,6 +75,9 @@
       <column name="role_type" type="INT">
         <constraints nullable="false"/>
       </column>
+      <column name="role_access" type="INT">
+        <constraints nullable="false"/>
+      </column>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"/>
       </column>
@@ -1324,10 +1327,10 @@
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="legal_status_id" type="BIGINT">
-          <constraints nullable="false"
-            foreignKeyName="fk_entity_info_legal_status_id"
-            referencedTableName="legal_status"
-            referencedColumnNames="id"/>
+        <constraints nullable="false"
+          foreignKeyName="fk_entity_info_legal_status_id"
+          referencedTableName="legal_status"
+          referencedColumnNames="id"/>
       </column>
       <column name="capital_id" type="BIGINT">
         <constraints nullable="false"
@@ -1410,8 +1413,26 @@
       <column name="contact_no" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="address" type="VARCHAR(256)">
-        <constraints nullable="false"/>
+      <column name="province_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_proprietor_province_id"
+          referencedTableName="province"
+          referencedColumnNames="id"
+        />
+      </column>
+      <column name="district_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_proprietor_district_id"
+          referencedTableName="district"
+          referencedColumnNames="id"
+        />
+      </column>
+      <column name="municipality_vdc_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_proprietor_municipality_vdc_id"
+          referencedTableName="municipality_vdc"
+          referencedColumnNames="id"
+        />
       </column>
       <column name="share" type="DOUBLE">
         <constraints nullable="false"/>
@@ -1702,16 +1723,9 @@
     <sqlFile path="data/oauth.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
-  <changeSet id="3-load-permission-api-file" author="msucil">
-    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
-  </changeSet>
 
   <changeSet id="3-load-province-file" author="msucil">
     <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-permission-api-file" author="msucil">
-    <sqlFile path="data/permissionApi.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
   <changeSet id="3-load-district-file" author="msucil">
@@ -1722,43 +1736,11 @@
     <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
-  <changeSet id="3-add-entry-for-memo-permission" author="msucil">
-    <sql>
-      INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES (15,
-      'Memo', 'fa fa-envelope', null, 62, 1);
 
-      INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-      VALUES (15 , '2019-04-04 13:17:01', '2019-04-04 13:17:07', 15, 1);
-    </sql>
+  <changeSet id="1-product_mode" author="rujan">
+    <sqlFile path="data/product_mode.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
-  <changeSet id="3-add-sub-nav-entry-for-memo-type" author="msucil">
-    <sql>
-      INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (1,
-      'Under Review','/home/memo/underReview', 'fa fa-envelope-open');
-      INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (2,
-      'Compose','/home/memo/compose', 'fa fa-edit');
-      INSERT INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES (3,
-      'Memo Type','/home/memo/type', 'fa fa-bookmark');
-    </sql>
-  </changeSet>
-
-  <changeSet id="3-add-permission-sub-navs-entry-for-memo" author="elvin">
-    <sql>
-      INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 1);
-      INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 2);
-      INSERT INTO permission_sub_navs (permission_id, sub_navs_id) VALUES (15, 3);
-    </sql>
-  </changeSet>
-
-
-  <changeSet id="1-load-data-for-eligibility" author="rawseek">
-    <sqlFile path="data/rawseek_permission_sub_nav.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="1-opening-account-sub-nav" author="david">
-    <sqlFile path="data/david_permission_sub_nav.sql" relativeToChangelogFile="true"/>
-  </changeSet>
   <changeSet id="1-loan-cycle" author="david">
     <sqlFile path="data/david_loan_cycle.sql" relativeToChangelogFile="true"/>
   </changeSet>
@@ -1769,7 +1751,6 @@
   <include file="20190503_applicant_answer.xml" relativeToChangelogFile="true"/>
   <include file="20190504_submission_document.xml" relativeToChangelogFile="true"/>
   <include file="20190504_applicant_document.xml" relativeToChangelogFile="true"/>
-  <include file="20190805_loan_template.xml" relativeToChangelogFile="true"/>
   <include file="20190513_role_hierarchy.xml" relativeToChangelogFile="true"/>
   <include file="20190516_dms_loan.xml" relativeToChangelogFile="true"/>
   <include file="20190609_customer_loan.xml" relativeToChangelogFile="true"/>
@@ -1778,5 +1759,6 @@
   <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true"/>
   <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true"/>
   <include file="20190610_opening_account.xml" relativeToChangelogFile="true"/>
+  <include file="20190621_branch_user.xml" relativeToChangelogFile="true"/>
   <include file="20190624_offer_letter.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

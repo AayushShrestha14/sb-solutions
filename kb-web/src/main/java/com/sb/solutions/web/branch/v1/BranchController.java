@@ -4,12 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.branch.entity.Branch;
@@ -78,4 +73,16 @@ public class BranchController {
     public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
         return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
+
+    @GetMapping(value = "/branch-current-user")
+    public ResponseEntity<?> getBranchAccessByCurrentUser() {
+        return new RestResponseDto().successModel(branchService.getAccessBranchByCurrentUser());
+    }
+
+    @GetMapping(value = "/{id}/unique")
+    public ResponseEntity<?> getBranchNoTAssignUser(@PathVariable Long id) {
+        return new RestResponseDto().successModel(branchService.getBranchNoTAssignUser(id));
+    }
+
+
 }

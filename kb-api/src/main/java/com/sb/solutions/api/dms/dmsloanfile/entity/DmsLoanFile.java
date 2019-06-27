@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +21,7 @@ import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,30 +34,27 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
 
-    @NotNull
-    private String customerName;
+    private @NotNull String customerName;
     private String citizenshipNumber;
     private String contactNumber;
     private double interestRate;
     private double proposedAmount;
-
-
     private String security;
     @Column(columnDefinition = "text")
     private String documentPath;
     @Transient
     private List<String> documentMap;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
     @Transient
-    private Set<Securities> securities;
+    private List<Securities> securities;
     @Transient
     private List<Map<Object, Object>> documentPathMaps;
     private Date tenure;
+    private int tenureDuration;
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
-
 
     public List<Map<Object, Object>> getDocumentPathMaps() {
         String tempPath = null;
@@ -81,10 +80,22 @@ public class DmsLoanFile extends BaseEntity<Long> {
             }
             this.setDocumentPathMaps(mapList);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         return this.documentPathMaps;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        String mapSecurity = "";
+        for (Securities securities : this.getSecurities()) {
+            mapSecurity += securities.ordinal() + ",";
+        }
+        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
+        this.setSecurity(mapSecurity);
+        this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+        this.setCreatedAt(new Date());
     }
 
 

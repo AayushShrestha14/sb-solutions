@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="12-create-user-branch" author="rujan">
+        <createTable tableName="user_branch">
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_user_user_id"
+                             referencedTableName="user"
+                             referencedColumnNames="id"
+                />
+
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints
+                             foreignKeyName="fk_branch_branch_id"
+                             referencedTableName="branch"
+                             referencedColumnNames="id"/>
+            </column>
+
+
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

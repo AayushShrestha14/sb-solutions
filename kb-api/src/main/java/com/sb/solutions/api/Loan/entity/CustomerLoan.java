@@ -1,4 +1,4 @@
-package com.sb.solutions.api.loan.entity;
+package com.sb.solutions.api.Loan.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
-import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
@@ -64,7 +64,8 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private DocStatus documentStatus = DocStatus.PENDING;
 
-    @ManyToOne
+    @ManyToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private DmsLoanFile dmsLoanFile;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -77,6 +78,8 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @OneToOne
     private Branch branch;
+
+    private String offerLetterUrl;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

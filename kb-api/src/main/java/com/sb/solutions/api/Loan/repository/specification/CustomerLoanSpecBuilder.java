@@ -1,4 +1,4 @@
-package com.sb.solutions.api.loan.repository.specification;
+package com.sb.solutions.api.Loan.repository.specification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.Loan.entity.CustomerLoan;
 
 /**
  * @author Rujan Maharjan on 6/8/2019

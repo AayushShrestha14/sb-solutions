@@ -1,38 +1,28 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
 import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
 import com.sb.solutions.api.rolePermissionRight.repository.RolePermissionRightRepository;
 import com.sb.solutions.api.rolePermissionRight.repository.UrlApiRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
  */
 @Service
 public class RolePermissionRightServiceImpl implements RolePermissionRightService {
+    @Autowired
+    RolePermissionRightRepository rolePermissionRightRepository;
+    @Autowired
+    UrlApiRepository urlApiRepository;
 
-    private static final Logger logger = LoggerFactory
-        .getLogger(RolePermissionRightServiceImpl.class);
-
-    private final RolePermissionRightRepository rolePermissionRightRepository;
-    private final UrlApiRepository urlApiRepository;
-
-    public RolePermissionRightServiceImpl(
-        RolePermissionRightRepository rolePermissionRightRepository,
-        UrlApiRepository urlApiRepository) {
-        this.rolePermissionRightRepository = rolePermissionRightRepository;
-        this.urlApiRepository = urlApiRepository;
-    }
 
     @Override
     public List<RolePermissionRights> findAll() {
@@ -66,10 +56,8 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
         for (RolePermissionRights r : rolePermissionRightsList) {
             List<UrlApi> tempUrlApis = new ArrayList<>();
             for (UrlApi urlApi : r.getApiRights()) {
-                if (!urlApi.isChecked()) {
-                    urlApiRepository
-                        .deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(),
-                            urlApi.getId());
+                if (urlApi != null && !urlApi.isChecked()) {
+                    urlApiRepository.deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(), urlApi.getId());
                 } else {
                     tempUrlApis.add(urlApi);
                 }
@@ -81,17 +69,17 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
                     try {
                         rolePermissionRightRepository.deleteById(r.getId() == null ? 0 : r.getId());
                     } catch (Exception e) {
-                        logger.error("Error", e);
                     }
                 }
-                rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(),
-                    r.getPermission().getId());
+                rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(), r.getPermission().getId());
             } else {
                 r.getApiRights().clear();
 
                 r.setApiRights(tempUrlApis);
                 rolePermissionRightsList1.add(r);
             }
+
+
         }
 
         rolePermissionRightRepository.saveAll(rolePermissionRightsList1);

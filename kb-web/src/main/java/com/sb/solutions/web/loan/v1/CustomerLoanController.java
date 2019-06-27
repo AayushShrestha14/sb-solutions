@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.api.loan.service.CustomerLoanService;
+import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.Loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping(CustomerLoanController.URL)
 public class CustomerLoanController {
 
-    static final String URL = "/v1/loan-customer";
+    static final String URL = "/v1/Loan-customer";
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
