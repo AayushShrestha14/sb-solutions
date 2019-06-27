@@ -40,6 +40,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private double interestRate;
     private double proposedAmount;
     private String security;
+    private String serviceChargeType;
+    private double serviceChargeAmount;
     @Column(columnDefinition = "text")
     private String documentPath;
     @Transient
