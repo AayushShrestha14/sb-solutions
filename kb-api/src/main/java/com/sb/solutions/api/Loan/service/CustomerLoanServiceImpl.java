@@ -6,7 +6,6 @@ import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
@@ -104,7 +103,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<Map<String, Double>> proposedAmount() {
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        System.out.println(branchAccess);
         return customerLoanRepository.proposedAmount(branchAccess);
     }
 
