@@ -98,4 +98,7 @@ public class CustomerLoanController {
     public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id) {
         return new RestResponseDto().successModel(service.proposedAmountByBranch(id));
     }
+
+
 }
+

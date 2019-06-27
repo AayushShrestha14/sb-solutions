@@ -23,4 +23,5 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     List<Map<String, Double>> proposedAmountByBranch(Long branchId);
 
+
 }
