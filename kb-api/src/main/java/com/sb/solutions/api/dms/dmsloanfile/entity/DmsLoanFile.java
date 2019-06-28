@@ -1,32 +1,19 @@
 package com.sb.solutions.api.dms.dmsloanfile.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
 import com.google.gson.Gson;
-
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
-
 import com.sb.solutions.core.utils.NumberToWordsConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @Entity
 @Data
@@ -91,7 +78,11 @@ public class DmsLoanFile extends BaseEntity<Long> {
     }
 
     public String getProposedAmountWord() {
-        return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+        try {
+            return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @PrePersist
