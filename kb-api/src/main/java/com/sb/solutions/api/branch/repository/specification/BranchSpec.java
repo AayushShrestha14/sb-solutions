@@ -1,12 +1,13 @@
 package com.sb.solutions.api.branch.repository.specification;
 
-import com.sb.solutions.api.branch.entity.Branch;
-import org.springframework.data.jpa.domain.Specification;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.sb.solutions.api.branch.entity.Branch;
 
 /**
  * @author Rujan Maharjan on 5/1/2019
@@ -30,7 +31,8 @@ public class BranchSpec implements Specification<Branch> {
 
 
     @Override
-    public Predicate toPredicate(Root<Branch> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Branch> root, CriteriaQuery<?> criteriaQuery,
+        CriteriaBuilder criteriaBuilder) {
         switch (property) {
 
             case FILTER_BY_NAME:
@@ -40,14 +42,16 @@ public class BranchSpec implements Specification<Branch> {
                 return criteriaBuilder.like(root.get(property), value + "%");
 
             case FILTER_BY_PROVINCE:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("province").get("id"), Long.valueOf(value)));
+                return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("province").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_DISTRICT:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("district").get("id"), Long.valueOf(value)));
+                return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("district").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_MUNCIPALTIY:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("municipalityVdc").get("id"), Long.valueOf(value)));
-
+                return criteriaBuilder.and(criteriaBuilder
+                    .equal(root.join("municipalityVdc").get("id"), Long.valueOf(value)));
 
             default:
                 return null;

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.api.eligibility.question.service.QuestionService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/loan-configs/{loanConfigId}/questions")

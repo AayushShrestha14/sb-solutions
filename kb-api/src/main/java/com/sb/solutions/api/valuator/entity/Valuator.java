@@ -1,5 +1,10 @@
 package com.sb.solutions.api.valuator.entity;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
@@ -10,17 +15,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.io.Serializable;
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Valuator extends BaseEntity<Long> implements Serializable {
+
     private String name;
     private String contactNo;
     private Status status;

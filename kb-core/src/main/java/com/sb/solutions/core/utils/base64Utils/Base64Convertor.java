@@ -1,12 +1,12 @@
 package com.sb.solutions.core.utils.base64Utils;
 
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Rujan Maharjan on 2/25/2019.
@@ -15,7 +15,7 @@ import java.io.InputStream;
 @Component
 public class Base64Convertor {
 
-    public String encode(String filePath)  {
+    public String encode(String filePath) {
 
         File file = new File(filePath);
         byte[] bytes = new byte[0];
@@ -43,7 +43,7 @@ public class Base64Convertor {
         int offset = 0;
         int numRead = 0;
         while (offset < bytes.length
-                && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+            && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
             offset += numRead;
         }
 

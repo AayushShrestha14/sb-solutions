@@ -1,10 +1,9 @@
 package com.sb.solutions.api.loanConfig.service;
 
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
-import com.sb.solutions.api.loanConfig.repository.LoanConfigRepository;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.repository.LoanConfigRepository;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
 
 /**
  * @author Rujan Maharjan on 2/26/2019
@@ -52,7 +53,8 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     public Page<LoanConfig> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(t, SearchDto.class);
-        return loanConfigRepository.LoanConfigFilter(s.getName() == null ? "" : s.getName(), pageable);
+        return loanConfigRepository
+            .loanConfigFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class LoanConfigServiceImpl implements LoanConfigService {
 
     @Override
     public List<LoanConfig> getLoanConfigsActivatedForEligbility() {
-        logger.debug("Getting list of loan configuration activated for eligibility.");
+        logger.debug("Getting list of Loan configuration activated for eligibility.");
         return loanConfigRepository.findAllByEnableEligibility(true);
     }
 }

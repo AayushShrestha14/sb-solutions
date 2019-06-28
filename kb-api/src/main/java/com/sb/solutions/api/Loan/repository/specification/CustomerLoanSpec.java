@@ -36,7 +36,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
 
             case FILTER_BY_LOAN:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
+                return criteriaBuilder.and(criteriaBuilder.equal(root.join("Loan").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_CURRENT_USER_ROLE:
                 return criteriaBuilder.equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"), Long.valueOf(value));

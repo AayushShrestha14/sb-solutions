@@ -1,12 +1,13 @@
 package com.sb.solutions.api.eligibility.applicant.repository.specification;
 
-import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
-import com.sb.solutions.api.eligibility.common.SearchCriteria;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
+import com.sb.solutions.api.eligibility.common.SearchCriteria;
 
 public class ApplicantSpecificationBuilder {
 
@@ -23,9 +24,11 @@ public class ApplicantSpecificationBuilder {
     }
 
     public Specification<Applicant> build() {
-        if (queryParams.size() == 0) return null;
+        if (queryParams.size() == 0) {
+            return null;
+        }
         List<Specification> specifications =
-                queryParams.stream().map(ApplicantSpecification::new).collect(Collectors.toList());
+            queryParams.stream().map(ApplicantSpecification::new).collect(Collectors.toList());
         Specification result = specifications.get(0);
         for (int i = 1; i < specifications.size(); i++) {
             result = Specification.where(result).and(specifications.get(i));

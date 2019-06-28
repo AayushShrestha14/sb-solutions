@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class FilePath {
+
     public static String getOSPath() {
-        String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("win") >= 0) {
+        final String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
             return UploadDir.WINDOWS_PATH;
         } else {
             return UploadDir.Linux_PATH;

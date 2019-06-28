@@ -1,6 +1,5 @@
 package com.sb.solutions.api.openingForm.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeningOccupationalDetails {
+
     private String nameOfOrganization;
     private String address;
     private String telNo;

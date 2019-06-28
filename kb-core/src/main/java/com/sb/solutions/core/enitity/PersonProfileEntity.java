@@ -1,9 +1,12 @@
 package com.sb.solutions.core.enitity;
 
-import lombok.*;
-
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018

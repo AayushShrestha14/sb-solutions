@@ -4,7 +4,7 @@ package com.sb.solutions.core.enums;
  * @author Sunil Babu Shrestha on 12/27/2018
  */
 public enum Status {
-   INACTIVE("Inactive"), ACTIVE("Active"), DELETED("Deleted");
+    INACTIVE("Inactive"), ACTIVE("Active"), DELETED("Deleted");
 
     private final String value;
 

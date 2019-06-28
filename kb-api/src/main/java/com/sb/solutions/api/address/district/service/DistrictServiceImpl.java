@@ -1,20 +1,22 @@
 package com.sb.solutions.api.address.district.service;
 
-import com.sb.solutions.api.address.district.entity.District;
-import com.sb.solutions.api.address.district.repository.DistrictRepository;
-import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.core.dto.SearchDto;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.district.repository.DistrictRepository;
+import com.sb.solutions.api.address.province.entity.Province;
+import com.sb.solutions.core.dto.SearchDto;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
+
     private final DistrictRepository districtRepository;
 
     @Override

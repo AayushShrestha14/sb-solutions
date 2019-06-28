@@ -11,9 +11,9 @@ spring:
         hibernate:
               enable_lazy_load_no_trans: true
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
+    url: jdbc:mysql://localhost:3306/cp_masterOfferLetter
     username: root
-    password:
+    password: root
   mail:
     username: sbsolutionstest@gmail.com
     password: testsbsolutions123

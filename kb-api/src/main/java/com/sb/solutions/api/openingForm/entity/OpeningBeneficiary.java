@@ -1,14 +1,16 @@
 package com.sb.solutions.api.openingForm.entity;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeningBeneficiary {
+
     private String fullName;
     private String imagePath;
     private String relationToMe;

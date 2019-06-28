@@ -8,5 +8,5 @@ public class EligibilityConstants {
 
     public static final String COMPANY_DIRECTORY = "company";
 
-    public static final String LOAN_CONFIG_DIRECTORY = "loan-config";
+    public static final String LOAN_CONFIG_DIRECTORY = "Loan-config";
 }

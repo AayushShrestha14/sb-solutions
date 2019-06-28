@@ -1,23 +1,31 @@
 package com.sb.solutions.api.guarantor.service;
 
-import com.sb.solutions.api.guarantor.entity.Guarantor;
-import com.sb.solutions.api.guarantor.repository.GuarantorRepository;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
+import com.sb.solutions.api.guarantor.repository.GuarantorRepository;
+
 @Service
 public class GuarantorServiceImpl implements GuarantorService {
+
     @Autowired
     GuarantorRepository guarantorRepository;
-    @Override
-    public List<Guarantor> findAll() {return guarantorRepository.findAll(); }
 
     @Override
-    public Guarantor findOne(Long id) { return guarantorRepository.getOne(id);}
+    public List<Guarantor> findAll() {
+        return guarantorRepository.findAll();
+    }
+
+    @Override
+    public Guarantor findOne(Long id) {
+        return guarantorRepository.getOne(id);
+    }
 
     @Override
     public Guarantor save(Guarantor guarantor) {

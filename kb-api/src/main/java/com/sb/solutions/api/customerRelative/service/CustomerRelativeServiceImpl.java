@@ -1,9 +1,11 @@
 package com.sb.solutions.api.customerRelative.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class CustomerRelativeServiceImpl {
+
 }

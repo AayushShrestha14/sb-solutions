@@ -1,17 +1,19 @@
 package com.sb.solutions.api.accountPurpose.service;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
-import com.sb.solutions.api.accountPurpose.repository.AccountPurposeRepository;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
+import com.sb.solutions.api.accountPurpose.repository.AccountPurposeRepository;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class AccountPurposeServiceImpl implements AccountPurposeService {
+
     private AccountPurposeRepository accountPurposeRepository;
 
     @Override

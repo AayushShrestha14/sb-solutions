@@ -1,6 +1,5 @@
 package com.sb.solutions.core.exception.handler;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

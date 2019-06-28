@@ -1,5 +1,20 @@
 package com.sb.solutions.api.openingForm.service;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.openingForm.entity.OpeningAccount;
@@ -12,32 +27,20 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.JsonConverter.JsonConverter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 @Service
 public class OpeningFormServiceImpl implements OpeningFormService {
+
     private OpeningFormRepository openingFormRepository;
     private DateValidation dateValidation;
     private BranchService branchService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     @Autowired
-    public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository, DateValidation dateValidation,
-                                  BranchService branchService) {
+    public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository,
+        DateValidation dateValidation,
+        BranchService branchService) {
         this.openingFormRepository = openingFormRepository;
         this.dateValidation = dateValidation;
         this.branchService = branchService;
@@ -51,7 +54,9 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm findOne(Long id) {
         OpeningForm openingForm = openingFormRepository.getOne(id);
-        openingForm.setOpeningAccount(jsonConverter.convertToJson(FilePath.getOSPath() + openingForm.getCustomerDetailsJson(), OpeningAccount.class));
+        openingForm.setOpeningAccount(jsonConverter
+            .convertToJson(FilePath.getOSPath() + openingForm.getCustomerDetailsJson(),
+                OpeningAccount.class));
         return openingForm;
     }
 
@@ -59,16 +64,19 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public OpeningForm save(OpeningForm openingForm) {
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
         if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
-            if (!dateValidation.checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
+            if (!dateValidation
+                .checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
                 throw new ServiceValidationException("Invalid Date of Birth of Nominee");
             }
         }
         if (openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth() != null) {
-            if (!dateValidation.checkDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
+            if (!dateValidation
+                .checkDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
                 throw new ServiceValidationException("Invalid Date of Birth of Beneficiaries");
             }
         }
-        for (OpeningCustomer openingCustomer : openingForm.getOpeningAccount().getOpeningCustomers()) {
+        for (OpeningCustomer openingCustomer : openingForm.getOpeningAccount()
+            .getOpeningCustomers()) {
             if (openingCustomer.getDateOfBirthAD() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getDateOfBirthAD())) {
                     throw new ServiceValidationException("Invalid Date of Birth of Customer");
@@ -81,12 +89,14 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             }
             if (openingCustomer.getPassportIssuedDate() != null) {
                 if (!dateValidation.checkDate(openingCustomer.getPassportIssuedDate())) {
-                    throw new ServiceValidationException("Invalid Password Issued Date of Customer");
+                    throw new ServiceValidationException(
+                        "Invalid Password Issued Date of Customer");
                 }
             }
             if (openingCustomer.getPassportExpireDate() != null) {
                 if (dateValidation.checkDate(openingCustomer.getPassportExpireDate())) {
-                    throw new ServiceValidationException("Invalid Passport Expire Date of Customer");
+                    throw new ServiceValidationException(
+                        "Invalid Passport Expire Date of Customer");
                 }
             }
             if (openingCustomer.getIdCardIssuedDate() != null) {
@@ -109,10 +119,13 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                     throw new ServiceValidationException("Invalid Visa Validity Date of Customer");
                 }
             }
-            for (OpeningCustomerRelative openingCustomerRelative : openingCustomer.getKyc().getCustomerRelatives()) {
+            for (OpeningCustomerRelative openingCustomerRelative : openingCustomer.getKyc()
+                .getCustomerRelatives()) {
                 if (openingCustomerRelative.getCitizenshipIssuedDate() != null) {
-                    if (!dateValidation.checkDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
-                        throw new ServiceValidationException("Invalid Citizen Issued Date of Customer Relative");
+                    if (!dateValidation
+                        .checkDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
+                        throw new ServiceValidationException(
+                            "Invalid Citizen Issued Date of Customer Relative");
                     }
                 }
             }
@@ -145,7 +158,8 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     }
 
     @Override
-    public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable, String accountStatus) {
+    public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable,
+        String accountStatus) {
         AccountStatus status = AccountStatus.valueOf(accountStatus);
         return openingFormRepository.findAllByBranchAndStatus(branch, pageable, status);
     }
@@ -207,7 +221,8 @@ public class OpeningFormServiceImpl implements OpeningFormService {
                 e.printStackTrace();
             }
         } catch (Exception e) {
-            jsonPath = writeJsonFile(UploadDir.accountRequest + openingForm.getBranch().getName() + "/", openingForm);
+            jsonPath = writeJsonFile(
+                UploadDir.accountRequest + openingForm.getBranch().getName() + "/", openingForm);
             return jsonPath;
         }
         return null;

@@ -1,13 +1,14 @@
-package com.sb.solutions.core.utils.NepaliDateConvertor;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package com.sb.solutions.core.utils.date;
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * @author Rujan Maharjan on 6/7/2019
  */
 public class DateFormat {
+
     private String year;
     private String month;
 

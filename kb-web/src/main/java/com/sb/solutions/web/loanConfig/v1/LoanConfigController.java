@@ -33,10 +33,11 @@ public class LoanConfigController {
 
     @Autowired
     LoanConfigService loanConfigService;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config) {
 
-        logger.debug("Request to save new loan.");
+        logger.debug("Request to save new Loan.");
         final LoanConfig loanConfig = loanConfigService.save(config);
 
         if (loanConfig == null) {

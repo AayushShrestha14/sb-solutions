@@ -1,21 +1,20 @@
-package com.sb.solutions.core.utils.uploadFile;
-
-import com.sb.solutions.core.constant.FilePath;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.RestResponseDto;
-import org.apache.maven.shared.utils.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
+package com.sb.solutions.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import org.apache.maven.shared.utils.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sb.solutions.core.constant.FilePath;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.RestResponseDto;
 
 public class FileUploadUtils {
 
@@ -30,7 +29,8 @@ public class FileUploadUtils {
         }
 
         try {
-            byte[] bytes = multipartFile.getBytes();
+            final byte[] bytes = multipartFile.getBytes();
+
             if (type.equals("profile")) {
                 url = UploadDir.userProfile;
             } else if (type.equals("signature")) {
@@ -38,14 +38,19 @@ public class FileUploadUtils {
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
+
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
-            String imagePath = url + System.currentTimeMillis() + "." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+
+            final String imagePath = url + System.currentTimeMillis() + "." + FileUtils
+                .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+
             path = Paths.get(FilePath.getOSPath() + imagePath);
+
             Files.write(path, bytes);
-            System.out.println(imagePath);
+
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
             log.error("Error wile writing file", e);
@@ -53,7 +58,8 @@ public class FileUploadUtils {
         }
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type, int id, String name, String documentName) {
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
+        String citizenNumber, String name, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
@@ -62,18 +68,21 @@ public class FileUploadUtils {
         }
 
         try {
-            byte[] bytes = multipartFile.getBytes();
-            FilePath filePath = new FilePath();
-            url = FilePath.getOSPath() + UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-            String returnUrl = UploadDir.initialDocument + "customer_" + id + "/" + type + "/";
-            Path path = Paths.get(url);
+            final byte[] bytes = multipartFile.getBytes();
+            final FilePath filePath = new FilePath();
+
+            url = UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type
+                + "/";
+            String returnUrl = UploadDir.initialDocument + name+ "_" + citizenNumber + "/" + type + "/";
+            Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
-                new File(url).mkdirs();
+                new File(FilePath.getOSPath() + url).mkdirs();
             }
-            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
+                .toLowerCase();
             url = url + name + "_" + documentName + "." + fileExtension;
-            returnUrl = returnUrl+ name + "_" + documentName + "." + fileExtension;
-            path = Paths.get(url);
+            returnUrl = returnUrl + name + "_" + documentName + "." + fileExtension;
+            path = Paths.get(FilePath.getOSPath() + url);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(returnUrl);
         } catch (IOException e) {
@@ -82,16 +91,18 @@ public class FileUploadUtils {
         }
     }
 
-    public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile, String branch, String type, String name) {
+    public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile,
+        String branch, String type, String name) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
             return new RestResponseDto().failureModel("Image Size more than 400kb");
-        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg") && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
+            && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
-            byte[] bytes = multipartFile.getBytes();
+            final byte[] bytes = multipartFile.getBytes();
             url = UploadDir.accountRequest + branch + "/";
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
@@ -99,13 +110,21 @@ public class FileUploadUtils {
             }
             String imagePath;
             if (type.equals("citizen")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
+                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                ;
             } else if (type.equals("passport")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
+                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                ;
             } else if (type.equals("id")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
+                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                ;
             } else if (type.equals("photo")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();;
+                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
+                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                ;
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }

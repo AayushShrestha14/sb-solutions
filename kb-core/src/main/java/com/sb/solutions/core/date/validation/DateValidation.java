@@ -1,9 +1,10 @@
 package com.sb.solutions.core.date.validation;
 
-import lombok.Data;
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import lombok.Data;
 
 @Component
 @Data

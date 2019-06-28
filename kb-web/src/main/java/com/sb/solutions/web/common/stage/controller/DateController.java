@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.NepaliDateConvertor.DateConverter;
+import com.sb.solutions.core.utils.date.DateConverter;
 import com.sb.solutions.web.loan.v1.CustomerLoanController;
 import lombok.AllArgsConstructor;
 

@@ -10,7 +10,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
-import com.sb.solutions.core.utils.uploadFile.FileUploadUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +115,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/csv")
     public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
-        return new RestResponseDto().successModel((userService.csv(searchDto)));
+        return new RestResponseDto().successModel(userService.csv(searchDto));
     }
 
     @PostMapping(value="/dismiss")
