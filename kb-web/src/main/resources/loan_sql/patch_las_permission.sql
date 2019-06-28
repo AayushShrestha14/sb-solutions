@@ -1,7 +1,7 @@
 
-INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fa fa-bank', '/home/admin/branch', 10, 1);
-INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fa fa-gear', '/home/admin/config', 30, 1);
-INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fa fa-exchange', '/home/admin/role', 19, 1);
+INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fas fa-university', '/home/admin/branch', 10, 1);
+INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (2,  'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1);
+INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (3,  'Role and Permission', 'fas fa-lock', '/home/admin/role', 19, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (4, 'Valuator', 'fas fa-money-check', '/home/admin/valuator', 25, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (5,  'Sector', 'fas fa-hands-helping', '/home/admin/sector', 50, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 1, 1);
@@ -13,7 +13,7 @@ INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders,
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (12,  'SubSector', 'fa fa-user', '/home/admin/subSector', 51, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/admin/document', 55, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1);
-INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fa fa-dashboard', '/home/admin/dashboard', 1, 1);
+INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fas fa-home', '/home/admin/dashboard', 1, 1);
 
 
 

@@ -192,6 +192,10 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        if(branchIdList.isEmpty()){
+            branchIdList.add(0L);
+        }
+
         return branchIdList;
     }
 
