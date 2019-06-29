@@ -8,10 +8,10 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.csv.CsvReader;
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -101,6 +100,9 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<Branch> getAccessBranchByCurrentUser() {
+        if (userService.getAuthenticated().getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+            return branchRepository.findAll();
+        }
         return userService.getAuthenticated().getBranch();
     }
 
@@ -113,7 +115,7 @@ public class BranchServiceImpl implements BranchService {
                 branches.add(b.getId());
             }
         }
-        if(branches.isEmpty()){
+        if (branches.isEmpty()) {
             return branchRepository.findAll();
         }
         return branchRepository.getByIdNotIn(branches);
