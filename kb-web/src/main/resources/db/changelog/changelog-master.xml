@@ -1704,4 +1704,6 @@
     <include file="20190605_eligibility_question.xml" relativeToChangelogFile="true"/>
     <include file="20190605_eligibility_answer.xml" relativeToChangelogFile="true"/>
     <include file="20190610_opening_account.xml" relativeToChangelogFile="true"/>
+    <include file="20190627_proposal.xml" relativeToChangelogFile="true"/>
+    <include file="20190627_alter_customer_loan_proposal.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

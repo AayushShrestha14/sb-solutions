@@ -17,7 +17,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
 
-    private int proposedLimit;
+    private double proposedLimit;
     private double interestRate;
     private double baseRate;
     private double premiumRateOnBaseRate;
