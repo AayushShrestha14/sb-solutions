@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -60,8 +61,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Map dates = gson.fromJson(value, Map.class);
                 try {
                     return criteriaBuilder.between(root.get("createdAt"),
-                            new SimpleDateFormat("yyyy-MM-dd").parse(String.valueOf(dates.get("startDate"))),
-                            new SimpleDateFormat("yyyy-MM-dd").parse(String.valueOf(dates.get("endDate"))));
+                            new SimpleDateFormat("MM/dd/yyyy").parse(String.valueOf(dates.get("startDate"))),
+                            new SimpleDateFormat("MM/dd/yyyy").parse(String.valueOf(dates.get("endDate"))));
                 } catch (ParseException e) {
                     return null;
                 }
