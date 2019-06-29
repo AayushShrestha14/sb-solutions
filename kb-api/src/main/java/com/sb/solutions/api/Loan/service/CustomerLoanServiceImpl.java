@@ -121,7 +121,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-        User u = userService.getAuthenticated();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
                 .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
