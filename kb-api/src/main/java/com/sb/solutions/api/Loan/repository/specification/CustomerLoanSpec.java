@@ -1,11 +1,16 @@
 package com.sb.solutions.api.Loan.repository.specification;
 
+import com.google.gson.Gson;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -19,6 +24,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_CURRENT_USER_ROLE = "currentUserRole";
     private static final String FILTER_BY_TO_USER = "toUser";
     private static final String FILTER_BY_BRANCH = "branchIds";
+    private static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
 
     private final String property;
     private final String value;
@@ -36,7 +42,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
 
             case FILTER_BY_LOAN:
-                return criteriaBuilder.and(criteriaBuilder.equal(root.join("Loan").get("id"), Long.valueOf(value)));
+                return criteriaBuilder.and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_CURRENT_USER_ROLE:
                 return criteriaBuilder.equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"), Long.valueOf(value));
@@ -49,6 +55,17 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Expression<String> exp = root.join("branch").get("id");
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
+
+            case FILTER_BY_CURRENT_STAGE_DATE:
+                Gson gson = new Gson();
+                Map dates = gson.fromJson(value, Map.class);
+                try {
+                    return criteriaBuilder.between(root.get("createdAt"),
+                            new SimpleDateFormat("MM/dd/yyyy").parse(String.valueOf(dates.get("startDate"))),
+                            new SimpleDateFormat("MM/dd/yyyy").parse(String.valueOf(dates.get("endDate"))));
+                } catch (ParseException e) {
+                    return null;
+                }
 
             case FILTER_BY_TO_USER:
                 return null;

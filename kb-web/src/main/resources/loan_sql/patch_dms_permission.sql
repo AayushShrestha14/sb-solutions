@@ -7,7 +7,7 @@ INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders,
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/admin/document', 55, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1);
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fas fa-home', '/home/admin/dashboard', 1, 1);
-
+INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (102,  'Catalogue', 'fa fa-file-alt', '/home/admin/catalogue', 60, 1);
 
 
 
@@ -40,6 +40,10 @@ INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  p
 -- Dashboard --
  INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (17, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  17, 1);
+
+-- Catalogue --
+INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (18, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  102, 1);
 
  -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --
 
