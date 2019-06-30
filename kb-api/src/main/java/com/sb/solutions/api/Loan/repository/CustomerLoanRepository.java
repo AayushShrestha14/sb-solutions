@@ -24,17 +24,19 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=2 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid) ) Rejected,\n" +
             "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE cl.document_status=3 AND l.to_role_id IN (:id) AND cl.branch_id IN (:bid) ) Closed,\n" +
             "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE l.to_role_id IN (:id) AND cl.branch_id IN (:bid) )total\n", nativeQuery = true)
-    Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") Long bid);
+    Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
 
     @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c" +
             " JOIN dms_loan_file d ON c.dms_loan_file_id = d.id" +
-            " JOIN loan_config l ON c.loan_id=l.id " +
+            " JOIN loan_config l ON c.loan_id=l.id where c.branch_id in (:branchId)" +
             "GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<String, Double>> proposedAmount();
+    List<Map<String, Double>> proposedAmount(@Param("branchId")List<Long> branchId);
 
     @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c " +
             "JOIN dms_loan_file d ON c.dms_loan_file_id = d.id " +
             "JOIN loan_config l ON c.loan_id=l.id " +
             "WHERE c.branch_id =:branchId GROUP BY c.loan_id", nativeQuery = true)
     List<Map<String, Double>> proposedAmountByBranchId(@Param("branchId") Long branchId);
+
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(String generalCitizenShipNumber,String dmsCitizenShipNumber);
 }

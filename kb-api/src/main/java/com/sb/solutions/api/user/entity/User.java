@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,9 +45,8 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
     private Role role;
     private String accountNo;
 
-    @OneToOne
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
+    @ManyToMany
+    private List<Branch> branch;
     private String signatureImage;
     private String profilePicture;
 

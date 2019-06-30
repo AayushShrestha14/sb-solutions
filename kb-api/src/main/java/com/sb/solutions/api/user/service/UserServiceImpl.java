@@ -1,14 +1,20 @@
 package com.sb.solutions.api.user.service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,13 +41,23 @@ public class UserServiceImpl implements UserService {
     private final BaseHttpService baseHttpService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final BranchRepository branchRepository;
+    private final RoleRepository roleRepository;
+    private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
                            @Autowired UserRepository userRepository,
+                           @Autowired BranchRepository branchRepository,
+                           @Autowired RoleRepository roleRepository,
+                           @Autowired CustomJdbcTokenStore customJdbcTokenStore,
                            @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.branchRepository = branchRepository;
+        this.roleRepository = roleRepository;
+        this.customJdbcTokenStore = customJdbcTokenStore;
+
     }
 
     @Override
@@ -76,12 +93,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        user.setLastModifiedAt(new Date());
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
+        }
+        if (user.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
+            if (user.getBranch().isEmpty() || (user.getBranch().size() > 1)) {
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null or multi selected");
+            }
+        }
+
+        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)) {
+            if (user.getBranch().isEmpty()) {
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
+            }
+        }
+
+        if (user.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+            if (!user.getBranch().isEmpty()) {
+
+                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be selected For role");
+            }
         }
 
         return userRepository.save(user);
@@ -106,8 +140,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByRoleAndBranch(Long roleId, Long branchId) {
-        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
+    public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
+        Role r = roleRepository.getOne(roleId);
+        if (r.getRoleAccess().equals(RoleAccess.ALL)) {
+            return userRepository.findByRoleRoleAccess(RoleAccess.ALL);
+        }
+        return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
 
     @Override
@@ -133,6 +171,49 @@ public class UserServiceImpl implements UserService {
         return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
 
     }
+
+    @Override
+    public List<Long> getRoleAccessFilterByBranch() {
+        User u = this.getAuthenticated();
+        List<Long> branchIdList = new ArrayList<>();
+        String branchIdListTOString = null;
+        if (u.getRole().getRoleAccess() != null) {
+            if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
+                for (Branch b : u.getBranch()) {
+                    branchIdList.add(b.getId());
+                }
+            }
+
+            if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+                for (Branch b : this.branchRepository.findAll()) {
+                    branchIdList.add(b.getId());
+                }
+            }
+
+        }
+
+        if(branchIdList.isEmpty()){
+            branchIdList.add(0L);
+        }
+
+        return branchIdList;
+    }
+
+    @Override
+    public String dismissAllBranchAndRole(User user) {
+        user.setBranch(new ArrayList<Branch>());
+        user.setStatus(Status.INACTIVE);
+        user.setRole(null);
+        userRepository.save(user);
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore.findTokensByUserName(user.getUsername());
+        for (OAuth2AccessToken tempToken : token)
+        {
+          customJdbcTokenStore.removeAccessToken(tempToken);
+          customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+        }
+        return "SUCCESS";
+    }
+
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {

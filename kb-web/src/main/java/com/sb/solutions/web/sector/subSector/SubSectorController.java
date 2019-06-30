@@ -1,4 +1,4 @@
-package com.sb.solutions.web.sector.SubSectorController;
+package com.sb.solutions.web.sector.subSector;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

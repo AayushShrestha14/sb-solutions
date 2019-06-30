@@ -1,8 +1,12 @@
 package com.sb.solutions.api.filestorage.service.impl;
 
-import com.sb.solutions.api.filestorage.service.FileStorageService;
-import com.sb.solutions.core.config.security.property.FileStorageProperties;
-import lombok.AllArgsConstructor;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.Base64;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -11,12 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.Base64;
+import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.core.config.security.property.FileStorageProperties;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -59,7 +60,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         sourcePath = sourcePath.replace(File.separatorChar, '_');
         try {
             return Base64Utils.encodeToUrlSafeString(sourcePath.getBytes())
-                    + "/" + URLEncoder.encode(imageName, "UTF-8");
+                + "/" + URLEncoder.encode(imageName, "UTF-8");
         } catch (IOException e) {
             logger.debug("Encoding failed due to [{}].", e.getMessage());
         }
@@ -69,7 +70,8 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public Resource getFile(String encodedHash, String fileName) {
         logger.debug("Getting the file as resource.");
-        String decodedPath = new String(Base64Utils.decodeFromUrlSafeString(encodedHash), Charset.forName("UTF-8"));
+        String decodedPath = new String(Base64Utils.decodeFromUrlSafeString(encodedHash),
+            Charset.forName("UTF-8"));
         String filePath = getFilePath(decodedPath.split("_")) + File.separator + fileName;
         File image = new File(filePath);
         if (image.exists()) {

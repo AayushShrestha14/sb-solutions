@@ -1,6 +1,8 @@
 package com.sb.solutions.api.nepseCompany.util;
 
-import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -8,11 +10,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 
 @Component
 public class BulkConverter {
+
     public List<NepseCompany> parseNepseCompanyFile(MultipartFile multipartFile) {
         List<NepseCompany> nepseCompanyList = new ArrayList<NepseCompany>();
 
@@ -35,7 +37,7 @@ public class BulkConverter {
                 cell1 = row.getCell(1);
 
                 if (!cell0.toString().equalsIgnoreCase("Company Name")
-                        || !cell1.toString().equalsIgnoreCase("Value")) {
+                    || !cell1.toString().equalsIgnoreCase("Value")) {
                     return null;
                 }
 

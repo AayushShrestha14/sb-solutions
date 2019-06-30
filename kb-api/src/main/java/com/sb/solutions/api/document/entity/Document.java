@@ -29,8 +29,8 @@ public class Document extends BaseEntity<Long> {
 
     @ManyToMany
     @JoinTable(name = "document_loan_cycle",
-            joinColumns = {@JoinColumn(name = "document_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "loan_cycle_id", referencedColumnName = "id")})
+        joinColumns = {@JoinColumn(name = "document_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "loan_cycle_id", referencedColumnName = "id")})
     private Set<LoanCycle> loanCycle;
 
     private Status status;

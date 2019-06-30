@@ -56,7 +56,7 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
         for (RolePermissionRights r : rolePermissionRightsList) {
             List<UrlApi> tempUrlApis = new ArrayList<>();
             for (UrlApi urlApi : r.getApiRights()) {
-                if (!urlApi.isChecked()) {
+                if (urlApi != null && !urlApi.isChecked()) {
                     urlApiRepository.deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(), urlApi.getId());
                 } else {
                     tempUrlApis.add(urlApi);

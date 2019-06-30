@@ -4,6 +4,8 @@ import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.web.branch.v1.dto.BranchDto;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Rujan Maharjan on 6/4/2019
  */
@@ -12,7 +14,7 @@ import lombok.Data;
 
 public class UserDto extends BaseDto<Long> {
 
-    private BranchDto branch;
+    private List<BranchDto> branch;
     private RoleDto role;
 
 }

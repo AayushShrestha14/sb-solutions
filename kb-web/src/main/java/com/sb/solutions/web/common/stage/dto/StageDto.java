@@ -17,7 +17,7 @@ public class StageDto extends BaseDto<Long> {
 
     private Long customerLoanId;
 
-    private Long LoanConfigId;
+    private Long loanConfigId;
 
     private DocAction docAction;
 

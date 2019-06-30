@@ -23,10 +23,10 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     int countByLoanCycle(LoanCycle loanCycle);
 
-    @Query(value = "select\n" +
-        "  (select  count(id) from document where status=1) active,\n" +
-        "(select  count(id) from document where status=0) inactive,\n" +
-        "(select  count(id) from document) documents\n", nativeQuery = true)
+    @Query(value = "select "
+        + "  (select  count(id) from document where status=1) active,"
+        + "(select  count(id) from document where status=0) inactive,"
+        + "(select  count(id) from document) documents", nativeQuery = true)
     Map<Object, Object> documentStatusCount();
 
 }

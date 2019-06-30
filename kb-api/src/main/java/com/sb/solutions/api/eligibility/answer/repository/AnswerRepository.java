@@ -1,11 +1,12 @@
 package com.sb.solutions.api.eligibility.answer.repository;
 
-import com.sb.solutions.api.eligibility.answer.entity.Answer;
-import com.sb.solutions.core.enums.Status;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.core.enums.Status;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {

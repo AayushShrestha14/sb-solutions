@@ -1,17 +1,17 @@
 package com.sb.solutions.api.rolePermissionRight.entity;
 
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-import java.util.List;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.

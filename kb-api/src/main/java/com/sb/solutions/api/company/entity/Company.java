@@ -1,14 +1,13 @@
 package com.sb.solutions.api.company.entity;
 
+import javax.persistence.Entity;
+
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
 
 @Entity
 @Data

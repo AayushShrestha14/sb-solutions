@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -27,6 +28,7 @@ import java.util.Map;
 public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
+
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
                                    @Autowired UserService userService) {
@@ -50,7 +52,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Loan can not be null");
         }
         if (customerLoan.getId() == null) {
-            customerLoan.setBranch(userService.getAuthenticated().getBranch());
+            customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
             LoanStage stage = new LoanStage();
             stage.setToRole(userService.getAuthenticated().getRole());
             stage.setFromRole(userService.getAuthenticated().getRole());
@@ -67,9 +69,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
-        s.put("currentUserRole", userService.getAuthenticated().getRole() == null ? null : userService.getAuthenticated().getRole().getId().toString());
-        s.put("createdBy", userService.getAuthenticated() == null ? null : userService.getAuthenticated().getId().toString());
-        s.put("branchId", userService.getAuthenticated().getBranch() == null ? null : userService.getAuthenticated().getBranch().getId().toString());
+        User u = userService.getAuthenticated();
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
+        s.put("toUser", u == null ? null : u.getId().toString());
+        s.put("branchIds", branchAccess == null ? null : branchAccess);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -83,23 +91,45 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
-        return customerLoanRepository.statusCount(u.getRole().getId(), u.getBranch().getId());
+        List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
+        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess);
     }
 
     @Override
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
-        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().getId());
+        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
     public List<Map<String, Double>> proposedAmount() {
-        return customerLoanRepository.proposedAmount();
+        List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
+        return customerLoanRepository.proposedAmount(branchAccess);
     }
 
     @Override
     public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
+    }
+
+    @Override
+    public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
+        return customerLoanRepository.getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber, citizenshipNumber);
+    }
+
+    @Override
+    public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess == null ? null : branchAccess);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification, pageable);
     }
 }
 

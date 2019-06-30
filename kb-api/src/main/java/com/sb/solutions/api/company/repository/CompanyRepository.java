@@ -1,21 +1,23 @@
 package com.sb.solutions.api.company.repository;
 
-import com.sb.solutions.api.company.entity.Company;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Map;
+import com.sb.solutions.api.company.entity.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    @Query(value = "select\n" +
-            "  (select  count(id) from Company where status=1) active,\n" +
-            "(select  count(id) from Company where status=0) inactive,\n" +
-            "(select  count(id) from Company) companys\n", nativeQuery = true)
+
+    @Query(value = "SELECT "
+        + "(SELECT  count(id) FROM Company WHERE status=1) active,"
+        + "(SELECT  count(id) FROM Company WHERE status=0) inactive,"
+        + "(SELECT  count(id) FROM Company) companys", nativeQuery = true)
     Map<Object, Object> companyStatusCount();
 
-    @Query(value = "select c from Company c where c.name like concat(:companyName,'%')")
+    @Query(value = "SELECT c FROM Company c WHERE c.name LIKE CONCAT(:companyName,'%')")
     Page<Company> companyFilter(@Param("companyName") String companyName, Pageable pageable);
 }

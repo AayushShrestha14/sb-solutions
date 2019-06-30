@@ -1,19 +1,21 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleHierarchyRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleHierarchyRepository;
 
 /**
  * @author Rujan Maharjan on 5/13/2019
  */
 @Service
 public class RoleHierarchyServiceImpl implements RoleHierarchyService {
+
     @Autowired
     RoleHierarchyRepository roleHierarchyRepository;
 
@@ -38,9 +40,8 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
     }
 
     @Override
-    public List<RoleHierarchy> SaveList(List<RoleHierarchy> roleHierarchyList) {
+    public List<RoleHierarchy> saveList(List<RoleHierarchy> roleHierarchyList) {
         return roleHierarchyRepository.saveAll(roleHierarchyList);
-
     }
 
     @Override

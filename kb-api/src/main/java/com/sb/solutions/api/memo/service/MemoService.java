@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import com.sb.solutions.api.memo.entity.Memo;
 import com.sb.solutions.core.service.BaseService;
 
-import javax.transaction.Transactional;
-
 public interface MemoService extends BaseService<Memo> {
 
     void delete(Memo memo);

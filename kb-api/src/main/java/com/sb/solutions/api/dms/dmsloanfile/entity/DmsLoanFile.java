@@ -5,6 +5,7 @@ import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
+import com.sb.solutions.core.utils.NumberToWordsConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,30 +21,32 @@ import java.util.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
-    @NotNull
-    private String customerName;
+
+    private @NotNull String customerName;
     private String citizenshipNumber;
     private String contactNumber;
     private double interestRate;
     private double proposedAmount;
-
-
+    @Transient
+    private String proposedAmountWord;
     private String security;
+    private String serviceChargeType;
+    private double serviceChargeAmount;
     @Column(columnDefinition = "text")
     private String documentPath;
     @Transient
     private List<String> documentMap;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
     @Transient
     private Set<Securities> securities;
     @Transient
     private List<Map<Object, Object>> documentPathMaps;
     private Date tenure;
+    private int tenureDuration;
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
-
 
     public List<Map<Object, Object>> getDocumentPathMaps() {
         String tempPath = null;
@@ -72,6 +75,26 @@ public class DmsLoanFile extends BaseEntity<Long> {
         }
 
         return this.documentPathMaps;
+    }
+
+    public String getProposedAmountWord() {
+        try {
+            return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @PrePersist
+    public void prePersist() {
+        String mapSecurity = "";
+        for (Securities securities : this.getSecurities()) {
+            mapSecurity += securities.ordinal() + ",";
+        }
+        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
+        this.setSecurity(mapSecurity);
+        this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+        this.setCreatedAt(new Date());
     }
 
 

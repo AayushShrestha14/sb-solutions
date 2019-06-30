@@ -2,6 +2,7 @@ package com.sb.solutions.api.user.repository;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User getUsersByUsernameAndStatus(String username, Status status);
 
-    List<User> findByRoleIdAndBranchId(Long role, Long branch);
+    @Query(value = "SELECT * FROM user u JOIN user_branch ub ON ub.user_id=u.id" +
+            " WHERE u.role_id=:role AND ub.branch_id IN (:branch)", nativeQuery = true)
+    List<User> findByRoleIdAndBranch(@Param("role") Long role, @Param("branch") List<Long> branch);
+
+    List<User> findByRoleRoleAccess(RoleAccess roleAccess);
 
     List<User> findByRoleId(Long roleId);
 

@@ -1,16 +1,17 @@
 package com.sb.solutions.api.openingForm.entity;
 
+import java.util.Set;
+
 import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeningAccount {
+
     private boolean haveExistingAccountNo;
     private String existingAccountNo;
     private AccountPurpose purposeOfAccount;

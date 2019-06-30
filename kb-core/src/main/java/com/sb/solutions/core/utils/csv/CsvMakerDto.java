@@ -1,16 +1,16 @@
 package com.sb.solutions.core.utils.csv;
 
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 /**
  * Created by Rujan Maharjan on 3/4/2019.
  */
 @Component
 public class CsvMakerDto {
 
-  private Map<String,Object> map;
+    private Map<String, Object> map;
 
     public Map<String, Object> getMap() {
         return map;

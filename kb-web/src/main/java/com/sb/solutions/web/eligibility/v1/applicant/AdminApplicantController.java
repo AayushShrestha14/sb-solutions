@@ -39,25 +39,28 @@ public class AdminApplicantController {
     public final ResponseEntity<?> getApplicant(@PathVariable long id) {
         logger.debug("Request to get the applicant with id [{}].", id);
         final Applicant applicant = applicantService.findOne(id);
-        if (applicant == null) return new RestResponseDto().failureModel("Not Found.");
+        if (applicant == null) {
+            return new RestResponseDto().failureModel("Not Found.");
+        }
         return new RestResponseDto().successModel(applicant);
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @GetMapping
-    public final ResponseEntity<?> getApplicants(@RequestParam(value = "search", required = false) String search,
-                                                 @RequestParam("page") int page,
-                                                 @RequestParam("size") int size) {
+    public final ResponseEntity<?> getApplicants(
+        @RequestParam(value = "search", required = false) String search,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size) {
         logger.debug("Request to get all the applicants.");
         final Pageable pageable = PaginationUtils.pageable(page, size);
         final Page<Applicant> applicants = applicantService.findAllPageable(search, pageable);
         final Page<ApplicantDto> applicantDtos =
-                new PageImpl<>(applicantMapper.mapEntitiesToDtos(applicants.getContent()), pageable,
-                        applicants.getTotalElements());
+            new PageImpl<>(applicantMapper.mapEntitiesToDtos(applicants.getContent()), pageable,
+                applicants.getTotalElements());
         return new RestResponseDto().successModel(applicantDtos);
     }
 }

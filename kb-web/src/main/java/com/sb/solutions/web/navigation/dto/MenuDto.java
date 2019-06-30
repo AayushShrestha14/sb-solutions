@@ -1,10 +1,10 @@
 package com.sb.solutions.web.navigation.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * @author Rujan Maharjan on 5/17/2019

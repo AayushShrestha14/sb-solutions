@@ -11,27 +11,24 @@ import org.springframework.data.domain.Pageable;
 public interface BaseService<T> {
 
     /**
-     * @return
+     *
      */
     List<T> findAll();
 
     /**
-     * @param id
-     * @return
+     *
      */
     T findOne(Long id);
 
     /**
-     * @param t
-     * @return
+     *
      */
     T save(T t);
 
     /**
-     * @param t
-     * @return
+     *
      */
-    Page<T> findAllPageable(Object t,Pageable pageable);
+    Page<T> findAllPageable(Object t, Pageable pageable);
 
 
 }

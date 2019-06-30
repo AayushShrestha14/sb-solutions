@@ -28,7 +28,7 @@ public class AddressController {
 
     private final DistrictService districtService;
     private final ProvinceService provinceService;
-    private final MunicipalityVdcService municipality_vdcService;
+    private final MunicipalityVdcService municipalityVdcService;
 
     @GetMapping("/province")
     public ResponseEntity<?> getProvince() {
@@ -42,7 +42,7 @@ public class AddressController {
 
     @GetMapping("/municipalityVdc")
     public ResponseEntity<?> getMunicipalityVdc() {
-        return new RestResponseDto().successModel(municipality_vdcService.findAll());
+        return new RestResponseDto().successModel(municipalityVdcService.findAll());
     }
 
     @PostMapping("/district")
@@ -56,8 +56,8 @@ public class AddressController {
     }
 
     @PostMapping("/municipalityVdc")
-    public ResponseEntity<?> saveMunicipality_VDC(@RequestBody MunicipalityVdc municipality_vdc) {
-        return new RestResponseDto().successModel(municipality_vdcService.save(municipality_vdc));
+    public ResponseEntity<?> saveMunicipalityVDC(@RequestBody MunicipalityVdc municipalityVdc) {
+        return new RestResponseDto().successModel(municipalityVdcService.save(municipalityVdc));
     }
 
     @ApiImplicitParams({
@@ -92,7 +92,7 @@ public class AddressController {
     @PostMapping(value = "/getMunicipalityVdc")
     public ResponseEntity<?> getMunicipalityVdcPage(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(municipality_vdcService
+        return new RestResponseDto().successModel(municipalityVdcService
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
@@ -105,6 +105,6 @@ public class AddressController {
     @PostMapping(value = "/municipalityVdcByDistrict")
     public ResponseEntity getMunicipalityVdcByDistrict(@RequestBody District district) {
         return new RestResponseDto()
-            .successModel(municipality_vdcService.findAllByDistrict(district));
+            .successModel(municipalityVdcService.findAllByDistrict(district));
     }
 }

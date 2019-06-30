@@ -6,11 +6,7 @@ import javax.ws.rs.Produces;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
@@ -31,8 +27,8 @@ public class RoleController {
     private final RoleHierarchyService roleHierarchyService;
 
     public RoleController(
-            @Autowired RoleService roleService,
-            @Autowired RoleHierarchyService roleHierarchyService) {
+        @Autowired RoleService roleService,
+        @Autowired RoleHierarchyService roleHierarchyService) {
         this.roleService = roleService;
         this.roleHierarchyService = roleHierarchyService;
     }
@@ -65,6 +61,12 @@ public class RoleController {
     @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getRoleStatusCount() {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
+    }
+
+    @GetMapping("/{id}")
+    @Produces("application/json")
+    public ResponseEntity<?> getByRoleId(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(roleService.findOne(id));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/active")

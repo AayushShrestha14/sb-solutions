@@ -16,8 +16,8 @@ public enum Stage {
 
     @Override
     public String toString() {
-        return "Review{" +
-            "value='" + value + '\'' +
-            '}';
+        return "Review{"
+            + "value='" + value + '\''
+            + '}';
     }
 }
