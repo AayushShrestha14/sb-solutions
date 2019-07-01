@@ -1,17 +1,5 @@
 package com.sb.solutions.api.eligibility.question.service.impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
 import com.sb.solutions.api.eligibility.answer.service.AnswerService;
 import com.sb.solutions.api.eligibility.question.entity.Question;
@@ -20,11 +8,20 @@ import com.sb.solutions.api.eligibility.question.service.QuestionService;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final Logger logger = LoggerFactory.getLogger(QuestionServiceImpl.class);
@@ -34,6 +31,13 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerService answerService;
 
     private final LoanConfigService loanConfigService;
+
+    public QuestionServiceImpl(QuestionRepository questionRepository, AnswerService answerService,
+                               LoanConfigService loanConfigService) {
+        this.questionRepository = questionRepository;
+        this.answerService = answerService;
+        this.loanConfigService = loanConfigService;
+    }
 
     @Override
     public List<Question> findAll() {
