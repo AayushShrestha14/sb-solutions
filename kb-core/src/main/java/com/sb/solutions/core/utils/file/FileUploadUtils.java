@@ -59,7 +59,7 @@ public class FileUploadUtils {
     }
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
-        String citizenNumber, String name, String documentName) {
+        String name, String citizenNumber, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");
