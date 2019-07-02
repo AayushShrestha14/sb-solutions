@@ -174,7 +174,6 @@ public class DateConverter {
 
     public Map<Object, Object> getCurrentEnglishDate() {
         Calendar cal = Calendar.getInstance();
-        System.out.println();
         Map<Object, Object> map = new HashMap<>();
         map.put("engDateMonth",
             cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
