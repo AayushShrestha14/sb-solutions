@@ -73,7 +73,8 @@ public class FileUploadUtils {
 
             url = UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type
                 + "/";
-            String returnUrl = UploadDir.initialDocument + name+ "_" + citizenNumber + "/" + type + "/";
+            String returnUrl =
+                UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type + "/";
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();

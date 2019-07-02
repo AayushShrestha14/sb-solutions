@@ -22,7 +22,7 @@ public class MailThreadService {
             try {
                 mailSenderService.sendMailWithAttachmentBcc(email);
             } catch (Exception e) {
-                logger.error("error sending email",e.getLocalizedMessage());
+                logger.error("error sending email", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }).start();

@@ -1,20 +1,26 @@
 package com.sb.solutions.core.utils.email;
 
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.activation.DataHandler;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MailSenderService {
@@ -41,9 +47,6 @@ public class MailSenderService {
         });
         MimeMessage message = new MimeMessage(session);
 
-        // Create the message part
-        BodyPart messageBodyPart = new MimeBodyPart();
-
         // Set From: header field of the header.
         message.setFrom(new InternetAddress(username));
         // Set To: header field of the header.
@@ -54,12 +57,16 @@ public class MailSenderService {
 
             for (String recipient : items) {
                 message.addRecipient(Message.RecipientType.CC, new InternetAddress(
-                        recipient));
+                    recipient));
             }
         }
 
         // Set Subject: header field
         message.setSubject(email.getSubject());
+
+        // Create the message part
+        BodyPart messageBodyPart = new MimeBodyPart();
+
         // Fill the message
         messageBodyPart.setContent(email.getBody(), "text/html");
 
@@ -72,8 +79,8 @@ public class MailSenderService {
         // Part two is attachment
         messageBodyPart = new MimeBodyPart();
 
-
-        List<String> item = email.getAttachment() == null ? new ArrayList<>() : email.getAttachment();
+        List<String> item =
+            email.getAttachment() == null ? new ArrayList<>() : email.getAttachment();
 
         for (String attached : item) {
             if (attached != null) {
@@ -82,12 +89,12 @@ public class MailSenderService {
 
                 attachment.setDataHandler(new DataHandler(url));
                 attachment.setDisposition(Part.ATTACHMENT);
-//                List<String> files = Arrays.asList(attached.split("/"));
-//                String fileName = "";
-//                for (String a : files) {
-//                    fileName = a;
-//                }
 
+                /*List<String> files = Arrays.asList(attached.split("/"));
+                String fileName = "";
+                for (String a : files) {
+                    fileName = a;
+                }*/
 
                 attachment.setFileName("test");
                 multipart.addBodyPart((BodyPart) attachment);
@@ -99,6 +106,4 @@ public class MailSenderService {
         // Send message
         Transport.send(message);
     }
-
-
 }

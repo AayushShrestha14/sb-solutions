@@ -121,8 +121,8 @@ public class RequestExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> DuplicateEntryExceptionHandler(
-            ConstraintViolationException ex) {
+    public ResponseEntity<?> constraintViolationHandler(
+        ConstraintViolationException ex) {
 
         logger.error("Can not parse request", ex);
 
