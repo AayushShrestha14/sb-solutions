@@ -1,4 +1,4 @@
-package com.sb.solutions.api.Loan;
+package com.sb.solutions.api.loan;
 
 import javax.persistence.Entity;
 

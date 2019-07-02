@@ -1,4 +1,4 @@
-package com.sb.solutions.api.Loan.repository.specification;
+package com.sb.solutions.api.loan.repository.specification;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 import com.google.gson.Gson;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 
 /**

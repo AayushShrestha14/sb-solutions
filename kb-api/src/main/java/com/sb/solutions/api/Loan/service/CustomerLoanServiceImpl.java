@@ -1,4 +1,4 @@
-package com.sb.solutions.api.Loan.service;
+package com.sb.solutions.api.loan.service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,10 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.Loan.LoanStage;
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.Loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;

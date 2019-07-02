@@ -32,7 +32,6 @@ import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
-
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
  */

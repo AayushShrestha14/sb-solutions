@@ -1,4 +1,4 @@
-package com.sb.solutions.api.Loan.repository;
+package com.sb.solutions.api.loan.repository;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 
 /**

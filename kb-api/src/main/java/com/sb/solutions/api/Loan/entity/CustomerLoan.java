@@ -1,4 +1,4 @@
-package com.sb.solutions.api.Loan.entity;
+package com.sb.solutions.api.loan.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
+import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
@@ -122,6 +122,4 @@ public class CustomerLoan extends BaseEntity<Long> {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
-
-
 }
