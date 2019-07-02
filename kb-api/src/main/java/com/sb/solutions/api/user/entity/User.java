@@ -38,6 +38,7 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
     private String email;
     @Column(nullable = false)
     private String password;
+    private String resetPasswordToken;
     private Status status;
 
     @OneToOne

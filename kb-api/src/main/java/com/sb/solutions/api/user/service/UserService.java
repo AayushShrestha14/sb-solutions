@@ -40,6 +40,6 @@ public interface UserService extends BaseService<User> ,UserDetailsService {
 
     String dismissAllBranchAndRole(User user);
 
-
+    void setResetToken(Long id, String resetToken);
 
 }

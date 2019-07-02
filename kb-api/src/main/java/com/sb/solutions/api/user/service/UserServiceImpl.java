@@ -214,6 +214,11 @@ public class UserServiceImpl implements UserService {
         return "SUCCESS";
     }
 
+    @Override
+    public void setResetToken(Long id, String resetToken) {
+        userRepository.setResetToken(id, resetToken);
+    }
+
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -227,7 +232,7 @@ public class UserServiceImpl implements UserService {
                     .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
-                updatedAuthorities.add(new SimpleGrantedAuthority("a"));
+                updatedAuthorities.add(new SimpleGrantedAuthority(a));
             }
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(

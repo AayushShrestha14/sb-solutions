@@ -7,8 +7,10 @@ import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,5 +50,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select ifNull(a.type,'a') from user u join role r left join role_permission_rights rpr on rpr.role_id = r.id left join role_permission_rights_api_rights rprar on rprar.role_permission_rights_id=rpr.id left join url_api a on rprar.api_rights_id = a.id where r.id = :id\n" +
             "and u.user_name=:username and a.type is not null;", nativeQuery = true)
     List<Object> userApiAuthorities(@Param("id") Long id, @Param("username") String username);
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.resetPasswordToken=?2 where u.id=?1")
+    void setResetToken(Long userId, String token);
 }
 
