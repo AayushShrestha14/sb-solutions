@@ -38,6 +38,9 @@
         <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
         <surfire.report.plugin.version>2.22.1</surfire.report.plugin.version>
 
+        <checkstyle.version>8.11</checkstyle.version>
+        <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+
         <spotbug.version>3.1.12</spotbug.version>
         <spotbug.maven.plugin.version>3.1.11</spotbug.maven.plugin.version>
 
@@ -267,6 +270,35 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                            <configLocation>resources/google-checkstyle.xml</configLocation>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${spotbug.maven.plugin.version}</version>
@@ -278,6 +310,17 @@
                         <version>${spotbug.version}</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
