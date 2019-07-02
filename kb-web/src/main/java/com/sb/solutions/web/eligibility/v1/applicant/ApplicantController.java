@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RequestMapping(ApplicantController.URL)
 public class ApplicantController {
 
-    static final String URL = "/v1/Loan-configs/{loanConfigId}/applicants";
+    static final String URL = "/v1/loan-configs/{loanConfigId}/applicants";
 
     private final Logger logger = LoggerFactory.getLogger(ApplicantController.class);
 
