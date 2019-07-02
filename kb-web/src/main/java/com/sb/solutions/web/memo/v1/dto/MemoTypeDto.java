@@ -2,13 +2,14 @@ package com.sb.solutions.web.memo.v1.dto;
 
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.core.dto.BaseDto;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.validation.constraint.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.validation.constraint.NotEmpty;
 
 @Data
 @AllArgsConstructor

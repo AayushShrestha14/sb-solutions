@@ -2,6 +2,7 @@ package com.sb.solutions.web.accountType.v1;
 
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,6 @@ import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.service.AccountTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor

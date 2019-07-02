@@ -2,12 +2,13 @@ package com.sb.solutions.web.loan.v1.dto;
 
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.core.dto.BaseDto;
-import com.sb.solutions.core.enums.DocAction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.core.enums.DocAction;
 
 /**
  * @author Rujan Maharjan on 6/4/2019

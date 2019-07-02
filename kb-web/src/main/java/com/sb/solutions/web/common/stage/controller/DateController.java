@@ -2,6 +2,7 @@ package com.sb.solutions.web.common.stage.controller;
 
 import java.text.ParseException;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.date.DateConverter;
 import com.sb.solutions.web.loan.v1.CustomerLoanController;
-import lombok.AllArgsConstructor;
 
 /**
  * @author Rujan Maharjan on 6/9/2019
