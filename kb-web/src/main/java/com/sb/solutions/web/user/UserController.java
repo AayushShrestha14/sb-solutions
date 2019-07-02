@@ -140,7 +140,7 @@ public class UserController {
     }*/
 
     @GetMapping(value = "/forgotPassword")
-    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username, @RequestHeader("referer") final String referer) {
         User user = userService.getByUsername(username);
         if (user == null) {
             return new RestResponseDto().failureModel("User not found!");
@@ -161,7 +161,7 @@ public class UserController {
             Email email = new Email();
             email.setSubject("Reset Password");
             email.setBody(ResetPassword.resetPasswordTemplate(savedUser.getUsername(),
-                    "http://localhost:4200/#/newPassword?username=" + username + "&reset=" + resetToken,
+                    referer + "#/newPassword?username=" + username + "&reset=" + resetToken,
                     savedUser.getResetPasswordTokenExpiry().toString()));
             email.setTo(savedUser.getEmail());
             mailThreadService.sendMail(email);
