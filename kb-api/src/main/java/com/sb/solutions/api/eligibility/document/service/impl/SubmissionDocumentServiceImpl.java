@@ -1,25 +1,26 @@
 package com.sb.solutions.api.eligibility.document.service.impl;
 
-import java.util.List;
-
+import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
+import com.sb.solutions.api.eligibility.document.repository.SubmissionDocumentRepository;
+import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
-import com.sb.solutions.api.eligibility.document.repository.SubmissionDocumentRepository;
-import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class SubmissionDocumentServiceImpl implements SubmissionDocumentService {
 
     private final Logger logger = LoggerFactory.getLogger(SubmissionDocumentServiceImpl.class);
 
     private final SubmissionDocumentRepository submissionDocumentRepository;
+
+    public SubmissionDocumentServiceImpl(SubmissionDocumentRepository submissionDocumentRepository) {
+        this.submissionDocumentRepository = submissionDocumentRepository;
+    }
 
     @Override
     public List<SubmissionDocument> findAll() {

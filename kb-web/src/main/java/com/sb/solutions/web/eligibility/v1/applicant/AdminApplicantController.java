@@ -1,5 +1,13 @@
 package com.sb.solutions.web.eligibility.v1.applicant;
 
+import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
+import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
+import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,19 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
-import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
-import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
-
 @RestController
 @RequestMapping(AdminApplicantController.URL)
-@AllArgsConstructor
 public class AdminApplicantController {
 
     static final String URL = "/v1/applicants";
@@ -34,6 +31,11 @@ public class AdminApplicantController {
     private final ApplicantService applicantService;
 
     private final ApplicantMapper applicantMapper;
+
+    public AdminApplicantController(ApplicantService applicantService, ApplicantMapper applicantMapper) {
+        this.applicantService = applicantService;
+        this.applicantMapper = applicantMapper;
+    }
 
     @GetMapping(path = "/{id}")
     public final ResponseEntity<?> getApplicant(@PathVariable long id) {

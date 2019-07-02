@@ -21,7 +21,7 @@
     <sql>
       INSERT INTO `offer_letter` (`id`, `name`, `template_url`) VALUES
       (1, 'Birth Mark Letter', 'home/loan/birth-mark-letter'),
-      (2, 'Sccess Letter', 'home/loan/success-offer-letter')
+      (2, 'Success Letter', 'home/loan/success-offer-letter')
     </sql>
   </changeSet>
 

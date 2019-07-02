@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -24,6 +25,9 @@ public class SpringSecurityAuditorAware implements AuditorAware<Long> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         ObjectMapper objectMapper = new ObjectMapper();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
         Map<String, Object> map = objectMapper
             .convertValue(authentication.getPrincipal(), Map.class);
         if (!map.isEmpty()) {
