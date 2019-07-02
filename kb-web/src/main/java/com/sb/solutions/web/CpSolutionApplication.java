@@ -1,6 +1,5 @@
 package com.sb.solutions.web;
 
-
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;

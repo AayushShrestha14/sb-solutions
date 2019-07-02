@@ -115,10 +115,12 @@ public class Mapper {
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
         StageDto currentStage, UserDto currentUser) {
-        if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
-            currentStage.getDocAction().equals(DocAction.APPROVED) ||
-            currentStage.getDocAction().equals(DocAction.REJECT)) {
+        if (currentStage.getDocAction().equals(DocAction.CLOSED)
+            || currentStage.getDocAction().equals(DocAction.APPROVED)
+            || currentStage.getDocAction().equals(DocAction.REJECT)) {
+
             logger.error("Error while performing the action");
+
             throw new RuntimeException("Cannot Perform the action");
         }
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {

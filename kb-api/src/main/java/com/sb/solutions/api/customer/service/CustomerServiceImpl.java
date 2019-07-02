@@ -2,6 +2,7 @@ package com.sb.solutions.api.customer.service;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.repository.CustomerRepository;
 import com.sb.solutions.core.dto.SearchDto;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor

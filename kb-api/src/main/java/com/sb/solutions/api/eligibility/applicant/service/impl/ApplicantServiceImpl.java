@@ -1,5 +1,19 @@
 package com.sb.solutions.api.eligibility.applicant.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.sb.solutions.api.eligibility.answer.entity.Answer;
 import com.sb.solutions.api.eligibility.answer.entity.EligibilityAnswer;
 import com.sb.solutions.api.eligibility.answer.service.AnswerService;
@@ -17,19 +31,6 @@ import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentServi
 import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
 import com.sb.solutions.core.enums.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -47,9 +48,10 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
 
-    public ApplicantServiceImpl(ApplicantRepository applicantRepository, FileStorageService fileStorageService,
-                                SubmissionDocumentService submissionDocumentService, AnswerService answerService,
-                                EligibilityCriteriaService eligibilityCriteriaService) {
+    public ApplicantServiceImpl(ApplicantRepository applicantRepository,
+        FileStorageService fileStorageService,
+        SubmissionDocumentService submissionDocumentService, AnswerService answerService,
+        EligibilityCriteriaService eligibilityCriteriaService) {
         this.applicantRepository = applicantRepository;
         this.fileStorageService = fileStorageService;
         this.submissionDocumentService = submissionDocumentService;

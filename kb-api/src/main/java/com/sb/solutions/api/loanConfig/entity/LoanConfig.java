@@ -6,15 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
 import com.sb.solutions.api.offerLetter.entity.OfferLetter;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LoanConfig extends BaseEntity<Long> {
+
     @Column(unique = true)
     private @NotNull(message = "name should not be null") String name;
     @ManyToMany

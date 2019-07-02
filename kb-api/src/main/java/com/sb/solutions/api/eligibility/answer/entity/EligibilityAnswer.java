@@ -4,14 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
-import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
+import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
 @Data

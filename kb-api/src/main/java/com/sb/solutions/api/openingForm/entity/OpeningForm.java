@@ -9,12 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.sb.solutions.api.accountType.entity.AccountType;
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.core.enums.AccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.accountType.entity.AccountType;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.enums.AccountStatus;
 
 @Entity
 @Data

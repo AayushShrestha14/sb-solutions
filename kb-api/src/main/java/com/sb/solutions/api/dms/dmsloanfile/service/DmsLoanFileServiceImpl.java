@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,8 @@ import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
 import com.sb.solutions.api.dms.dmsloanfile.repository.specification.DmsSpecBuilder;
 import com.sb.solutions.core.date.validation.DateValidation;
-import com.sb.solutions.core.enums.Securities;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.exception.handler.Violation;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor

@@ -140,14 +140,14 @@ public class UserController {
         attached.add("http://localhost:8086/images/userSignature/2019-04-21-22-06-33samriddi.jpg");
         bcc.add("rujnmahrzn@gmail.com");
         bcc.add("davidrana132@gmail.com");
-        BaseHttp baseHttp = new BaseHttp();
+
         Email email = new Email();
         email.setBody(this.template());
         email.setTo("elwyncrestha@gmail.com");
         email.setBcc(bcc);
         email.setAttachment(attached);
         mailThreadService.sendMail(email);
-        return new RestResponseDto().successModel(baseHttp);
+        return new RestResponseDto().successModel(new BaseHttp());
     }
 
 

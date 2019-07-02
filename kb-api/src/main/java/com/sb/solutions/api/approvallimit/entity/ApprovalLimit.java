@@ -5,14 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
 @Data

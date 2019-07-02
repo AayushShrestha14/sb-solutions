@@ -2,10 +2,11 @@ package com.sb.solutions.api.landSecurity.entity;
 
 import java.util.List;
 
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enitity.BaseEntity;
 
 //@Entity
 @Data

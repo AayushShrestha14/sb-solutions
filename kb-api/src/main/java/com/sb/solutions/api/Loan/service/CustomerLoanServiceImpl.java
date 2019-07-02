@@ -1,5 +1,16 @@
 package com.sb.solutions.api.Loan.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.sb.solutions.api.Loan.LoanStage;
 import com.sb.solutions.api.Loan.entity.CustomerLoan;
 import com.sb.solutions.api.Loan.repository.CustomerLoanRepository;
@@ -9,16 +20,6 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -26,12 +27,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
+
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
 
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-                                   @Autowired UserService userService) {
+        @Autowired UserService userService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
     }
@@ -71,7 +73,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticated();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -98,7 +100,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
-        return customerLoanRepository.findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status, u.getRole().getId(), u.getBranch().get(0).getId());
+        return customerLoanRepository
+            .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
+                u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
@@ -114,7 +118,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
-        return customerLoanRepository.getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber, citizenshipNumber);
+        return customerLoanRepository
+            .getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber,
+                citizenshipNumber);
     }
 
     @Override
@@ -122,7 +128,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }

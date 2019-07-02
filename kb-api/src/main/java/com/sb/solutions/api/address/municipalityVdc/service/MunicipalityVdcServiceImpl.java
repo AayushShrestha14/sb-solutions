@@ -2,6 +2,7 @@ package com.sb.solutions.api.address.municipalityVdc.service;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,6 @@ import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.municipalityVdc.repository.MunicipalityVdcRepository;
 import com.sb.solutions.core.dto.SearchDto;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor

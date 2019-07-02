@@ -1,8 +1,9 @@
 package com.sb.solutions.web.common.stage.mapper;
 
-
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import com.sb.solutions.web.user.dto.UserDto;
 @Component
 public class StageMapper {
 
+    private static final Logger logger = LoggerFactory.getLogger(StageMapper.class);
 
     private final UserService userService;
 
@@ -47,9 +49,9 @@ public class StageMapper {
             currentStage = this.sendBackward(previousList, currentStage, currentUser, createdBy);
         }
 
-        if (stageDto.getDocAction().equals(DocAction.APPROVED) || stageDto.getDocumentStatus()
-            .equals(DocStatus.CLOSED) ||
-            stageDto.getDocumentStatus().equals(DocStatus.REJECTED)) {
+        if (stageDto.getDocAction().equals(DocAction.APPROVED)
+            || stageDto.getDocumentStatus().equals(DocStatus.CLOSED)
+            || stageDto.getDocumentStatus().equals(DocStatus.REJECTED)) {
             currentStage = this.approvedCloseReject(currentStage, currentUser);
         }
 
@@ -77,7 +79,7 @@ public class StageMapper {
                     currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
                 } catch (Exception e) {
-
+                    logger.error("Error occurred while mapping stage", e);
                 }
             }
         }

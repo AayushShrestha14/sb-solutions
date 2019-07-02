@@ -4,14 +4,15 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.sector.subsector.entity.SubSector;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sb.solutions.api.sector.subsector.entity.SubSector;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 
 @Entity
 @Data
