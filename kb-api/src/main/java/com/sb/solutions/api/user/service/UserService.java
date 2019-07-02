@@ -1,6 +1,5 @@
 package com.sb.solutions.api.user.service;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.dto.SearchDto;
@@ -40,6 +39,6 @@ public interface UserService extends BaseService<User> ,UserDetailsService {
 
     String dismissAllBranchAndRole(User user);
 
-
+    User updatePassword(String username, String password);
 
 }
