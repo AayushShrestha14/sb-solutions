@@ -215,10 +215,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setResetToken(Long id, String resetToken) {
-        userRepository.setResetToken(id, resetToken);
+    public User updatePassword(String username, String password) {
+        User user = userRepository.getUsersByUsername(username);
+        user.setResetPasswordToken(null);
+        user.setResetPasswordTokenExpiry(null);
+        user.setPassword(passwordEncoder.encode(password));
+        return userRepository.save(user);
     }
-
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {

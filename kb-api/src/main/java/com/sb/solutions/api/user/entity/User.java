@@ -18,6 +18,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +40,9 @@ public class User extends BaseEntity<Long> implements UserDetails,Serializable {
     @Column(nullable = false)
     private String password;
     private String resetPasswordToken;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date resetPasswordTokenExpiry;
     private Status status;
 
     @OneToOne
