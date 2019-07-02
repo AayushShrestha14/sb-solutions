@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
         if (r.getRoleAccess().equals(RoleAccess.ALL)) {
-            return userRepository.findByRoleRoleAccess(RoleAccess.ALL);
+            return userRepository.findByRoleRoleAccessAndRoleNot(RoleAccess.ALL, roleRepository.getOne(Long.valueOf(1)));
         }
         return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
