@@ -15,16 +15,16 @@
                 <constraints nullable="false"/>
             </column>
             <column name="domain" type="VARCHAR(256)">
-                <constraints nullable="false"/>
+
             </column>
             <column name="host" type="VARCHAR(256)">
-                <constraints nullable="false"/>
+
             </column>
             <column name="port" type="VARCHAR(256)">
-                <constraints nullable="false"/>
+
             </column>
             <column name="email_type" type="VARCHAR(256)">
-                <constraints nullable="true"/>
+
             </column>
 
             <column name="created_by_id" type="BIGINT">

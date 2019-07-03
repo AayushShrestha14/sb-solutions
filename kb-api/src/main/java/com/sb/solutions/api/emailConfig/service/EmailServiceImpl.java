@@ -2,6 +2,7 @@ package com.sb.solutions.api.emailConfig.service;
 
 import com.sb.solutions.api.emailConfig.entity.EmailConfig;
 import com.sb.solutions.api.emailConfig.repository.EmailConfigRepository;
+import com.sb.solutions.core.utils.email.MailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,12 @@ import java.util.List;
 public class EmailServiceImpl implements EmailConfigService {
 
     private final EmailConfigRepository emailConfigRepository;
+    private final MailSenderService mailSenderService;
 
-    public EmailServiceImpl(@Autowired EmailConfigRepository emailConfigRepository) {
+    public EmailServiceImpl(@Autowired EmailConfigRepository emailConfigRepository,
+                            @Autowired MailSenderService mailSenderService) {
         this.emailConfigRepository = emailConfigRepository;
+        this.mailSenderService = mailSenderService;
     }
 
     @Override
