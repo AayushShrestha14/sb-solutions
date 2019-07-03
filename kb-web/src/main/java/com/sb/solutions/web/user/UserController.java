@@ -1,6 +1,5 @@
 package com.sb.solutions.web.user;
 
-import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
@@ -10,6 +9,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
+import com.sb.solutions.core.utils.email.template.ResetPassword;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,11 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
+import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -37,7 +36,7 @@ public class UserController {
     private final MailThreadService mailThreadService;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService, MailThreadService mailThreadService) {
+    public UserController(UserService userService, RoleService roleService,MailThreadService mailThreadService) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailThreadService = mailThreadService;
@@ -69,7 +68,6 @@ public class UserController {
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
                                           @RequestParam("type") String type) {
-        System.out.println();
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
@@ -119,26 +117,75 @@ public class UserController {
         return new RestResponseDto().successModel(userService.csv(searchDto));
     }
 
-    @PostMapping(value = "/dismiss")
+    @PostMapping(value="/dismiss")
     public ResponseEntity<?> dismissBranchAndRole(@RequestBody User user) {
         return new RestResponseDto().successModel(userService.dismissAllBranchAndRole(user));
     }
 
-    @GetMapping(value = "/mail")
-    public ResponseEntity<?> dismissBranchAndRoleMailtes() throws IOException, MessagingException {
+    /*@GetMapping (value="/mail")
+    public ResponseEntity<?> mail() throws IOException, MessagingException {
         List<String> bcc = new ArrayList<>();
         List<String> attached = new ArrayList<>();
         attached.add("http://localhost:8086/images/userSignature/2019-04-21-22-06-33samriddi.jpg");
         bcc.add("rujnmahrzn@gmail.com");
+        bcc.add("davidrana132@gmail.com");
         BaseHttp baseHttp = new BaseHttp();
         Email email = new Email();
-        email.setTo("rujnmahrzn@gmail.com");
+        email.setBody(SampleTemplate.sampleTemplate());
+        email.setTo("elwyncrestha@gmail.com");
         email.setBcc(bcc);
-        email.setSubject("Reset Password");
         email.setAttachment(attached);
         mailThreadService.sendMail(email);
         return new RestResponseDto().successModel(baseHttp);
+    }*/
+
+    @GetMapping(value = "/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username, @RequestHeader("referer") final String referer) {
+        User user = userService.getByUsername(username);
+        if (user == null) {
+            return new RestResponseDto().failureModel("User not found!");
+        } else {
+            String resetToken = UUID.randomUUID().toString() + new Date().getTime();
+            user.setModifiedBy(user.getId());
+            user.setResetPasswordToken(resetToken);
+
+            Date expiry = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(expiry);
+            c.add(Calendar.DATE, 1);
+            expiry = c.getTime();
+            user.setResetPasswordTokenExpiry(expiry);
+            User savedUser = userService.save(user);
+
+            // mailing
+            Email email = new Email();
+            email.setSubject("Reset Password");
+            email.setBody(ResetPassword.resetPasswordTemplate(savedUser.getUsername(),
+                    referer + "#/newPassword?username=" + username + "&reset=" + resetToken,
+                    savedUser.getResetPasswordTokenExpiry().toString()));
+            email.setTo(savedUser.getEmail());
+            mailThreadService.sendMail(email);
+
+            return new RestResponseDto().successModel(resetToken);
+        }
     }
 
+    @PostMapping(value = "/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody User u) {
+        User user = userService.getByUsername(u.getUsername());
+        if (user == null) {
+            return new RestResponseDto().failureModel("User not found!");
+        } else {
+            if (user.getResetPasswordToken() != null) {
+                if (user.getResetPasswordTokenExpiry().before(new Date())) {
+                    return new RestResponseDto().failureModel("Reset Token has been expired already");
+                } else {
+                    return new RestResponseDto().successModel(userService.updatePassword(u.getUsername(), u.getPassword()));
+                }
+            } else {
+                return new RestResponseDto().failureModel("Initiate Reset Password Process first");
+            }
+        }
+    }
 
 }

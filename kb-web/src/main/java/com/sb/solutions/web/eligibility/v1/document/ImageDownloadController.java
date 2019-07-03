@@ -1,8 +1,7 @@
 package com.sb.solutions.web.eligibility.v1.document;
 
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-
+import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.core.dto.RestResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -13,17 +12,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.filestorage.service.FileStorageService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import lombok.AllArgsConstructor;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RestController
-@AllArgsConstructor
 public class ImageDownloadController {
 
     private final Logger logger = LoggerFactory.getLogger(ImageDownloadController.class);
 
     private final FileStorageService fileStorageService;
+
+    public ImageDownloadController(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
 
     @GetMapping(path = "/applicant-documents/{encodedHash}/{fileName:.+}")
     public final ResponseEntity<?> getImage(

@@ -1,12 +1,7 @@
 package com.sb.solutions.api.filestorage.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.Base64;
-
+import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -15,17 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.FileCopyUtils;
 
-import com.sb.solutions.api.filestorage.service.FileStorageService;
-import com.sb.solutions.core.config.security.property.FileStorageProperties;
-import lombok.AllArgsConstructor;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.Base64;
 
 @Service
-@AllArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
 
     private final Logger logger = LoggerFactory.getLogger(FileStorageServiceImpl.class);
 
     private final FileStorageProperties fileStorageProperties;
+
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
+        this.fileStorageProperties = fileStorageProperties;
+    }
 
     @Override
     public String storeDocument(String encodedImage, String imageName, String destinationPath) {

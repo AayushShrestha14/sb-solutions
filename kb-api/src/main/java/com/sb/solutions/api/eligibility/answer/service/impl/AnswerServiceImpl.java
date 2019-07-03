@@ -1,31 +1,32 @@
 package com.sb.solutions.api.eligibility.answer.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-
+import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.api.eligibility.answer.repository.AnswerRepository;
+import com.sb.solutions.api.eligibility.answer.service.AnswerService;
+import com.sb.solutions.api.eligibility.question.entity.Question;
+import com.sb.solutions.core.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.eligibility.answer.entity.Answer;
-import com.sb.solutions.api.eligibility.answer.repository.AnswerRepository;
-import com.sb.solutions.api.eligibility.answer.service.AnswerService;
-import com.sb.solutions.api.eligibility.question.entity.Question;
-import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
 
     private final Logger logger = LoggerFactory.getLogger(AnswerServiceImpl.class);
 
     private final AnswerRepository answerRepository;
+
+    public AnswerServiceImpl(AnswerRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
 
     @Override
     public List<Answer> findAll() {
