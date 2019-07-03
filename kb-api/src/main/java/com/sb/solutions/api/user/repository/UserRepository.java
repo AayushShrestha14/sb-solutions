@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getUsersByUsernameAndStatus(String username, Status status);
 
     @Query(value = "SELECT * FROM user u JOIN user_branch ub ON ub.user_id=u.id" +
-            " WHERE u.role_id=:role AND ub.branch_id IN (:branch) AND u.role_id != 1", nativeQuery = true)
+            " WHERE u.role_id=:role AND ub.branch_id IN (:branch) AND u.id != 1", nativeQuery = true)
     List<User> findByRoleIdAndBranch(@Param("role") Long role, @Param("branch") List<Long> branch);
 
     List<User> findByRoleRoleAccessAndRoleNot(RoleAccess roleAccess, Role role);
