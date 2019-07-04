@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
@@ -38,7 +40,7 @@ import java.util.List;
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties({FileStorageProperties.class})
-public class CpSolutionApplication {
+public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired
     UserRepository userRepository;
@@ -63,13 +65,18 @@ public class CpSolutionApplication {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(CpSolutionApplication.class);
+    }
+
 
     @PostConstruct
     public void initialize() {
 
         if (baseHttpRepo.findAll().isEmpty()) {
             BaseHttp baseHttp = new BaseHttp();
-            baseHttp.setBaseUrl("http://localhost:" + port + "/");
+            baseHttp.setBaseUrl("http://" + baseHttp.getHostAddress() + ":" + port + "/");
             baseHttp.setFlag(1);
             baseHttpRepo.save(baseHttp);
         }

@@ -34,6 +34,7 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final MailThreadService mailThreadService;
+
     @Autowired
     public UserController(UserService userService, RoleService roleService,MailThreadService mailThreadService) {
         this.userService = userService;
