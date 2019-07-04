@@ -33,6 +33,9 @@ public class EmailConfig extends BaseEntity<Long> {
     @NotNull(message = "Host should not be null")
     private String host;
 
+    @NotNull(message = "Domain should not be null")
+    private String domain;
+
     @NotNull(message = "Port should not be null")
     private String port;
 

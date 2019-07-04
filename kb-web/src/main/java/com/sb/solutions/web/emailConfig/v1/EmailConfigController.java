@@ -2,6 +2,7 @@ package com.sb.solutions.web.emailConfig.v1;
 
 import com.sb.solutions.api.emailConfig.entity.EmailConfig;
 import com.sb.solutions.api.emailConfig.service.EmailConfigService;
+import com.sb.solutions.core.config.security.RefreshEmailBean;
 import com.sb.solutions.core.dto.RestResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +28,19 @@ public class EmailConfigController {
     private static final Logger logger = LoggerFactory.getLogger(EmailConfigController.class);
 
     private final EmailConfigService emailConfigService;
+    private final RefreshEmailBean refreshEmailBean;
 
-    public EmailConfigController(@Autowired EmailConfigService emailConfigService) {
+    public EmailConfigController(@Autowired EmailConfigService emailConfigService,
+                                 @Autowired RefreshEmailBean refreshEmailBean) {
         this.emailConfigService = emailConfigService;
+        this.refreshEmailBean = refreshEmailBean;
     }
 
 
     @PostMapping
     public ResponseEntity<?> saveUpdateEmailConfig(@Valid @RequestBody EmailConfig emailConfig) {
         EmailConfig config = emailConfigService.save(emailConfig);
+        refreshEmailBean.getJavaMailSender();
         if (null == config) {
             logger.error("Error while saving memo {}", emailConfig);
             return new RestResponseDto()
