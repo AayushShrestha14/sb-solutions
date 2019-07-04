@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -40,6 +41,9 @@ public class EmailConfig extends BaseEntity<Long> {
     private String port;
 
     private String emailType;
+
+    @Transient
+    private String testMail;
 
 
 }
