@@ -1761,6 +1761,9 @@
   <include file="20190610_opening_account.xml" relativeToChangelogFile="true"/>
   <include file="20190621_branch_user.xml" relativeToChangelogFile="true"/>
   <include file="20190624_offer_letter.xml" relativeToChangelogFile="true"/>
+  <include file="20190702_user.xml" relativeToChangelogFile="true"/>
+  <include file="20190701_email_config.xml" relativeToChangelogFile="true"/>
+  <include file="20190703_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190627_proposal.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190627_alter_customer_loan_proposal.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

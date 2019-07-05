@@ -1,30 +1,18 @@
 package com.sb.solutions.core.utils.csv;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sb.solutions.core.constant.FilePath;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.core.constant.FilePath;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.*;
 
 /**
  * Created by Rujan Maharjan on 3/4/2019.
@@ -63,7 +51,7 @@ public class CsvMaker {
 
                     ObjectMapper tempMapper = new ObjectMapper();
                     tempMapper
-                        .configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);
+                            .configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);
                     List<String> myList = new ArrayList<String>(Arrays.asList(a.split(",")));
 
                     for (int q = 0; q < myList.size() - 1; q++) {
@@ -79,15 +67,19 @@ public class CsvMaker {
                                 ObjectMapper kMapper = new ObjectMapper();
                                 Map<String, Object> newMapper = kMapper.convertValue(k, Map.class);
                                 d = d + newMapper.get(myList.get(q + 1).toString()).toString() + ","
-                                    + "\r\n";
+                                        + "\r\n";
                             }
-                            d = d.substring(0, d.length() - 3);
-                            map1.put(a, d);
+                            try {
+                                d = d.substring(0, d.length() - 3);
+                                map1.put(a, d);
+                            } catch (Exception e) {
+                                logger.error("ERROR {}", e.getLocalizedMessage());
+                            }
                         } else {
 
                             ObjectMapper modelMapper = new ObjectMapper();
                             Map<String, Object> newMapper = modelMapper
-                                .convertValue(obj, Map.class);
+                                    .convertValue(obj, Map.class);
                             try {
                                 map1.put(a, newMapper.get(myList.get(q + 1).toString()).toString());
                             } catch (Exception e) {
@@ -150,7 +142,7 @@ public class CsvMaker {
                 for (int j = 0; j < tempHeaderList.size(); j++) {
                     Object o = csvMakerDto.getMap().get(tempHeaderList.get(j));
                     row.createCell(j)
-                        .setCellValue(o == null ? "-" : o.toString());
+                            .setCellValue(o == null ? "-" : o.toString());
                 }
             }
 

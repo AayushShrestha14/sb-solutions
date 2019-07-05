@@ -1,7 +1,9 @@
 package com.sb.solutions.core.utils.email;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
@@ -25,18 +27,19 @@ public class MailSenderService {
     @Value("${spring.mail.password}")
     private String password;
 
+    @Autowired
+    private JavaMailSenderImpl javaMailSender;
+
+
     public void sendMailWithAttachmentBcc(Email email) throws MessagingException, IOException {
 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        Properties props = javaMailSender.getJavaMailProperties();
+
 
         // check the authentication
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(javaMailSender.getUsername(), javaMailSender.getPassword());
             }
         });
         MimeMessage message = new MimeMessage(session);

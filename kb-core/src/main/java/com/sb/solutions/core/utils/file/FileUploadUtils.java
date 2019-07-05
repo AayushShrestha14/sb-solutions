@@ -20,7 +20,7 @@ public class FileUploadUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
 
-    private static final int MAX_FILE_SIZE = 2000000;
+    private static final int MAX_FILE_SIZE = 10000000;
     private static String url;
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
@@ -59,7 +59,7 @@ public class FileUploadUtils {
     }
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
-        String citizenNumber, String name, String documentName) {
+        String name, String citizenNumber, String documentName) {
         String url = null;
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("No image is selected");

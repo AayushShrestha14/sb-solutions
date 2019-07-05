@@ -26,10 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getUsersByUsernameAndStatus(String username, Status status);
 
     @Query(value = "SELECT * FROM user u JOIN user_branch ub ON ub.user_id=u.id" +
-            " WHERE u.role_id=:role AND ub.branch_id IN (:branch)", nativeQuery = true)
+            " WHERE u.role_id=:role AND ub.branch_id IN (:branch) AND u.id != 1", nativeQuery = true)
     List<User> findByRoleIdAndBranch(@Param("role") Long role, @Param("branch") List<Long> branch);
 
-    List<User> findByRoleRoleAccess(RoleAccess roleAccess);
+    List<User> findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess roleAccess, Role role,Long id);
 
     List<User> findByRoleId(Long roleId);
 
@@ -48,5 +48,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select ifNull(a.type,'a') from user u join role r left join role_permission_rights rpr on rpr.role_id = r.id left join role_permission_rights_api_rights rprar on rprar.role_permission_rights_id=rpr.id left join url_api a on rprar.api_rights_id = a.id where r.id = :id\n" +
             "and u.user_name=:username and a.type is not null;", nativeQuery = true)
     List<Object> userApiAuthorities(@Param("id") Long id, @Param("username") String username);
+
 }
 

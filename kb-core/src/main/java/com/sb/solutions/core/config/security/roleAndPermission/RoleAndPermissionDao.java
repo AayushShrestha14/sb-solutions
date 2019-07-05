@@ -1,16 +1,16 @@
 package com.sb.solutions.core.config.security.roleAndPermission;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 4/19/2019
@@ -30,14 +30,14 @@ public class RoleAndPermissionDao {
     public List<Map<String, Object>> getRole() {
         Map<String, Object> map = new HashMap<>();
         String query =
-            "select ua.api_url,"
-                + " group_concat(DISTINCT ifnull(r.role_name,'admin')) role_name"
-                + " from url_api u"
-                + " left join role_permission_rights_api_rights apirights"
-                + " on apirights.api_rights_id = ua.id"
-                + " left join role_permission_rights rpr"
-                + " on rpr.id = apirights.role_permission_rights_id"
-                + " left join role r on rpr.role_id = r.id group by ua.id;";
+                "select ua.api_url,"
+                        + " group_concat(DISTINCT ifnull(r.role_name,'admin')) role_name"
+                        + " from url_api u"
+                        + " left join role_permission_rights_api_rights apirights"
+                        + " on apirights.api_rights_id = ua.id"
+                        + " left join role_permission_rights rpr"
+                        + " on rpr.id = apirights.role_permission_rights_id"
+                        + " left join role r on rpr.role_id = r.id group by ua.id;";
 
         return namedParameterJdbcTemplate.queryForList(query, map);
     }
@@ -68,13 +68,13 @@ public class RoleAndPermissionDao {
         map.put("role", role);
         map.put("api", api);
         String query = "select ua.api_url from url_api ua"
-            + " left join role_permission_rights_api_rights apirights"
-            + " on apirights.api_rights_id = ua.id"
-            + " left join role_permission_rights rpr"
-            + " on rpr.id= apirights.role_permission_rights_id"
-            + " left join role r on rpr.role_id = r.id"
-            + " where r.role_name=:role and ua.api_url =:api\n"
-            + " group by ua.id;";
+                + " left join role_permission_rights_api_rights apirights"
+                + " on apirights.api_rights_id = ua.id"
+                + " left join role_permission_rights rpr"
+                + " on rpr.id= apirights.role_permission_rights_id"
+                + " left join role r on rpr.role_id = r.id"
+                + " where r.role_name=:role and ua.api_url =:api\n"
+                + " group by ua.id;";
 
         List<Map<String, Object>> mapList = namedParameterJdbcTemplate.queryForList(query, map);
         return mapList;
@@ -84,10 +84,10 @@ public class RoleAndPermissionDao {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication
-            .getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
+                .getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
             org.springframework.security.core.userdetails.User userDetail
-                = (org.springframework.security.core.userdetails.User) authentication
-                .getPrincipal();
+                    = (org.springframework.security.core.userdetails.User) authentication
+                    .getPrincipal();
 
             username = userDetail.getUsername();
         } else {
@@ -96,7 +96,7 @@ public class RoleAndPermissionDao {
 
         Map<String, Object> map = new HashMap<>();
         String query = "SELECT r.role_name from user u join role r on r.id = u.role_id"
-            + " where user_name = :username";
+                + " where user_name = :username";
         map.put("username", username);
 
         return namedParameterJdbcTemplate.queryForObject(query, map, String.class);
@@ -111,15 +111,23 @@ public class RoleAndPermissionDao {
     }
 
     public void restrictUrl(HttpSecurity http) throws Exception {
-        System.out.println("refreshed");
         List<Map<String, Object>> mapList = this.getRole();
         for (Map<String, Object> map : mapList) {
             if (map.get("api_url") != null) {
                 http.authorizeRequests()
-                    .antMatchers(map.get("api_url").toString())
-                    .hasAnyAuthority(map.get("role_name").toString());
+                        .antMatchers(map.get("api_url").toString())
+                        .hasAnyAuthority(map.get("role_name").toString());
             }
         }
+    }
+
+    public List<Map<String, Object>> getEmailConfig() {
+        Map<String, Object> map1 = new HashMap<>();
+        String query = "SELECT username,password,host,port,domain from email_config";
+
+        List<Map<String, Object>> map = namedParameterJdbcTemplate.queryForList(query, map1);
+        return map;
+
     }
 
 }

@@ -1,5 +1,11 @@
 package com.sb.solutions.web.eligibility.v1.criteria;
 
+import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
+import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,17 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
-import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
-
 @RestController
 @RequestMapping(EligibilityCriteriaController.URL)
-@AllArgsConstructor
 public class EligibilityCriteriaController {
 
     public static final String URL = "/v1/eligibility-criterias";
@@ -32,6 +29,10 @@ public class EligibilityCriteriaController {
     private final Logger logger = LoggerFactory.getLogger(EligibilityCriteriaController.class);
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
+
+    public EligibilityCriteriaController(EligibilityCriteriaService eligibilityCriteriaService) {
+        this.eligibilityCriteriaService = eligibilityCriteriaService;
+    }
 
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",

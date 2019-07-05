@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
         if (r.getRoleAccess().equals(RoleAccess.ALL)) {
-            return userRepository.findByRoleRoleAccess(RoleAccess.ALL);
+            return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL, roleRepository.getOne(Long.valueOf(1)),roleId);
         }
         return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
@@ -214,6 +214,14 @@ public class UserServiceImpl implements UserService {
         return "SUCCESS";
     }
 
+    @Override
+    public User updatePassword(String username, String password) {
+        User user = userRepository.getUsersByUsername(username);
+        user.setResetPasswordToken(null);
+        user.setResetPasswordTokenExpiry(null);
+        user.setPassword(passwordEncoder.encode(password));
+        return userRepository.save(user);
+    }
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -227,7 +235,7 @@ public class UserServiceImpl implements UserService {
                     .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
-                updatedAuthorities.add(new SimpleGrantedAuthority("a"));
+                updatedAuthorities.add(new SimpleGrantedAuthority(a));
             }
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(
