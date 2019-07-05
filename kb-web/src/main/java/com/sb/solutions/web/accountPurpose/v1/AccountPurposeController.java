@@ -2,6 +2,7 @@ package com.sb.solutions.web.accountPurpose.v1;
 
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import com.sb.solutions.api.accountPurpose.repository.AccountPurposeRepository;
 import com.sb.solutions.core.dto.RestResponseDto;
-import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor

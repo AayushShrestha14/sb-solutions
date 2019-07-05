@@ -1,10 +1,11 @@
 package com.sb.solutions.web.user.dto;
 
-import com.sb.solutions.core.dto.BaseDto;
-import com.sb.solutions.web.branch.v1.dto.BranchDto;
+import java.util.List;
+
 import lombok.Data;
 
-import java.util.List;
+import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.web.branch.v1.dto.BranchDto;
 
 /**
  * @author Rujan Maharjan on 6/4/2019

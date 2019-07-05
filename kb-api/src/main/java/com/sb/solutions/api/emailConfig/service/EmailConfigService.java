@@ -7,4 +7,5 @@ import com.sb.solutions.core.service.BaseService;
  * @author Rujan Maharjan on 7/1/2019
  */
 public interface EmailConfigService extends BaseService<EmailConfig> {
+
 }

@@ -1,21 +1,22 @@
 package com.sb.solutions.api.eligibility.answer.service.impl;
 
-import com.sb.solutions.api.eligibility.answer.entity.Answer;
-import com.sb.solutions.api.eligibility.answer.repository.AnswerRepository;
-import com.sb.solutions.api.eligibility.answer.service.AnswerService;
-import com.sb.solutions.api.eligibility.question.entity.Question;
-import com.sb.solutions.core.enums.Status;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.eligibility.answer.entity.Answer;
+import com.sb.solutions.api.eligibility.answer.repository.AnswerRepository;
+import com.sb.solutions.api.eligibility.answer.service.AnswerService;
+import com.sb.solutions.api.eligibility.question.entity.Question;
+import com.sb.solutions.core.enums.Status;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
@@ -57,7 +58,6 @@ public class AnswerServiceImpl implements AnswerService {
     public Page<Answer> findAllPageable(Object answer, Pageable pageable) {
         return answerRepository.findAll(pageable);
     }
-
 
 
     @Transactional

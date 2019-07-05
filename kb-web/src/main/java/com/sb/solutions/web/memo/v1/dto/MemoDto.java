@@ -4,13 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.api.memo.enums.Stage;
-import com.sb.solutions.core.dto.BaseDto;
-import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.memo.enums.Stage;
+import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.core.enums.Status;
 
 @Data
 @AllArgsConstructor

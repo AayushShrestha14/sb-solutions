@@ -1,9 +1,5 @@
 package com.sb.solutions.web.eligibility.v1.criteria;
 
-import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
-import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
@@ -19,6 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
+import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
 
 @RestController
 @RequestMapping(EligibilityCriteriaController.URL)

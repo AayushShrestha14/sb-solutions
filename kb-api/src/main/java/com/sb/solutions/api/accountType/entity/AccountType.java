@@ -9,10 +9,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 
 @Entity
 @Data

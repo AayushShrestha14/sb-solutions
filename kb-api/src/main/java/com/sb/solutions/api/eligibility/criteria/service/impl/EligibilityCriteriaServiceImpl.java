@@ -1,18 +1,19 @@
 package com.sb.solutions.api.eligibility.criteria.service.impl;
 
-import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
-import com.sb.solutions.api.eligibility.criteria.repository.EligibilityCriteriaRepository;
-import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
-import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
-import com.sb.solutions.core.enums.Status;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
+import com.sb.solutions.api.eligibility.criteria.repository.EligibilityCriteriaRepository;
+import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.core.enums.Status;
 
 @Service
 public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaService {
@@ -21,7 +22,8 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
 
     private final EligibilityCriteriaRepository eligibilityCriteriaRepository;
 
-    public EligibilityCriteriaServiceImpl(EligibilityCriteriaRepository eligibilityCriteriaRepository) {
+    public EligibilityCriteriaServiceImpl(
+        EligibilityCriteriaRepository eligibilityCriteriaRepository) {
         this.eligibilityCriteriaRepository = eligibilityCriteriaRepository;
     }
 

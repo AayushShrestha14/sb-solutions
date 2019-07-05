@@ -6,13 +6,14 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.segments.subSegment.entity.SubSegment;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.segments.subSegment.entity.SubSegment;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 
 @Entity
 @Data

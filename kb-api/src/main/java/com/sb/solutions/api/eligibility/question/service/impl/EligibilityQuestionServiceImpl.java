@@ -1,15 +1,16 @@
 package com.sb.solutions.api.eligibility.question.service.impl;
 
-import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
-import com.sb.solutions.api.eligibility.question.repository.EligibilityQuestionRepository;
-import com.sb.solutions.api.eligibility.question.service.EligibilityQuestionService;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.api.eligibility.question.repository.EligibilityQuestionRepository;
+import com.sb.solutions.api.eligibility.question.service.EligibilityQuestionService;
 
 @Service
 public class EligibilityQuestionServiceImpl implements EligibilityQuestionService {
@@ -18,7 +19,8 @@ public class EligibilityQuestionServiceImpl implements EligibilityQuestionServic
 
     private final EligibilityQuestionRepository eligibilityQuestionRepository;
 
-    public EligibilityQuestionServiceImpl(EligibilityQuestionRepository eligibilityQuestionRepository) {
+    public EligibilityQuestionServiceImpl(
+        EligibilityQuestionRepository eligibilityQuestionRepository) {
         this.eligibilityQuestionRepository = eligibilityQuestionRepository;
     }
 

@@ -1,13 +1,14 @@
 package com.sb.solutions.api.productMode.entity;
 
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.Status;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.sb.solutions.core.enums.Product;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * @author Rujan Maharjan on 6/24/2019

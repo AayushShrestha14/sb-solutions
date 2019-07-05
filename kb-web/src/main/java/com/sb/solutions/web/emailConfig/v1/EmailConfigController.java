@@ -1,18 +1,23 @@
 package com.sb.solutions.web.emailConfig.v1;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.emailConfig.entity.EmailConfig;
 import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.email.template.SampleTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 7/1/2019
@@ -31,7 +36,7 @@ public class EmailConfigController {
     private final MailThreadService mailThreadService;
 
     public EmailConfigController(@Autowired EmailConfigService emailConfigService,
-                                 @Autowired MailThreadService mailThreadService) {
+        @Autowired MailThreadService mailThreadService) {
         this.emailConfigService = emailConfigService;
         this.mailThreadService = mailThreadService;
     }
@@ -45,7 +50,7 @@ public class EmailConfigController {
         if (null == config) {
             logger.error("Error while saving Email config {}", emailConfig);
             return new RestResponseDto()
-                    .failureModel("Error occurred while saving  Email config " + emailConfig);
+                .failureModel("Error occurred while saving  Email config " + emailConfig);
         }
 
         return new RestResponseDto().successModel(config);
@@ -69,7 +74,7 @@ public class EmailConfigController {
         } catch (Exception e) {
             logger.error("Error while sending Email config {}", emailConfig);
             return new RestResponseDto()
-                    .failureModel("Error occurred while Sending  Email config " + emailConfig);
+                .failureModel("Error occurred while Sending  Email config " + emailConfig);
         }
         return null;
     }

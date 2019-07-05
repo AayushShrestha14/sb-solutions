@@ -1,8 +1,8 @@
 package com.sb.solutions.web.eligibility.v1.question;
 
-import com.sb.solutions.api.eligibility.question.entity.Question;
-import com.sb.solutions.api.eligibility.question.service.QuestionService;
-import com.sb.solutions.core.dto.RestResponseDto;
+import java.util.List;
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import com.sb.solutions.api.eligibility.question.entity.Question;
+import com.sb.solutions.api.eligibility.question.service.QuestionService;
+import com.sb.solutions.core.dto.RestResponseDto;
 
 @RestController
 @RequestMapping("/v1/loan-configs/{loanConfigId}/questions")

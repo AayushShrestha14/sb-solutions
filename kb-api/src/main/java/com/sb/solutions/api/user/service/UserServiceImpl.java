@@ -1,18 +1,13 @@
 package com.sb.solutions.api.user.service;
 
-import com.sb.solutions.api.basehttp.BaseHttpService;
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.branch.repository.BranchRepository;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.RoleAccess;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.utils.csv.CsvMaker;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +24,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.RoleAccess;
+import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -46,11 +52,11 @@ public class UserServiceImpl implements UserService {
     private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
-                           @Autowired UserRepository userRepository,
-                           @Autowired BranchRepository branchRepository,
-                           @Autowired RoleRepository roleRepository,
-                           @Autowired CustomJdbcTokenStore customJdbcTokenStore,
-                           @Autowired BCryptPasswordEncoder passwordEncoder) {
+        @Autowired UserRepository userRepository,
+        @Autowired BranchRepository branchRepository,
+        @Autowired RoleRepository roleRepository,
+        @Autowired CustomJdbcTokenStore customJdbcTokenStore,
+        @Autowired BCryptPasswordEncoder passwordEncoder) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -79,8 +85,8 @@ public class UserServiceImpl implements UserService {
             return user;
         } else {
             throw new UsernameNotFoundException(
-                    "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
-                            .getClass() + "; Expected type User");
+                "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
+                    .getClass() + "; Expected type User");
         }
     }
 
@@ -101,7 +107,8 @@ public class UserServiceImpl implements UserService {
         }
         if (user.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
             if (user.getBranch().isEmpty() || (user.getBranch().size() > 1)) {
-                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null or multi selected");
+                throw new InvalidPropertyException(User.class, "Branch",
+                    "Branch can not be null or multi selected");
             }
         }
 
@@ -114,7 +121,8 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
             if (!user.getBranch().isEmpty()) {
 
-                throw new InvalidPropertyException(User.class, "Branch", "Branch can not be selected For role");
+                throw new InvalidPropertyException(User.class, "Branch",
+                    "Branch can not be selected For role");
             }
         }
 
@@ -143,7 +151,8 @@ public class UserServiceImpl implements UserService {
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
         if (r.getRoleAccess().equals(RoleAccess.ALL)) {
-            return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL, roleRepository.getOne(Long.valueOf(1)),roleId);
+            return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL,
+                roleRepository.getOne(Long.valueOf(1)), roleId);
         }
         return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
@@ -152,7 +161,7 @@ public class UserServiceImpl implements UserService {
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
         List branchList = userRepository
-                .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+            .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");
@@ -178,7 +187,8 @@ public class UserServiceImpl implements UserService {
         List<Long> branchIdList = new ArrayList<>();
         String branchIdListTOString = null;
         if (u.getRole().getRoleAccess() != null) {
-            if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
+            if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole()
+                .getRoleAccess().equals(RoleAccess.OWN)) {
                 for (Branch b : u.getBranch()) {
                     branchIdList.add(b.getId());
                 }
@@ -192,7 +202,7 @@ public class UserServiceImpl implements UserService {
 
         }
 
-        if(branchIdList.isEmpty()){
+        if (branchIdList.isEmpty()) {
             branchIdList.add(0L);
         }
 
@@ -205,11 +215,11 @@ public class UserServiceImpl implements UserService {
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
         userRepository.save(user);
-        Collection<OAuth2AccessToken> token = customJdbcTokenStore.findTokensByUserName(user.getUsername());
-        for (OAuth2AccessToken tempToken : token)
-        {
-          customJdbcTokenStore.removeAccessToken(tempToken);
-          customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore
+            .findTokensByUserName(user.getUsername());
+        for (OAuth2AccessToken tempToken : token) {
+            customJdbcTokenStore.removeAccessToken(tempToken);
+            customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
         }
         return "SUCCESS";
     }
@@ -228,21 +238,21 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
         if (u != null) {
             List<String> authorityList = userRepository
-                    .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
-                    .map(object -> Objects.toString(object, null))
-                    .collect(Collectors.toList());
+                .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
             Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-                    .getContext().getAuthentication().getAuthorities();
+                .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
                 updatedAuthorities.add(new SimpleGrantedAuthority(a));
             }
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-                            u.getPassword(),
-                            updatedAuthorities)
+                new UsernamePasswordAuthenticationToken(
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                    u.getPassword(),
+                    updatedAuthorities)
             );
 
             u.setAuthorityList(authorityList);

@@ -1,7 +1,8 @@
 package com.sb.solutions.web.user.dto;
 
-import com.sb.solutions.core.dto.BaseDto;
 import lombok.Data;
+
+import com.sb.solutions.core.dto.BaseDto;
 
 /**
  * @author Rujan Maharjan on 6/12/2019

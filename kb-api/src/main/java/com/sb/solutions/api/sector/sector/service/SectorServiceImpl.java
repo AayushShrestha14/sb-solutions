@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,6 @@ import com.sb.solutions.api.sector.sector.entity.Sector;
 import com.sb.solutions.api.sector.sector.repository.SectorRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor

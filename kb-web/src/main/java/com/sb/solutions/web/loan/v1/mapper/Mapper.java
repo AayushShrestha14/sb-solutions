@@ -1,14 +1,23 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.api.Loan.LoanStage;
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
+import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
@@ -19,14 +28,6 @@ import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
 import com.sb.solutions.web.user.dto.UserDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -114,10 +115,12 @@ public class Mapper {
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
         StageDto currentStage, UserDto currentUser) {
-        if (currentStage.getDocAction().equals(DocAction.CLOSED) ||
-            currentStage.getDocAction().equals(DocAction.APPROVED) ||
-            currentStage.getDocAction().equals(DocAction.REJECT)) {
+        if (currentStage.getDocAction().equals(DocAction.CLOSED)
+            || currentStage.getDocAction().equals(DocAction.APPROVED)
+            || currentStage.getDocAction().equals(DocAction.REJECT)) {
+
             logger.error("Error while performing the action");
+
             throw new RuntimeException("Cannot Perform the action");
         }
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {

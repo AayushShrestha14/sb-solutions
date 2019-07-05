@@ -2,6 +2,9 @@ package com.sb.solutions.web.accountOpening.v1;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +23,6 @@ import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/accountOpening")

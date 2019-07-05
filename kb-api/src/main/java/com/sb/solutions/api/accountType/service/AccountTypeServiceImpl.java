@@ -2,6 +2,7 @@ package com.sb.solutions.api.accountType.service;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.repository.AccountTypeRepository;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
