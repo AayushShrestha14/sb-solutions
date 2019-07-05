@@ -10,6 +10,11 @@ spring:
     properties:
         hibernate:
               enable_lazy_load_no_trans: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   datasource:
     url: jdbc:mysql://localhost:3306/cp_master
     username: root

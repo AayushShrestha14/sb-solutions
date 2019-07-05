@@ -26,7 +26,6 @@ public class SubSegmentController {
 
     @PostMapping
     public ResponseEntity<?> saveSubSegment(@RequestBody SubSegment subSegment) {
-        System.out.println(subSegment);
         return new RestResponseDto().successModel(subSegmentService.save(subSegment));
     }
 

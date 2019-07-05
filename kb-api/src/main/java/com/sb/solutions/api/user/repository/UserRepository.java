@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         + " WHERE u.role_id=:role AND ub.branch_id IN (:branch)", nativeQuery = true)
     List<User> findByRoleIdAndBranch(@Param("role") Long role, @Param("branch") List<Long> branch);
 
-    List<User> findByRoleRoleAccess(RoleAccess roleAccess);
+    List<User> findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess roleAccess, Role role, Long id);
 
     List<User> findByRoleId(Long roleId);
 
@@ -55,5 +55,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             + " left join url_api a on rprar.api_rights_id = a.id where r.id = :id"
             + " and u.user_name=:username and a.type is not null;", nativeQuery = true)
     List<Object> userApiAuthorities(@Param("id") Long id, @Param("username") String username);
+
 }
 

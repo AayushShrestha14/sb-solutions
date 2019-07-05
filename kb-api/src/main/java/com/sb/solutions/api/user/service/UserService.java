@@ -40,5 +40,5 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     String dismissAllBranchAndRole(User user);
 
-
+    User updatePassword(String username, String password);
 }

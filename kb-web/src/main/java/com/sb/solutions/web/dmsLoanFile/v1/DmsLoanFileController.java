@@ -99,8 +99,7 @@ public class DmsLoanFileController {
     public ResponseEntity<?> downloadFile(@RequestParam("path") String path,
         HttpServletResponse response) throws FileNotFoundException {
         Path paths = Paths.get(FilePath.getOSPath());
-        path = paths + path;
-        File file = new File(path);
+        File file = new File(FilePath.getOSPath() + path);
 
         final InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 

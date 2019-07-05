@@ -3,14 +3,18 @@ package com.sb.solutions.api.user.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +23,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -43,6 +46,10 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     private String email;
     @Column(nullable = false)
     private String password;
+    private String resetPasswordToken;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date resetPasswordTokenExpiry;
     private Status status;
 
     @OneToOne
@@ -54,7 +61,6 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     private List<Branch> branch;
     private String signatureImage;
     private String profilePicture;
-
 
     @Transient
     @JsonIgnore

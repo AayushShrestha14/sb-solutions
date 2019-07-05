@@ -67,7 +67,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
         for (Long id : ids) {
-            System.out.println(id);
             Document doc = documentRepository.getOne(id);
             doc.getLoanCycle().add(loanCycle);
             documentRepository.save(doc);

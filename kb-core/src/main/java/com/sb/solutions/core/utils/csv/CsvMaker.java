@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -22,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sb.solutions.core.constant.FilePath;
 
 /**
@@ -81,8 +81,12 @@ public class CsvMaker {
                                 d = d + newMapper.get(myList.get(q + 1).toString()).toString() + ","
                                     + "\r\n";
                             }
-                            d = d.substring(0, d.length() - 3);
-                            map1.put(a, d);
+                            try {
+                                d = d.substring(0, d.length() - 3);
+                                map1.put(a, d);
+                            } catch (Exception e) {
+                                logger.error("ERROR {}", e.getLocalizedMessage());
+                            }
                         } else {
 
                             ObjectMapper modelMapper = new ObjectMapper();

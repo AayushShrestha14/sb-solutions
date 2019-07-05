@@ -111,7 +111,6 @@ public class RoleAndPermissionDao {
     }
 
     public void restrictUrl(HttpSecurity http) throws Exception {
-        System.out.println("refreshed");
         List<Map<String, Object>> mapList = this.getRole();
         for (Map<String, Object> map : mapList) {
             if (map.get("api_url") != null) {
@@ -120,6 +119,15 @@ public class RoleAndPermissionDao {
                     .hasAnyAuthority(map.get("role_name").toString());
             }
         }
+    }
+
+    public List<Map<String, Object>> getEmailConfig() {
+        Map<String, Object> map1 = new HashMap<>();
+        String query = "SELECT username,password,host,port,domain from email_config";
+
+        List<Map<String, Object>> map = namedParameterJdbcTemplate.queryForList(query, map1);
+        return map;
+
     }
 
 }
