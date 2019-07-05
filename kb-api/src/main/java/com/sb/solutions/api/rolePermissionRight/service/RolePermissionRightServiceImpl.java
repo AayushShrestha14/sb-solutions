@@ -1,28 +1,35 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
-import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
-import com.sb.solutions.api.rolePermissionRight.repository.RolePermissionRightRepository;
-import com.sb.solutions.api.rolePermissionRight.repository.UrlApiRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
+import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
+import com.sb.solutions.api.rolePermissionRight.repository.RolePermissionRightRepository;
+import com.sb.solutions.api.rolePermissionRight.repository.UrlApiRepository;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
  */
 @Service
 public class RolePermissionRightServiceImpl implements RolePermissionRightService {
+
+    private static final Logger logger = LoggerFactory
+        .getLogger(RolePermissionRightServiceImpl.class);
+
     @Autowired
     RolePermissionRightRepository rolePermissionRightRepository;
+
     @Autowired
     UrlApiRepository urlApiRepository;
-
 
     @Override
     public List<RolePermissionRights> findAll() {
@@ -57,7 +64,9 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
             List<UrlApi> tempUrlApis = new ArrayList<>();
             for (UrlApi urlApi : r.getApiRights()) {
                 if (urlApi != null && !urlApi.isChecked()) {
-                    urlApiRepository.deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(), urlApi.getId());
+                    urlApiRepository
+                        .deleteRelationRolePermissionApiRights(r.getId() == null ? 0 : r.getId(),
+                            urlApi.getId());
                 } else {
                     tempUrlApis.add(urlApi);
                 }
@@ -69,17 +78,17 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
                     try {
                         rolePermissionRightRepository.deleteById(r.getId() == null ? 0 : r.getId());
                     } catch (Exception e) {
+                        logger.error("Error occurred", e);
                     }
                 }
-                rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(), r.getPermission().getId());
+                rolePermissionRightRepository.deleteRolePermissionRightsByRole(r.getRole().getId(),
+                    r.getPermission().getId());
             } else {
                 r.getApiRights().clear();
 
                 r.setApiRights(tempUrlApis);
                 rolePermissionRightsList1.add(r);
             }
-
-
         }
 
         rolePermissionRightRepository.saveAll(rolePermissionRightsList1);

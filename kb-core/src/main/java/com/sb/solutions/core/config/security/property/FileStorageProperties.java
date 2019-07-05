@@ -1,8 +1,7 @@
 package com.sb.solutions.core.config.security.property;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "file", ignoreUnknownFields = false)
 @Data

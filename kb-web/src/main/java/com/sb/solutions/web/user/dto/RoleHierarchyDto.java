@@ -1,11 +1,12 @@
 package com.sb.solutions.web.user.dto;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.core.dto.BaseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.core.dto.BaseDto;
 
 /**
  * @author Rujan Maharjan on 5/13/2019

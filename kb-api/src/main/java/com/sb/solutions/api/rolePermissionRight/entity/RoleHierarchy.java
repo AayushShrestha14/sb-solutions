@@ -5,10 +5,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
  * @author Rujan Maharjan on 5/13/2019

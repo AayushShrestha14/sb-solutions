@@ -2,14 +2,15 @@ package com.sb.solutions.api.companyInfo.proprietor.entity;
 
 import javax.persistence.Entity;
 
-import com.sb.solutions.api.address.district.entity.District;
-import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
-import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.province.entity.Province;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
 @Data

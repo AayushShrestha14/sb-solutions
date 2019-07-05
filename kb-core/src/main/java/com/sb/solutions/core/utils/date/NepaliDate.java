@@ -8,7 +8,7 @@ public class NepaliDate {
 
     private int mahina;
     private int gatey;
-    private  int saal;
+    private int saal;
     private String baar;
 
     public static final String[] MONTHS = {"Baisakh", "Jestha", "Ashar", "Shrawan",

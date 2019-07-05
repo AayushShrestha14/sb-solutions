@@ -1,9 +1,7 @@
 package com.sb.solutions.api.approvallimit.service;
 
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
-import com.sb.solutions.api.approvallimit.repository.ApprovalLimitRepository;
-import com.sb.solutions.core.dto.SearchDto;
+import java.util.List;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
+import com.sb.solutions.api.approvallimit.repository.ApprovalLimitRepository;
+import com.sb.solutions.core.dto.SearchDto;
 
 @Service
 public class ApprovalLimitServiceImpl implements ApprovalLimitService {
@@ -19,7 +20,7 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     private final ApprovalLimitRepository approvalLimitRepository;
 
     public ApprovalLimitServiceImpl(
-            @Autowired ApprovalLimitRepository approvalLimitRepository) {
+        @Autowired ApprovalLimitRepository approvalLimitRepository) {
         this.approvalLimitRepository = approvalLimitRepository;
     }
 
@@ -37,14 +38,15 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     public ApprovalLimit save(ApprovalLimit approvalLimit) {
         if (approvalLimit.getId() == null) {
             ApprovalLimit approvalLimit1 = approvalLimitRepository
-                    .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(
-                            approvalLimit.getAuthorities().getId(),
-                            approvalLimit.getLoanCategory().getId(),
-                            approvalLimit.getLoanApprovalType());
+                .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(
+                    approvalLimit.getAuthorities().getId(),
+                    approvalLimit.getLoanCategory().getId(),
+                    approvalLimit.getLoanApprovalType());
             if (approvalLimit1 != null) {
-                throw new ConstraintViolationException("Already Exist", null, "Approval Limit Already Exist");
+                throw new ConstraintViolationException("Already Exist", null,
+                    "Approval Limit Already Exist");
             }
-        }else {
+        } else {
             ApprovalLimit approvalLimit2 = approvalLimitRepository.getOne(approvalLimit.getId());
 
         }
@@ -61,7 +63,10 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     }
 
     @Override
-    public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId, LoanApprovalType loanApprovalType) {
-        return approvalLimitRepository.getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(roleId, loanConfigId, loanApprovalType);
+    public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId,
+        LoanApprovalType loanApprovalType) {
+        return approvalLimitRepository
+            .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(roleId, loanConfigId,
+                loanApprovalType);
     }
 }

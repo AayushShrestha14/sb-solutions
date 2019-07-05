@@ -8,10 +8,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.address.province.entity.Province;
 
 @Entity
 @Data

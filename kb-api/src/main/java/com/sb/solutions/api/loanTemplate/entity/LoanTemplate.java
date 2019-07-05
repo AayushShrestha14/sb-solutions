@@ -4,13 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.Status;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * @author Rujan Maharjan on 2/25/2019

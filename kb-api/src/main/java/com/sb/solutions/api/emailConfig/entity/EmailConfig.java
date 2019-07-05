@@ -1,16 +1,17 @@
 package com.sb.solutions.api.emailConfig.entity;
 
-import com.sb.solutions.core.enitity.BaseEntity;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
  * @author Rujan Maharjan on 2/13/2019

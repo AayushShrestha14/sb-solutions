@@ -1,9 +1,10 @@
 package com.sb.solutions.api.buildingSecurity.entity;
 
-import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enitity.BaseEntity;
 
 //@Entity
 @Data

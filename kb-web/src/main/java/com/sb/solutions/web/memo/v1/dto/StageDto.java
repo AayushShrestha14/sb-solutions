@@ -1,11 +1,12 @@
 package com.sb.solutions.web.memo.v1.dto;
 
-import com.sb.solutions.api.memo.enums.Stage;
-import com.sb.solutions.core.dto.BaseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.memo.enums.Stage;
+import com.sb.solutions.core.dto.BaseDto;
 
 @Data
 @AllArgsConstructor

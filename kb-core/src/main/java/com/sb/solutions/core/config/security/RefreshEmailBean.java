@@ -1,6 +1,10 @@
 package com.sb.solutions.core.config.security;
 
-import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
 
 /**
  * @author Rujan Maharjan on 7/4/2019

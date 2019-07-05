@@ -2,6 +2,8 @@ package com.sb.solutions.web.loan.v1;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.Loan.entity.CustomerLoan;
-import com.sb.solutions.api.Loan.service.CustomerLoanService;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -113,20 +113,22 @@ public class CustomerLoanController {
     }
 
     @GetMapping(value = "/searchByCitizenship/{number}")
-    public ResponseEntity<?> getLoansByCitizenship(@PathVariable("number") String citizenshipNumber) {
+    public ResponseEntity<?> getLoansByCitizenship(
+        @PathVariable("number") String citizenshipNumber) {
         logger.info("GET:/searchByCitizenship/{}", citizenshipNumber);
-        return new RestResponseDto().successModel(service.getByCitizenshipNumber(citizenshipNumber));
+        return new RestResponseDto()
+            .successModel(service.getByCitizenshipNumber(citizenshipNumber));
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @PostMapping(value = "/catalogue")
     public ResponseEntity<?> getCatalogues(@RequestBody Object searchDto,
-                                                @RequestParam("page") int page, @RequestParam("size") int size) {
+        @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-                .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
+            .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
     }
 }

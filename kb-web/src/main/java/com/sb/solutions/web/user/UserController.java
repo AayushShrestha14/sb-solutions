@@ -1,5 +1,25 @@
 package com.sb.solutions.web.user;
 
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
@@ -11,18 +31,6 @@ import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.email.template.ResetPassword;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
-
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -36,7 +44,8 @@ public class UserController {
     private final MailThreadService mailThreadService;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService,MailThreadService mailThreadService) {
+    public UserController(UserService userService, RoleService roleService,
+        MailThreadService mailThreadService) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailThreadService = mailThreadService;
@@ -67,33 +76,33 @@ public class UserController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
-                                          @RequestParam("type") String type) {
+        @RequestParam("type") String type) {
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
-                                    @RequestParam("page") int page, @RequestParam("size") int size) {
+        @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-                .successModel(userService.findAllPageable(searchDto, PaginationUtils
-                        .pageable(page, size)));
+            .successModel(userService.findAllPageable(searchDto, PaginationUtils
+                .pageable(page, size)));
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")})
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
     public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
-                                           @RequestParam("page") int page, @RequestParam("size") int size) {
+        @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-                .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
+            .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")
@@ -117,7 +126,7 @@ public class UserController {
         return new RestResponseDto().successModel(userService.csv(searchDto));
     }
 
-    @PostMapping(value="/dismiss")
+    @PostMapping(value = "/dismiss")
     public ResponseEntity<?> dismissBranchAndRole(@RequestBody User user) {
         return new RestResponseDto().successModel(userService.dismissAllBranchAndRole(user));
     }
@@ -140,7 +149,8 @@ public class UserController {
     }*/
 
     @GetMapping(value = "/forgotPassword")
-    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username, @RequestHeader("referer") final String referer) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username,
+        @RequestHeader("referer") final String referer) {
         User user = userService.getByUsername(username);
         if (user == null) {
             return new RestResponseDto().failureModel("User not found!");
@@ -161,8 +171,8 @@ public class UserController {
             Email email = new Email();
             email.setSubject("Reset Password");
             email.setBody(ResetPassword.resetPasswordTemplate(savedUser.getUsername(),
-                    referer + "#/newPassword?username=" + username + "&reset=" + resetToken,
-                    savedUser.getResetPasswordTokenExpiry().toString()));
+                referer + "#/newPassword?username=" + username + "&reset=" + resetToken,
+                savedUser.getResetPasswordTokenExpiry().toString()));
             email.setTo(savedUser.getEmail());
             mailThreadService.sendMail(email);
 
@@ -178,14 +188,15 @@ public class UserController {
         } else {
             if (user.getResetPasswordToken() != null) {
                 if (user.getResetPasswordTokenExpiry().before(new Date())) {
-                    return new RestResponseDto().failureModel("Reset Token has been expired already");
+                    return new RestResponseDto()
+                        .failureModel("Reset Token has been expired already");
                 } else {
-                    return new RestResponseDto().successModel(userService.updatePassword(u.getUsername(), u.getPassword()));
+                    return new RestResponseDto()
+                        .successModel(userService.updatePassword(u.getUsername(), u.getPassword()));
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");
             }
         }
     }
-
 }

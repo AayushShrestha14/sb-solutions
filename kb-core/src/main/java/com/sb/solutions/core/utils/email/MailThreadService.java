@@ -1,13 +1,14 @@
 package com.sb.solutions.core.utils.email;
 
-import com.sb.solutions.core.exception.ServiceValidationException;
+import java.io.IOException;
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 @Service
 public class MailThreadService {
@@ -30,10 +31,7 @@ public class MailThreadService {
                 e.printStackTrace();
             }
         }).start();
-
-
     }
-
 
     public void testMail(Email email) {
 
@@ -45,10 +43,6 @@ public class MailThreadService {
         } catch (IOException e) {
             logger.error("error sending email", e.getLocalizedMessage());
             throw new ServiceValidationException(e.getLocalizedMessage());
-
         }
-
-
     }
-
 }

@@ -1,10 +1,11 @@
-package com.sb.solutions.api.Loan;
+package com.sb.solutions.api.loan;
 
 import javax.persistence.Entity;
 
-import com.sb.solutions.api.stage.entity.Stage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.api.stage.entity.Stage;
 
 @Entity
 @Data

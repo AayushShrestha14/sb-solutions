@@ -3,10 +3,11 @@ package com.sb.solutions.web.eligibility.v1.applicant.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
+
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.web.eligibility.v1.loanconfig.dto.LoanConfigDto;
-import lombok.Data;
 
 @Data
 public class ApplicantDto extends BaseDto<Long> {

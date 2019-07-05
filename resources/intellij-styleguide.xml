@@ -26,7 +26,10 @@
             <package name="javax" withSubpackages="true" static="false"/>
             <package name="scala" withSubpackages="true" static="false"/>
             <emptyLine/>
+            <package name="com.fasterxml" withSubpackages="true" static="false"/>
             <package name="com.google" withSubpackages="true" static="false"/>
+            <package name="io" withSubpackages="true" static="false"/>
+            <package name="lombok" withSubpackages="true" static="false"/>
             <package name="org" withSubpackages="true" static="false"/>
             <emptyLine/>
             <package name="" withSubpackages="true" static="false" />

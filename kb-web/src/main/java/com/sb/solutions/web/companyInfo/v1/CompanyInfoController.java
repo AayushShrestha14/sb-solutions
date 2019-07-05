@@ -2,6 +2,7 @@ package com.sb.solutions.web.companyInfo.v1;
 
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor

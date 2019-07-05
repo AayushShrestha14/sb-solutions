@@ -1,7 +1,8 @@
 package com.sb.solutions.web.eligibility.v1.applicant.dto;
 
-import com.sb.solutions.core.enums.Status;
 import lombok.Data;
+
+import com.sb.solutions.core.enums.Status;
 
 @Data
 public class AnswerDto {
