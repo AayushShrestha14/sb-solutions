@@ -82,7 +82,8 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private String offerLetterUrl;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Proposal proposal;
 
     @Lob
