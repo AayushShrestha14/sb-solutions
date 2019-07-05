@@ -43,6 +43,9 @@ public class UserController {
     private final RoleService roleService;
     private final MailThreadService mailThreadService;
 
+    private String signaturePath = null;
+    private String profiePath = null;
+
     @Autowired
     public UserController(UserService userService, RoleService roleService,
         MailThreadService mailThreadService) {
@@ -50,14 +53,11 @@ public class UserController {
         this.roleService = roleService;
         this.mailThreadService = mailThreadService;
     }
-    private String signaturePath = null;
-    private String profiePath = null;
 
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
         return new RestResponseDto().successModel(userService.getAuthenticated());
     }
-
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
@@ -69,7 +69,7 @@ public class UserController {
             user.setSignatureImage(signaturePath);
             signaturePath = null;
         }
-        user.toString();
+
         return new RestResponseDto().successModel(userService.save(user));
     }
 

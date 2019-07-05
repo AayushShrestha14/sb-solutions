@@ -1,14 +1,14 @@
 package com.sb.solutions.api.proposal.service;
 
-import com.sb.solutions.api.proposal.entity.Proposal;
-import com.sb.solutions.api.proposal.repository.ProposalRepository;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.proposal.repository.ProposalRepository;
 
 @Service
 public class ProposalServiceImpl implements ProposalService {
