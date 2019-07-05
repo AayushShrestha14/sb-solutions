@@ -3,7 +3,7 @@
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
   <changeSet id="19-create-proposal" author ="dipu">
-    <createTable tableName="question">
+    <createTable tableName="proposal">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -31,7 +31,7 @@
       <column name="repayment_mode" type="BIGINT">
         <constraints nullable = "false"/>
       </column>
-      <column name="tenure_year" type="Date">
+      <column name="tenure_duration_in_months" type="BIGINT">
         <constraints nullable = "false"/>
       </column>
       <column name="purpose_of_submission" type="VARCHAR(256)">
@@ -51,13 +51,13 @@
       </column>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_loan_template_created_by_id"
+          foreignKeyName="fk_proposal_created_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_loan_template_modified_by_id"
+          foreignKeyName="fk_proposal_modified_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
       </column>

@@ -5,22 +5,25 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       use-new-id-generator-mappings: false
     properties:
         hibernate:
               enable_lazy_load_no_trans: true
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master333
+    url: jdbc:mysql://localhost:3306/cp_test
     username: root
     password:
+  mail:
+    username: sbsolutionstest@gmail.com
+    password: testsbsolutions123
 
   jackson:
     serialization:
       fail-on-empty-beans: false
 
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-master.xml
+#  liquibase:
+#    change-log: classpath:/db/changelog/changelog-master.xml
 
 logging:
   level:

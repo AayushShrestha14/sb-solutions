@@ -3,17 +3,20 @@ package com.sb.solutions.api.proposal.entity;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.RepaymentMode;
 import com.sb.solutions.core.enums.ServiceChargeMethod;
+import com.sb.solutions.core.utils.NumberToWordsConverter;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.Date;
 
-@Entity
 @Data
-@AllArgsConstructor
+@Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
 
@@ -23,7 +26,7 @@ public class Proposal extends BaseEntity<Long> {
     private double premiumRateOnBaseRate;
     private ServiceChargeMethod serviceChargeMethod;
     private double serviceCharge;
-    private Date tenureYear;
+    private double tenureDurationInMonths;
     private double cibCharge;
     private RepaymentMode repaymentMode;
     private String purposeOfSubmission;
@@ -31,6 +34,14 @@ public class Proposal extends BaseEntity<Long> {
     private String creditInformationReportStatus;
     private String incomeFromTheAccount;
     private String borrowerInformation;
+    @Transient
+    private String proposedAmountInWords;
 
-
+    public String getProposedAmountInWords() {
+        try {
+            return NumberToWordsConverter.calculateAmountInWords(String.valueOf(this.getProposedLimit()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
