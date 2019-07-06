@@ -1374,9 +1374,7 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="description" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
+      <column name="description" type="VARCHAR(256)"/>
       <column name="designation" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
