@@ -29,19 +29,19 @@ import com.sb.solutions.core.enitity.BaseEntity;
 public class EntityInfo extends BaseEntity<Long> {
 
     @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private LegalStatus legalStatus;
     @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Capital capital;
     @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Swot swot;
     @OneToMany(fetch = FetchType.LAZY, cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<ManagementTeam> managementTeamList;
     @OneToMany(fetch = FetchType.LAZY, cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Proprietor> proprietorsList;
 
     @PrePersist
@@ -51,18 +51,16 @@ public class EntityInfo extends BaseEntity<Long> {
         this.capital.setLastModifiedAt(date);
         this.legalStatus.setLastModifiedAt(date);
         this.swot.setLastModifiedAt(date);
-        if (this.managementTeamList.size() <= 0) {
-            this.setManagementTeamList(null);
+        if (!this.managementTeamList.isEmpty()) {
+            for (ManagementTeam managementTeam : this.managementTeamList) {
+                managementTeam.setLastModifiedAt(date);
+            }
         }
-        for (ManagementTeam managementTeam : this.managementTeamList) {
-            managementTeam.setLastModifiedAt(date);
-        }
-        if (this.proprietorsList.size() <= 0) {
-            this.setProprietorsList(null);
-        } else {
+        if (!this.proprietorsList.isEmpty()) {
             for (Proprietor proprietor : this.proprietorsList) {
                 proprietor.setLastModifiedAt(date);
             }
         }
+
     }
 }
