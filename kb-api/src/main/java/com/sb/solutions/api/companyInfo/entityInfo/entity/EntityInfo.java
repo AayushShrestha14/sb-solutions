@@ -61,6 +61,5 @@ public class EntityInfo extends BaseEntity<Long> {
                 proprietor.setLastModifiedAt(date);
             }
         }
-
     }
 }
