@@ -32,7 +32,7 @@ public class EntityInfo extends BaseEntity<Long> {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private LegalStatus legalStatus;
     @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Capital capital;
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
@@ -53,9 +53,8 @@ public class EntityInfo extends BaseEntity<Long> {
         this.swot.setLastModifiedAt(date);
         if (this.managementTeamList.size() <= 0) {
             this.setManagementTeamList(null);
-        } else {
         }
-        for (ManagementTeam managementTeam : this.managementTeamList){
+        for (ManagementTeam managementTeam : this.managementTeamList) {
             managementTeam.setLastModifiedAt(date);
         }
         if (this.proprietorsList.size() <= 0) {

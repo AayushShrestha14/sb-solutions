@@ -40,7 +40,7 @@ public class Converter {
         final Calendar end = Calendar.getInstance();
         end.set(eYear, eMonth, eDay);
         int tempDeltaDays =
-            Math.toIntExact(ChronoUnit.DAYS.between(start.toInstant(), end.toInstant())) + 1;
+            Math.toIntExact(ChronoUnit.DAYS.between(start.toInstant(), end.toInstant()));
         NepaliDate nepaliDate = new NepaliDate();
         for (int i = 0; i < tempDeltaDays; i++) {
             if (nDay < nepaliDate.getDaysOf(nYear, nMonth)) {

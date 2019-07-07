@@ -1374,7 +1374,9 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="description" type="VARCHAR(256)"/>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
       <column name="designation" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
@@ -1762,4 +1764,5 @@
   <include file="20190702_user.xml" relativeToChangelogFile="true"/>
   <include file="20190701_email_config.xml" relativeToChangelogFile="true"/>
   <include file="20190703_alter_dms.xml" relativeToChangelogFile="true"/>
+  <include file="20190707_alter_management_team.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
