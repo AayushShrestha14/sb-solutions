@@ -40,7 +40,7 @@
       <column name="disbursement_criteria" type="VARCHAR(256)">
         <constraints nullable = "false"/>
       </column>
-      <column name="credit_information_report_Status" type="VARCHAR(256)">
+      <column name="credit_information_report_status" type="VARCHAR(256)">
         <constraints nullable = "false"/>
       </column>
       <column name="income_from_the_account" type="VARCHAR(256)">
@@ -50,7 +50,7 @@
         <constraints nullable = "false"/>
       </column>
       <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
+        <constraints nullable="t    rue"
           foreignKeyName="fk_proposal_created_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
