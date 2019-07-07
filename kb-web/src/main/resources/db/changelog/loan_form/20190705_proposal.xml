@@ -50,7 +50,7 @@
         <constraints nullable = "false"/>
       </column>
       <column name="created_by_id" type="BIGINT">
-        <constraints nullable="t    rue"
+        <constraints nullable="true"
           foreignKeyName="fk_proposal_created_by_id"
           referencedTableName="user"
           referencedColumnNames="id"/>
