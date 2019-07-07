@@ -43,7 +43,7 @@ INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  p
 
 -- Catalogue --
 INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
-VALUES (18, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  102, 1);
+VALUES (102, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  102, 1);
 
  -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --
 
