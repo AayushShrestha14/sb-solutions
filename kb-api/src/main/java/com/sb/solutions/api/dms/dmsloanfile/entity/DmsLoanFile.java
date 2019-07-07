@@ -53,25 +53,25 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @Transient
     private Set<Securities> securities;
     @Transient
-    private List<Map<Object, Object>> documentPathMaps;
+    private List<Map<String, String>> documentPathMaps;
     private Date tenure;
     private int tenureDuration;
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
 
-    public List<Map<Object, Object>> getDocumentPathMaps() {
-        String tempPath = null;
+    public List<Map<String, String>> getDocumentPathMaps() {
+        String documentsPaths = null;
         Gson gson = new Gson();
-        List<Map<Object, Object>> mapList = new ArrayList<>();
+        List<Map<String, String>> mapList = new ArrayList<>();
         try {
-            tempPath = this.getDocumentPath();
-            List<String> tempList = gson.fromJson(tempPath, List.class);
+            documentsPaths = this.getDocumentPath();
+            List<String> documentsPathList = gson.fromJson(documentsPaths, List.class);
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            if (tempList != null) {
-                for (Object list : tempList) {
+            if (documentsPathList.isEmpty()) {
+                for (Object list : documentsPathList) {
                     String toString = list.toString();
                     String[] arrayOfString = toString.split(":");
                     documentNames.add(arrayOfString[0]);
@@ -79,7 +79,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
                 }
             }
             for (String documentPath : documentPaths) {
-                Map<Object, Object> map = new LinkedHashMap<>();
+                Map<String, String> map = new LinkedHashMap<>();
                 map.put(documentNames.get(count), documentPath);
                 count++;
                 mapList.add(map);
