@@ -66,15 +66,17 @@ public class DmsLoanFile extends BaseEntity<Long> {
         List<Map<Object, Object>> mapList = new ArrayList<>();
         try {
             tempPath = this.getDocumentPath();
-            List tempList = gson.fromJson(tempPath, List.class);
+            List<String> tempList = gson.fromJson(tempPath, List.class);
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            for (Object list : tempList) {
-                String toString = list.toString();
-                String[] arrayOfString = toString.split(":");
-                documentNames.add(arrayOfString[0]);
-                documentPaths.add(arrayOfString[1]);
+            if (tempList != null) {
+                for (Object list : tempList) {
+                    String toString = list.toString();
+                    String[] arrayOfString = toString.split(":");
+                    documentNames.add(arrayOfString[0]);
+                    documentPaths.add(arrayOfString[1]);
+                }
             }
             for (String documentPath : documentPaths) {
                 Map<Object, Object> map = new LinkedHashMap<>();

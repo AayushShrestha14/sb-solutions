@@ -33,6 +33,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -80,6 +81,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Branch branch;
 
     private String offerLetterUrl;
+
+    @OneToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private Proposal proposal;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

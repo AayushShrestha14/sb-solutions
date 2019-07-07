@@ -56,7 +56,6 @@ public class UserController {
         return new RestResponseDto().successModel(userService.getAuthenticated());
     }
 
-
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         user.toString();
