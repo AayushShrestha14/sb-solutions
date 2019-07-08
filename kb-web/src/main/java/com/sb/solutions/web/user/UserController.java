@@ -43,9 +43,6 @@ public class UserController {
     private final RoleService roleService;
     private final MailThreadService mailThreadService;
 
-    private String signaturePath = null;
-    private String profiePath = null;
-
     @Autowired
     public UserController(UserService userService, RoleService roleService,
         MailThreadService mailThreadService) {
@@ -61,15 +58,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        if (profiePath != null) {
-            user.setProfilePicture(profiePath);
-            profiePath = null;
-        }
-        if (signaturePath != null) {
-            user.setSignatureImage(signaturePath);
-            signaturePath = null;
-        }
-
+        user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
 

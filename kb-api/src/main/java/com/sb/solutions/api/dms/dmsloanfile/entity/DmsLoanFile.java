@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -53,31 +54,32 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @Transient
     private Set<Securities> securities;
     @Transient
-    private List<Map<Object, Object>> documentPathMaps;
+    private List<Map<String, String>> documentPathMaps;
     private Date tenure;
     private int tenureDuration;
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
 
-    public List<Map<Object, Object>> getDocumentPathMaps() {
-        String tempPath = null;
+    public List<Map<String, String>> getDocumentPathMaps() {
+        String documentsPaths = null;
         Gson gson = new Gson();
-        List<Map<Object, Object>> mapList = new ArrayList<>();
+        List<Map<String, String>> mapList = new ArrayList<>();
         try {
-            tempPath = this.getDocumentPath();
-            List tempList = gson.fromJson(tempPath, List.class);
+            documentsPaths = this.getDocumentPath();
+            List<String> documentsPathList = gson.fromJson(documentsPaths, List.class);
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            for (Object list : tempList) {
-                String toString = list.toString();
-                String[] arrayOfString = toString.split(":");
-                documentNames.add(arrayOfString[0]);
-                documentPaths.add(arrayOfString[1]);
+            if (CollectionUtils.isNotEmpty(documentsPathList)) {
+                for (String list : documentsPathList) {
+                    String[] arrayOfString = list.split(":");
+                    documentNames.add(arrayOfString[0]);
+                    documentPaths.add(arrayOfString[1]);
+                }
             }
             for (String documentPath : documentPaths) {
-                Map<Object, Object> map = new LinkedHashMap<>();
+                Map<String, String> map = new LinkedHashMap<>();
                 map.put(documentNames.get(count), documentPath);
                 count++;
                 mapList.add(map);

@@ -1766,4 +1766,5 @@
   <include file="20190703_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190705_proposal.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190705_alter_customer_loan_proposal.xml" relativeToChangelogFile="true"/>
+  <include file="20190707_alter_management_team.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
