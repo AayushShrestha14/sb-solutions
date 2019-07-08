@@ -20,6 +20,7 @@ import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.core.enitity.BaseEntity;
+import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Data
@@ -51,12 +52,12 @@ public class EntityInfo extends BaseEntity<Long> {
         this.capital.setLastModifiedAt(date);
         this.legalStatus.setLastModifiedAt(date);
         this.swot.setLastModifiedAt(date);
-        if (!this.managementTeamList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(this.managementTeamList)) {
             for (ManagementTeam managementTeam : this.managementTeamList) {
                 managementTeam.setLastModifiedAt(date);
             }
         }
-        if (!this.proprietorsList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(this.proprietorsList)) {
             for (Proprietor proprietor : this.proprietorsList) {
                 proprietor.setLastModifiedAt(date);
             }

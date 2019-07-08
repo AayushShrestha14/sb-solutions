@@ -26,6 +26,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
 import com.sb.solutions.core.utils.NumberToWordsConverter;
+import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Data
@@ -70,7 +71,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            if (documentsPathList != null) {
+            if (CollectionUtils.isNotEmpty(documentsPathList)) {
                 for (String list : documentsPathList) {
                     String[] arrayOfString = list.split(":");
                     documentNames.add(arrayOfString[0]);
