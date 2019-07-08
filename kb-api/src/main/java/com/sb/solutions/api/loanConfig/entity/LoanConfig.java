@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
@@ -33,6 +34,8 @@ public class LoanConfig extends BaseEntity<Long> {
     private Status status;
     private Boolean isRenewable;
     @ManyToMany
+    @Where(clause = "status = 1")
+    // here the status 1 means Active status
     private List<Document> initial;
     @ManyToMany
     private List<Document> renew;

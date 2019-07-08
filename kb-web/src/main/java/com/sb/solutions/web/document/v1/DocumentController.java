@@ -44,22 +44,22 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 
-    @PostMapping(value = "/byCycle")
-    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList) {
+    @PostMapping(value = "/byCycleAndStatus")
+    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList, @RequestParam("status") String status) {
         return new RestResponseDto()
-            .successModel(documentService.getByCycleContaining(loanCycleList));
+                .successModel(documentService.getByCycleContainingAndStatus(loanCycleList, status));
     }
 
     @GetMapping(value = "/lifeCycle")
@@ -73,11 +73,11 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)")})
+            @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)")})
     @PostMapping(value = "/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,
-        @RequestParam("loanCycleId") long loanCycleId) {
+                                      @RequestParam("loanCycleId") long loanCycleId) {
         LoanCycle loanCycle = loanCycleService.findOne(Long.valueOf(loanCycleId));
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
