@@ -67,7 +67,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
-        Status status = Status.valueOf("Active");
+        Status status = Status.valueOf("ACTIVE");
         for (Document document: documentRepository.findByLoanCycleContainingAndStatus(loanCycle, status)){
             document.getLoanCycle().remove(loanCycle);
         }

@@ -3,7 +3,6 @@ package com.sb.solutions.api.document.repository;
 import java.util.List;
 import java.util.Map;
 
-import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
+import com.sb.solutions.core.enums.Status;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
