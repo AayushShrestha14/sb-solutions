@@ -20,13 +20,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
 import com.sb.solutions.core.enums.Securities;
 import com.sb.solutions.core.utils.NumberToWordsConverter;
-import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Data

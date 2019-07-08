@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.sb.solutions.api.companyInfo.capital.entity.Capital;
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
@@ -20,7 +21,6 @@ import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.core.enitity.BaseEntity;
-import org.apache.commons.collections.CollectionUtils;
 
 @Entity
 @Data
