@@ -70,10 +70,9 @@ public class DmsLoanFile extends BaseEntity<Long> {
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            if (documentsPathList.isEmpty()) {
-                for (Object list : documentsPathList) {
-                    String toString = list.toString();
-                    String[] arrayOfString = toString.split(":");
+            if (documentsPathList != null) {
+                for (String list : documentsPathList) {
+                    String[] arrayOfString = list.split(":");
                     documentNames.add(arrayOfString[0]);
                     documentPaths.add(arrayOfString[1]);
                 }
