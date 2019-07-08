@@ -57,7 +57,8 @@ public class DocumentController {
 
 
     @PostMapping(value = "/byCycleAndStatus")
-    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList, @RequestParam("status") String status) {
+    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList,
+                                                  @RequestParam("status") String status) {
         return new RestResponseDto()
                 .successModel(documentService.getByCycleContainingAndStatus(loanCycleList, status));
     }
