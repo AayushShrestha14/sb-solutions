@@ -57,9 +57,9 @@ public class DocumentController {
 
 
     @PostMapping(value = "/byCycle")
-    public ResponseEntity<?> getByCycleNotContaining(@RequestBody LoanCycle loanCycleList) {
+    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList) {
         return new RestResponseDto()
-            .successModel(documentService.getByCycleNotContaining(loanCycleList));
+            .successModel(documentService.getByCycleContaining(loanCycleList));
     }
 
     @GetMapping(value = "/lifeCycle")
@@ -78,7 +78,7 @@ public class DocumentController {
     @PostMapping(value = "/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,
         @RequestParam("loanCycleId") long loanCycleId) {
-        LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
+        LoanCycle loanCycle = loanCycleService.findOne(Long.valueOf(loanCycleId));
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
 
@@ -86,4 +86,10 @@ public class DocumentController {
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(documentService.findAll());
     }
+
+    @GetMapping(value = "/byStatus")
+    public ResponseEntity<?> getAllByStatus(@RequestParam("status") String statusName) {
+        return new RestResponseDto().successModel(documentService.getByStatus(statusName));
+    }
+
 }

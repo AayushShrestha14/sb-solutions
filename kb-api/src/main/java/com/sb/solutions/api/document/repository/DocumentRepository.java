@@ -3,6 +3,7 @@ package com.sb.solutions.api.document.repository;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "select b from Document b where b.name like concat(:name,'%')")
     Page<Document> documentFilter(@Param("name") String name, Pageable pageable);
 
-    List<Document> findByLoanCycleNotContaining(LoanCycle loanCycleList);
+    List<Document> findByLoanCycleContaining(LoanCycle loanCycleList);
 
     int countByLoanCycle(LoanCycle loanCycle);
 
@@ -28,5 +29,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
         + "(select  count(id) from document where status=0) inactive,"
         + "(select  count(id) from document) documents", nativeQuery = true)
     Map<Object, Object> documentStatusCount();
+
+    List<Document> findByStatus(Status status);
 
 }

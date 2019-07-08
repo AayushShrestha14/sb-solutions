@@ -55,8 +55,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public List<Document> getByCycleNotContaining(LoanCycle loanCycleList) {
-        return documentRepository.findByLoanCycleNotContaining(loanCycleList);
+    public List<Document> getByCycleContaining(LoanCycle loanCycleList) {
+        return documentRepository.findByLoanCycleContaining(loanCycleList);
     }
 
     @Override
@@ -66,11 +66,20 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
+        for (Document document: documentRepository.findByLoanCycleContaining(loanCycle)){
+            document.getLoanCycle().remove(loanCycle);
+        }
         for (Long id : ids) {
             Document doc = documentRepository.getOne(id);
             doc.getLoanCycle().add(loanCycle);
             documentRepository.save(doc);
         }
         return "Success";
+    }
+
+    @Override
+    public List<Document> getByStatus(String statusName) {
+        Status status = Status.valueOf(statusName);
+        return documentRepository.findByStatus(status);
     }
 }
