@@ -78,6 +78,13 @@ public class CustomerLoanController {
     }
 
 
+    @GetMapping("/{id}/delete")
+    public ResponseEntity<?> delByIdRoleMaker(@PathVariable("id") Long id) {
+        logger.info("deleting Customer Loan {}", id);
+        return new RestResponseDto()
+            .successModel(service.delCustomerLoan(id));
+    }
+
     @PostMapping("/status")
     public ResponseEntity<?> getfirst5ByDocStatus(@RequestBody CustomerLoan customerLoan) {
         logger.debug("getByDocStatus Customer Loan {}", customerLoan);
