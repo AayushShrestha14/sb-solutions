@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,20 @@ import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.api.document.repository.LoanCycleRepository;
 
 @Service
-@AllArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
 
+    private final LoanCycleRepository loanCycleRepository;
+
+    public DocumentServiceImpl(@Autowired DocumentRepository documentRepository,
+                               @Autowired LoanCycleRepository loanCycleRepository) {
+        this.documentRepository = documentRepository;
+        this.loanCycleRepository = loanCycleRepository;
+    }
 
     @Override
     public List<Document> findAll() {
@@ -55,9 +62,10 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public List<Document> getByCycleContainingAndStatus(LoanCycle loanCycleList, String statusName) {
+    public List<Document> getByCycleContainingAndStatus(Long loanCycleId, String statusName) {
+        LoanCycle loanCycle = loanCycleRepository.getOne(loanCycleId);
         Status status = Status.valueOf(statusName);
-        return documentRepository.findByLoanCycleContainingAndStatus(loanCycleList, status);
+        return documentRepository.findByLoanCycleContainingAndStatus(loanCycle, status);
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface DocumentService extends BaseService<Document> {
 
-    List<Document> getByCycleContainingAndStatus(LoanCycle loanCycleList, String statusName);
+    List<Document> getByCycleContainingAndStatus(Long loanCycle, String statusName);
 
     Map<Object, Object> documentStatusCount();
 

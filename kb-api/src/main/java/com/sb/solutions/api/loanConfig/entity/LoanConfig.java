@@ -38,8 +38,12 @@ public class LoanConfig extends BaseEntity<Long> {
     // here the status 1 means Active status
     private List<Document> initial;
     @ManyToMany
+    @Where(clause = "status = 1")
+    // here the status 1 means Active status
     private List<Document> renew;
     @ManyToMany
+    @Where(clause = "status = 1")
+    // here the status 1 means Active status
     private List<Document> eligibilityDocuments;
     private Long totalPoints = 0L;
     private Boolean enableEligibility;

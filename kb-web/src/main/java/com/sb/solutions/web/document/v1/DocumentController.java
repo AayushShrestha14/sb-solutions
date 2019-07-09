@@ -6,13 +6,9 @@ import javax.validation.Valid;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
@@ -24,12 +20,17 @@ import com.sb.solutions.core.utils.PaginationUtils;
 
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/v1/document")
 public class DocumentController {
 
     private final DocumentService documentService;
     private final LoanCycleService loanCycleService;
+
+    public DocumentController(@Autowired DocumentService documentService,
+                              @Autowired LoanCycleService loanCycleService) {
+        this.documentService = documentService;
+        this.loanCycleService = loanCycleService;
+    }
 
     @PostMapping
     public ResponseEntity<?> addDocument(@Valid @RequestBody Document document) {
@@ -56,11 +57,11 @@ public class DocumentController {
     }
 
 
-    @PostMapping(value = "/byCycleAndStatus")
-    public ResponseEntity<?> getByCycleContaining(@RequestBody LoanCycle loanCycleList,
-                                                  @RequestParam("status") String status) {
+    @GetMapping(value = "/byCycle/{loanCycleId}/status/{status}")
+    public ResponseEntity<?> getByCycleContaining(@PathVariable Long loanCycleId,
+                                                  @PathVariable String status) {
         return new RestResponseDto()
-                .successModel(documentService.getByCycleContainingAndStatus(loanCycleList, status));
+                .successModel(documentService.getByCycleContainingAndStatus(loanCycleId, status));
     }
 
     @GetMapping(value = "/lifeCycle")
@@ -88,9 +89,9 @@ public class DocumentController {
         return new RestResponseDto().successModel(documentService.findAll());
     }
 
-    @GetMapping(value = "/byStatus")
-    public ResponseEntity<?> getAllByStatus(@RequestParam("status") String statusName) {
-        return new RestResponseDto().successModel(documentService.getByStatus(statusName));
+    @GetMapping(value = "/byStatus/{status}")
+    public ResponseEntity<?> getAllByStatus(@PathVariable String status) {
+        return new RestResponseDto().successModel(documentService.getByStatus(status));
     }
 
 }
