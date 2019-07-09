@@ -31,6 +31,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
+import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
@@ -85,6 +86,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Proposal proposal;
+
+    @OneToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private Financial financial;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
