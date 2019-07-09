@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.api.document.repository.LoanCycleRepository;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.api.document.repository.LoanCycleRepository;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
