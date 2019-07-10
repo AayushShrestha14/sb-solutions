@@ -3,6 +3,7 @@ package com.sb.solutions.api.loan.service;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.api.loan.StatisticDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -33,5 +34,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable);
 
     CustomerLoan delCustomerLoan(Long id);
+
+    List<StatisticDto> getStats(Long branchId);
 
 }

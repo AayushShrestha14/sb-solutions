@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.loan.StatisticDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +167,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else {
             throw new ServiceValidationException("You don't have access to delete file");
         }
+    }
+
+    @Override
+    public List<StatisticDto> getStats(Long branchId) {
+        logger.debug("Request to get the statistics about the existing loans.");
+        return customerLoanRepository.getStatistics(branchId);
     }
 }
 
