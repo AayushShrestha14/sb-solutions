@@ -12,11 +12,6 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="5-populate-hibernate_sequence" author="msucil">
-    <insert tableName="hibernate_sequence">
-      <column name="next_val" valueNumeric="1"/>
-    </insert>
-  </changeSet>
 
   <changeSet id="5-create-oauth-token-table" author="msucil">
     <createTable tableName="oauth_access_token">
@@ -36,7 +31,7 @@
         <constraints nullable="true"/>
       </column>
       <column name="authentication" type="BLOB">
-        <constraints nullable="true"/>
+        <constraints nullable="false"/>
       </column>
       <column name="refresh_token" type="VARCHAR(256)">
         <constraints nullable="true"/>
@@ -193,7 +188,7 @@
   </changeSet>
 
   <changeSet id="5-create-user-table" author="msucil">
-    <createTable tableName="user">
+    <createTable tableName="users">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -249,30 +244,30 @@
   </changeSet>
 
   <changeSet id="5-create-foreign-key-in-user-table" author="david">
-    <addForeignKeyConstraint baseTableName="user" baseColumnNames="created_by_id"
-      constraintName="fk_user_created_by_id" referencedTableName="user"
+    <addForeignKeyConstraint baseTableName="users" baseColumnNames="created_by_id"
+      constraintName="fk_user_created_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
-    <addForeignKeyConstraint baseTableName="user" baseColumnNames="modified_by_id"
-      constraintName="fk_user_modified_by_id" referencedTableName="user"
+    <addForeignKeyConstraint baseTableName="users" baseColumnNames="modified_by_id"
+      constraintName="fk_user_modified_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
   </changeSet>
 
 
   <changeSet id="5-create-foreign-key-in-branch-table" author="david">
     <addForeignKeyConstraint baseTableName="branch" baseColumnNames="created_by_id"
-      constraintName="fk_branch_created_by_id" referencedTableName="user"
+      constraintName="fk_branch_created_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
     <addForeignKeyConstraint baseTableName="branch" baseColumnNames="modified_by_id"
-      constraintName="fk_branch_modified_by_id" referencedTableName="user"
+      constraintName="fk_branch_modified_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
   </changeSet>
 
   <changeSet id="5-create-foreign-key-in-role-table" author="david">
     <addForeignKeyConstraint baseTableName="role" baseColumnNames="created_by_id"
-      constraintName="fk_role_created_by_id" referencedTableName="user"
+      constraintName="fk_role_created_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
     <addForeignKeyConstraint baseTableName="role" baseColumnNames="modified_by_id"
-      constraintName="fk_role_modified_by_id" referencedTableName="user"
+      constraintName="fk_role_modified_by_id" referencedTableName="users"
       referencedColumnNames="id"/>
   </changeSet>
 
@@ -394,13 +389,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_role_permission_rights_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_role_permission_rights_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -453,13 +448,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_company_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_company_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -489,13 +484,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_nepse_company_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_nepse_company_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -541,13 +536,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_template_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_template_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -573,13 +568,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sector_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sector_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -606,13 +601,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sub_sector_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sub_sector_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -643,13 +638,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_segment_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_segment_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -680,13 +675,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sub_segment_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_sub_segment_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -759,13 +754,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_valuator_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_valuator_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -796,13 +791,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_config_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_config_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -863,13 +858,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_document_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_document_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="last_modified_at" type="DATE">
@@ -891,13 +886,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_cycle_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_loan_cycle_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1040,13 +1035,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_approval_limit_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_approval_limit_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1102,13 +1097,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1135,13 +1130,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_relative_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_customer_relative_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1209,13 +1204,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_capital_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_capital_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1263,13 +1258,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_legal_status_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_legal-status_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1302,13 +1297,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_swot_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_swot_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1347,13 +1342,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_entity_info_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_entity_info_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1383,13 +1378,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_management_team_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_management_team_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1440,13 +1435,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_proprietor_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_proprietor_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1528,13 +1523,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_guarantor_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_guarantor_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">
@@ -1641,7 +1636,7 @@
     </createTable>
     <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="user_id"
       constraintName="fk_memo_cc_user_user_id"
-      referencedTableName="user" referencedColumnNames="id"/>
+      referencedTableName="users" referencedColumnNames="id"/>
     <addForeignKeyConstraint baseTableName="memo_cc_user" baseColumnNames="memo_id"
       constraintName="fk_memo_cc_user_memo_id"
       referencedTableName="memo" referencedColumnNames="id"/>
@@ -1662,7 +1657,7 @@
 
     <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="user_id"
       constraintName="fk_memo_bcc_user_user_id"
-      referencedTableName="user" referencedColumnNames="id"/>
+      referencedTableName="users" referencedColumnNames="id"/>
     <addForeignKeyConstraint baseTableName="memo_bcc_user" baseColumnNames="memo_id"
       constraintName="fk_memo_bcc_user_memo_id"
       referencedTableName="memo" referencedColumnNames="id"/>
@@ -1684,13 +1679,13 @@
         <constraints nullable="false"
           foreignKeyName="fk_memo_stage_sent_by_user_id"
           referencedColumnNames="id"
-          referencedTableName="user"
+          referencedTableName="users"
         />
       </column>
       <column name="sent_to" type="BIGINT">
         <constraints nullable="false"
           foreignKeyName="fk_memo_stage_sent_to_user_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="stage" type="INT">
@@ -1719,11 +1714,6 @@
     <sqlFile path="data/patch.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
-  <changeSet id="3-load-oauth-file" author="msucil">
-    <sqlFile path="data/oauth.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-
   <changeSet id="3-load-province-file" author="msucil">
     <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
   </changeSet>
@@ -1734,11 +1724,6 @@
 
   <changeSet id="3-load-municipalityVdc-file" author="msucil">
     <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-
-  <changeSet id="1-product_mode" author="rujan">
-    <sqlFile path="data/product_mode.sql" relativeToChangelogFile="true"/>
   </changeSet>
 
   <changeSet id="1-loan-cycle" author="david">
@@ -1765,6 +1750,8 @@
   <include file="20190701_email_config.xml" relativeToChangelogFile="true"/>
   <include file="20190703_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190705_proposal.xml" relativeToChangelogFile="true"/>
-  <include file="loan_form/20190705_alter_customer_loan_proposal.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190705_alter_customer_loan_proposal.xml"
+    relativeToChangelogFile="true"/>
   <include file="20190707_alter_management_team.xml" relativeToChangelogFile="true"/>
+  <include file="20191007_product_mode.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
