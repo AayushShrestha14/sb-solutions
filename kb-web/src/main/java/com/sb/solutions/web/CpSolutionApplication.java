@@ -28,6 +28,7 @@ import com.sb.solutions.api.productMode.repository.ProductModeRepository;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
+import com.sb.solutions.core.constant.CurrentDb;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.Status;
 
@@ -61,6 +62,8 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Value("${server.port}")
     private String port;
 
+
+
     public static void main(String[] args) {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
@@ -73,7 +76,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @PostConstruct
     public void initialize() {
-
+        CurrentDb.currentConnectedDb();
         if (baseHttpRepo.findAll().isEmpty()) {
             BaseHttp baseHttp = new BaseHttp();
             baseHttp.setBaseUrl("http://" + baseHttp.getHostAddress() + ":" + port + "/");
