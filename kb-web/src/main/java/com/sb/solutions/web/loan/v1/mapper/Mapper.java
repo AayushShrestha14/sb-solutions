@@ -1,9 +1,19 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
@@ -22,15 +32,6 @@ import com.sb.solutions.web.common.stage.mapper.StageMapper;
 import com.sb.solutions.web.loan.v1.dto.BarChartDto;
 import com.sb.solutions.web.loan.v1.dto.SeriesDto;
 import com.sb.solutions.web.user.dto.UserDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -139,8 +140,8 @@ public class Mapper {
     public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {
         final List<BarChartDto> charts = new ArrayList<>();
         Map<String, List<StatisticDto>> mappedStats =
-                statistics.stream().collect(Collectors.groupingBy(StatisticDto::getloanType));
-        for (Map.Entry<String, List<StatisticDto>> entry: mappedStats.entrySet()) {
+            statistics.stream().collect(Collectors.groupingBy(StatisticDto::getloanType));
+        for (Map.Entry<String, List<StatisticDto>> entry : mappedStats.entrySet()) {
             final BarChartDto barChart = new BarChartDto();
             barChart.setName(entry.getKey());
             entry.getValue().forEach(statisticDto -> {
