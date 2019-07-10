@@ -26,11 +26,7 @@ public class BusinessSiteVisit {
 
     private String location;
 
-    private String latitude;
-
-    private String longitude;
-
-    private List<String> visitedBy;
+    private String visitedBy;
 
     private String conclusion;
 

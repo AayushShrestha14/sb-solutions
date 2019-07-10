@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 
-@Entity
+//@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class SiteVisit extends BaseEntity<Long> {
+//@EqualsAndHashCode(callSuper = true)
+public class SiteVisit /*extends BaseEntity<Long> */{
 
     private Boolean hasCurrentResident;
 
