@@ -61,21 +61,21 @@ public class Mapper {
         User currentUser) {
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
-            if (!"Dms".equals(productMode.getProduct().toString())) {
-                if (productMode != null) {
-                    ApprovalLimit approvalLimit = approvalLimitService
-                        .getByRoleAndLoan(currentUser.getRole().getId(),
-                            customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
-                    if (approvalLimit == null) {
-                        throw new RuntimeException("Authority Limit Error");
-                    }
-                    if (customerLoan.getDmsLoanFile() != null) {
-                        if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
-                            .getAmount()) {
-                            throw new RuntimeException("Amount Exceed");
-                        }
+            if (productMode == null) {
+
+                ApprovalLimit approvalLimit = approvalLimitService
+                    .getByRoleAndLoan(currentUser.getRole().getId(),
+                        customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
+                if (approvalLimit == null) {
+                    throw new RuntimeException("Authority Limit Error");
+                }
+                if (customerLoan.getDmsLoanFile() != null) {
+                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
+                        .getAmount()) {
+                        throw new RuntimeException("Amount Exceed");
                     }
                 }
+
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
