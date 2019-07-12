@@ -188,13 +188,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             case LAS:
                 statistics = customerLoanRepository.getStatistics(branchId);
                 break;
+            default:
         }
         return statistics;
     }
 
     private ProductMode findActiveProductMode() {
         ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
-        if (productMode == null) productMode = productModeService.getByProduct(Product.LAS, Status.ACTIVE);
+        if (productMode == null) {
+            productMode = productModeService.getByProduct(Product.LAS, Status.ACTIVE);
+        }
         return productMode;
     }
 }
