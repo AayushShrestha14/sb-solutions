@@ -25,7 +25,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     Map<Object, Object> roleStatusCount();
 
     @Query(value = "Select distinct p.id as id,p.role_name as roleName from role p "
-        + "left join user u on p.id = u.role_id "
+        + "left join users u on p.id = u.role_id "
         + "where p.status=1 "
         + "and p.id <>:id group by p.id", nativeQuery = true)
     List<Map<Object, Object>> activeRole(@Param("id") Long id);

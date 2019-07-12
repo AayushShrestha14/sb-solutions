@@ -1710,25 +1710,6 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="3-load-path-file" author="msucil">
-    <sqlFile path="data/patch.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-province-file" author="msucil">
-    <sqlFile path="data/province.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-district-file" author="msucil">
-    <sqlFile path="data/district.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="3-load-municipalityVdc-file" author="msucil">
-    <sqlFile path="data/municipalityVdc.sql" relativeToChangelogFile="true"/>
-  </changeSet>
-
-  <changeSet id="1-loan-cycle" author="david">
-    <sqlFile path="data/david_loan_cycle.sql" relativeToChangelogFile="true"/>
-  </changeSet>
 
   <include file="20190503_question.xml" relativeToChangelogFile="true"/>
   <include file="20190503_answer.xml" relativeToChangelogFile="true"/>

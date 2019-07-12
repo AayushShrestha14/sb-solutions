@@ -104,7 +104,7 @@ public class RoleAndPermissionDao {
 
     public Long getCurrentUserId(String username) {
         Map<String, Object> map = new HashMap<>();
-        String query = "SELECT id from user where user_name = :username";
+        String query = "SELECT id from users where user_name = :username";
         map.put("username", username);
         Long id = namedParameterJdbcTemplate.queryForObject(query, map, Long.class);
         return id;
