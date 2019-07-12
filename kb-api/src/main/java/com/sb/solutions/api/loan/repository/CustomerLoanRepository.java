@@ -3,12 +3,16 @@ package com.sb.solutions.api.loan.repository;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 
 /**
@@ -56,4 +60,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
         String generalCitizenShipNumber, String dmsCitizenShipNumber);
+
+    @Modifying
+    @Transactional
+    void deleteByIdAndCurrentStageDocAction(Long id,DocAction docAction);
 }

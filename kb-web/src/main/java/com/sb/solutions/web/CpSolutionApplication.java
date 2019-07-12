@@ -65,6 +65,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
 
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CpSolutionApplication.class);
