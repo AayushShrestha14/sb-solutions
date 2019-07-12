@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,14 +16,19 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.productMode.entity.ProductMode;
+import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 
 /**
@@ -34,13 +40,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
+    private final ProductModeService productModeService;
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
 
-
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-        @Autowired UserService userService) {
+        @Autowired UserService userService,
+        ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
+        this.productModeService = productModeService;
     }
 
     @Override
@@ -166,6 +174,31 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else {
             throw new ServiceValidationException("You don't have access to delete file");
         }
+    }
+
+    @Override
+    public List<StatisticDto> getStats(Long branchId) {
+        List<StatisticDto> statistics = new ArrayList<>();
+        logger.debug("Request to get the statistics about the existing loans.");
+        ProductMode productMode = findActiveProductMode();
+        switch (productMode.getProduct()) {
+            case DMS:
+                statistics = customerLoanRepository.getDmsStatistics(branchId);
+                break;
+            case LAS:
+                statistics = customerLoanRepository.getStatistics(branchId);
+                break;
+            default:
+        }
+        return statistics;
+    }
+
+    private ProductMode findActiveProductMode() {
+        ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
+        if (productMode == null) {
+            productMode = productModeService.getByProduct(Product.LAS, Status.ACTIVE);
+        }
+        return productMode;
     }
 }
 
