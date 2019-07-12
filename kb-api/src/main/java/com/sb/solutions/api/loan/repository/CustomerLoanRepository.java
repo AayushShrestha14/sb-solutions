@@ -70,6 +70,15 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
     List<StatisticDto> getStatistics(@Param("branchId") Long branchId);
 
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
+            + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getDmsStatistics(@Param("branchId") Long branchId);
+
     @Modifying
     @Transactional
     void deleteByIdAndCurrentStageDocAction(Long id,DocAction docAction);
