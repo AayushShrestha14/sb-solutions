@@ -20,7 +20,7 @@ import com.sb.solutions.core.enums.Status;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "select b from User b where b.name like concat(:name,'%')")
+    @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
     Page<User> userFilter(@Param("name") String name, Pageable pageable);
 
     User getUsersByUsername(String username);
@@ -39,22 +39,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
 
     @Query(value = "select "
-        + "  (select  count(id) from users where status=1) active,"
-        + " (select  count(id) from users where status=0) inactive,"
-        + " (select  count(id) from users) users\n", nativeQuery = true)
+        + "  (select  count(id) FROM users WHERE status=1) active,"
+        + " (select  count(id) FROM users WHERE status=0) inactive,"
+        + " (select  count(id) FROM users) users\n", nativeQuery = true)
     Map<Object, Object> userStatusCount();
 
-    @Query(value = "select b from User b where b.name like concat(:name,'%')")
+    @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
     List<User> userCsvFilter(@Param("name") String name);
 
     @Query(value =
-        "select ifNull(a.type,'a') from users u join role r"
-            + " left join role_permission_rights rpr on rpr.role_id = r.id"
-            + " left join role_permission_rights_api_rights rprar"
-            + " on rprar.role_permission_rights_id=rpr.id"
-            + " left join url_api a on rprar.api_rights_id = a.id where r.id = :id"
-            + " and u.user_name=:username and a.type is not null;", nativeQuery = true)
-    List<Object> userApiAuthorities(@Param("id") Long id, @Param("username") String username);
+        "  SELECT a.type FROM role r "
+            + " LEFT JOIN role_permission_rights rpr ON rpr.role_id = r.id"
+            + " LEFT JOIN role_permission_rights_api_rights rprar"
+            + " ON rprar.role_permission_rights_id=rpr.id"
+            + " LEFT JOIN url_api a ON rprar.api_rights_id = a.id "
+            + " WHERE "
+            + " r.id = :id\n"
+            + " AND a.type is not null;", nativeQuery = true)
+    List<Object> userApiAuthorities(@Param("id") Long id);
 
 }
 

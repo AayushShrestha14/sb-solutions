@@ -1,4 +1,12 @@
-SET IDENTITY_INSERT municipality_vdc ON;
+
+BEGIN
+DECLARE @count smallint
+SET @count = (Select count(*) from municipality_vdc)
+
+if(@count < 75)
+BEGIN
+
+SET IDENTITY_INSERT municipality_vdc ON
 INSERT INTO municipality_vdc (id, district_id, name) VALUES
 (1, 1, 'Phungling Municipality'),
 (2, 1, 'Aatharai Triveni'),
@@ -743,5 +751,7 @@ INSERT INTO municipality_vdc (id, district_id, name) VALUES
 (752, 75, 'Naugad'),
 (753, 75, 'Marma'),
 (754, 75, 'Lekam'),
-(755, 75, 'Byans');
-SET IDENTITY_INSERT municipality_vdc OFF;
+(755, 75, 'Byans')
+SET IDENTITY_INSERT municipality_vdc OFF
+END
+END;

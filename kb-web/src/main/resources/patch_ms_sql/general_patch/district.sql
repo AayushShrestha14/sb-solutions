@@ -1,4 +1,11 @@
-SET IDENTITY_INSERT district ON;
+
+BEGIN
+DECLARE @count smallint
+SET @count = (Select count(*) from district)
+
+if(@count < 75)
+BEGIN
+SET IDENTITY_INSERT district ON
 INSERT  INTO district (id, province_id, name) VALUES
 (1, 1, 'Taplejung'),
 (2, 1, 'Panchthar'),
@@ -74,6 +81,12 @@ INSERT  INTO district (id, province_id, name) VALUES
 (72, 7, 'Kanchanpur'),
 (73, 7, 'Dadeldhura'),
 (74, 7, 'Baitadi'),
-(75, 7, 'Darchula');
+(75, 7, 'Darchula')
 
-SET IDENTITY_INSERT district OFF;
+SET IDENTITY_INSERT district Off
+END
+else
+BEGIN
+SET IDENTITY_INSERT district Off
+END
+END ;

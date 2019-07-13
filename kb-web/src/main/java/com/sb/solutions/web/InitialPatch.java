@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.URL;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 public final class InitialPatch {
 
     private static final String GENERALPATCHFOLDER = "/general_patch";
+
+    private static final Logger logger = LoggerFactory.getLogger(InitialPatch.class);
 
     private InitialPatch() {
     }
@@ -33,7 +37,9 @@ public final class InitialPatch {
                     baseServerFolder + GENERALPATCHFOLDER + File.separator + listOfFiles[i]
                         .getName());
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
-                populator.execute(dataSource);
+
+                    populator.execute(dataSource);
+
             }
         }
     }
