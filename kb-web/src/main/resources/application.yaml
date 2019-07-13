@@ -16,9 +16,10 @@ spring:
       max-request-size: 10MB
 
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master1
-    username: root
-    password:
+    url: jdbc:sqlserver://localhost;databaseName=cp_master
+    username: mssql
+    password: test
+
   mail:
     username: sbsolutionstest@gmail.com
     password: testsbsolutions123
