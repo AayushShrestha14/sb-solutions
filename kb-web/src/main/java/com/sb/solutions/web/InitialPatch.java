@@ -37,9 +37,8 @@ public final class InitialPatch {
                     baseServerFolder + GENERALPATCHFOLDER + File.separator + listOfFiles[i]
                         .getName());
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
-
-                    populator.execute(dataSource);
-
+                logger.info("executing query {}", listOfFiles[i].getName());
+                populator.execute(dataSource);
             }
         }
     }
