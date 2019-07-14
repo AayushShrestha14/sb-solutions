@@ -2,7 +2,6 @@ package com.sb.solutions.api.loan.repository;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -60,6 +60,24 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
         String generalCitizenShipNumber, String dmsCitizenShipNumber);
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(p.proposed_limit) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN proposal p ON c.proposal_id = p.id "
+            + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getStatistics(@Param("branchId") Long branchId);
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
+            + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getDmsStatistics(@Param("branchId") Long branchId);
 
     @Modifying
     @Transactional

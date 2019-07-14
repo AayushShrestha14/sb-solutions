@@ -138,4 +138,10 @@ public class CustomerLoanController {
         return new RestResponseDto()
             .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
     }
+
+    @GetMapping(path = "/stats")
+    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId) {
+        logger.debug("REST request to get the statistical data about the loans.");
+        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId)));
+    }
 }
