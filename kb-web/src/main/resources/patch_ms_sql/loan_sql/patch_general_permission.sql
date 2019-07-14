@@ -2,7 +2,7 @@ BEGIN
 DECLARE @count smallint
 SET @count = (Select count(*) from permission)
 
-if(@count < 7)
+if(@count < 8)
 BEGIN
 SET IDENTITY_INSERT permission ON
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fas fa-university', '/home/admin/branch', 10, 1)

@@ -1,6 +1,9 @@
 BEGIN
 DECLARE @count smallint
 SET @count = (Select count(*) from permission where id = 2)
+DELETE FROM permission_api_list where permission_id in (4,8,11)
+DELETE FROM role_permission_rights WHERE permission_id in (4,8,11)
+DELETE FROM permission WHERE id in (4,8,11)
 if(@count = 0)
 BEGIN
 SET IDENTITY_INSERT permission ON
