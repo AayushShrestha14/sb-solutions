@@ -16,7 +16,7 @@ spring:
       max-request-size: 10MB
 
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
+    url: jdbc:mysql://localhost:3306/cp_master?useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password:
   mail:
