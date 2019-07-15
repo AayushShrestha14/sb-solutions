@@ -1,0 +1,26 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet id="21-product_mode" author="rujan">
+    <createTable tableName="product_mode">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="product" type="INT(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="INT(10)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+
+      </column>
+
+
+    </createTable>
+  </changeSet>
+
+
+</databaseChangeLog>
