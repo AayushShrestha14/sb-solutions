@@ -52,8 +52,9 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + " join c.loan l WHERE c.branch.id IN (:branchId) GROUP BY c.loan.id,l.name")
     List<PieChartDto> proposedAmount(@Param("branchId") List<Long> branchId);
 
-    @Query(value = "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
-        + " join c.loan l WHERE c.branch.id = :branchId GROUP BY c.loan.id,l.name")
+    @Query(value =
+        "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
+            + " join c.loan l WHERE c.branch.id = :branchId GROUP BY c.loan.id,l.name")
     List<PieChartDto> proposedAmountByBranchId(@Param("branchId") Long branchId);
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
