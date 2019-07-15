@@ -69,7 +69,6 @@ INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  p
 INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
 VALUES (102, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  102, 1);
 
-
 -- ************************BRANCH*******************************************
 INSERT IGNORE INTO url_api (id,api_url,type) values (1,'/v1/branch','ADD BRANCH');
 INSERT IGNORE INTO url_api (id,api_url,type) values (2,'/v1/branch','EDIT BRANCH');

@@ -66,7 +66,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + "JOIN loan_config l ON c.loan_id = l.id "
             + "JOIN proposal p ON c.proposal_id = p.id "
             + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
-    List<StatisticDto> getStatistics(@Param("branchId") Long branchId);
+    List<StatisticDto> getLasStatisticsByBranchId(@Param("branchId") Long branchId);
 
     @Query(value =
         "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
@@ -75,7 +75,25 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + "JOIN loan_config l ON c.loan_id = l.id "
             + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
             + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
-    List<StatisticDto> getDmsStatistics(@Param("branchId") Long branchId);
+    List<StatisticDto> getDmsStatisticsByBranchId(@Param("branchId") Long branchId);
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(p.proposed_limit) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN proposal p ON c.proposal_id = p.id "
+            + "GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getLasStatistics();
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
+            + "GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getDmsStatistics();
 
     @Modifying
     @Transactional

@@ -184,10 +184,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ProductMode productMode = findActiveProductMode();
         switch (productMode.getProduct()) {
             case DMS:
-                statistics = customerLoanRepository.getDmsStatistics(branchId);
+                statistics = getDmsStatistics(branchId);
                 break;
             case LAS:
-                statistics = customerLoanRepository.getStatistics(branchId);
+                statistics = getLasStatistics(branchId);
                 break;
             default:
         }
@@ -200,6 +200,22 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             productMode = productModeService.getByProduct(Product.LAS, Status.ACTIVE);
         }
         return productMode;
+    }
+
+    private List<StatisticDto> getDmsStatistics(Long branchId) {
+        if (branchId == 0) {
+            return customerLoanRepository.getDmsStatistics();
+        } else {
+            return customerLoanRepository.getDmsStatisticsByBranchId(branchId);
+        }
+    }
+
+    private List<StatisticDto> getLasStatistics(Long branchId) {
+        if (branchId == 0) {
+            return customerLoanRepository.getLasStatistics();
+        } else {
+            return customerLoanRepository.getLasStatisticsByBranchId(branchId);
+        }
     }
 }
 
