@@ -49,7 +49,14 @@ INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permiss
 
  -- Email Config --
  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (102, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  102, 1)
+
+
+ -- Email Config --
+ INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
  VALUES (55, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  105, 1)
+
+
 
 SET IDENTITY_INSERT role_permission_rights OFF
  -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --

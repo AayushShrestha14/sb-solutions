@@ -26,18 +26,26 @@ SET IDENTITY_INSERT role_permission_rights ON
 
 BEGIN
 DECLARE @count smallint
+DECLARE @countPending smallint
 SET @count = (Select count(*) from url_api where id = 40)
+SET @countPending = (Select count(*) from url_api where id = 46)
 if(@count = 0)
 BEGIN
 SET IDENTITY_INSERT url_api ON
  INSERT  INTO url_api (id, api_url, type)
-values (40, '/v1/config/getAll', 'LOAN CATEGORY'),
-
- (46,'/v1/pending','PENDING')
-
+values (40, '/v1/config/getAll', 'LOAN CATEGORY')
 INSERT  INTO permission_api_list(permission_id, api_list_id)
-values (17, 40),
- (17, 46)
+values (17, 40)
+SET IDENTITY_INSERT url_api off
+END
+
+if(@countPending = 0)
+BEGIN
+SET IDENTITY_INSERT url_api ON
+ INSERT  INTO url_api (id, api_url, type)
+values (46,'/v1/pending','PENDING')
+INSERT  INTO permission_api_list(permission_id, api_list_id)
+values (17, 46)
 
  SET IDENTITY_INSERT url_api OFF
 
