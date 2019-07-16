@@ -2,7 +2,6 @@ package com.sb.solutions.api.loan.repository;
 
 import java.util.List;
 import java.util.Map;
-
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sb.solutions.api.loan.PieChartDto;
+import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -46,22 +47,56 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " AND cl.branch_id IN (:bid) )total", nativeQuery = true)
     Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
 
-    @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c"
-        + " JOIN dms_loan_file d ON c.dms_loan_file_id = d.id"
-        + " JOIN loan_config l ON c.loan_id=l.id where c.branch_id in (:branchId)"
-        + "GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<String, Double>> proposedAmount(@Param("branchId") List<Long> branchId);
+    @Query(value =
+        "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
+            + " join c.loan l WHERE c.branch.id IN (:branchId) GROUP BY c.loan.id,l.name")
+    List<PieChartDto> proposedAmount(@Param("branchId") List<Long> branchId);
 
-    @Query(value = "SELECT name, SUM(proposed_amount) AS value FROM customer_loan c "
-        + "JOIN dms_loan_file d ON c.dms_loan_file_id = d.id "
-        + "JOIN loan_config l ON c.loan_id=l.id "
-        + "WHERE c.branch_id =:branchId GROUP BY c.loan_id", nativeQuery = true)
-    List<Map<String, Double>> proposedAmountByBranchId(@Param("branchId") Long branchId);
+    @Query(value =
+        "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
+            + " join c.loan l WHERE c.branch.id = :branchId GROUP BY c.loan.id,l.name")
+    List<PieChartDto> proposedAmountByBranchId(@Param("branchId") Long branchId);
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
         String generalCitizenShipNumber, String dmsCitizenShipNumber);
 
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(p.proposed_limit) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN proposal p ON c.proposal_id = p.id "
+            + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getLasStatisticsByBranchId(@Param("branchId") Long branchId);
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
+            + "WHERE c.branch_id = :branchId GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getDmsStatisticsByBranchId(@Param("branchId") Long branchId);
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(p.proposed_limit) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN proposal p ON c.proposal_id = p.id "
+            + "GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getLasStatistics();
+
+    @Query(value =
+        "SELECT l.name AS loanType, c.document_status as status, SUM(dlf.proposed_amount) AS totalAmount FROM "
+            +
+            "customer_loan c "
+            + "JOIN loan_config l ON c.loan_id = l.id "
+            + "JOIN dms_loan_file dlf ON c.dms_loan_file_id = dlf.id "
+            + "GROUP BY c.loan_id, c.document_status", nativeQuery = true)
+    List<StatisticDto> getDmsStatistics();
+
     @Modifying
     @Transactional
-    void deleteByIdAndCurrentStageDocAction(Long id,DocAction docAction);
+    void deleteByIdAndCurrentStageDocAction(Long id, DocAction docAction);
 }

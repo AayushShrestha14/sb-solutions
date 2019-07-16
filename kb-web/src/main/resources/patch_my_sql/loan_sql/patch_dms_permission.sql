@@ -10,7 +10,6 @@ INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders,
 INSERT IGNORE INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (102,  'Catalogue', 'fa fa-file-alt', '/home/admin/catalogue', 60, 1);
 
 
-
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --
 -- BRANCH --
 INSERT IGNORE INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)

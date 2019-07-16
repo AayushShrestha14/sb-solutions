@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
         if (u != null) {
             List<String> authorityList = userRepository
-                .userApiAuthorities(u.getRole().getId(), u.getUsername()).stream()
+                .userApiAuthorities(u.getRole().getId()).stream()
                 .map(object -> Objects.toString(object, null))
                 .collect(Collectors.toList());
             Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
