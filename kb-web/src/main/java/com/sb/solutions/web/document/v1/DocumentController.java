@@ -62,11 +62,11 @@ public class DocumentController {
     }
 
 
-    @GetMapping(value = "/byCycle/{loanCycleId}/status/{status}")
-    public ResponseEntity<?> getByCycleContaining(@PathVariable Long loanCycleId,
-                                                  @PathVariable String status) {
+    @GetMapping(value = "/cycle/{cycleId}/status/{statusValue}")
+    public ResponseEntity<?> getByCycleContaining(@PathVariable Long cycleId,
+                                                  @PathVariable String statusValue) {
         return new RestResponseDto()
-                .successModel(documentService.getByCycleContainingAndStatus(loanCycleId, status));
+                .successModel(documentService.getByCycleContainingAndStatus(cycleId, statusValue));
     }
 
     @GetMapping(value = "/lifeCycle")
