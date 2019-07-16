@@ -24,16 +24,16 @@ public class SiteVisit /*extends BaseEntity<Long> */{
 
     private Boolean hasCurrentAssetsInspection;
 
+    private CurrentResident currentResident;
+
     private BusinessSiteVisit businessSiteVisit;
-
-    private AssetsInspection assetsInspection;
-
-    private ReceivablePayableAssetsInspection receivablePayableAssetsInspection;
 
     private FixedAssetsCollateral fixedAssetsCollateral;
 
-    private CurrentResident currentResident;
+    private AssetsInspection assetsInspection;
 
     private CurrentAssetsInspection currentAssetsInspection;
+
+    private ReceivablePayableAssetsInspection receivablePayableAssetsInspection;
 
 }

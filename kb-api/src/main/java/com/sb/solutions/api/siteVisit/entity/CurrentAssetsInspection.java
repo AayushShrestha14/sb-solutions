@@ -27,7 +27,7 @@ public class CurrentAssetsInspection {
 
     private Boolean storageConditionSatisfactory;
 
-    private Boolean firreFightingEvidence;
+    private Boolean fireFightingEvidence;
 
     private Boolean buildingStoreCondition;
 

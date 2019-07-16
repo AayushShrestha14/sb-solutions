@@ -13,6 +13,4 @@ public class ReceivableCurrentAssets {
 
     private double amount;
 
-    private double total;
-
 }

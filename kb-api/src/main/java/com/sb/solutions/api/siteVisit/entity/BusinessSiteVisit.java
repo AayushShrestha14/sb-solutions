@@ -24,13 +24,14 @@ public class BusinessSiteVisit {
 
     private String observation;
 
-    private String location;
-
     private String visitedBy;
 
     private String conclusion;
 
-    private String comments;
+    private String location;
 
     private String embedLocationLink;
+
+    private String comments;
+
 }

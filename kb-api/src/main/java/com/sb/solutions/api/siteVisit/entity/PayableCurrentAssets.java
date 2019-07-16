@@ -13,6 +13,4 @@ public class PayableCurrentAssets {
 
     private double amount;
 
-    private double total;
-
 }

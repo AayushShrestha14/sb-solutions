@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CurrentResident {
 
-    private String residentAddress;
-
     private String residentHouseNo;
 
     private String residentStreetName;
+
+    private String residentAddress;
 
     private String residentNearby;
 

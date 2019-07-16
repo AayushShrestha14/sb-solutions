@@ -21,18 +21,20 @@ public class ReceivablePayableAssetsInspection {
 
     private double moreThanOneYearTotal;
 
-    private String findingAndComments;
+    private String findingsAndCommentsForCurrentAssetsInspection;
 
     private List<ReceivableCurrentAssets> receivableCurrentAssetsList;
 
+    private Double receivableCurrentAssetsTotal;
+
     private List<PayableCurrentAssets> payableCurrentAssetsList;
 
-    private List<BankExposureAssets> bankExposureAssetsList;
+    private Double payableCurrentAssetsTotal;
 
     private List<InspectingStaff> inspectingStaffList;
 
-    private String overallFindingAndCommentsOfCAI;
+    private List<BankExposureAssets> bankExposureAssetsList;
 
-    private String findingsAndCommentsForCurrentAssetsInspection;
+    private String overallFindingAndCommentsOfCAI;
 
 }
