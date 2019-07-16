@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -119,13 +120,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public List<Map<String, Double>> proposedAmount() {
+    public List<PieChartDto> proposedAmount() {
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
         return customerLoanRepository.proposedAmount(branchAccess);
     }
 
     @Override
-    public List<Map<String, Double>> proposedAmountByBranch(Long branchId) {
+    public List<PieChartDto> proposedAmountByBranch(Long branchId) {
         return customerLoanRepository.proposedAmountByBranchId(branchId);
     }
 
