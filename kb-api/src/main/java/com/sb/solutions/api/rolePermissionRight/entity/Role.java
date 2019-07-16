@@ -6,14 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.RoleAccess;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.RoleAccess;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.
