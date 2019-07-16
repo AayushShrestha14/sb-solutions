@@ -20,7 +20,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "select b from Document b where b.name like concat(:name,'%')")
     Page<Document> documentFilter(@Param("name") String name, Pageable pageable);
 
-    List<Document> findByLoanCycleContainingAndStatus(LoanCycle loanCycleList, Status status);
+    List<Document> findByLoanCycleContainingAndStatus(LoanCycle loanCycle, Status status);
 
     int countByLoanCycle(LoanCycle loanCycle);
 

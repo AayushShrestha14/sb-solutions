@@ -94,9 +94,9 @@ public class DocumentController {
         return new RestResponseDto().successModel(documentService.findAll());
     }
 
-    @GetMapping(value = "/byStatus/{status}")
-    public ResponseEntity<?> getAllByStatus(@PathVariable String status) {
-        return new RestResponseDto().successModel(documentService.getByStatus(status));
+    @GetMapping(value = "/status/{statusValue}")
+    public ResponseEntity<?> getAllByStatus(@PathVariable String statusValue) {
+        return new RestResponseDto().successModel(documentService.getByStatus(statusValue));
     }
 
 }
