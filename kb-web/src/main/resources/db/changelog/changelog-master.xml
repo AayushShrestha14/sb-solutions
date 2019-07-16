@@ -1735,4 +1735,5 @@
     relativeToChangelogFile="true"/>
   <include file="20190707_alter_management_team.xml" relativeToChangelogFile="true"/>
   <include file="20191007_product_mode.xml" relativeToChangelogFile="true"/>
+  <include file="20190716_closure_document.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
