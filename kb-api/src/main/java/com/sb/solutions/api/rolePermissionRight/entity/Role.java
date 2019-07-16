@@ -6,15 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.
@@ -44,4 +43,7 @@ public class Role extends BaseEntity<Long> implements Serializable {
 
     @NotNull
     private RoleAccess roleAccess = RoleAccess.OWN;
+
+    @Transient
+    private int version;
 }
