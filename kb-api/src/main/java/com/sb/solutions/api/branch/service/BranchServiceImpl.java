@@ -127,4 +127,9 @@ public class BranchServiceImpl implements BranchService {
         }
         return branchRepository.getByIdNotIn(branches);
     }
+
+    @Override
+    public List<Branch> getBranchWithIdAndName() {
+        return branchRepository.getBranchesWithIdAndName();
+    }
 }

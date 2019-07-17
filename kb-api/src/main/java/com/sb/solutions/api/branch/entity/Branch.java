@@ -54,4 +54,11 @@ public class Branch extends BaseEntity<Long> implements Serializable {
 
     private String streetName;
     private String wardNumber;
+
+    public Branch(
+        @NotNull(message = "Id should not be null") Long id,
+        @NotNull(message = "Name should not be null") String name) {
+        super.setId(id);
+        this.name = name;
+    }
 }

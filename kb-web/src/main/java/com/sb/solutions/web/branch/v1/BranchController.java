@@ -90,5 +90,10 @@ public class BranchController {
         return new RestResponseDto().successModel(branchService.getBranchNoTAssignUser(id));
     }
 
+    @GetMapping(value = "/limited")
+    public ResponseEntity<?> getBranchWithLimitedInfo() {
+        return new RestResponseDto().successModel(branchService.getBranchWithIdAndName());
+    }
+
 
 }
