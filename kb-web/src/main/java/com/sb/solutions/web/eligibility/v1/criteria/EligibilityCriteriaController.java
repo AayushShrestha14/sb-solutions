@@ -40,7 +40,7 @@ public class EligibilityCriteriaController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @GetMapping
+    @GetMapping(value = "/all")
     public final ResponseEntity<?> getAllEligibilityCriteria(@RequestParam("page") int page,
         @RequestParam("size") int size) {
         logger.debug("REST request to get all the eligibility criteria.");
