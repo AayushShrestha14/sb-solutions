@@ -6,12 +6,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.service.AccountTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -40,10 +40,10 @@ public class AccountTypeController {
         return new RestResponseDto().successModel(accountTypeService.findAll());
     }
 
-    @PostMapping(value = "/byAccountPurpose")
+    @GetMapping(value = "/accountPurpose/{accountPurposeId}")
     public ResponseEntity<?> getAccountTypeBuAccountPurpose(
-        @RequestBody AccountPurpose accountPurpose) {
+        @PathVariable Long accountPurposeId) {
         return new RestResponseDto()
-            .successModel(accountTypeService.findAllByAccountPurpose(accountPurpose));
+            .successModel(accountTypeService.findAllByAccountPurposeId(accountPurposeId));
     }
 }

@@ -8,5 +8,5 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface AccountTypeService extends BaseService<AccountType> {
 
-    List<AccountType> findAllByAccountPurpose(AccountPurpose accountPurpose);
+    List<AccountType> findAllByAccountPurposeId(Long accountPurposeId);
 }
