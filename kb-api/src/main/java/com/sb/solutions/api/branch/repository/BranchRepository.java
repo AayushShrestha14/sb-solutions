@@ -36,6 +36,4 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
     @Query(value = "SELECT b FROM Branch b where b.id not in (:branchId)")
     List<Branch> getByIdNotIn(@Param("branchId") List<Long> branchId);
 
-    @Query(value = "select new com.sb.solutions.api.branch.entity.Branch(b.id, b.name) from Branch b")
-    List<Branch> getBranchesWithIdAndName();
 }
