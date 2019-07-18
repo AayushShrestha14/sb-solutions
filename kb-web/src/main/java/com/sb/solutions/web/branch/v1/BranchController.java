@@ -38,7 +38,7 @@ public class BranchController {
     public BranchController(
         @Autowired BranchService branchService,
         @Autowired BranchCustomerEndMapper branchCustomerEndMapper
-        ) {
+    ) {
         this.branchService = branchService;
         this.branchCustomerEndMapper = branchCustomerEndMapper;
     }
