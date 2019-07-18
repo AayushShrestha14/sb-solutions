@@ -1,5 +1,6 @@
 package com.sb.solutions.web.loanConfig.v1;
 
+import java.util.List;
 import javax.validation.Valid;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,8 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.eligibility.v1.loanconfig.dto.LoanConfigDto;
+import com.sb.solutions.web.eligibility.v1.loanconfig.mapper.EligibilityLoanConfigMapper;
 
 /**
  * @author Rujan Maharjan on 2/25/2019
@@ -31,8 +35,17 @@ public class LoanConfigController {
 
     private final Logger logger = LoggerFactory.getLogger(LoanConfigController.class);
 
-    @Autowired
-    LoanConfigService loanConfigService;
+    private LoanConfigService loanConfigService;
+
+    private EligibilityLoanConfigMapper eligibilityLoanConfigMapper;
+
+    public LoanConfigController(
+        @Autowired LoanConfigService loanConfigService,
+        @Autowired EligibilityLoanConfigMapper eligibilityLoanConfigMapper
+    ) {
+        this.loanConfigService = loanConfigService;
+        this.eligibilityLoanConfigMapper = eligibilityLoanConfigMapper;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveLoanConfiguration(@Valid @RequestBody LoanConfig config) {
@@ -78,6 +91,23 @@ public class LoanConfigController {
     @RequestMapping(method = RequestMethod.POST, path = "/status")
     public ResponseEntity<?> getLoanByStatus(@RequestBody Status status) {
         return new RestResponseDto().successModel(loanConfigService.getAllByStatus(status));
+    }
+
+    @GetMapping(value = "/all/eligibility")
+    public ResponseEntity<?> getLoanConfigsForEligibility() {
+        logger.debug("Request to get the Loan configs activated for eligibility.");
+        final List<LoanConfig> loanConfigs = loanConfigService
+            .getLoanConfigsActivatedForEligibility();
+        final List<LoanConfigDto> loanConfigDtoList = eligibilityLoanConfigMapper
+            .mapEntitiesToDtos(loanConfigs);
+        return new RestResponseDto().successModel(loanConfigDtoList);
+    }
+
+    @GetMapping(value = "/{loanConfigId}/eligibility")
+    public ResponseEntity<?> getLoanOneForEligibility(@PathVariable Long loanConfigId) {
+        final LoanConfigDto loanConfigDto = eligibilityLoanConfigMapper
+            .mapEntityToDto(loanConfigService.getLoanConfigActivatedForEligibility(loanConfigId));
+        return new RestResponseDto().successModel(loanConfigDto);
     }
 
 }

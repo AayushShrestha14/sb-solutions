@@ -40,8 +40,8 @@ public class EligibilityCriteriaController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @GetMapping
-    public final ResponseEntity<?> getAllEligibilityCriteria(@RequestParam("page") int page,
+    @GetMapping()
+    public final ResponseEntity<?> getPageableEligibilityCriteria(@RequestParam("page") int page,
         @RequestParam("size") int size) {
         logger.debug("REST request to get all the eligibility criteria.");
         final Page<EligibilityCriteria> eligibilityCriteria = eligibilityCriteriaService
@@ -86,7 +86,7 @@ public class EligibilityCriteriaController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public final ResponseEntity<?> deleteEligiblityCriteria(@PathVariable long id) {
+    public final ResponseEntity<?> deleteEligibilityCriteria(@PathVariable long id) {
         logger.debug("REST request to delete eligibility criteria.");
         eligibilityCriteriaService.delete(id);
         return new RestResponseDto().successModel("Successfully deleted.");

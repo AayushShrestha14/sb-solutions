@@ -23,4 +23,5 @@ public interface BranchService extends BaseService<Branch> {
     List<Branch> getAccessBranchByCurrentUser();
 
     List<Branch> getBranchNoTAssignUser(Long roleId);
+
 }
