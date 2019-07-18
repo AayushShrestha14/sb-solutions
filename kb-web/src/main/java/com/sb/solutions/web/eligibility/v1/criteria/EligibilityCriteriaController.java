@@ -86,7 +86,7 @@ public class EligibilityCriteriaController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public final ResponseEntity<?> deleteEligiblityCriteria(@PathVariable long id) {
+    public final ResponseEntity<?> deleteEligibilityCriteria(@PathVariable long id) {
         logger.debug("REST request to delete eligibility criteria.");
         eligibilityCriteriaService.delete(id);
         return new RestResponseDto().successModel("Successfully deleted.");

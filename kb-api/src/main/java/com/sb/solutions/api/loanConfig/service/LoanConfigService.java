@@ -16,5 +16,7 @@ public interface LoanConfigService extends BaseService<LoanConfig> {
 
     List<LoanConfig> getAllByStatus(Status status);
 
-    List<LoanConfig> getLoanConfigsActivatedForEligbility();
+    List<LoanConfig> getLoanConfigsActivatedForEligibility();
+
+    LoanConfig getLoanConfigActivatedForEligibility(Long loanConfigId);
 }
