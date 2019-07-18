@@ -40,6 +40,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .antMatchers("/v1/accountOpening").permitAll()
             .antMatchers("/v1/accountOpening/uploadFile").permitAll()
             .antMatchers(HttpMethod.GET, "/v1/loan-configs/all").permitAll()
+            .antMatchers("/v1/loan-configs/*").permitAll()
             .antMatchers("/v1/loan-configs/*/applicants").permitAll()
             .antMatchers("/v1/loan-configs/*/questions").permitAll()
             .antMatchers("/v1/loan-configs/*/applicants/*/documents").permitAll()
