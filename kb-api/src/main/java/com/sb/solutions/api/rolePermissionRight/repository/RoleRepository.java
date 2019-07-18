@@ -32,7 +32,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
         + " new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,"
         + " (SELECT u.username from User u where r.createdBy=u.id),"
         + " (SELECT u.username from User u where r.modifiedBy=u.id),"
-        + " r.roleType,r.roleAccess) from Role r")
+        + " r.roleType,r.roleAccess,r.version) from Role r")
     List<Role> findAll();
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Role c"
