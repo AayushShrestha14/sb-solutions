@@ -76,14 +76,14 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM "
-            + "CustomerLoan c GROUP BY c.loan.id, c.documentStatus")
-    List<StatisticDto> getLasStatistics();
+            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id, c.documentStatus")
+    List<StatisticDto> getLasStatistics(@Param("branchIds") List<Long> branchIds);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM "
-            + "CustomerLoan c GROUP BY c.loan.id, c.documentStatus")
-    List<StatisticDto> getDmsStatistics();
+            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id, c.documentStatus")
+    List<StatisticDto> getDmsStatistics(@Param("branchIds") List<Long> branchIds);
 
     @Modifying
     @Transactional

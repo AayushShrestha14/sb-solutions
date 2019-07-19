@@ -204,7 +204,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private List<StatisticDto> getDmsStatistics(Long branchId) {
         if (branchId == 0) {
-            return customerLoanRepository.getDmsStatistics();
+            List<Long> branches = userService.getRoleAccessFilterByBranch();
+            return customerLoanRepository.getDmsStatistics(branches);
         } else {
             return customerLoanRepository.getDmsStatisticsByBranchId(branchId);
         }
@@ -212,7 +213,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private List<StatisticDto> getLasStatistics(Long branchId) {
         if (branchId == 0) {
-            return customerLoanRepository.getLasStatistics();
+            List<Long> branches = userService.getRoleAccessFilterByBranch();
+            return customerLoanRepository.getLasStatistics(branches);
         } else {
             return customerLoanRepository.getLasStatisticsByBranchId(branchId);
         }
