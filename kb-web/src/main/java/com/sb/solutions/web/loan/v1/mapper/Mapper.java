@@ -140,7 +140,7 @@ public class Mapper {
     public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {
         final List<BarChartDto> charts = new ArrayList<>();
         Map<String, List<StatisticDto>> mappedStats =
-            statistics.stream().collect(Collectors.groupingBy(StatisticDto::getloanType));
+            statistics.stream().collect(Collectors.groupingBy(StatisticDto::getLoanType));
         for (Map.Entry<String, List<StatisticDto>> entry : mappedStats.entrySet()) {
             final BarChartDto barChart = new BarChartDto();
             barChart.setName(entry.getKey());

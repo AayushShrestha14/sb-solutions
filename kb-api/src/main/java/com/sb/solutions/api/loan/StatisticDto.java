@@ -1,12 +1,17 @@
 package com.sb.solutions.api.loan;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import com.sb.solutions.core.enums.DocStatus;
 
-public interface StatisticDto {
+@Data
+@AllArgsConstructor
+public class StatisticDto {
 
-    double getTotalAmount();
+    double totalAmount;
 
-    DocStatus getStatus();
+    DocStatus status;
 
-    String getloanType();
+    String loanType;
 }
