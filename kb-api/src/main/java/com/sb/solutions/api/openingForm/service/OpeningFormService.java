@@ -15,6 +15,4 @@ public interface OpeningFormService extends BaseService<OpeningForm> {
         String accountStatus);
 
     Map<Object, Object> getStatus(Long branchId);
-
-    OpeningForm updateOpeningCustomer(Long id, String status);
 }
