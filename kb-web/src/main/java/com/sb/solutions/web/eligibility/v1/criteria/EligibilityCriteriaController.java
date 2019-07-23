@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.expression.spel.SpelParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
 import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 import com.sb.solutions.core.utils.PaginationUtils;
 
 @RestController
@@ -40,7 +43,7 @@ public class EligibilityCriteriaController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @GetMapping()
+    @GetMapping
     public final ResponseEntity<?> getPageableEligibilityCriteria(@RequestParam("page") int page,
         @RequestParam("size") int size) {
         logger.debug("REST request to get all the eligibility criteria.");
@@ -64,6 +67,13 @@ public class EligibilityCriteriaController {
     public final ResponseEntity<?> saveEligibilityCriteria(
         @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to save the eligibility criteria.");
+        try {
+            String mockFormula = EligibilityUtility
+                .convertToMockFormula(eligibilityCriteria.getFormula());
+            ArithmeticExpressionUtils.parseExpression(mockFormula);
+        } catch (SpelParseException spelParseException) {
+            return new RestResponseDto().failureModel(spelParseException.toString());
+        }
         final EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaService
             .save(eligibilityCriteria);
         if (savedEligibilityCriteria == null) {
@@ -76,6 +86,13 @@ public class EligibilityCriteriaController {
     public final ResponseEntity<?> updateEligibilityCriteria(@PathVariable long id,
         @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to update the eligibility criteria.");
+        try {
+            String mockFormula = EligibilityUtility
+                .convertToMockFormula(eligibilityCriteria.getFormula());
+            ArithmeticExpressionUtils.parseExpression(mockFormula);
+        } catch (SpelParseException spelParseException) {
+            return new RestResponseDto().failureModel(spelParseException.toString());
+        }
         final EligibilityCriteria updatedEligibilityCriteria = eligibilityCriteriaService
             .update(eligibilityCriteria,
                 id);
