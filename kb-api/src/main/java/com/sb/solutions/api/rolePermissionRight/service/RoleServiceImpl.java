@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
-import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
@@ -60,9 +59,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Map<Object, Object>> activeRole() {
-        User u = userService.getAuthenticated();
-        Role r = u.getRole();
-        return roleRepository.activeRole(r.getId());
+        return roleRepository.activeRole();
     }
 
     @Override

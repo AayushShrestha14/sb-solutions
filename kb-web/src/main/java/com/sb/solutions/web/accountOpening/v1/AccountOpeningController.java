@@ -48,9 +48,9 @@ public class AccountOpeningController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody String status) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody OpeningForm openingForm) {
         return new RestResponseDto()
-            .successModel(openingFormService.updateOpeningCustomer(id, status));
+            .successModel(openingFormService.save(openingForm));
     }
 
     @GetMapping(value = "/statusCount")

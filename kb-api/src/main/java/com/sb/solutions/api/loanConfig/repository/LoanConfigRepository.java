@@ -29,4 +29,6 @@ public interface LoanConfigRepository extends JpaRepository<LoanConfig, Long> {
     List<LoanConfig> getByStatus(Status status);
 
     List<LoanConfig> findAllByEnableEligibility(boolean enableEligibility);
+
+    LoanConfig findLoanConfigByIdAndEnableEligibility(Long loanConfigId, Boolean enableEligibility);
 }

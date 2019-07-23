@@ -95,7 +95,7 @@ public class RoleAndPermissionDao {
         }
 
         Map<String, Object> map = new HashMap<>();
-        String query = "SELECT r.role_name from user u join role r on r.id = u.role_id"
+        String query = "SELECT r.role_name from users u join role r on r.id = u.role_id"
             + " where user_name = :username";
         map.put("username", username);
 
@@ -104,7 +104,7 @@ public class RoleAndPermissionDao {
 
     public Long getCurrentUserId(String username) {
         Map<String, Object> map = new HashMap<>();
-        String query = "SELECT id from user where user_name = :username";
+        String query = "SELECT id from users where user_name = :username";
         map.put("username", username);
         Long id = namedParameterJdbcTemplate.queryForObject(query, map, Long.class);
         return id;

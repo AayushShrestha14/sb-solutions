@@ -5,9 +5,10 @@ import javax.validation.Valid;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +25,17 @@ import com.sb.solutions.core.utils.PaginationUtils;
 
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/v1/document")
 public class DocumentController {
 
     private final DocumentService documentService;
     private final LoanCycleService loanCycleService;
+
+    public DocumentController(@Autowired DocumentService documentService,
+                              @Autowired LoanCycleService loanCycleService) {
+        this.documentService = documentService;
+        this.loanCycleService = loanCycleService;
+    }
 
     @PostMapping
     public ResponseEntity<?> addDocument(@Valid @RequestBody Document document) {
@@ -44,22 +50,23 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 
-    @PostMapping(value = "/byCycle")
-    public ResponseEntity<?> getByCycleNotContaining(@RequestBody LoanCycle loanCycleList) {
+    @GetMapping(value = "/cycle/{cycleId}/status/{statusValue}")
+    public ResponseEntity<?> getByCycleContaining(@PathVariable Long cycleId,
+                                                  @PathVariable String statusValue) {
         return new RestResponseDto()
-            .successModel(documentService.getByCycleNotContaining(loanCycleList));
+                .successModel(documentService.getByCycleContainingAndStatus(cycleId, statusValue));
     }
 
     @GetMapping(value = "/lifeCycle")
@@ -73,12 +80,12 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)")})
+            @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)")})
     @PostMapping(value = "/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,
-        @RequestParam("loanCycleId") long loanCycleId) {
-        LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
+                                      @RequestParam("loanCycleId") long loanCycleId) {
+        LoanCycle loanCycle = loanCycleService.findOne(Long.valueOf(loanCycleId));
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
 
@@ -86,4 +93,10 @@ public class DocumentController {
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(documentService.findAll());
     }
+
+    @GetMapping(value = "/status/{statusValue}")
+    public ResponseEntity<?> getAllByStatus(@PathVariable String statusValue) {
+        return new RestResponseDto().successModel(documentService.getByStatus(statusValue));
+    }
+
 }

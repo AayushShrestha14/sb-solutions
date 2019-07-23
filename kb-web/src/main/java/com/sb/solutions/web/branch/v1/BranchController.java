@@ -1,5 +1,6 @@
 package com.sb.solutions.web.branch.v1;
 
+import java.util.List;
 import javax.validation.Valid;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,6 +21,8 @@ import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.branch.v1.dto.BranchCustomerEndDto;
+import com.sb.solutions.web.branch.v1.mapper.BranchCustomerEndMapper;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -30,9 +33,14 @@ import com.sb.solutions.core.utils.PaginationUtils;
 public class BranchController {
 
     private final BranchService branchService;
+    private final BranchCustomerEndMapper branchCustomerEndMapper;
 
-    public BranchController(@Autowired BranchService branchService) {
+    public BranchController(
+        @Autowired BranchService branchService,
+        @Autowired BranchCustomerEndMapper branchCustomerEndMapper
+    ) {
         this.branchService = branchService;
+        this.branchCustomerEndMapper = branchCustomerEndMapper;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -88,6 +96,12 @@ public class BranchController {
     @GetMapping(value = "/{id}/unique")
     public ResponseEntity<?> getBranchNoTAssignUser(@PathVariable Long id) {
         return new RestResponseDto().successModel(branchService.getBranchNoTAssignUser(id));
+    }
+
+    @GetMapping(value = "/limited")
+    public ResponseEntity<?> getBranchWithLimitedInfo() {
+        List<BranchCustomerEndDto> branchDtoList = branchCustomerEndMapper.mapEntitiesToDtos(branchService.findAll());
+        return new RestResponseDto().successModel(branchDtoList);
     }
 
 
