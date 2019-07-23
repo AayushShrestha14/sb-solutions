@@ -1,14 +1,13 @@
 package com.sb.solutions.web;
 
-import java.io.File;
-import java.net.URL;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.io.File;
 
 /**
  * @author Rujan Maharjan on 7/12/2019
@@ -25,22 +24,37 @@ public final class InitialPatch {
     }
 
     public static void inital(String baseServerFolder, DataSource dataSource) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL url = loader.getResource(baseServerFolder.substring(1) + GENERALPATCHFOLDER);
-        String path = url.getPath();
+        ClassPathResource dataResource = new ClassPathResource(
+                baseServerFolder + GENERALPATCHFOLDER + File.separator + "location.sql");
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
 
-        File[] listOfFiles = new File(path).listFiles();
+        populator.execute(dataSource);
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + GENERALPATCHFOLDER + File.separator + listOfFiles[i]
-                        .getName());
-                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
-                logger.info("executing query {}", listOfFiles[i].getName());
-                populator.execute(dataSource);
-            }
-        }
+        logger.info("executing patch query {}", baseServerFolder);
+
+        ClassPathResource dataResource1 = new ClassPathResource(
+                baseServerFolder + GENERALPATCHFOLDER + File.separator + "account_type.sql");
+        ResourceDatabasePopulator populator1 = new ResourceDatabasePopulator(dataResource1);
+
+        populator1.execute(dataSource);
+
+        ClassPathResource dataResource2 = new ClassPathResource(
+                baseServerFolder + GENERALPATCHFOLDER + File.separator + "loan_cycle.sql");
+        ResourceDatabasePopulator populator2 = new ResourceDatabasePopulator(dataResource2);
+
+        populator2.execute(dataSource);
+
+        ClassPathResource dataResource3 = new ClassPathResource(
+                baseServerFolder + GENERALPATCHFOLDER + File.separator + "patch.sql");
+        ResourceDatabasePopulator populator3 = new ResourceDatabasePopulator(dataResource3);
+
+        populator3.execute(dataSource);
+
+
     }
 
 }
+
+
+
+
