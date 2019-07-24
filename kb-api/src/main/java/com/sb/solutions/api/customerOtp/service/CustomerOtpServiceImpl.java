@@ -35,9 +35,6 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
 
     @Override
     public CustomerOtp save(CustomerOtp customerOtp) {
-        DateManipulator dateManipulator = new DateManipulator(new Date());
-        customerOtp.setOtp(StringUtil.generateNumber(4));
-        customerOtp.setExpiry(dateManipulator.addMinutes(5));
         return repository.save(customerOtp);
     }
 
