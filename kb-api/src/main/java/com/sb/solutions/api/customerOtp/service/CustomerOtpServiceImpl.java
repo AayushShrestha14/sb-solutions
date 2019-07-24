@@ -1,5 +1,6 @@
 package com.sb.solutions.api.customerOtp.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.customerOtp.entity.CustomerOtp;
 import com.sb.solutions.api.customerOtp.repository.CustomerOtpRepository;
+import com.sb.solutions.core.utils.date.DateManipulator;
+import com.sb.solutions.core.utils.string.StringUtil;
 
 @Service
 public class CustomerOtpServiceImpl implements CustomerOtpService {
@@ -32,6 +35,9 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
 
     @Override
     public CustomerOtp save(CustomerOtp customerOtp) {
+        DateManipulator dateManipulator = new DateManipulator(new Date());
+        customerOtp.setOtp(StringUtil.generate(4));
+        customerOtp.setExpiry(dateManipulator.addMinutes(5));
         return repository.save(customerOtp);
     }
 

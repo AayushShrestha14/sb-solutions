@@ -8,13 +8,13 @@
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true"/>
       </column>
-      <column name="firstName" type="VARCHAR(256)">
+      <column name="first_name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="middleName" type="VARCHAR(256)">
+      <column name="middle_name" type="VARCHAR(256)">
         <constraints nullable="true"/>
       </column>
-      <column name="lastName" type="VARCHAR(256)">
+      <column name="last_name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
       <column name="email" type="VARCHAR(256)">
@@ -31,10 +31,13 @@
       </column>
     </createTable>
 
-
     <addUniqueConstraint
       columnNames="email"
       constraintName="customer_otp_unique_email"
+      tableName="customer_otp"/>
+    <addUniqueConstraint
+      columnNames="mobile"
+      constraintName="customer_otp_unique_mobile"
       tableName="customer_otp"/>
   </changeSet>
 </databaseChangeLog>
