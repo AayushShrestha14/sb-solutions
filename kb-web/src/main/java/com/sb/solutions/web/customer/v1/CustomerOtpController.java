@@ -11,7 +11,9 @@ import com.sb.solutions.api.customerOtp.entity.CustomerOtp;
 import com.sb.solutions.api.customerOtp.service.CustomerOtpService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.web.customer.v1.dto.CustomerOtpDto;
+import com.sb.solutions.web.customer.v1.dto.CustomerOtpTokenDto;
 import com.sb.solutions.web.customer.v1.mapper.CustomerOtpMapper;
+import com.sb.solutions.web.customer.v1.mapper.CustomerOtpTokenMapper;
 
 @RestController
 @RequestMapping("/v1/customer-otp")
@@ -19,13 +21,16 @@ public class CustomerOtpController {
 
     private final CustomerOtpService customerOtpService;
     private final CustomerOtpMapper customerOtpMapper;
+    private final CustomerOtpTokenMapper customerOtpTokenMapper;
 
     public CustomerOtpController(
         @Autowired CustomerOtpService customerOtpService,
-        @Autowired CustomerOtpMapper customerOtpMapper
+        @Autowired CustomerOtpMapper customerOtpMapper,
+        @Autowired CustomerOtpTokenMapper customerOtpTokenMapper
     ) {
         this.customerOtpService = customerOtpService;
         this.customerOtpMapper = customerOtpMapper;
+        this.customerOtpTokenMapper = customerOtpTokenMapper;
     }
 
     @PostMapping
@@ -36,7 +41,7 @@ public class CustomerOtpController {
     }
 
     @PostMapping(value = "/verify")
-    public ResponseEntity<?> verifyOTP(@RequestBody CustomerOtpDto customerOtpDto) {
+    public ResponseEntity<?> verifyOTP(@RequestBody CustomerOtpTokenDto customerOtpTokenDto) {
         return new RestResponseDto().successModel(null);
     }
 
