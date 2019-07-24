@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.core.constant.EmailConstant;
 import com.sb.solutions.core.exception.ServiceValidationException;
 
 @Service
@@ -33,6 +34,17 @@ public class MailThreadService {
         }).start();
     }
 
+    public void sendMain(EmailConstant.Template template, Email email) {
+        new Thread(() -> {
+            try {
+                mailSenderService.send(template, email);
+            } catch (Exception e) {
+                logger.error("error sending email", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public void testMail(Email email) {
 
         try {
@@ -44,5 +56,12 @@ public class MailThreadService {
             logger.error("error sending email", e.getLocalizedMessage());
             throw new ServiceValidationException(e.getLocalizedMessage());
         }
+    }
+
+    public void testMail(EmailConstant.Template template, Email email) {
+
+        mailSenderService.send(template, email);
+
+
     }
 }

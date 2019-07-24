@@ -169,13 +169,6 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         return openingFormRepository.openingFormStatusCount(branchId);
     }
 
-    @Override
-    public OpeningForm updateOpeningCustomer(Long id, String status) {
-        OpeningForm openingForm = openingFormRepository.getOne(id);
-        openingForm.setStatus(AccountStatus.valueOf(status));
-        return openingFormRepository.save(openingForm);
-    }
-
     public String writeJsonFile(String url, OpeningForm openingForm) {
         String jsonPath;
         Path path = Paths.get(FilePath.getOSPath() + url);
