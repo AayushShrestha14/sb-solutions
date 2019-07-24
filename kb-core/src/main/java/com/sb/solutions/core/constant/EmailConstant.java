@@ -1,8 +1,8 @@
 package com.sb.solutions.core.constant;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 
 /**
@@ -11,10 +11,10 @@ import java.util.Map;
 public final class EmailConstant {
 
     public static final Map<Template, String> MAIL = ImmutableMap.<Template, String>builder()
-            .put(Template.RESET_PASSWORD, "/mail/password-reset.html")
-            .put(Template.ELIGIBILITY_ELIGIBLE, "/mail/eligible.html")
-            .put(Template.ACCOUNT_OPENING_THANK_YOU, "/mail/account-opening-thank-you.html")
-            .build();
+        .put(Template.RESET_PASSWORD, "/mail/password-reset.html")
+        .put(Template.ELIGIBILITY_ELIGIBLE, "/mail/eligible.html")
+        .put(Template.ACCOUNT_OPENING_THANK_YOU, "/mail/account-opening-thank-you.html")
+        .build();
 
     private EmailConstant() {
     }
