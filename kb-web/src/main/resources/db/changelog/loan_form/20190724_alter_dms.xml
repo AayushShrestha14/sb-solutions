@@ -5,15 +5,6 @@
   <changeSet id="19-alter-customer-loan-proposal" author="rujan">
     <addColumn
       tableName="dms_loan_file">
-      <column name="fmv_land" type="DOUBLE"/>
-    </addColumn>
-    <addColumn
-      tableName="dms_loan_file">
-      <column name="fmv_building" type="DOUBLE"/>
-    </addColumn>
-
-    <addColumn
-      tableName="dms_loan_file">
       <column name="fmv_total" type="DOUBLE"/>
     </addColumn>
 
