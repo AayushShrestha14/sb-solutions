@@ -5,4 +5,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface CustomerOtpService extends BaseService<CustomerOtp> {
 
+    void delete(CustomerOtp customerOtp);
+
 }

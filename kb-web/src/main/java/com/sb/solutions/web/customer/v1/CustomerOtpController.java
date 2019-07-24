@@ -1,5 +1,7 @@
 package com.sb.solutions.web.customer.v1;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +44,15 @@ public class CustomerOtpController {
 
     @PostMapping(value = "/verify")
     public ResponseEntity<?> verifyOTP(@RequestBody CustomerOtpTokenDto customerOtpTokenDto) {
-        return new RestResponseDto().successModel(null);
+        CustomerOtp customerOtp = customerOtpService.findOne(customerOtpTokenDto.getId());
+        if (!customerOtp.getOtp().equals(customerOtpTokenDto.getOtp())) {
+            return new RestResponseDto().failureModel("Token didn't match");
+        } else if (customerOtp.getExpiry().before(new Date())) {
+            return new RestResponseDto().failureModel("OTP Expired.");
+        } else {
+            customerOtpService.delete(customerOtpTokenMapper.mapDtoToEntity(customerOtpTokenDto));
+            return new RestResponseDto().successModel("Access Granted");
+        }
     }
 
 }

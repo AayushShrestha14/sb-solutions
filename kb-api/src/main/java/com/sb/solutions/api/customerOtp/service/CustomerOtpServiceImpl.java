@@ -36,7 +36,7 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
     @Override
     public CustomerOtp save(CustomerOtp customerOtp) {
         DateManipulator dateManipulator = new DateManipulator(new Date());
-        customerOtp.setOtp(StringUtil.generate(4));
+        customerOtp.setOtp(StringUtil.generateNumber(4));
         customerOtp.setExpiry(dateManipulator.addMinutes(5));
         return repository.save(customerOtp);
     }
@@ -44,5 +44,10 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
     @Override
     public Page<CustomerOtp> findAllPageable(Object t, Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public void delete(CustomerOtp customerOtp) {
+        repository.delete(customerOtp);
     }
 }
