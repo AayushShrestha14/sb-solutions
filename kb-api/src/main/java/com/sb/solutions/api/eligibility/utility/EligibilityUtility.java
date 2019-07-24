@@ -8,24 +8,24 @@ import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
 
 public class EligibilityUtility {
 
-    public static final String convertToMockFormula(String formula) {
+    public static String convertToMockFormula(String formula) {
         char[] mockFormulaChar = formula.toCharArray();
         int i = -1;
         for (char ch : mockFormulaChar) {
             i++;
-            if (ch >= 'A' && ch <= 'Z') {
+            if (Character.isLetter(ch)) {
                 mockFormulaChar[i] = '2';
             }
         }
         return new String(mockFormulaChar);
     }
 
-    public static final Map<String, Long> extractOperands(String expression,
+    public static Map<String, Long> extractOperands(String expression,
         List<EligibilityQuestion> eligibilityQuestions) {
         final char[] characters = expression.toCharArray();
         final Map<String, Long> operands = new HashMap<>();
         for (char ch : characters) {
-            if (ch >= 'A' && ch <= 'Z') {
+            if (Character.isLetter(ch)) {
                 eligibilityQuestions.stream()
                     .filter(eligibilityQuestion -> eligibilityQuestion.getOperandCharacter()
                         .equals(String.valueOf(ch)))
