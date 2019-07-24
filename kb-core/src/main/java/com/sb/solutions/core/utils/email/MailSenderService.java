@@ -1,6 +1,24 @@
 package com.sb.solutions.core.utils.email;
 
-import com.sb.solutions.core.constant.EmailConstant;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -9,17 +27,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.activation.DataHandler;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import com.sb.solutions.core.constant.EmailConstant;
 
 @Service
 public class MailSenderService {
@@ -61,7 +69,7 @@ public class MailSenderService {
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(javaMailSender.getUsername(),
-                        javaMailSender.getPassword());
+                    javaMailSender.getPassword());
             }
         });
         MimeMessage message = new MimeMessage(session);
@@ -76,7 +84,7 @@ public class MailSenderService {
 
             for (String recipient : items) {
                 message.addRecipient(Message.RecipientType.CC, new InternetAddress(
-                        recipient));
+                    recipient));
             }
         }
 
@@ -99,7 +107,7 @@ public class MailSenderService {
         messageBodyPart = new MimeBodyPart();
 
         List<String> item =
-                email.getAttachment() == null ? new ArrayList<>() : email.getAttachment();
+            email.getAttachment() == null ? new ArrayList<>() : email.getAttachment();
 
         for (String attached : item) {
             if (attached != null) {
