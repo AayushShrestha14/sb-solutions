@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
+import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
@@ -43,6 +46,8 @@ import com.sb.solutions.core.utils.csv.CsvMaker;
  */
 @Service("userDetailService")
 public class UserServiceImpl implements UserService {
+
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final BaseHttpService baseHttpService;
     private final UserRepository userRepository;
@@ -259,5 +264,19 @@ public class UserServiceImpl implements UserService {
 
         }
         return u;
+    }
+
+    @Override
+    public List<PieChartDto> getStatisticsForBranchVsUsers() {
+        logger.debug("Request to retrieve statistics of branch with respect to users.");
+        List<PieChartDto> pieChartDatas = userRepository.getStatisticsBasedOnBranch();
+        return pieChartDatas;
+    }
+
+    @Override
+    public List<PieChartDto> getStatisticsForRolesVsUsers() {
+        logger.debug("Request to retrieve statistics of roles with respect to users.");
+        List<PieChartDto> pieChartDatas = userRepository.getStatisticsBasedOnRoles();
+        return pieChartDatas;
     }
 }

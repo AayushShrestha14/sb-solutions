@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
@@ -57,6 +58,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             + " r.id = :id\n"
             + " AND a.type is not null;", nativeQuery = true)
     List<Object> userApiAuthorities(@Param("id") Long id);
+
+    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(b.name, COUNT(u)) FROM User u JOIN"
+        + " u.branch b WHERE u.role.roleAccess = com.sb.solutions.core.enums.RoleAccess.OWN "
+        + "GROUP BY b.id")
+    List<PieChartDto> getStatisticsBasedOnBranch();
+
+    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(u.role.roleName, COUNT(u)) FROM User"
+        + " u GROUP BY u.role.id")
+    List<PieChartDto> getStatisticsBasedOnRoles();
 
 }
 
