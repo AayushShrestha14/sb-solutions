@@ -79,7 +79,9 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 }
 
             case FILTER_BY_TO_USER:
-                return null;
+                return criteriaBuilder
+                        .equal(root.join("currentStage", JoinType.LEFT).join("toUser").get("id"),
+                                Long.valueOf(value));
 
             default:
                 return null;

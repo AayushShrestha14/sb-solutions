@@ -1,9 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -139,7 +136,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
+       final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -193,6 +190,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         return statistics;
     }
+
+    @Override
+    public  Map<String,String> chkUserContainCustomerLoan(Long id) {
+        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id);
+        Map<String,String> map = new HashMap<>();
+        map.put("count",String.valueOf(count));
+        map.put("status", count == 0 ? "false":"true");
+        return map;
+    }
+
 
     private ProductMode findActiveProductMode() {
         ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
