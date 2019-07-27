@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       use-new-id-generator-mappings: false
     properties:
       hibernate:
@@ -23,7 +23,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cp_master?useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
-    password: root
+    password:
 
   mail:
     username: sbsolutionstest@gmail.com
@@ -33,8 +33,8 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-master.xml
+#  liquibase:
+#    change-log: classpath:/db/changelog/changelog-master.xml
 
 logging:
   level:
