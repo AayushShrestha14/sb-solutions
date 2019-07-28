@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+
+
+<div style="border:50px solid floralwhite;">
+  <div style="background-color:floralwhite;
+        padding: 10px 50px 10px 10px;">
+    <img alt="BankLogo" src="">
+  </div>
+  <div>
+    <h3>Hello <span th:text="${data.getTo()}"></span>,</h3>
+    <p>Your One Time Password is <b><span th:text="${data.getBody()}"></span></b></p>
+    <p>Use this token to verify yourself.</p>
+    <hr>
+    <p>This token will expire in 5 minutes.</p>
+    <p>
+      Regards, <br/>
+      <em>Bank Name</em>
+    </p>
+  </div>
+  <div style="background-color:floralwhite; padding: 40px;">
+    Note: Please do not reply to this email, as this is an automated email and any email sent to
+    this email will not be answered.
+  </div>
+
+
+</div>
+
+</body>
+</html>
