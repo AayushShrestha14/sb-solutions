@@ -34,7 +34,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .permitAll()
             .antMatchers("/v1/user/resetPassword/")
             .permitAll()
-            .antMatchers("/v1/user/forgetPassword").permitAll()
+            .antMatchers("/v1/user/forgotPassword").permitAll()
             .antMatchers("/v1/branch/limited").permitAll()
             .antMatchers(HttpMethod.POST, "/v1/customer-otp").permitAll()
             .antMatchers(HttpMethod.POST, "/v1/customer-otp/verify").permitAll()
