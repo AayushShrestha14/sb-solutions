@@ -16,5 +16,7 @@ public class Email {
     private List<String> attachment;
     private String subject;
     private String to;
+    private String toName;
+    private String from;
 
 }

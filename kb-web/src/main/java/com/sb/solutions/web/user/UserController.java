@@ -27,6 +27,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.email.template.ResetPassword;
@@ -147,12 +148,8 @@ public class UserController {
             user.setModifiedBy(user.getId());
             user.setResetPasswordToken(resetToken);
 
-            Date expiry = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(expiry);
-            c.add(Calendar.DATE, 1);
-            expiry = c.getTime();
-            user.setResetPasswordTokenExpiry(expiry);
+            DateManipulator dateManipulator = new DateManipulator(new Date());
+            user.setResetPasswordTokenExpiry(dateManipulator.addDays(1));
             User savedUser = userService.save(user);
 
             // mailing
