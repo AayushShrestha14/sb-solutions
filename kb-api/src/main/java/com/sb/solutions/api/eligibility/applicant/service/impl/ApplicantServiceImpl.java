@@ -31,6 +31,7 @@ import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentServi
 import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 
 
 @Service
@@ -95,13 +96,12 @@ public class ApplicantServiceImpl implements ApplicantService {
                 }
             }
         }
-        double remainingAmount = EligibilityUtility.evaluateExpression(formula);
+        double remainingAmount = ArithmeticExpressionUtils.parseExpression(formula); // new Expression
         if (remainingAmount <= 0) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
-        double annualAmount = remainingAmount * 12;
-        double eligibleAmount = (annualAmount * eligibilityCriteria.getPercentageOfAmount()) / 100;
+        double eligibleAmount = remainingAmount * eligibilityCriteria.getPercentageOfAmount()/100D;
         if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
