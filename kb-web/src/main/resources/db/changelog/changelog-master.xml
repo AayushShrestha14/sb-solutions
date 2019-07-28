@@ -1736,5 +1736,6 @@
   <include file="20190707_alter_management_team.xml" relativeToChangelogFile="true"/>
   <include file="20191007_product_mode.xml" relativeToChangelogFile="true"/>
   <include file="20190716_closure_document.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190724_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="20190724_customer_otp.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
