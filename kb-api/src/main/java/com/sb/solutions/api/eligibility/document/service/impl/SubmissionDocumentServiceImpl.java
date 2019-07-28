@@ -39,9 +39,8 @@ public class SubmissionDocumentServiceImpl implements SubmissionDocumentService 
     @Override
     public SubmissionDocument save(SubmissionDocument submissionDocument) {
         logger.debug("Saving the submission document [{}].", submissionDocument);
-        final SubmissionDocument savedDocument = submissionDocumentRepository
+        return submissionDocumentRepository
             .save(submissionDocument);
-        return savedDocument;
     }
 
     @Override

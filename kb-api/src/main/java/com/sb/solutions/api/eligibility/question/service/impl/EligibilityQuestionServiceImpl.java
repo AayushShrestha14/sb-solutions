@@ -39,8 +39,7 @@ public class EligibilityQuestionServiceImpl implements EligibilityQuestionServic
     @Override
     public EligibilityQuestion save(EligibilityQuestion eligibilityQuestion) {
         logger.debug("Saving the eligibility question to the database.");
-        eligibilityQuestion = eligibilityQuestionRepository.save(eligibilityQuestion);
-        return eligibilityQuestion;
+        return eligibilityQuestionRepository.save(eligibilityQuestion);
     }
 
     @Override
