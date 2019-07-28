@@ -12,14 +12,14 @@
     <img alt="BankLogo" src="">
   </div>
   <div>
-    <h3>Hello <span th:text="${data.getTo()}"></span>,</h3>
+    <h3>Hello <span th:text="${data.getToName()}"></span>,</h3>
     <p>Your One Time Password is <b><span th:text="${data.getBody()}"></span></b></p>
     <p>Use this token to verify yourself.</p>
-    <hr>
     <p>This token will expire in 5 minutes.</p>
+    <hr>
     <p>
       Regards, <br/>
-      <em>Bank Name</em>
+      <em><span th:text="${data.getFrom()}"></span></em>
     </p>
   </div>
   <div style="background-color:floralwhite; padding: 40px;">

@@ -55,3 +55,6 @@ management:
 
 file:
   upload-directory: C:/
+
+bank:
+  name: Mahalaxmi Bank

@@ -3,6 +3,7 @@ package com.sb.solutions.web.customer.v1;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.customerOtp.entity.CustomerOtp;
 import com.sb.solutions.api.customerOtp.service.CustomerOtpService;
+import com.sb.solutions.core.constant.EmailConstant;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.date.DateManipulator;
@@ -30,6 +32,9 @@ public class CustomerOtpController {
     private final CustomerOtpMapper customerOtpMapper;
     private final CustomerOtpTokenMapper customerOtpTokenMapper;
     private final MailSenderService mailSenderService;
+
+    @Value("${bank.name}")
+    private String bankName;
 
     public CustomerOtpController(
         @Autowired CustomerOtpService customerOtpService,
@@ -81,6 +86,8 @@ public class CustomerOtpController {
     private void sendOtpMail(CustomerOtpDto customerOtpDto, String otp) {
         Email email = new Email();
         email.setTo(customerOtpDto.getEmail());
+        email.setToName(customerOtpDto.getFirstName() + ' ' + customerOtpDto.getLastName());
+        email.setFrom(this.bankName);
         email.setBody(otp);
         mailSenderService.send(Template.ONE_TIME_PASSWORD, email);
     }
