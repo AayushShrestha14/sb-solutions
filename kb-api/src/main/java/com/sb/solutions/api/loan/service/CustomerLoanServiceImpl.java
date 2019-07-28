@@ -1,17 +1,5 @@
 package com.sb.solutions.api.loan.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -22,12 +10,19 @@ import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -36,14 +31,14 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
     private final ProductModeService productModeService;
-    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-        @Autowired UserService userService,
-        ProductModeService productModeService) {
+                                   @Autowired UserService userService,
+                                   ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -84,7 +79,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticated();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -112,8 +107,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
         return customerLoanRepository
-            .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
-                u.getRole().getId(), u.getBranch().get(0).getId());
+                .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
+                        u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
@@ -130,16 +125,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
         return customerLoanRepository
-            .getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber,
-                citizenshipNumber);
+                .getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(citizenshipNumber,
+                        citizenshipNumber);
     }
 
     @Override
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
-       final ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -163,7 +158,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         User u = userService.getAuthenticated();
         if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
             customerLoanRepository
-                .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
+                    .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
             if (!customerLoanRepository.findById(id).isPresent()) {
                 return new CustomerLoan();
             } else {
@@ -192,11 +187,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public  Map<String,String> chkUserContainCustomerLoan(Long id) {
+    public Map<String, String> chkUserContainCustomerLoan(Long id) {
         Integer count = customerLoanRepository.chkUserContainCustomerLoan(id);
-        Map<String,String> map = new HashMap<>();
-        map.put("count",String.valueOf(count));
-        map.put("status", count == 0 ? "false":"true");
+        Map<String, String> map = new HashMap<>();
+        map.put("count", String.valueOf(count));
+        map.put("status", count == 0 ? "false" : "true");
         return map;
     }
 
