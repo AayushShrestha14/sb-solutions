@@ -113,19 +113,15 @@ public class FileUploadUtils {
             if (type.equals("citizen")) {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
                     .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-                ;
             } else if (type.equals("passport")) {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
                     .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-                ;
             } else if (type.equals("id")) {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
                     .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-                ;
             } else if (type.equals("photo")) {
                 imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
                     .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-                ;
             } else {
                 return new RestResponseDto().failureModel("wrong file type");
             }
