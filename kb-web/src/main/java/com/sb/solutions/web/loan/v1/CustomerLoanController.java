@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.api.loan.entity.TempCustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -152,10 +151,4 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.chkUserContainCustomerLoan(id));
     }
 
-
-    @PostMapping(path = "/renew-loan")
-    public ResponseEntity<?> renewCloseLoan(@RequestBody TempCustomerLoan customerLoan) {
-        logger.debug("REST request to get the check data about the user.");
-        return new RestResponseDto().successModel(service.renewCloseLoan(customerLoan));
-    }
 }

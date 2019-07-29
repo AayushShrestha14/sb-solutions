@@ -5,4 +5,4 @@ INSERT INTO `product_mode` (`id`, `product`,`status`,`description`)
   ('2', '1',0,'MEMO'),
   ('3', '2',0,'ACCOUNT'),
   ('4', '3',1,'ELIGIBILITY'),
-  ('5', '4',1,'LAS');
+  ('5', '4',0,'LAS');

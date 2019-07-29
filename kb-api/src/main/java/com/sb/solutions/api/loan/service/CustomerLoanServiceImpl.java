@@ -20,9 +20,7 @@ import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.api.loan.entity.TempCustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.loan.repository.TempCustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
@@ -42,18 +40,15 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
     private final CustomerLoanRepository customerLoanRepository;
-    private final TempCustomerLoanRepository tempCustomerLoanRepository;
     private final UserService userService;
     private final ProductModeService productModeService;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-        @Autowired TempCustomerLoanRepository tempCustomerLoanRepository,
         @Autowired UserService userService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
-        this.tempCustomerLoanRepository = tempCustomerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
     }
@@ -210,21 +205,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return map;
     }
 
-    @Override
-    public TempCustomerLoan renewCloseLoan(TempCustomerLoan tempCustomerLoan) {
-        tempCustomerLoan.setId(null);
-        tempCustomerLoan.setDocumentStatus(DocStatus.PENDING);
-        tempCustomerLoan.setPreviousStageList(null);
-        LoanStage stage = new LoanStage();
-        stage.setToRole(userService.getAuthenticated().getRole());
-        stage.setFromRole(userService.getAuthenticated().getRole());
-        stage.setFromUser(userService.getAuthenticated());
-        stage.setToUser(userService.getAuthenticated());
-        stage.setComment(DocAction.DRAFT.name());
-        stage.setDocAction(DocAction.DRAFT);
-        tempCustomerLoan.setCurrentStage(stage);
-        return tempCustomerLoanRepository.save(tempCustomerLoan);
-    }
+
 
 
     private ProductMode findActiveProductMode() {
