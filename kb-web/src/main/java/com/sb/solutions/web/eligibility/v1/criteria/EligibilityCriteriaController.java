@@ -1,11 +1,11 @@
 package com.sb.solutions.web.eligibility.v1.criteria;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.expression.spel.SpelParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.eligibility.criteria.entity.EligibilityCriteria;
 import com.sb.solutions.api.eligibility.criteria.service.EligibilityCriteriaService;
+import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 import com.sb.solutions.core.utils.PaginationUtils;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 
 @RestController
 @RequestMapping(EligibilityCriteriaController.URL)
@@ -40,7 +44,7 @@ public class EligibilityCriteriaController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @GetMapping()
+    @GetMapping
     public final ResponseEntity<?> getPageableEligibilityCriteria(@RequestParam("page") int page,
         @RequestParam("size") int size) {
         logger.debug("REST request to get all the eligibility criteria.");
@@ -64,25 +68,52 @@ public class EligibilityCriteriaController {
     public final ResponseEntity<?> saveEligibilityCriteria(
         @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to save the eligibility criteria.");
-        final EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaService
-            .save(eligibilityCriteria);
-        if (savedEligibilityCriteria == null) {
-            return new RestResponseDto().failureModel("Oops something went wrong.");
+        try {
+            String mockFormula = EligibilityUtility
+                .convertToMockFormula(eligibilityCriteria.getFormula());
+            ArithmeticExpressionUtils.parseExpression(mockFormula);
+            final EligibilityCriteria savedEligibilityCriteria = eligibilityCriteriaService
+                .save(eligibilityCriteria);
+            if (savedEligibilityCriteria == null) {
+                return new RestResponseDto().failureModel("Oops something went wrong.");
+            } else {
+                return new RestResponseDto().successModel(savedEligibilityCriteria);
+            }
+        } catch (SpelParseException spelParseException) {
+            return new RestResponseDto().failureModel(spelParseException.toString());
         }
-        return new RestResponseDto().successModel(savedEligibilityCriteria);
+
     }
 
     @PutMapping(path = "/{id}")
     public final ResponseEntity<?> updateEligibilityCriteria(@PathVariable long id,
         @RequestBody EligibilityCriteria eligibilityCriteria) {
         logger.debug("REST request to update the eligibility criteria.");
-        final EligibilityCriteria updatedEligibilityCriteria = eligibilityCriteriaService
-            .update(eligibilityCriteria,
-                id);
-        if (updatedEligibilityCriteria == null) {
-            return new RestResponseDto().failureModel("Oops something went wrong");
+        String message = "";
+        try {
+            String mockFormula = EligibilityUtility
+                .convertToMockFormula(eligibilityCriteria.getFormula());
+            ArithmeticExpressionUtils.parseExpression(mockFormula);
+        } catch (SpelParseException spelParseException) {
+            message = "Some wrong with expression you entered. Please verify.";
         }
-        return new RestResponseDto().successModel(updatedEligibilityCriteria);
+        EligibilityCriteria updatedEligibilityCriteria = null;
+        if (StringUtils.isEmpty(message)) {
+            updatedEligibilityCriteria = eligibilityCriteriaService
+                .update(eligibilityCriteria,
+                    id);
+            if (updatedEligibilityCriteria == null) {
+                message = "Failed to update Eligibility Criteria.";
+            }
+
+        }
+        if (StringUtils.isEmpty(message)) {
+            return new RestResponseDto().successModel(updatedEligibilityCriteria);
+        }
+
+        return new RestResponseDto().failureModel(message);
+
+
     }
 
     @DeleteMapping(path = "/{id}")
