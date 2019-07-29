@@ -96,12 +96,14 @@ public class ApplicantServiceImpl implements ApplicantService {
                 }
             }
         }
-        double remainingAmount = ArithmeticExpressionUtils.parseExpression(formula); // new Expression
+        double remainingAmount = ArithmeticExpressionUtils
+            .parseExpression(formula); // new Expression
         if (remainingAmount <= 0) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
-        double eligibleAmount = remainingAmount * eligibilityCriteria.getPercentageOfAmount()/100D;
+        double eligibleAmount =
+            remainingAmount * eligibilityCriteria.getPercentageOfAmount() / 100D;
         if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
@@ -123,7 +125,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.debug("Retrieving a page of applicant list.");
         ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(String.valueOf(t) + ",");
+        Matcher matcher = pattern.matcher(t + ",");
         while (matcher.find()) {
             applicantSpecificationBuilder
                 .with(matcher.group(1), matcher.group(3), matcher.group(2));

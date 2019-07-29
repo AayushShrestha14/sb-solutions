@@ -256,7 +256,7 @@
     method (ignoring the equals() method):
     -->
     <module name="ReturnCount">
-      <property name="max" value="3"/>
+      <property name="max" value="10"/>
     </module>
   </module>
 </module>
