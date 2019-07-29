@@ -144,4 +144,11 @@ public class CustomerLoanController {
         logger.debug("REST request to get the statistical data about the loans.");
         return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId)));
     }
+
+    @GetMapping(path = "/check-user-customer-loan/{id}")
+    public ResponseEntity<?> chkUserContainCustomerLoan(@PathVariable Long id) {
+        logger.debug("REST request to get the check data about the user.");
+        return new RestResponseDto().successModel(service.chkUserContainCustomerLoan(id));
+    }
+
 }

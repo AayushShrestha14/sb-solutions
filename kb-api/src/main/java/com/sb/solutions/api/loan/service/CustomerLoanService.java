@@ -36,4 +36,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     List<StatisticDto> getStats(Long branchId);
 
+    Map<String, String> chkUserContainCustomerLoan(Long id);
+
+
 }
