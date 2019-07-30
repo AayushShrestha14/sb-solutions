@@ -1,12 +1,9 @@
 package com.sb.solutions.web.accountOpening.v1;
 
-import java.util.Set;
 import javax.validation.Valid;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
@@ -65,12 +63,12 @@ public class AccountOpeningController {
         } else {
             logger.debug("Account Opening Request Saved");
             Email email = new Email();
+            email.setBankName(this.bankName);
+            email.setBankWebsite(this.bankWebsite);
+            email.setBankBranch(c.getBranch().getName());
             for (OpeningCustomer customer : c.getOpeningAccount().getOpeningCustomers()) {
                 email.setTo(customer.getEmail());
                 email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
-                email.setBankName(this.bankName);
-                email.setBankWebsite(this.bankWebsite);
-                email.setBankBranch(c.getBranch().getName());
                 mailSenderService.send(Template.ACCOUNT_OPENING_THANK_YOU, email);
             }
             logger.debug("Email sent for Account Opening Request");
@@ -85,8 +83,29 @@ public class AccountOpeningController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody OpeningForm openingForm) {
-        return new RestResponseDto()
-            .successModel(openingFormService.save(openingForm));
+        OpeningForm oldOpeningForm = openingFormService.findOne(id);
+        AccountStatus previousStatus = oldOpeningForm.getStatus();
+        OpeningForm newOpeningForm = openingFormService.save(openingForm);
+        if (newOpeningForm == null) {
+            return new RestResponseDto().failureModel("Couldn't update customer");
+        } else {
+            if (!previousStatus.equals(newOpeningForm.getStatus())) {
+                Email email = new Email();
+                email.setBankName(this.bankName);
+                email.setBankWebsite(this.bankWebsite);
+                email.setBankBranch(newOpeningForm.getBranch().getName());
+                email.setAccountType(newOpeningForm.getAccountType().getName());
+                for (OpeningCustomer customer : newOpeningForm.getOpeningAccount()
+                    .getOpeningCustomers()) {
+                    email.setTo(customer.getEmail());
+                    email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
+                    if (newOpeningForm.getStatus().equals(AccountStatus.APPROVAL)) {
+                        mailSenderService.send(Template.ACCOUNT_OPENING_ACCEPT, email);
+                    }
+                }
+            }
+            return new RestResponseDto().successModel(newOpeningForm);
+        }
     }
 
     @GetMapping(value = "/statusCount")

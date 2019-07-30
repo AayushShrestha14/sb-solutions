@@ -20,5 +20,6 @@ public class Email {
     private String bankName;
     private String bankBranch;
     private String bankWebsite;
+    private String accountType;
 
 }
