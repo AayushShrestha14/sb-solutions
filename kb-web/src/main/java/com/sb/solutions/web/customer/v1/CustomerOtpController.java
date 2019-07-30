@@ -57,7 +57,7 @@ public class CustomerOtpController {
         saveCustomerOtp.setOtp(StringUtil.generateNumber(4));
         saveCustomerOtp.setExpiry(dateManipulator.addMinutes(5));
         final CustomerOtp customerOtp = customerOtpService.save(saveCustomerOtp);
-        logger.info("One Time Password (OTP) generated.");
+        logger.debug("One Time Password (OTP) generated. {}", saveCustomerOtp);
         sendOtpMail(customerOtpDto, customerOtp.getOtp());
         return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(customerOtp));
     }
@@ -84,7 +84,7 @@ public class CustomerOtpController {
         updateOtp.setOtp(StringUtil.generateNumber(4));
         updateOtp.setExpiry(dateManipulator.addMinutes(5));
         final CustomerOtp customerOtp = customerOtpService.save(updateOtp);
-        logger.debug("One Time Password (OTP) regenerated");
+        logger.debug("One Time Password (OTP) regenerated {}", updateOtp);
         sendOtpMail(customerOtpDto, customerOtp.getOtp());
         return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(customerOtp));
     }
