@@ -1,6 +1,7 @@
 package com.sb.solutions.api.userNotification.entity;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,4 +26,5 @@ public class Message {
     private Long loanConfigId;
     private String message;
     private String senderName;
+    private Status status;
 }
