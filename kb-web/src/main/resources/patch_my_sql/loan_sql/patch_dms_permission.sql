@@ -82,12 +82,12 @@ INSERT IGNORE INTO url_api (id, api_url, type)
 values (41, '/v1/user/get/statusCount', 'USER COUNT');
 INSERT IGNORE INTO url_api (id, api_url, type)
 values (42, '/v1/branch/get/statusCount', 'BRANCH COUNT');
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (43, '/v1/sector/get/statusCount', 'SECTOR COUNT');
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (44, '/v1/segment/get/statusCount', 'SEGMENT COUNT');
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (45,'/v1/notification', 'NOTIFICATION');
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (43, '/v1/sector/get/statusCount', 'SECTOR COUNT');
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (44, '/v1/segment/get/statusCount', 'SEGMENT COUNT');
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (45,'/v1/notification', 'NOTIFICATION');
 INSERT IGNORE INTO url_api(id, api_url, type)
 values (46,'/v1/pending','PENDING');
 
@@ -95,16 +95,16 @@ values (46,'/v1/pending','PENDING');
 
 INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
 values (17, 40);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 41);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 42);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 43);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 44);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 45);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 41);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 42);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 43);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 44);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 45);
 INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
 values (17, 46);
 
