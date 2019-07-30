@@ -2,6 +2,8 @@ package com.sb.solutions.web.customer.v1;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ public class CustomerOtpController {
     private final CustomerOtpMapper customerOtpMapper;
     private final CustomerOtpTokenMapper customerOtpTokenMapper;
     private final MailSenderService mailSenderService;
+    private final Logger logger = LoggerFactory.getLogger(CustomerOtpController.class);
 
     @Value("${bank.name}")
     private String bankName;
@@ -54,6 +57,7 @@ public class CustomerOtpController {
         saveCustomerOtp.setOtp(StringUtil.generateNumber(4));
         saveCustomerOtp.setExpiry(dateManipulator.addMinutes(5));
         final CustomerOtp customerOtp = customerOtpService.save(saveCustomerOtp);
+        logger.info("One Time Password (OTP) generated.");
         sendOtpMail(customerOtpDto, customerOtp.getOtp());
         return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(customerOtp));
     }
@@ -62,8 +66,10 @@ public class CustomerOtpController {
     public ResponseEntity<?> verifyOTP(@RequestBody CustomerOtpTokenDto customerOtpTokenDto) {
         CustomerOtp customerOtp = customerOtpService.findOne(customerOtpTokenDto.getId());
         if (!customerOtp.getOtp().equals(customerOtpTokenDto.getOtp())) {
+            logger.debug("OTP Token didn't match");
             return new RestResponseDto().failureModel("Token didn't match");
         } else if (customerOtp.getExpiry().before(new Date())) {
+            logger.debug("OTP Token expired");
             return new RestResponseDto().failureModel("One Time Password has expired.");
         } else {
             customerOtpService.delete(customerOtpTokenMapper.mapDtoToEntity(customerOtpTokenDto));
@@ -78,6 +84,7 @@ public class CustomerOtpController {
         updateOtp.setOtp(StringUtil.generateNumber(4));
         updateOtp.setExpiry(dateManipulator.addMinutes(5));
         final CustomerOtp customerOtp = customerOtpService.save(updateOtp);
+        logger.debug("One Time Password (OTP) regenerated");
         sendOtpMail(customerOtpDto, customerOtp.getOtp());
         return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(customerOtp));
     }
@@ -89,6 +96,7 @@ public class CustomerOtpController {
         email.setBankName(this.bankName);
         email.setBody(otp);
         mailSenderService.send(Template.ONE_TIME_PASSWORD, email);
+        logger.debug("Email sent including One Time Password (OTP).");
     }
 
 }

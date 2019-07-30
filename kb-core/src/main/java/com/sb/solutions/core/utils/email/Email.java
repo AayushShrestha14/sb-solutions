@@ -18,5 +18,7 @@ public class Email {
     private String to;
     private String toName;
     private String bankName;
+    private String bankBranch;
+    private String bankWebsite;
 
 }
