@@ -61,7 +61,7 @@ public class CustomerLoan extends BaseEntity<Long> {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private EntityInfo entityInfo;
 
-    private LoanType loanType;
+    private LoanType loanType = LoanType.NEW_LOAN;
 
     private DocStatus documentStatus = DocStatus.PENDING;
 

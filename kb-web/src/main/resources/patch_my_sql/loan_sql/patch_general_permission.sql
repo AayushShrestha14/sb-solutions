@@ -74,26 +74,26 @@ INSERT IGNORE INTO permission_api_list(permission_id, api_list_id) values (6,30)
 
 
 
--- ************************DASHBOARD******************************************
+-- -- ************************DASHBOARD******************************************
 INSERT IGNORE INTO url_api (id, api_url, type)
 values (41, '/v1/user/get/statusCount', 'USER COUNT');
 INSERT IGNORE INTO url_api (id, api_url, type)
 values (42, '/v1/branch/get/statusCount', 'BRANCH COUNT');
-
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (45,'/v1/notification', 'NOTIFICATION');
-
-
-
-
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 41);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 42);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 45);
-
--- ************************DASHBOARD******************************************
+--
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (45,'/v1/notification', 'NOTIFICATION');
+--
+--
+--
+--
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 41);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 42);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 45);
+--
+-- -- ************************DASHBOARD******************************************
 
 
 
@@ -107,10 +107,10 @@ INSERT IGNORE INTO role_permission_rights_api_rights values (1,4);
 -- ************************BRANCH MAP*******************************************
 
 -- ************************COUNTVIEW*******************************************
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 41);
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 42);
-
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 45);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 41);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 42);
+--
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 45);
 
 -- ************************COUNTVIEW*******************************************
 
