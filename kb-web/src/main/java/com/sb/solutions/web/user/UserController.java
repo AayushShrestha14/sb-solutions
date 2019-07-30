@@ -168,9 +168,9 @@ public class UserController {
                     email.setTo(updatedUser.getEmail());
                     email.setToName(updatedUser.getName());
                     email.setBankName(this.bankName);
+                    mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
                     return new RestResponseDto()
                         .successModel(updatedUser);
-                    mailSenderService.send(Template.);
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");
