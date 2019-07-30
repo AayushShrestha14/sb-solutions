@@ -17,6 +17,9 @@ public class Email {
     private String subject;
     private String to;
     private String toName;
-    private String from;
+    private String bankName;
+    private String bankBranch;
+    private String bankWebsite;
+    private String accountType;
 
 }

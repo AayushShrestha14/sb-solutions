@@ -30,7 +30,8 @@
             <td bgcolor="#F6F8FA"
                 style="background-color:#f6f8fa;padding:12px;border-bottom:1px solid #ececec">
               <table border="0" cellpadding="0" cellspacing="0"
-                     style="width:100%!important;min-width:100%!important" width="100%">
+                     style="width:100%!important;min-width:100%!important"
+                     width="100%">
                 <tbody>
                 <tr>
                   <td align="left" valign="middle"><a
@@ -60,27 +61,38 @@
                 <tbody>
                 <tr>
                   <td style="padding:20px 24px 32px 24px">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="0" cellspacing="0"
+                           width="100%">
                       <tbody>
                       <tr>
                         <td style="padding-bottom:20px"><h2
                             style="margin:0;color:#262626;font-weight:700;font-size:20px;line-height:1.2">
-                          Hello <span th:text="${data.getToName()}"></span>,</h2></td>
+                          Hello <span
+                            th:text="${data.getToName()}"></span>,</h2></td>
                       </tr>
                       <tr>
                         <td style="padding-bottom:20px">
-                          <p class="custom-para">Your One Time Password is <b><span
-                              th:text="${data.getBody()}"></span></b></p>
-                          <p class="custom-para">Use this token to verify yourself.</p>
-                          <p class="custom-para">This token will expire in 5 minutes.</p>
+                          <p class="custom-para">
+                            Your account request for account type: <b><span
+                              th:text="${data.getAccountType()}"></span></b> has been accepted.
+                          </p>
+                          <p class="custom-para">
+                            For more information regarding our products
+                            and services, please refer to our website
+                            <span
+                                th:text="${data.getBankWebsite()}"></span>
+                            or visit your nearest branch.
+                          </p>
                           <hr>
                           <p class="custom-para">
                             Regards, <br/>
-                            <em><span th:text="${data.getBankName()}"></span></em>
+                            <em><span
+                                th:text="${data.getBankName()}"></span></em>
                           </p>
                           <hr/>
                           <p class="custom-para">
-                            Note: Please do not reply to this email, as this is an automated email
+                            Note: Please do not reply to this email, as
+                            this is an automated email
                             and any email sent to
                             this email will not be answered.
                           </p>
@@ -96,19 +108,23 @@
           </tr>
           <tr>
             <td>
-              <table align="center" bgcolor="#EDF0F3" border="0" cellpadding="0" cellspacing="0"
+              <table align="center" bgcolor="#EDF0F3" border="0" cellpadding="0"
+                     cellspacing="0"
                      style="background-color:#edf0f3;padding:0 24px;color:#6a6c6d;text-align:center"
                      width="100%">
                 <tbody>
                 <tr>
-                  <td align="center" style="padding:16px 0 0 0;text-align:center"></td>
+                  <td align="center"
+                      style="padding:16px 0 0 0;text-align:center"></td>
                 </tr>
                 <tr>
                   <td>
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="0" cellspacing="0"
+                           width="100%">
                       <tbody>
                       <tr>
-                        <td align="center" style="padding:0 0 12px 0;text-align:center"><p
+                        <td align="center"
+                            style="padding:0 0 12px 0;text-align:center"><p
                             style="margin:0;color:#6a6c6d;font-weight:400;font-size:12px;line-height:1.333"></p>
                         </td>
                       </tr>
