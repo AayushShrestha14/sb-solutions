@@ -10,7 +10,6 @@
             <column name="percentage_of_amount" type="DOUBLE">
                 <constraints nullable="false"/>
             </column>
-            <column name="threshold_amount" type="DOUBLE"/>
             <column name="status" type="INT">
                 <constraints nullable="false"/>
             </column>
