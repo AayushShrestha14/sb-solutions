@@ -60,7 +60,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
 
