@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.customerOtp.entity.CustomerOtp;
 import com.sb.solutions.api.customerOtp.service.CustomerOtpService;
-import com.sb.solutions.core.constant.EmailConstant;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.date.DateManipulator;
@@ -87,7 +86,7 @@ public class CustomerOtpController {
         Email email = new Email();
         email.setTo(customerOtpDto.getEmail());
         email.setToName(customerOtpDto.getFirstName() + ' ' + customerOtpDto.getLastName());
-        email.setFrom(this.bankName);
+        email.setBankName(this.bankName);
         email.setBody(otp);
         mailSenderService.send(Template.ONE_TIME_PASSWORD, email);
     }
