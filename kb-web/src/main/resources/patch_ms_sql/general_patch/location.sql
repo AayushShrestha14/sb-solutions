@@ -18,12 +18,10 @@ INSERT  INTO province (id, name) VALUES
 SET IDENTITY_INSERT province OFF
 END
 
+DECLARE @countDistrict smallint
+SET @countDistrict = (Select count(*) from district)
 
-BEGIN
-DECLARE @count smallint
-SET @count = (Select count(*) from district)
-
-if(@count < 75)
+if(@countDistrict < 75)
 BEGIN
 SET IDENTITY_INSERT district ON
 INSERT  INTO district (id, province_id, name) VALUES
@@ -105,18 +103,11 @@ INSERT  INTO district (id, province_id, name) VALUES
 
 SET IDENTITY_INSERT district Off
 END
-else
-BEGIN
-SET IDENTITY_INSERT district Off
-END
-END ;
 
+DECLARE @countMunicipal smallint
+SET @countMunicipal = (Select count(*) from municipality_vdc)
 
-BEGIN
-DECLARE @count smallint
-SET @count = (Select count(*) from municipality_vdc)
-
-if(@count < 75)
+if(@countMunicipal < 75)
 BEGIN
 
 SET IDENTITY_INSERT municipality_vdc ON
@@ -867,7 +858,12 @@ INSERT INTO municipality_vdc (id, district_id, name) VALUES
 (755, 75, 'Byans')
 SET IDENTITY_INSERT municipality_vdc OFF
 END
-END;
-
 
 END ;
+
+
+
+
+
+
+
