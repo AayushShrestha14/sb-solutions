@@ -1,6 +1,5 @@
 package com.sb.solutions.web.user;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -163,6 +162,11 @@ public class UserController {
 
             return new RestResponseDto().successModel(resetToken);
         }
+    }
+
+    @GetMapping(value = "/get-all-doc-transfer")
+    public ResponseEntity<?> getAllForDocTransfer() {
+        return new RestResponseDto().successModel(userService.findAll());
     }
 
     @PostMapping(value = "/resetPassword")
