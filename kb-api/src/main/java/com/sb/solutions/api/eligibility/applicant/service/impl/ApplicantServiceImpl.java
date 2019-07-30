@@ -30,7 +30,10 @@ import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
 import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 
 
 @Service
@@ -48,15 +51,19 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
 
+    private final LoanConfigService loanConfigService;
+
     public ApplicantServiceImpl(ApplicantRepository applicantRepository,
         FileStorageService fileStorageService,
         SubmissionDocumentService submissionDocumentService, AnswerService answerService,
-        EligibilityCriteriaService eligibilityCriteriaService) {
+        EligibilityCriteriaService eligibilityCriteriaService,
+        LoanConfigService loanConfigService) {
         this.applicantRepository = applicantRepository;
         this.fileStorageService = fileStorageService;
         this.submissionDocumentService = submissionDocumentService;
         this.answerService = answerService;
         this.eligibilityCriteriaService = eligibilityCriteriaService;
+        this.loanConfigService = loanConfigService;
     }
 
     @Override
@@ -95,14 +102,16 @@ public class ApplicantServiceImpl implements ApplicantService {
                 }
             }
         }
-        double remainingAmount = EligibilityUtility.evaluateExpression(formula);
+        double remainingAmount = ArithmeticExpressionUtils
+            .parseExpression(formula); // new Expression
         if (remainingAmount <= 0) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
-        double annualAmount = remainingAmount * 12;
-        double eligibleAmount = (annualAmount * eligibilityCriteria.getPercentageOfAmount()) / 100;
-        if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
+        double eligibleAmount =
+            remainingAmount * eligibilityCriteria.getPercentageOfAmount() / 100D;
+        LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
+        if (eligibleAmount < currentLoanConfig.getMinimumProposedAmount()) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
@@ -123,7 +132,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.debug("Retrieving a page of applicant list.");
         ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(String.valueOf(t) + ",");
+        Matcher matcher = pattern.matcher(t + ",");
         while (matcher.find()) {
             applicantSpecificationBuilder
                 .with(matcher.group(1), matcher.group(3), matcher.group(2));

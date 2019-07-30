@@ -83,8 +83,7 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
     @Override
     public EligibilityCriteria getByStatus(Status status) {
         logger.debug("Retrieving the active eligibility criteria.");
-        final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaRepository
+        return eligibilityCriteriaRepository
             .findByStatus(Status.ACTIVE);
-        return eligibilityCriteria;
     }
 }

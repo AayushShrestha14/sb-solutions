@@ -52,4 +52,5 @@ public class LoanConfig extends BaseEntity<Long> {
     private Boolean enableEligibility;
     @ManyToMany
     private List<OfferLetter> offerLetters;
+    private Double minimumProposedAmount;
 }

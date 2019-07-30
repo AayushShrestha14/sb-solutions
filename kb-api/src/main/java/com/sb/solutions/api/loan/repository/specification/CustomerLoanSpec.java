@@ -41,7 +41,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
     @Override
     public Predicate toPredicate(Root<CustomerLoan> root, CriteriaQuery<?> criteriaQuery,
-        CriteriaBuilder criteriaBuilder) {
+                                 CriteriaBuilder criteriaBuilder) {
 
         switch (property) {
             case FILTER_BY_DOC_STATUS:
@@ -49,18 +49,18 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_LOAN:
                 return criteriaBuilder
-                    .and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
+                        .and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_CURRENT_USER_ROLE:
                 return criteriaBuilder
-                    .equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"),
-                        Long.valueOf(value));
+                        .equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"),
+                                Long.valueOf(value));
 
             case FILTER_BY_BRANCH:
                 Pattern pattern = Pattern.compile(",");
                 List<Long> list = pattern.splitAsStream(value)
-                    .map(Long::valueOf)
-                    .collect(Collectors.toList());
+                        .map(Long::valueOf)
+                        .collect(Collectors.toList());
                 Expression<String> exp = root.join("branch").get("id");
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
@@ -70,16 +70,18 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Map dates = gson.fromJson(value, Map.class);
                 try {
                     return criteriaBuilder.between(root.get("createdAt"),
-                        new SimpleDateFormat("MM/dd/yyyy")
-                            .parse(String.valueOf(dates.get("startDate"))),
-                        new SimpleDateFormat("MM/dd/yyyy")
-                            .parse(String.valueOf(dates.get("endDate"))));
+                            new SimpleDateFormat("MM/dd/yyyy")
+                                    .parse(String.valueOf(dates.get("startDate"))),
+                            new SimpleDateFormat("MM/dd/yyyy")
+                                    .parse(String.valueOf(dates.get("endDate"))));
                 } catch (ParseException e) {
                     return null;
                 }
 
             case FILTER_BY_TO_USER:
-                return null;
+                return criteriaBuilder
+                        .equal(root.join("currentStage", JoinType.LEFT).join("toUser").get("id"),
+                                Long.valueOf(value));
 
             default:
                 return null;
