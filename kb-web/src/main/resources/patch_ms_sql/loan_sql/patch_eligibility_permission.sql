@@ -1,5 +1,6 @@
 BEGIN
 DECLARE @count smallint
+DECLARE @countLoanConfig smallint
 SET @count = (Select count(*) from permission where id = 18)
 SET @countLoanConfig = (Select count(*) from permission where id = 2)
 
@@ -15,6 +16,7 @@ SET IDENTITY_INSERT role_permission_rights ON
 
  SET IDENTITY_INSERT role_permission_rights OFF
 END
+
 if(@count = 0)
 BEGIN
 
