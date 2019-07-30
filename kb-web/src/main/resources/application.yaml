@@ -3,6 +3,8 @@ server:
   compression:
     enabled: true
 spring:
+  profiles:
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -19,11 +21,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
-    username: root
-    password:
 
   mail:
     username: sbsolutionstest@gmail.com
@@ -58,3 +55,4 @@ file:
 
 bank:
   name: Mahalaxmi Bank
+  website: http://www.mahalaxmibank.com/

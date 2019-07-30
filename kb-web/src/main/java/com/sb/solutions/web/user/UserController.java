@@ -7,6 +7,7 @@ import java.util.UUID;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +24,13 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
-import com.sb.solutions.core.utils.email.MailThreadService;
-import com.sb.solutions.core.utils.email.template.ResetPassword;
+import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
 /**
@@ -39,16 +40,21 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
 @RequestMapping("/v1/user")
 public class UserController {
 
+    @Value("${bank.name}")
+    private String bankName;
+
     private final UserService userService;
     private final RoleService roleService;
-    private final MailThreadService mailThreadService;
+    private final MailSenderService mailSenderService;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService,
-        MailThreadService mailThreadService) {
+    public UserController(
+        UserService userService,
+        RoleService roleService,
+        MailSenderService mailSenderService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.mailThreadService = mailThreadService;
+        this.mailSenderService = mailSenderService;
     }
 
     @GetMapping(path = "/authenticated")
@@ -58,7 +64,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
-        user.toString();
         return new RestResponseDto().successModel(userService.save(user));
     }
 
@@ -119,23 +124,6 @@ public class UserController {
         return new RestResponseDto().successModel(userService.dismissAllBranchAndRole(user));
     }
 
-    /*@GetMapping (value="/mail")
-    public ResponseEntity<?> mail() throws IOException, MessagingException {
-        List<String> bcc = new ArrayList<>();
-        List<String> attached = new ArrayList<>();
-        attached.add("http://localhost:8086/images/userSignature/2019-04-21-22-06-33samriddi.jpg");
-        bcc.add("rujnmahrzn@gmail.com");
-        bcc.add("davidrana132@gmail.com");
-        BaseHttp baseHttp = new BaseHttp();
-        Email email = new Email();
-        email.setBody(SampleTemplate.sampleTemplate());
-        email.setTo("elwyncrestha@gmail.com");
-        email.setBcc(bcc);
-        email.setAttachment(attached);
-        mailThreadService.sendMail(email);
-        return new RestResponseDto().successModel(baseHttp);
-    }*/
-
     @GetMapping(value = "/forgotPassword")
     public ResponseEntity<?> forgotPassword(@RequestParam("username") String username,
         @RequestHeader("referer") final String referer) {
@@ -153,12 +141,12 @@ public class UserController {
 
             // mailing
             Email email = new Email();
-            email.setSubject("Reset Password");
-            email.setBody(ResetPassword.resetPasswordTemplate(savedUser.getUsername(),
-                referer + "#/newPassword?username=" + username + "&reset=" + resetToken,
-                savedUser.getResetPasswordTokenExpiry().toString()));
             email.setTo(savedUser.getEmail());
-            mailThreadService.sendMail(email);
+            email.setResetPasswordLink(
+                referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
+            email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
+            email.setBankName(this.bankName);
+            mailSenderService.send(Template.RESET_PASSWORD, email);
 
             return new RestResponseDto().successModel(resetToken);
         }
@@ -180,8 +168,14 @@ public class UserController {
                     return new RestResponseDto()
                         .failureModel("Reset Token has been expired already");
                 } else {
+                    User updatedUser = userService.updatePassword(u.getUsername(), u.getPassword());
+                    Email email = new Email();
+                    email.setTo(updatedUser.getEmail());
+                    email.setToName(updatedUser.getName());
+                    email.setBankName(this.bankName);
+                    mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
                     return new RestResponseDto()
-                        .successModel(userService.updatePassword(u.getUsername(), u.getPassword()));
+                        .successModel(updatedUser);
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");

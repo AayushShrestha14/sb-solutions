@@ -207,23 +207,23 @@ if(@chkNotificationUrlapi = 0)
 BEGIN
 SET IDENTITY_INSERT url_api on
 
-INSERT  INTO url_api (id, api_url, type)
-values (43, '/v1/sector/get/statusCount', 'SECTOR COUNT')
-INSERT  INTO url_api (id, api_url, type)
-values (44, '/v1/segment/get/statusCount', 'SEGMENT COUNT')
-INSERT  INTO url_api (id, api_url, type)
-values (45,'/v1/notification', 'NOTIFICATION')
+-- INSERT  INTO url_api (id, api_url, type)
+-- values (43, '/v1/sector/get/statusCount', 'SECTOR COUNT')
+-- INSERT  INTO url_api (id, api_url, type)
+-- values (44, '/v1/segment/get/statusCount', 'SEGMENT COUNT')
+-- INSERT  INTO url_api (id, api_url, type)
+-- values (45,'/v1/notification', 'NOTIFICATION')
 
-INSERT  INTO permission_api_list(permission_id, api_list_id)
-values (17, 45)
+-- INSERT  INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 45)
 INSERT  INTO permission_api_list(permission_id, api_list_id)
 values (17, 41)
 INSERT  INTO permission_api_list(permission_id, api_list_id)
 values (17, 42)
-INSERT  INTO permission_api_list(permission_id, api_list_id)
-values (17, 43)
-INSERT  INTO permission_api_list(permission_id, api_list_id)
-values (17, 44)
+-- INSERT  INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 43)
+-- INSERT  INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 44)
 SET IDENTITY_INSERT url_api off
 END
 
