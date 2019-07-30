@@ -1,10 +1,10 @@
 package com.sb.solutions.api.userNotification.repository;
 
-import com.sb.solutions.api.userNotification.entity.Sender;
+import com.sb.solutions.api.userNotification.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SenderRepository extends JpaRepository<Sender, Long> {
+public interface MessageRepository extends JpaRepository<Message, Long> {
 
 }
