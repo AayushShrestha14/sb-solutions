@@ -1,6 +1,22 @@
 BEGIN
 DECLARE @count smallint
+DECLARE @countLoanConfig smallint
 SET @count = (Select count(*) from permission where id = 18)
+SET @countLoanConfig = (Select count(*) from permission where id = 2)
+
+if(@countLoanConfig = 0)
+BEGIN
+SET IDENTITY_INSERT permission ON
+INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES
+(2,  'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1)
+SET IDENTITY_INSERT permission OFF
+SET IDENTITY_INSERT role_permission_rights ON
+ INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+ VALUES (2, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  2, 1)
+
+ SET IDENTITY_INSERT role_permission_rights OFF
+END
+
 if(@count = 0)
 BEGIN
 
