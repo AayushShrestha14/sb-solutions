@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=cp_master
+    username: root
+    password: Database@141
+
+
