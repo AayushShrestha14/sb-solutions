@@ -21,5 +21,7 @@ public class Email {
     private String bankBranch;
     private String bankWebsite;
     private String accountType;
+    private String resetPasswordLink;
+    private String expiry;
 
 }
