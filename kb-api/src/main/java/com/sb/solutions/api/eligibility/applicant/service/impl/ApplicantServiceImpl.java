@@ -30,6 +30,8 @@ import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
 import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 
@@ -49,15 +51,19 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
 
+    private final LoanConfigService loanConfigService;
+
     public ApplicantServiceImpl(ApplicantRepository applicantRepository,
         FileStorageService fileStorageService,
         SubmissionDocumentService submissionDocumentService, AnswerService answerService,
-        EligibilityCriteriaService eligibilityCriteriaService) {
+        EligibilityCriteriaService eligibilityCriteriaService,
+        LoanConfigService loanConfigService) {
         this.applicantRepository = applicantRepository;
         this.fileStorageService = fileStorageService;
         this.submissionDocumentService = submissionDocumentService;
         this.answerService = answerService;
         this.eligibilityCriteriaService = eligibilityCriteriaService;
+        this.loanConfigService = loanConfigService;
     }
 
     @Override
@@ -104,7 +110,8 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
         double eligibleAmount =
             remainingAmount * eligibilityCriteria.getPercentageOfAmount() / 100D;
-        if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
+        LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
+        if (eligibleAmount < currentLoanConfig.getMinimumProposedAmount()) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
