@@ -12,6 +12,7 @@ public final class EmailConstant {
 
     public static final Map<Template, String> MAIL = ImmutableMap.<Template, String>builder()
         .put(Template.RESET_PASSWORD, "/mail/password-reset.html")
+        .put(Template.RESET_PASSWORD_SUCCESS, "/mail/password-reset-success.html")
         .put(Template.ELIGIBILITY_ELIGIBLE, "/mail/eligible.html")
         .put(Template.ACCOUNT_OPENING_THANK_YOU, "/mail/account-opening-thank-you.html")
         .put(Template.ONE_TIME_PASSWORD, "/mail/customer-otp.html")
@@ -24,7 +25,9 @@ public final class EmailConstant {
 
 
     public enum Template {
-        RESET_PASSWORD("Reset Password !!"), ELIGIBILITY_ELIGIBLE("You are Eligible !!"),
+        RESET_PASSWORD("Reset Password !!"),
+        RESET_PASSWORD_SUCCESS("Password Reset Successful !!"),
+        ELIGIBILITY_ELIGIBLE("You are Eligible !!"),
         ACCOUNT_OPENING_THANK_YOU("Thank You !! Account Opening request is received."),
         ONE_TIME_PASSWORD("One Time Password"),
         TEST("Email Configuration Test"),

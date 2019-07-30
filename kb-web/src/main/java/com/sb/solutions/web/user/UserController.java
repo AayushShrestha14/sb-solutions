@@ -7,6 +7,7 @@ import java.util.UUID;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,9 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
 @RestController
 @RequestMapping("/v1/user")
 public class UserController {
+
+    @Value("${bank.name}")
+    private String bankName;
 
     private final UserService userService;
     private final RoleService roleService;
@@ -141,6 +145,7 @@ public class UserController {
             email.setResetPasswordLink(
                 referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
+            email.setBankName(this.bankName);
             mailSenderService.send(Template.RESET_PASSWORD, email);
 
             return new RestResponseDto().successModel(resetToken);
@@ -158,8 +163,14 @@ public class UserController {
                     return new RestResponseDto()
                         .failureModel("Reset Token has been expired already");
                 } else {
+                    User updatedUser = userService.updatePassword(u.getUsername(), u.getPassword());
+                    Email email = new Email();
+                    email.setTo(updatedUser.getEmail());
+                    email.setToName(updatedUser.getName());
+                    email.setBankName(this.bankName);
                     return new RestResponseDto()
-                        .successModel(userService.updatePassword(u.getUsername(), u.getPassword()));
+                        .successModel(updatedUser);
+                    mailSenderService.send(Template.);
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");
