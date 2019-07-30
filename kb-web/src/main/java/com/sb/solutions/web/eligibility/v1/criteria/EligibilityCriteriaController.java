@@ -80,7 +80,7 @@ public class EligibilityCriteriaController {
                 return new RestResponseDto().successModel(savedEligibilityCriteria);
             }
         } catch (SpelParseException spelParseException) {
-            return new RestResponseDto().failureModel(spelParseException.toString());
+            return new RestResponseDto().failureModel("Some wrong with expression you entered. Please verify.");
         }
 
     }
