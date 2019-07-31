@@ -52,14 +52,17 @@ public class CustomerOtpController {
 
     @PostMapping
     public ResponseEntity<?> generateOTP(@RequestBody CustomerOtpDto customerOtpDto) {
-        CustomerOtp saveCustomerOtp = customerOtpMapper.mapDtoToEntity(customerOtpDto);
+        CustomerOtp customerOtp = customerOtpService.findByEmailOrMobile(customerOtpDto.getEmail(), customerOtpDto.getMobile());
+        if (customerOtp == null) {
+            customerOtp = customerOtpMapper.mapDtoToEntity(customerOtpDto);
+        }
         DateManipulator dateManipulator = new DateManipulator(new Date());
-        saveCustomerOtp.setOtp(StringUtil.generateNumber(4));
-        saveCustomerOtp.setExpiry(dateManipulator.addMinutes(5));
-        final CustomerOtp customerOtp = customerOtpService.save(saveCustomerOtp);
-        logger.debug("One Time Password (OTP) generated. {}", saveCustomerOtp);
-        sendOtpMail(customerOtpDto, customerOtp.getOtp());
-        return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(customerOtp));
+        customerOtp.setOtp(StringUtil.generateNumber(4));
+        customerOtp.setExpiry(dateManipulator.addMinutes(5));
+        final CustomerOtp savedCustomerOtp = customerOtpService.save(customerOtp);
+        logger.debug("One Time Password (OTP) generated. {}", savedCustomerOtp);
+        sendOtpMail(customerOtpDto, savedCustomerOtp.getOtp());
+        return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(savedCustomerOtp));
     }
 
     @PostMapping(value = "/verify")

@@ -47,4 +47,9 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
     public void delete(CustomerOtp customerOtp) {
         repository.delete(customerOtp);
     }
+
+    @Override
+    public CustomerOtp findByEmailOrMobile(String email, String mobile) {
+        return repository.findCustomerOtpByEmailOrMobile(email, mobile);
+    }
 }

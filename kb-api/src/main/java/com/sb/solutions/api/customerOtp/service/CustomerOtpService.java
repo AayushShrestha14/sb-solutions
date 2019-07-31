@@ -7,4 +7,6 @@ public interface CustomerOtpService extends BaseService<CustomerOtp> {
 
     void delete(CustomerOtp customerOtp);
 
+    CustomerOtp findByEmailOrMobile(String email, String mobile);
+
 }
