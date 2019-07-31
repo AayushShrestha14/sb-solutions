@@ -23,7 +23,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cp_master
     username: root
-    password:
+    password: root
 
   mail:
     username: sbsolutionstest@gmail.com

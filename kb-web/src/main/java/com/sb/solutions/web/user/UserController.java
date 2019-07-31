@@ -1,6 +1,5 @@
 package com.sb.solutions.web.user;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -75,7 +74,7 @@ public class UserController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
+    public ResponseEntity<?> getAll(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(userService.findAllPageable(searchDto, PaginationUtils

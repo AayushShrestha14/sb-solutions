@@ -15,6 +15,7 @@ import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,6 +34,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.repository.Specification.UserSpecBuilder;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
@@ -179,10 +181,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findAllPageable(Object object, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return userRepository.userFilter(s.getName() == null ? "" : s.getName(), pageable);
+    public Page<User> findAllPageable(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final UserSpecBuilder userSpecBuilder = new UserSpecBuilder(s);
+        final Specification<User> specification = userSpecBuilder.build();
+        return userRepository.findAll(specification, pageable);
 
     }
 
