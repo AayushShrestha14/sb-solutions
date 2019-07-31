@@ -1,4 +1,4 @@
-package com.sb.solutions.api.user.repository.Specification;
+package com.sb.solutions.api.user.repository.specification;
 
 import java.util.ArrayList;
 import java.util.List;
