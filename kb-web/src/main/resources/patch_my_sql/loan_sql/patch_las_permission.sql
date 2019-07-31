@@ -224,16 +224,16 @@ values (46,'/v1/pending','PENDING');
 
 INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
 values (17, 40);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 41);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 42);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 43);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 44);
-INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
-values (17, 45);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 41);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 42);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 43);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 44);
+-- INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
+-- values (17, 45);
 INSERT IGNORE INTO permission_api_list(permission_id, api_list_id)
 values (17, 46);
 

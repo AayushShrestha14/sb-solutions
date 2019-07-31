@@ -1,19 +1,24 @@
 package com.sb.solutions.web.emailConfig.v1;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.emailConfig.entity.EmailConfig;
 import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.core.constant.EmailConstant;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
-import com.sb.solutions.core.utils.email.template.SampleTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * @author Rujan Maharjan on 7/1/2019
@@ -22,6 +27,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(EmailConfigController.URL)
 public class EmailConfigController {
+
+    @Value("${bank.name}")
+    private String bankName;
 
     static final String URL = "/v1/email-config";
 
@@ -61,11 +69,10 @@ public class EmailConfigController {
     @PostMapping("/test")
     public ResponseEntity<?> testConfiguration(@RequestBody EmailConfig emailConfig) {
         Email email = new Email();
-        email.setBody(SampleTemplate.sampleTemplate());
-        email.setSubject("No reply");
         email.setTo(emailConfig.getTestMail());
+        email.setBankName(this.bankName);
         try {
-            mailThreadService.testMail(EmailConstant.Template.ACCOUNT_OPENING_THANK_YOU, email);
+            mailThreadService.testMail(EmailConstant.Template.TEST, email);
             logger.info(" sending Email config {}", emailConfig);
         } catch (Exception e) {
             logger.error("Error while sending Email config {}", emailConfig);
