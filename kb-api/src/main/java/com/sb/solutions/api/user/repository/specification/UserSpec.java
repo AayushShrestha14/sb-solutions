@@ -17,6 +17,7 @@ import com.sb.solutions.core.enums.Status;
 
 public class UserSpec implements Specification<User> {
 
+    private static final String FILTER_BY_NAME = "name";
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_ROLE = "roleId";
     private static final String FILTER_BY_STATUS = "status";
@@ -33,6 +34,8 @@ public class UserSpec implements Specification<User> {
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery,
         CriteriaBuilder criteriaBuilder) {
         switch (property) {
+            case FILTER_BY_NAME:
+                return criteriaBuilder.like(root.get(property), value + "%");
             case FILTER_BY_BRANCH:
                 if (value.equalsIgnoreCase(RoleAccess.ALL.toString())) {
                     return criteriaBuilder
