@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,11 +31,5 @@ public class SocketController {
         }
         return new RestResponseDto().successModel(service.save(message));
     }
-
-    @GetMapping(value = SocketController.API + "/count/{toId}")
-    public ResponseEntity<?> notificationCount(@PathVariable Long toId) {
-        return new RestResponseDto().successModel(service.count(toId));
-    }
-
 
 }
