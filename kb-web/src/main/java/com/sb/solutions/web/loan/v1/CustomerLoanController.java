@@ -132,7 +132,7 @@ public class CustomerLoanController {
         @PathVariable("number") String registraionNumber) {
         logger.info("GET:/searchByRegistrationNumbe/{}", registraionNumber);
         return new RestResponseDto()
-            .successModel(service.getByCitizenshipNumber(registraionNumber));
+            .successModel(service.getByRegistrationNumber(registraionNumber));
     }
 
     @ApiImplicitParams({
