@@ -153,9 +153,9 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/get-all-doc-transfer")
-    public ResponseEntity<?> getAllForDocTransfer() {
-        return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null));
+    @GetMapping(value = "/get-all-doc-transfer/{id}")
+    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
+        return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null,id));
     }
 
     @PostMapping(value = "/resetPassword")

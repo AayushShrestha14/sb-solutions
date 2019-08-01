@@ -290,7 +290,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId) {
+    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId,Long userId) {
         List<User> users = userRepository.findAll();
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
@@ -300,7 +300,7 @@ public class UserServiceImpl implements UserService {
             List<UserDto> userDtoList = new ArrayList<>();
             for (User u : users) {
                 UserDto userDto = new UserDto();
-                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L) {
+                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L && u.getId() != userId) {
                     List<BranchDto> branchDto = new ArrayList<>();
 
                     userDto.setId(u.getId());
