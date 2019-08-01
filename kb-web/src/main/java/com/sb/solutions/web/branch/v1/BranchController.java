@@ -84,7 +84,7 @@ public class BranchController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/csv")
-    public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
+    public ResponseEntity<?> csv(@RequestBody Object searchDto) {
         return new RestResponseDto().successModel((branchService.csv(searchDto)));
     }
 

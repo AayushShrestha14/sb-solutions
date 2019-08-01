@@ -28,11 +28,14 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.basehttp.BaseHttpService;
+import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
 import com.sb.solutions.api.user.PieChartDto;
+import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.api.user.repository.specification.UserSpecBuilder;
@@ -166,18 +169,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String csv(SearchDto searchDto) {
-        CsvMaker csvMaker = new CsvMaker();
-        List branchList = userRepository
-            .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        final CsvMaker csvMaker = new CsvMaker();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final UserSpecBuilder userSpecBuilder = new UserSpecBuilder(s);
+        final Specification<User> specification = userSpecBuilder.build();
+        final List userList = userRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");
         header.put("branch,name", "Branch name");
-        header.put("branch,address", "Branch Address");
         header.put("role,roleName", "Role");
         header.put("status", "Status");
-        String url = csvMaker.csv("user", header, branchList, UploadDir.userCsv);
-        return baseHttpService.getBaseUrl() + url;
+        return csvMaker.csv("user", header, userList, UploadDir.userCsv);
+
     }
 
     @Override
@@ -282,5 +287,41 @@ public class UserServiceImpl implements UserService {
         logger.debug("Request to retrieve statistics of roles with respect to users.");
         List<PieChartDto> pieChartDatas = userRepository.getStatisticsBasedOnRoles();
         return pieChartDatas;
+    }
+
+    @Override
+    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId) {
+        List<User> users = userRepository.findAll();
+
+        List<RoleDto> roleDtoList = roleRepository.getRoleDto();
+        List<RoleDto> finalRoleDtoList = new ArrayList<>();
+
+        for (RoleDto r : roleDtoList) {
+            List<UserDto> userDtoList = new ArrayList<>();
+            for (User u : users) {
+                UserDto userDto = new UserDto();
+                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L) {
+                    List<BranchDto> branchDto = new ArrayList<>();
+
+                    userDto.setId(u.getId());
+                    userDto.setUsername(u.getUsername());
+                    for (Branch b : u.getBranch()) {
+                        BranchDto branchDto1 = new BranchDto();
+                        branchDto1.setId(b.getId());
+                        branchDto1.setName(b.getName());
+                        branchDto.add(branchDto1);
+                    }
+                    userDto.setBranchDtoList(branchDto);
+                    userDtoList.add(userDto);
+                }
+                r.setUserDtoList(userDtoList);
+
+            }
+            if (r.getId() != 1L) {
+                finalRoleDtoList.add(r);
+            }
+
+        }
+        return finalRoleDtoList;
     }
 }

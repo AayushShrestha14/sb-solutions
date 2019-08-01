@@ -24,7 +24,6 @@ import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -86,17 +85,20 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
-    public String csv(SearchDto searchDto) {
-        CsvMaker csvMaker = new CsvMaker();
-        List branchList = branchRepository
-            .branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+    public String csv(Object searchDto) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
+        final Specification<Branch> specification = branchSpecBuilder.build();
+        final CsvMaker csvMaker = new CsvMaker();
+        final List branchList = branchRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("province,name", "Province");
         header.put("province,district", "District");
         header.put("branchCode", "Branch Code");
-        String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return baseHttpService.getBaseUrl() + url;
+        return csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
+
     }
 
     @Override
