@@ -170,17 +170,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public String csv(SearchDto searchDto) {
         CsvMaker csvMaker = new CsvMaker();
-        List branchList = userRepository
-            .userCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final UserSpecBuilder userSpecBuilder = new UserSpecBuilder(s);
+        final Specification<User> specification = userSpecBuilder.build();
+        List userList = userRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");
         header.put("branch,name", "Branch name");
-        header.put("branch,address", "Branch Address");
         header.put("role,roleName", "Role");
         header.put("status", "Status");
-        String url = csvMaker.csv("user", header, branchList, UploadDir.userCsv);
-        return baseHttpService.getBaseUrl() + url;
+        return csvMaker.csv("user", header, userList, UploadDir.userCsv);
+
     }
 
     @Override

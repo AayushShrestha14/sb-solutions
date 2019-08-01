@@ -86,17 +86,20 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
-    public String csv(SearchDto searchDto) {
+    public String csv(Object searchDto) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
+        final Specification<Branch> specification = branchSpecBuilder.build();
         CsvMaker csvMaker = new CsvMaker();
-        List branchList = branchRepository
-            .branchCsvFilter(searchDto.getName() == null ? "" : searchDto.getName());
+        List branchList = branchRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("province,name", "Province");
         header.put("province,district", "District");
         header.put("branchCode", "Branch Code");
-        String url = csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
-        return baseHttpService.getBaseUrl() + url;
+        return csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
+
     }
 
     @Override
