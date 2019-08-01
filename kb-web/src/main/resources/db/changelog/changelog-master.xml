@@ -1740,4 +1740,5 @@
   <include file="20190724_customer_otp.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190728_alter_loan_config_new_field.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_eligibility_criteria.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190731_alter_customer_loan.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

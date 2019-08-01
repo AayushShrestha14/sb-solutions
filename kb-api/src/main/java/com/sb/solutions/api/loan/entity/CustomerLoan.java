@@ -27,6 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.customer.entity.Customer;
@@ -64,6 +65,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanType loanType = LoanType.NEW_LOAN;
 
     private DocStatus documentStatus = DocStatus.PENDING;
+
+    private LoanApprovalType loanCategory;
 
     @ManyToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
