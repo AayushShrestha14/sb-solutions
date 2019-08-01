@@ -61,6 +61,9 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
         String generalCitizenShipNumber, String dmsCitizenShipNumber);
 
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileRegistrationNumber(
+        String generalRegistrationNumber, String dmsRegistrationNumber);
+
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM "

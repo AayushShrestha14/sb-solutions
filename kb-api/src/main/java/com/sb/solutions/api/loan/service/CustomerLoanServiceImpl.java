@@ -140,6 +140,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> getByRegistrationNumber(String registrationNumber) {
+        return customerLoanRepository
+            .getByCustomerInfoCitizenshipNumberOrDmsLoanFileRegistrationNumber(registrationNumber,
+                registrationNumber);
+    }
+
+    @Override
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
@@ -204,8 +211,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         map.put("status", count == 0 ? "false" : "true");
         return map;
     }
-
-
 
 
     private ProductMode findActiveProductMode() {
