@@ -22,6 +22,7 @@ public class MemoSpec implements Specification<Memo> {
     private static final String FILTER_BY_SENDER_NAME = "sentBy.name";
     private static final String FILTER_BY_RECEIVER = "sentTo.id";
     private static final String FILTER_BY_RECEIVER_NAME = "sentTo.name";
+    private static final String FILTER_BY_STAGES_RECEIVER = "stages.sentTo.id";
 
     private final String property;
     private final String value;
@@ -45,15 +46,18 @@ public class MemoSpec implements Specification<Memo> {
             case FILTER_BY_TYPE:
                 return criteriaBuilder.like(root.join("type").get("name"), value + "%");
             case FILTER_BY_TYPE_ID:
-                return criteriaBuilder.equal(root.join("type").get("id"), Long.valueOf(value));
+                return criteriaBuilder.equal(root.join("type").get("id"), Long.parseLong(value));
             case FILTER_BY_SENDER:
-                return criteriaBuilder.equal(root.join("sentBy").get("id"), Long.valueOf(value));
+                return criteriaBuilder.equal(root.join("sentBy").get("id"), Long.parseLong(value));
             case FILTER_BY_SENDER_NAME:
-                return criteriaBuilder.like(root.join("type").get("name"), value + "%");
+                return criteriaBuilder.like(root.join("sentBy").get("name"), value + "%");
             case FILTER_BY_RECEIVER:
-                return criteriaBuilder.equal(root.join("sentTo").get("id"), Long.valueOf(value));
+                return criteriaBuilder.equal(root.join("sentTo").get("id"), Long.parseLong(value));
             case FILTER_BY_RECEIVER_NAME:
                 return criteriaBuilder.like(root.join("sentTo").get("name"), value + "%");
+            case FILTER_BY_STAGES_RECEIVER:
+                return criteriaBuilder
+                    .equal(root.join("stages").get("sentTo"), Long.parseLong(value));
             default:
                 return null;
         }
