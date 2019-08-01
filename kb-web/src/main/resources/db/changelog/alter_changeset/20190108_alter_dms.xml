@@ -12,6 +12,7 @@
       <column name="registration_number" type="VARCHAR(256)"/>
     </addColumn>
     <dropNotNullConstraint
+      columnDataType="VARCHAR(256)"
       columnName="citizenship_number"
       tableName="dms_loan_file"/>
   </changeSet>
