@@ -205,7 +205,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Map<String, String> chkUserContainCustomerLoan(Long id) {
-        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id);
+        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id, DocStatus.PENDING);
         Map<String, String> map = new HashMap<>();
         map.put("count", String.valueOf(count));
         map.put("status", count == 0 ? "false" : "true");
