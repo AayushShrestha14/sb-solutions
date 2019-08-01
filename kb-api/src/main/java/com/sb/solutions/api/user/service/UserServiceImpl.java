@@ -169,12 +169,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String csv(SearchDto searchDto) {
-        CsvMaker csvMaker = new CsvMaker();
+        final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         final UserSpecBuilder userSpecBuilder = new UserSpecBuilder(s);
         final Specification<User> specification = userSpecBuilder.build();
-        List userList = userRepository.findAll(specification);
+        final List userList = userRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("email", "Email");

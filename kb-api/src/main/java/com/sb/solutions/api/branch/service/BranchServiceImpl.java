@@ -24,7 +24,6 @@ import com.sb.solutions.api.branch.repository.specification.BranchSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -88,11 +87,11 @@ public class BranchServiceImpl implements BranchService {
     @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
     public String csv(Object searchDto) {
         final ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
         final Specification<Branch> specification = branchSpecBuilder.build();
-        CsvMaker csvMaker = new CsvMaker();
-        List branchList = branchRepository.findAll(specification);
+        final CsvMaker csvMaker = new CsvMaker();
+        final List branchList = branchRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("province,name", "Province");
