@@ -78,10 +78,10 @@ INSERT IGNORE INTO permission_api_list(permission_id, api_list_id) values (6,30)
 -- ************************DASHBOARD******************************************
 INSERT IGNORE INTO url_api (id, api_url, type)
 values (40, '/v1/config/getAll', 'LOAN CATEGORY');
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (41, '/v1/user/get/statusCount', 'USER COUNT');
-INSERT IGNORE INTO url_api (id, api_url, type)
-values (42, '/v1/branch/get/statusCount', 'BRANCH COUNT');
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (41, '/v1/user/get/statusCount', 'USER COUNT');
+-- INSERT IGNORE INTO url_api (id, api_url, type)
+-- values (42, '/v1/branch/get/statusCount', 'BRANCH COUNT');
 -- INSERT IGNORE INTO url_api (id, api_url, type)
 -- values (43, '/v1/sector/get/statusCount', 'SECTOR COUNT');
 -- INSERT IGNORE INTO url_api (id, api_url, type)
@@ -124,11 +124,11 @@ INSERT IGNORE INTO role_permission_rights_api_rights values (1,4);
 
 
 -- ************************COUNTVIEW*******************************************
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 41);
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 42);
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 43);
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 44);
-INSERT IGNORE INTO role_permission_rights_api_rights values (17, 45);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 41);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 42);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 43);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 44);
+-- INSERT IGNORE INTO role_permission_rights_api_rights values (17, 45);
 
 -- ************************COUNTVIEW*******************************************
 
