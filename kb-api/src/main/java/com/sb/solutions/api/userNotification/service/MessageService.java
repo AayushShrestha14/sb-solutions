@@ -5,5 +5,5 @@ import com.sb.solutions.core.service.BaseService;
 
 
 public interface MessageService extends BaseService<Message> {
-    long count(long toId);
+
 }
