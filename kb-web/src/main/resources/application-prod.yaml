@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:sqlserver://103.98.131.67:1433;databaseName=cp_master
-    username: sa
-    password: sbsolutions@141
+    username: root
+    password: root
 
 
