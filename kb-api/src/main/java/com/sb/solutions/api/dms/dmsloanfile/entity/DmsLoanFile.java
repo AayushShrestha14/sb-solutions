@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
@@ -22,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 
+import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Priority;
@@ -35,9 +37,8 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
 
-    private @NotNull String customerName;
-    private String citizenshipNumber;
-    private String contactNumber;
+    @ManyToOne
+    private Customer customer;
     private double interestRate;
     private double proposedAmount;
     @Transient

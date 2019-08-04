@@ -1742,4 +1742,6 @@
   <include file="alter_changeset/20190731_eligibility_criteria.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_alter_customer_loan.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190108_alter_dms.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_customer.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_dms.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

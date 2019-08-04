@@ -19,6 +19,8 @@ import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.IncomeSource;
+import com.sb.solutions.core.enums.Occupation;
 import com.sb.solutions.core.enums.Status;
 
 @Entity
@@ -41,8 +43,9 @@ public class Customer extends BaseEntity<Long> {
     private MunicipalityVdc municipalities;
     private String street;
     private String wardNumber;
-    private String telephone;
-    private String mobile;
+    private String contactNumber;
+    private Occupation occupation;
+    private IncomeSource incomeSource;
     private String email;
     private Date initialRelationDate;
     private String citizenshipNumber;
