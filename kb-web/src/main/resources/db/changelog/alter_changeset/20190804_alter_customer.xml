@@ -11,6 +11,10 @@
       tableName="customer"/>
     <addColumn
       tableName="customer">
+      <column name="contact_number" type="INT"/>
+    </addColumn>
+    <addColumn
+      tableName="customer">
       <column name="occupation" type="INT"/>
     </addColumn>
     <addColumn
