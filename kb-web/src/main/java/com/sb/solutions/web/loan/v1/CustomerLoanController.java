@@ -24,6 +24,8 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
+import com.sb.solutions.web.user.dto.RoleDto;
+import com.sb.solutions.web.user.dto.UserDto;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -59,6 +61,18 @@ public class CustomerLoanController {
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
                 userService.getAuthenticated());
         service.sendForwardBackwardLoan(c);
+        RoleDto fromRole = new RoleDto();
+        RoleDto toRole = new RoleDto();
+        UserDto fromUser = new UserDto();
+        UserDto toUser = new UserDto();
+        fromRole.setId(c.getCurrentStage().getFromRole().getId());
+        toRole.setId(c.getCurrentStage().getToRole().getId());
+        fromUser.setId(c.getCurrentStage().getFromUser().getId());
+        toUser.setId(c.getCurrentStage().getToUser().getId());
+        actionDto.setFromRole(fromRole);
+        actionDto.setToRole(toRole);
+        actionDto.setFromUser(fromUser);
+        actionDto.setToUser(toUser);
         return new RestResponseDto().successModel(actionDto);
     }
 

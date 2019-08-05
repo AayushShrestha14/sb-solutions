@@ -24,4 +24,5 @@ public enum IncomeSource {
     @Override
     public String toString() {
         return this.income;
-    }}
+    }
+}
