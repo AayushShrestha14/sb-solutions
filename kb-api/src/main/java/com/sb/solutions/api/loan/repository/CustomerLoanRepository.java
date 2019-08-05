@@ -61,6 +61,9 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
         String generalCitizenShipNumber, String dmsCitizenShipNumber);
 
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileRegistrationNumber(
+        String generalRegistrationNumber, String dmsRegistrationNumber);
+
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM "
@@ -90,7 +93,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     void deleteByIdAndCurrentStageDocAction(Long id, DocAction docAction);
 
     @Query("SELECT COUNT(c) FROM CustomerLoan c JOIN c.currentStage s"
-        + " WHERE s.toUser.id = :id")
-    Integer chkUserContainCustomerLoan(@Param("id") Long id);
+        + " WHERE s.toUser.id = :id AND c.documentStatus= :docStatus")
+    Integer chkUserContainCustomerLoan(@Param("id") Long id,
+        @Param("docStatus") DocStatus docStatus);
 
 }

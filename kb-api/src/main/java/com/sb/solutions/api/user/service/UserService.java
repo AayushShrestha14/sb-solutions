@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
@@ -46,4 +47,6 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     List<PieChartDto> getStatisticsForBranchVsUsers();
 
     List<PieChartDto> getStatisticsForRolesVsUsers();
+
+    List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId,Long branchId,Long userId);
 }

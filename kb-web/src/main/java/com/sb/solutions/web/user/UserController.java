@@ -79,7 +79,8 @@ public class UserController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
+    public ResponseEntity<?>
+    sergetAll(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(userService.findAllPageable(searchDto, PaginationUtils
@@ -150,6 +151,11 @@ public class UserController {
 
             return new RestResponseDto().successModel(resetToken);
         }
+    }
+
+    @GetMapping(value = "/get-all-doc-transfer/{id}")
+    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
+        return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null,id));
     }
 
     @PostMapping(value = "/resetPassword")

@@ -16,7 +16,7 @@ public interface BranchService extends BaseService<Branch> {
 
     Map<Object, Object> branchStatusCount();
 
-    String csv(SearchDto searchDto);
+    String csv(Object searchDto);
 
     void saveExcel(MultipartFile file);
 

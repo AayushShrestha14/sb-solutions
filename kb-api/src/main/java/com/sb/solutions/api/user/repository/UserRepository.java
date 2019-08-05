@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,7 +20,8 @@ import com.sb.solutions.core.enums.Status;
 /**
  * @author Rujan Maharjan on 12/31/2018
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>,
+    JpaSpecificationExecutor<User> {
 
     @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
     Page<User> userFilter(@Param("name") String name, Pageable pageable);
