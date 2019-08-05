@@ -31,7 +31,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " AND cl.branch_id IN (:bid)) pending,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
-        + " ON l.id=cl.current_stage_id WHERE cl.document_status=1 AND l.to_role_id IN (:id)"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=1"
         + " AND cl.branch_id IN (:bid)) Approved,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
@@ -39,12 +39,12 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " AND cl.branch_id IN (:bid) ) Rejected,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
-        + " ON l.id=cl.current_stage_id WHERE cl.document_status=3 AND l.to_role_id IN (:id)"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=3"
         + " AND cl.branch_id IN (:bid) ) Closed,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl"
-        + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE l.to_role_id IN (:id)"
-        + " AND cl.branch_id IN (:bid) )total", nativeQuery = true)
+        + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE "
+        + "  cl.branch_id IN (:bid) )total", nativeQuery = true)
     Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
 
     @Query(value =
