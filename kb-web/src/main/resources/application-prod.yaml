@@ -3,5 +3,3 @@ spring:
     url: jdbc:sqlserver://103.98.131.67:1433;databaseName=cp_master
     username: root
     password: root
-
-
