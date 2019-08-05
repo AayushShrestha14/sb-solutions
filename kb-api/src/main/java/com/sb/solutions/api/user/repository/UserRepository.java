@@ -63,11 +63,11 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(b.name, COUNT(u)) FROM User u JOIN"
         + " u.branch b WHERE u.role.roleAccess = com.sb.solutions.core.enums.RoleAccess.OWN "
-        + "GROUP BY b.id")
+        + "GROUP BY b.id,b.name")
     List<PieChartDto> getStatisticsBasedOnBranch();
 
-    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(u.role.roleName, COUNT(u)) FROM User"
-        + " u GROUP BY u.role.id")
+    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(r.roleName, COUNT(u)) FROM User "
+        + " u join u.role r GROUP BY r.id,r.roleName")
     List<PieChartDto> getStatisticsBasedOnRoles();
 
 }
