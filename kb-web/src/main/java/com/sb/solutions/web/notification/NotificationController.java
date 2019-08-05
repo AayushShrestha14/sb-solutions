@@ -57,7 +57,7 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getBranch() {
+    public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(service.findAll());
     }
 }
