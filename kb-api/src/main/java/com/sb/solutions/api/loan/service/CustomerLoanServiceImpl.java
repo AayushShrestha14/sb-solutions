@@ -241,6 +241,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
+        object.setParentId(object.getId());
         object.setId(null);
         object.setDocumentStatus(DocStatus.PENDING);
         object.getDmsLoanFile().setId(null);

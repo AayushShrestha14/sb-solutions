@@ -5,7 +5,8 @@ package com.sb.solutions.core.enums;
  */
 public enum LoanType {
 
-    NEW_LOAN("New Loan"), RENEWED_LOAN("Renewed Loan");
+    NEW_LOAN("New Loan"), RENEWED_LOAN("Renewed Loan"),
+    CLOSURE_LOAN("'Closure Loan");
 
     private final String value;
 
