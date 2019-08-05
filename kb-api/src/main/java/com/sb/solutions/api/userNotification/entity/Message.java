@@ -1,8 +1,11 @@
 package com.sb.solutions.api.userNotification.entity;
 
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +33,9 @@ public class Message {
     private Long loanConfigId;
     private String message;
     private Status status;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
 
     @Transient
     private DocAction docAction;
