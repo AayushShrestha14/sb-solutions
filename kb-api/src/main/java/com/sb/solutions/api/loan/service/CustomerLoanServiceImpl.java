@@ -42,8 +42,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
-
-
     private final ProductModeService productModeService;
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
 
@@ -53,7 +51,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
-
     }
 
     @Override
@@ -72,9 +69,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Loan can not be null");
         }
         if (customerLoan.getId() == null) {
-            if (customerLoan.getBranch() == null) {
-                customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
-            }
+            customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
             LoanStage stage = new LoanStage();
             stage.setToRole(userService.getAuthenticated().getRole());
             stage.setFromRole(userService.getAuthenticated().getRole());
@@ -85,9 +80,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-
         return customerLoanRepository.save(customerLoan);
-
     }
 
     @Override
