@@ -1,21 +1,23 @@
 package com.sb.solutions.api.userNotification.entity;
 
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.Status;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Message {
+
     @Id
     @GeneratedValue
     private Long id;

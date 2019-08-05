@@ -1,13 +1,14 @@
 package com.sb.solutions.api.userNotification.repository.specification;
 
-import com.sb.solutions.api.userNotification.entity.Message;
-import com.sb.solutions.core.enums.Status;
-import org.springframework.data.jpa.domain.Specification;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.sb.solutions.api.userNotification.entity.Message;
+import com.sb.solutions.core.enums.Status;
 
 public class NotificationSpec implements Specification<Message> {
 
@@ -23,7 +24,8 @@ public class NotificationSpec implements Specification<Message> {
     }
 
     @Override
-    public Predicate toPredicate(Root<Message> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Message> root, CriteriaQuery<?> criteriaQuery,
+        CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_STATUS:
                 return criteriaBuilder.equal(root.get(property), Status.valueOf(value));
