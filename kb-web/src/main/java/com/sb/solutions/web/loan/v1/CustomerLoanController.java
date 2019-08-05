@@ -77,7 +77,7 @@ public class CustomerLoanController {
         customerLoan.setId(null);
         logger.debug("saving Customer Loan {}", customerLoan);
 
-        return new RestResponseDto().successModel(service.save(customerLoan));
+        return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
     }
 
 

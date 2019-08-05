@@ -40,5 +40,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     Map<String, String> chkUserContainCustomerLoan(Long id);
 
+    CustomerLoan renewCloseEntity(CustomerLoan object);
+
 
 }

@@ -110,14 +110,17 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @PrePersist
     public void prePersist() {
         String mapSecurity = "";
-        for (Securities securities : this.getSecurities()) {
-            mapSecurity += securities.ordinal() + ",";
+        try {
+            for (Securities securities : this.getSecurities()) {
+                mapSecurity += securities.ordinal() + ",";
+            }
+            mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
+            this.setSecurity(mapSecurity);
+            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+            this.setCreatedAt(new Date());
+        }catch(Exception e){}
         }
-        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-        this.setSecurity(mapSecurity);
-        this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
-        this.setCreatedAt(new Date());
-    }
+
 
 
 }

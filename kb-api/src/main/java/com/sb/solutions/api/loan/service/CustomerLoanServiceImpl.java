@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
@@ -30,7 +28,6 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
@@ -41,14 +38,12 @@ import com.sb.solutions.core.exception.ServiceValidationException;
  */
 
 @Service
-@Transactional
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
-    private final Class<CustomerLoan> Cus;
-    @Autowired
-    EntityManager entityManager;
+
+
     private final ProductModeService productModeService;
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
 
@@ -58,7 +53,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
-        Cus = CustomerLoan.class;
+
     }
 
     @Override
@@ -90,11 +85,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-        if (customerLoan.getLoanType().equals(LoanType.NEW_LOAN)) {
-            return this.saveEntity(customerLoan);
-        } else {
-            return this.renewCloseEntity(customerLoan);
-        }
+
+        return customerLoanRepository.save(customerLoan);
+
     }
 
     @Override
@@ -253,20 +246,21 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
     }
 
-
-    public CustomerLoan saveEntity(CustomerLoan object) {
-        logger.info("saving object {}", object);
-        return customerLoanRepository.save(object);
-    }
-
-
-    @Transactional
+    @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
         object.setId(null);
         object.setDocumentStatus(DocStatus.PENDING);
-        entityManager.merge(object);
-        entityManager.flush();
-        return object;
+        object.getDmsLoanFile().setId(null);
+
+        LoanStage stage = new LoanStage();
+        stage.setToRole(userService.getAuthenticated().getRole());
+        stage.setFromRole(userService.getAuthenticated().getRole());
+        stage.setFromUser(userService.getAuthenticated());
+        stage.setToUser(userService.getAuthenticated());
+        stage.setComment(DocAction.DRAFT.name());
+        stage.setDocAction(DocAction.DRAFT);
+        object.setCurrentStage(stage);
+        return customerLoanRepository.save(object);
 
 
     }
