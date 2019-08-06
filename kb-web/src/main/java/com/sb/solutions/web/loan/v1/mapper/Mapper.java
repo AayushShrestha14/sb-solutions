@@ -24,7 +24,6 @@ import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.web.common.stage.dto.StageDto;
@@ -81,7 +80,6 @@ public class Mapper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();

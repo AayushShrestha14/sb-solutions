@@ -7,6 +7,16 @@
       tableName="customer_loan">
       <column name="parent_id" type="BIGINT"/>
     </addColumn>
+
+    <addColumn
+      tableName="customer_loan">
+      <column name="child_id" type="BIGINT"/>
+    </addColumn>
+
+    <addColumn
+      tableName="customer_loan">
+      <column name="is_close_renew" type="BOOLEAN"/>
+    </addColumn>
   </changeSet>
 
 </databaseChangeLog>

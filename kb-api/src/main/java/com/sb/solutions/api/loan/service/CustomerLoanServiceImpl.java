@@ -241,7 +241,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        object.setParentId(object.getId());
+        final Long tempParentId = object.getId();
+        object.setParentId(tempParentId);
         object.setId(null);
         object.setDocumentStatus(DocStatus.PENDING);
         object.getDmsLoanFile().setId(null);
@@ -254,9 +255,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         stage.setComment(DocAction.DRAFT.name());
         stage.setDocAction(DocAction.DRAFT);
         object.setCurrentStage(stage);
-        return customerLoanRepository.save(object);
-
-
+        CustomerLoan customerLoan = customerLoanRepository.save(object);
+        customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
+        return customerLoan;
     }
 
 
