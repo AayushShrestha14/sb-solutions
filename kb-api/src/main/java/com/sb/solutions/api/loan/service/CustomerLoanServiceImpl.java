@@ -238,5 +238,28 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             return customerLoanRepository.getLasStatisticsByBranchId(branchId);
         }
     }
+
+    @Override
+    public CustomerLoan renewCloseEntity(CustomerLoan object) {
+        final Long tempParentId = object.getId();
+        object.setParentId(tempParentId);
+        object.setId(null);
+        object.setDocumentStatus(DocStatus.PENDING);
+        object.getDmsLoanFile().setId(null);
+
+        LoanStage stage = new LoanStage();
+        stage.setToRole(userService.getAuthenticated().getRole());
+        stage.setFromRole(userService.getAuthenticated().getRole());
+        stage.setFromUser(userService.getAuthenticated());
+        stage.setToUser(userService.getAuthenticated());
+        stage.setComment(DocAction.DRAFT.name());
+        stage.setDocAction(DocAction.DRAFT);
+        object.setCurrentStage(stage);
+        CustomerLoan customerLoan = customerLoanRepository.save(object);
+        customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
+        return customerLoan;
+    }
+
+
 }
 

@@ -85,6 +85,14 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 
+    @PostMapping("/close-renew-customer-loan")
+    public ResponseEntity<?> closeRenew(@Valid @RequestBody CustomerLoan customerLoan) {
+
+        logger.debug("saving Customer Loan {}", customerLoan);
+
+        return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") Long id) {

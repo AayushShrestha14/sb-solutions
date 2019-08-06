@@ -77,6 +77,12 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private Priority priority;
 
+    private Long parentId;
+
+    private Long childId;
+
+    private Boolean isCloseRenew;
+
     @Transient
     private List previousList;
 
