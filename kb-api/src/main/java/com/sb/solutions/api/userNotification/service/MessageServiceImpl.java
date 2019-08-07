@@ -59,7 +59,8 @@ public class MessageServiceImpl implements MessageService {
             Role toRole = roleService.findOne(message.getToRoleId());
 
             if (message.getDocAction().equals(DocAction.FORWARD)
-                || message.getDocAction().equals(DocAction.BACKWARD)) {
+                || message.getDocAction().equals(DocAction.BACKWARD)
+                || message.getDocAction().equals(DocAction.TRANSFER)) {
                 message.setMessage(String.format("%s (%s) has %s a loan document to %s (%s).",
                     fromUser.getUsername(),
                     fromRole.getRoleName(),
