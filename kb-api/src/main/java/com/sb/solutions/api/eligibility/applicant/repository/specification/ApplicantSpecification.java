@@ -14,6 +14,8 @@ import com.sb.solutions.api.eligibility.common.SearchCriteria;
 public class ApplicantSpecification implements Specification<Applicant> {
 
     private static final String FILTER_BY_ELIGIBILITY_STATUS = "eligibilityStatus";
+    private static final String FILTER_BY_LOAN = "loanConfigId";
+    private static final String FILTER_BY_BRANCH = "branchId";
 
     private final SearchCriteria searchCriteria;
 
@@ -29,6 +31,12 @@ public class ApplicantSpecification implements Specification<Applicant> {
             case FILTER_BY_ELIGIBILITY_STATUS:
                 return criteriaBuilder.equal(root.get(searchCriteria.getKey()),
                     EligibilityStatus.valueOf(String.valueOf(searchCriteria.getValue())));
+            case FILTER_BY_LOAN:
+                return criteriaBuilder.equal(root.join("loanConfig").get("id"),
+                    Long.valueOf(String.valueOf(searchCriteria.getValue())));
+            case FILTER_BY_BRANCH:
+                return criteriaBuilder.equal(root.join("branch").get("id"),
+                    Long.valueOf(String.valueOf(searchCriteria.getValue())));
             default:
                 return null;
         }
