@@ -2,6 +2,7 @@ package com.sb.solutions.api.loan.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,12 +27,14 @@ import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -258,6 +261,31 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
         return customerLoan;
+    }
+
+    @Override
+    public String csv(Object searchDto) {
+        final CsvMaker csvMaker = new CsvMaker();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess == null ? null : branchAccess);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        final List customerLoanList = customerLoanRepository.findAll(specification);
+        Map<String, String> header = new LinkedHashMap<>();
+        header.put("branch,name", " Branch");
+        header.put("dmsLoanFile,customerName", "Name");
+        header.put("loan,name", "Loan Name");
+        header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
+        header.put("loanType", "Type");
+        header.put("loanCategory", "Loan Category");
+        header.put("documentStatus", "Status");
+        return csvMaker.csv("customer_loan", header, customerLoanList, UploadDir.customerLoanCsv);
     }
 
 

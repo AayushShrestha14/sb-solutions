@@ -30,12 +30,12 @@ DECLARE @countLoan smallint
 DECLARE @countPending smallint
 DECLARE @checkPermPending smallint
 DECLARE @checkPermLoan smallint
-SET @countloan = (Select count(*) from url_api where id = 40)
+SET @countLoan = (Select count(*) from url_api where id = 40)
 SET @checkPermLoan = (Select count(*) from permission_api_list where api_list_id = 40)
 SET @checkPermPending = (Select count(*) from permission_api_list where api_list_id = 46)
 
 SET @countPending = (Select count(*) from url_api where id = 46)
-if(@countloan = 0)
+if(@countLoan = 0)
 BEGIN
 SET IDENTITY_INSERT url_api ON
  INSERT  INTO url_api (id, api_url, type)
