@@ -34,6 +34,9 @@ public class ApplicantSpecification implements Specification<Applicant> {
             case FILTER_BY_LOAN:
                 return criteriaBuilder.equal(root.join("loanConfig").get("id"),
                     Long.valueOf(String.valueOf(searchCriteria.getValue())));
+            case FILTER_BY_BRANCH:
+                return criteriaBuilder.equal(root.join("branch").get("id"),
+                    Long.valueOf(String.valueOf(searchCriteria.getValue())));
             default:
                 return null;
         }
