@@ -34,6 +34,12 @@ public class Message {
     private String message;
     private Status status;
 
+    @Transient
+    private Long toUserId;
+
+    @Transient
+    private Long toRoleId;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
