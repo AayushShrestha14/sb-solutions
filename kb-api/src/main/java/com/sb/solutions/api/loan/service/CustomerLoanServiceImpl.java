@@ -282,6 +282,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         header.put("dmsLoanFile,customerName", "Name");
         header.put("loan,name", "Loan Name");
         header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
+        header.put("loanType", "Type");
+        header.put("loanCategory", "Loan Category");
+        header.put("documentStatus", "Status");
         return csvMaker.csv("customer_loan", header, customerLoanList, UploadDir.customerLoanCsv);
     }
 
