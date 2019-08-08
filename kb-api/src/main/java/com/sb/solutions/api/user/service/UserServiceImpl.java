@@ -324,4 +324,9 @@ public class UserServiceImpl implements UserService {
         }
         return finalRoleDtoList;
     }
+
+    @Override
+    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+        return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
 }
