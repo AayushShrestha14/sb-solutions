@@ -53,10 +53,10 @@ public class PermissionController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/chkPerm")
-    public ResponseEntity<?> getPermChk(@RequestBody String name) {
+    public ResponseEntity<?> getPermChk() {
         User u = userService.getAuthenticated();
         return new RestResponseDto()
-            .successModel(permissionService.permsRight(name, u.getRole().getRoleName()));
+            .successModel(permissionService.permsRight(u.getRole().getId()));
     }
 
 }
