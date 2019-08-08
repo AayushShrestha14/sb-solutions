@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
+import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.
@@ -28,4 +29,8 @@ public interface RolePermissionRightRepository extends JpaRepository<RolePermiss
     @Query(value = "delete from role_permission_rights where role_id=:id and permission_id=:pid",
         nativeQuery = true)
     void deleteRolePermissionRightsByRole(@Param("id") Long i, @Param("pid") Long pid);
+
+
+    @Query("SELECT r.apiRights FROM RolePermissionRights r where r.role.id =:role ")
+    List<UrlApi> permsRight(@Param("role") Long role);
 }
