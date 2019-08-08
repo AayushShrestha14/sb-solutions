@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +36,8 @@ public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
     private String customerId;
+    @Temporal(TemporalType.DATE)
+    private Date dob;
     private String accountNo;
     @ManyToOne
     private Province province;

@@ -21,5 +21,9 @@
       tableName="customer">
       <column name="income_source" type="INT"/>
     </addColumn>
+    <addColumn
+      tableName="customer">
+      <column name="dob" type="DATE"/>
+    </addColumn>
   </changeSet>
 </databaseChangeLog>
