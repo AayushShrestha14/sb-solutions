@@ -56,7 +56,7 @@ public class PermissionController {
     public ResponseEntity<?> getPermChk() {
         User u = userService.getAuthenticated();
         return new RestResponseDto()
-            .successModel(permissionService.permsRight( u.getRole().getId()));
+            .successModel(permissionService.permsRight(u.getRole().getId()));
     }
 
 }
