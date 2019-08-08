@@ -63,18 +63,6 @@ public class CustomerLoanController {
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
                 userService.getAuthenticated());
         service.sendForwardBackwardLoan(c);
-        RoleDto fromRole = new RoleDto();
-        RoleDto toRole = new RoleDto();
-        UserDto fromUser = new UserDto();
-        UserDto toUser = new UserDto();
-        fromRole.setId(c.getCurrentStage().getFromRole().getId());
-        toRole.setId(c.getCurrentStage().getToRole().getId());
-        fromUser.setId(c.getCurrentStage().getFromUser().getId());
-        toUser.setId(c.getCurrentStage().getToUser().getId());
-        actionDto.setFromRole(fromRole);
-        actionDto.setToRole(toRole);
-        actionDto.setFromUser(fromUser);
-        actionDto.setToUser(toUser);
         return new RestResponseDto().successModel(actionDto);
     }
 
