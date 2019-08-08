@@ -25,4 +25,5 @@ public enum Occupation {
     @Override
     public String toString() {
         return this.occupation;
-    }}
+    }
+}

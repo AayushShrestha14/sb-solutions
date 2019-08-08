@@ -31,7 +31,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " AND cl.branch_id IN (:bid)) pending,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
-        + " ON l.id=cl.current_stage_id WHERE cl.document_status=1 AND l.to_role_id IN (:id)"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=1"
         + " AND cl.branch_id IN (:bid)) Approved,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
@@ -39,12 +39,12 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " AND cl.branch_id IN (:bid) ) Rejected,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
-        + " ON l.id=cl.current_stage_id WHERE cl.document_status=3 AND l.to_role_id IN (:id)"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=3"
         + " AND cl.branch_id IN (:bid) ) Closed,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl"
-        + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE l.to_role_id IN (:id)"
-        + " AND cl.branch_id IN (:bid) )total", nativeQuery = true)
+        + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE "
+        + "  cl.branch_id IN (:bid) )total", nativeQuery = true)
     Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
 
     @Query(value =
@@ -78,13 +78,13 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM "
-            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id, c.documentStatus")
+            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id, c.loan.name, c.documentStatus")
     List<StatisticDto> getLasStatistics(@Param("branchIds") List<Long> branchIds);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM "
-            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id, c.documentStatus")
+            + "CustomerLoan c WHERE c.branch.id IN (:branchIds) GROUP BY c.loan.id,c.loan.name, c.documentStatus")
     List<StatisticDto> getDmsStatistics(@Param("branchIds") List<Long> branchIds);
 
     @Modifying
@@ -95,5 +95,12 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + " WHERE s.toUser.id = :id AND c.documentStatus= :docStatus")
     Integer chkUserContainCustomerLoan(@Param("id") Long id,
         @Param("docStatus") DocStatus docStatus);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE CustomerLoan c SET c.isCloseRenew = true ,c.childId = :cId  WHERE c.id = :id")
+    void updateCloseRenewChildId(@Param("cId") Long cId,@Param("id") Long id);
+
+
 
 }

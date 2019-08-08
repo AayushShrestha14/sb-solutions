@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanType;
 
 /**
  * @author Rujan Maharjan on 6/8/2019
@@ -30,6 +31,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_TO_USER = "toUser";
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
+    private static final String FILTER_BY_TYPE = "loanNewRenew";
 
     private final String property;
     private final String value;
@@ -82,6 +84,9 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder
                         .equal(root.join("currentStage", JoinType.LEFT).join("toUser").get("id"),
                                 Long.valueOf(value));
+
+            case FILTER_BY_TYPE:
+                return criteriaBuilder.equal(root.get("loanType"), LoanType.valueOf(value));
 
             default:
                 return null;

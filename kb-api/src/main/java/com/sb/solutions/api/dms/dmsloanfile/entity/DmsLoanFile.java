@@ -22,6 +22,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
@@ -36,6 +38,8 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
+
+    private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
 
     @ManyToOne
     private Customer customer;
@@ -93,7 +97,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
             }
             this.setDocumentPathMaps(mapList);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("unable to doc path {}", e);
         }
 
         return this.documentPathMaps;
@@ -104,6 +108,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
             return NumberToWordsConverter
                 .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
         } catch (Exception e) {
+            logger.warn("unable to convert {}", e);
             return null;
         }
     }
@@ -111,13 +116,17 @@ public class DmsLoanFile extends BaseEntity<Long> {
     @PrePersist
     public void prePersist() {
         String mapSecurity = "";
-        for (Securities securities : this.getSecurities()) {
-            mapSecurity += securities.ordinal() + ",";
+        try {
+            for (Securities securities : this.getSecurities()) {
+                mapSecurity += securities.ordinal() + ",";
+            }
+            mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
+            this.setSecurity(mapSecurity);
+            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+            this.setCreatedAt(new Date());
+        } catch (Exception e) {
+            logger.warn("unable to mapSecurity {}", e);
         }
-        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-        this.setSecurity(mapSecurity);
-        this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
-        this.setCreatedAt(new Date());
     }
 
 
