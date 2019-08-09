@@ -26,8 +26,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
         + " left join role_permission_rights rpr on rpr.id= apirights.role_permission_rights_id"
         + " left join role r on rpr.role_id = r.id"
         + " left join permission p on p.id = rpr.permission_id"
-        + " where r.role_name=:role and rTrim(permission_name) = rTrim(:permName)",
+        + " where r.id=:role",
         nativeQuery = true)
-    List<Map<String, Object>> permsRight(@Param("permName") String permName,
-        @Param("role") String role);
+    List<Map<String, Object>> permsRight(@Param("role") Long role);
 }
