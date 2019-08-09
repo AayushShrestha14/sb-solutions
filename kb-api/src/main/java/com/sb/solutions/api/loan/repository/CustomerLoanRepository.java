@@ -60,7 +60,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCustomerCitizenshipNumber(String citizenshipNumber1, String citizenshipNumber2);
 
-    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileRegistrationNumber(
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileEntityInfoRegistrationNumber(
         String generalRegistrationNumber, String dmsRegistrationNumber);
 
     @Query(

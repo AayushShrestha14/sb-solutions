@@ -6,17 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,6 +37,10 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Customer customer;
+
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    private EntityInfo entityInfo;
+
     private double interestRate;
     private double proposedAmount;
     @Transient
@@ -69,8 +67,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Double totalLoanLimit;
     private String groupExpo;
     private Double fmvFundingPercent;
-    private String companyName;
-    private String registrationNumber;
+//    private String companyName;
+//    private String registrationNumber;
 
     public List<Map<String, String>> getDocumentPathMaps() {
         String documentsPaths = null;
