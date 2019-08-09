@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.core.enums.Status;
 
 public class EligibilityUtility {
 
@@ -28,7 +29,8 @@ public class EligibilityUtility {
             if (Character.isLetter(ch)) {
                 eligibilityQuestions.stream()
                     .filter(eligibilityQuestion -> eligibilityQuestion.getOperandCharacter()
-                        .equals(String.valueOf(ch)))
+                        .equals(String.valueOf(ch)) && eligibilityQuestion.getStatus()
+                        == Status.ACTIVE)
                     .findAny().map(eligibilityQuestion -> operands
                     .put(String.valueOf(ch), eligibilityQuestion.getId()));
             }
