@@ -41,7 +41,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Customer customer;
     private double interestRate;
     private double proposedAmount;
