@@ -18,6 +18,9 @@
     <dropColumn
             columnName="registration_number"
             tableName="dms_loan_file"/>
+    <dropColumn
+            columnName="security"
+            tableName="dms_loan_file"/>
     <addColumn
       tableName="dms_loan_file">
       <column name="customer_id" type="BIGINT"/>

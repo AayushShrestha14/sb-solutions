@@ -35,7 +35,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Customer customer;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -45,7 +45,6 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private double proposedAmount;
     @Transient
     private String proposedAmountWord;
-    private String security;
     private String serviceChargeType;
     private double serviceChargeAmount;
     @Column(columnDefinition = "text")
@@ -54,7 +53,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private List<String> documentMap;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
-    @Transient
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Securities.class)
     private Set<Securities> securities;
     @Transient
     private List<Map<String, String>> documentPathMaps;
@@ -113,17 +113,11 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     @PrePersist
     public void prePersist() {
-        String mapSecurity = "";
         try {
-            for (Securities securities : this.getSecurities()) {
-                mapSecurity += securities.ordinal() + ",";
-            }
-            mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-            this.setSecurity(mapSecurity);
             this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
             this.setCreatedAt(new Date());
         } catch (Exception e) {
-            logger.warn("unable to mapSecurity {}", e);
+            logger.warn("unable to set document path or created at", e);
         }
     }
 
