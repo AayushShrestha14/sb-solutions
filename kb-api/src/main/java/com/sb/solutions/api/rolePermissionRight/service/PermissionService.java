@@ -1,9 +1,9 @@
 package com.sb.solutions.api.rolePermissionRight.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Permission;
+import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
 import com.sb.solutions.core.service.BaseService;
 
 /**
@@ -11,5 +11,5 @@ import com.sb.solutions.core.service.BaseService;
  */
 public interface PermissionService extends BaseService<Permission> {
 
-    List<Map<String, Object>> permsRight(String permName, String role);
+    List<UrlApi> permsRight(Long role);
 }
