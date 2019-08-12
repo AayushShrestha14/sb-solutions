@@ -14,6 +14,7 @@ public class EntityInfoSpec implements Specification<EntityInfo> {
     private static final String FILTER_BY_REGISTRATION_NUMBER = "registrationNumber";
     private final String property;
     private final String value;
+
     public EntityInfoSpec(String property, String value) {
         this.property = property;
         this.value = value;
