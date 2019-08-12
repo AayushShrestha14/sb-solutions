@@ -141,14 +141,6 @@ public class CustomerLoanController {
             .successModel(service.getByCitizenshipNumber(citizenshipNumber));
     }
 
-    @GetMapping(value = "/searchByRegistrationNumber/{number}")
-    public ResponseEntity<?> getLoansByRegistrationNumber(
-        @PathVariable("number") String registraionNumber) {
-        logger.info("GET:/searchByRegistrationNumbe/{}", registraionNumber);
-        return new RestResponseDto()
-            .successModel(service.getByRegistrationNumber(registraionNumber));
-    }
-
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "Results page you want to retrieve (0..N)"),
