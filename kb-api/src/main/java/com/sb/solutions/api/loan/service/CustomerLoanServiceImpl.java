@@ -77,15 +77,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Customer customer = null;
         EntityInfo entityInfo = null;
         if (customerLoan.getCustomerInfo() != null) {
-            Customer oldCustomer;
-            if (customerLoan.getCustomerInfo().getId() == null) {
-                oldCustomer = customerService.findCustomerByCitizenshipNumber(
-                    customerLoan.getCustomerInfo().getCitizenshipNumber());
-                if (oldCustomer != null) {
-                    customerLoan.getCustomerInfo().setId(oldCustomer.getId());
-                    customerLoan.getCustomerInfo().setVersion(oldCustomer.getVersion());
-                }
-            }
             customer = this.customerService.save(customerLoan.getCustomerInfo());
         }
         if (customerLoan.getEntityInfo() != null) {
