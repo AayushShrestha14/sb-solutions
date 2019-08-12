@@ -50,13 +50,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired UserService userService,
         @Autowired CustomerService customerService,
         @Autowired EntityInfoService entityInfoService,
-        ProductModeService productModeService, CustomerService customerService1,
-        EntityInfoService entityInfoService1) {
+        ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
-        this.customerService = customerService1;
-        this.entityInfoService = entityInfoService1;
+        this.customerService = customerService;
+        this.entityInfoService = entityInfoService;
     }
 
     @Override

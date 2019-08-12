@@ -25,5 +25,9 @@
       tableName="customer">
       <column name="dob" type="DATE"/>
     </addColumn>
+    <addUniqueConstraint
+      columnNames="citizenship_number"
+      constraintName="customer_unique_citizenship_number"
+      tableName="customer"/>
   </changeSet>
 </databaseChangeLog>

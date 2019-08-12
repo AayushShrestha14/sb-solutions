@@ -20,5 +20,9 @@
         <dropNotNullConstraint columnDataType="BIGINT"
                                columnName="swot_id"
                                tableName="entity_info"/>
+        <addUniqueConstraint
+          columnNames="registration_number"
+          constraintName="entity_info_unique_registration_number"
+          tableName="entity_info"/>
     </changeSet>
 </databaseChangeLog>
