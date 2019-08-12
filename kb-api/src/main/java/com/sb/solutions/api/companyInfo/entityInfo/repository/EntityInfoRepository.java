@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface EntityInfoRepository extends JpaRepository<EntityInfo, Long>, JpaSpecificationExecutor<EntityInfo> {
 
+    EntityInfo findEntityInfoByRegistrationNumber(String registrationNumber);
+
 }

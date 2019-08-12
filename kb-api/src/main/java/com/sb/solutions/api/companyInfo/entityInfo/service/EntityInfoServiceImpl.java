@@ -47,4 +47,9 @@ public class EntityInfoServiceImpl implements EntityInfoService {
         Specification<EntityInfo> specification = entityInfoSpecBuilder.build();
         return entityInfoRepository.findAll(specification, pageable);
     }
+
+    @Override
+    public EntityInfo findEntityInfoByRegistrationNumber(String registrationNumber) {
+        return entityInfoRepository.findEntityInfoByRegistrationNumber(registrationNumber);
+    }
 }

@@ -17,9 +17,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +45,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final EntityInfoService entityInfoService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-        @Autowired UserService userService,
-        @Autowired CustomerService customerService,
-        @Autowired EntityInfoService entityInfoService,
-        ProductModeService productModeService) {
+                                   @Autowired UserService userService,
+                                   @Autowired CustomerService customerService,
+                                   @Autowired EntityInfoService entityInfoService,
+                                   ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -78,9 +76,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         EntityInfo entityInfo = null;
         if (customerLoan.getCustomerInfo() != null) {
             Customer oldCustomer;
-            if (customerLoan.getCustomerInfo().getId() == null) {
+            if (customerLoan.getCustomerInfo().getId() != null) {
                 oldCustomer = customerService.findCustomerByCitizenshipNumber(
-                    customerLoan.getCustomerInfo().getCitizenshipNumber());
+                        customerLoan.getCustomerInfo().getCitizenshipNumber());
                 if (oldCustomer != null) {
                     customerLoan.getCustomerInfo().setId(oldCustomer.getId());
                     customerLoan.getCustomerInfo().setVersion(oldCustomer.getVersion());
@@ -89,6 +87,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customer = this.customerService.save(customerLoan.getCustomerInfo());
         }
         if (customerLoan.getEntityInfo() != null) {
+            EntityInfo oldEntityInfo;
+            if (customerLoan.getCustomerInfo().getId() != null) {
+                oldEntityInfo = entityInfoService.findEntityInfoByRegistrationNumber(
+                        customerLoan.getEntityInfo().getRegistrationNumber());
+                if(oldEntityInfo != null){
+                    customerLoan.getEntityInfo().setId(oldEntityInfo.getId());
+                    customerLoan.getEntityInfo().setVersion(oldEntityInfo.getVersion());
+                }
+            }
             entityInfo = this.entityInfoService.save(customerLoan.getEntityInfo());
         }
         if (customerLoan.getId() == null) {
@@ -114,7 +121,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticated();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -142,8 +149,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
         return customerLoanRepository
-            .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
-                u.getRole().getId(), u.getBranch().get(0).getId());
+                .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
+                        u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
@@ -160,7 +167,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
         return customerLoanRepository
-            .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
+                .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
     }
 
     @Override
@@ -168,7 +175,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -192,7 +199,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         User u = userService.getAuthenticated();
         if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
             customerLoanRepository
-                .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
+                    .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
             if (!customerLoanRepository.findById(id).isPresent()) {
                 return new CustomerLoan();
             } else {
@@ -283,7 +290,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
