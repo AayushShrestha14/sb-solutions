@@ -21,23 +21,5 @@
     <dropColumn
             columnName="security"
             tableName="dms_loan_file"/>
-    <addColumn
-      tableName="dms_loan_file">
-      <column name="customer_id" type="BIGINT"/>
-    </addColumn>
-    <addColumn
-            tableName="dms_loan_file">
-      <column name="entity_info_id" type="BIGINT"/>
-    </addColumn>
-    <addForeignKeyConstraint baseColumnNames="customer_id"
-      baseTableName="dms_loan_file"
-      constraintName="fk_dms_customer_id"
-      referencedColumnNames="id"
-      referencedTableName="customer"/>
-    <addForeignKeyConstraint baseColumnNames="entity_info_id"
-                             baseTableName="dms_loan_file"
-                             constraintName="fk_dms_entity_info_id"
-                             referencedColumnNames="id"
-                             referencedTableName="entity_info"/>
   </changeSet>
 </databaseChangeLog>

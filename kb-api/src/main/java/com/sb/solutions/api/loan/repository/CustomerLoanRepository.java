@@ -58,9 +58,9 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + " join c.loan l WHERE c.branch.id = :branchId GROUP BY c.loan.id,l.name")
     List<PieChartDto> proposedAmountByBranchId(@Param("branchId") Long branchId);
 
-    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCustomerCitizenshipNumber(String citizenshipNumber1, String citizenshipNumber2);
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumber(String citizenshipNumber1);
 
-    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileEntityInfoRegistrationNumber(
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrEntityInfo_RegistrationNumber(
         String generalRegistrationNumber, String dmsRegistrationNumber);
 
     @Query(

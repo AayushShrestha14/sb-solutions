@@ -35,12 +35,6 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Customer customer;
-
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private EntityInfo entityInfo;
-
     private double interestRate;
     private double proposedAmount;
     @Transient
@@ -67,8 +61,6 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Double totalLoanLimit;
     private String groupExpo;
     private Double fmvFundingPercent;
-//    private String companyName;
-//    private String registrationNumber;
 
     public List<Map<String, String>> getDocumentPathMaps() {
         String documentsPaths = null;
