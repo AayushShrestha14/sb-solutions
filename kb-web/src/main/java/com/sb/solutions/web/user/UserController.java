@@ -181,13 +181,13 @@ public class UserController {
 
     @PostMapping(value = "/changePassword")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto passwordDto) {
-        User user = userService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        User user = userService.getByUsername(passwordDto.getUsername());
 
         if(!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())){
             return new RestResponseDto().failureModel("Invalid Old Password");
         }
-        userService.updatePassword(user.getName(), passwordDto.getNewPassword());
-        return new RestResponseDto().successModel("Password Changed Successfully");
+        userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
+            return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
 }
