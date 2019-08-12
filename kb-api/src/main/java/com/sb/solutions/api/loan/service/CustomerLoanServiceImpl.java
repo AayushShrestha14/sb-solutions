@@ -156,13 +156,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public List<CustomerLoan> getByRegistrationNumber(String registrationNumber) {
-        return customerLoanRepository
-                .getByCustomerInfoCitizenshipNumberOrEntityInfo_RegistrationNumber(registrationNumber,
-                        registrationNumber);
-    }
-
-    @Override
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
