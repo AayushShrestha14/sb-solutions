@@ -17,7 +17,9 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +47,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final EntityInfoService entityInfoService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-                                   @Autowired UserService userService,
-                                   @Autowired CustomerService customerService,
-                                   @Autowired EntityInfoService entityInfoService,
-                                   ProductModeService productModeService, CustomerService customerService1, EntityInfoService entityInfoService1) {
+        @Autowired UserService userService,
+        @Autowired CustomerService customerService,
+        @Autowired EntityInfoService entityInfoService,
+        ProductModeService productModeService, CustomerService customerService1,
+        EntityInfoService entityInfoService1) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -71,17 +74,22 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getLoan() == null) {
             throw new ServiceValidationException("Loan can not be null");
         }
+
         Customer customer = null;
         EntityInfo entityInfo = null;
         if (customerLoan.getCustomerInfo() != null) {
-
+            Customer oldCustomer;
+            if (customerLoan.getCustomerInfo().getId() == null) {
+                oldCustomer = customerService.findCustomerByCitizenshipNumber(
+                    customerLoan.getCustomerInfo().getCitizenshipNumber());
+                if (oldCustomer != null) {
+                    customerLoan.getCustomerInfo().setId(oldCustomer.getId());
+                }
+            }
             customer = this.customerService.save(customerLoan.getCustomerInfo());
-
         }
         if (customerLoan.getEntityInfo() != null) {
-
             entityInfo = this.entityInfoService.save(customerLoan.getEntityInfo());
-
         }
         if (customerLoan.getId() == null) {
             customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
@@ -106,7 +114,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticated();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -134,8 +142,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticated();
         return customerLoanRepository
-                .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
-                        u.getRole().getId(), u.getBranch().get(0).getId());
+            .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
+                u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
@@ -152,14 +160,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
         return customerLoanRepository
-                .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
+            .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
     }
 
     @Override
     public List<CustomerLoan> getByRegistrationNumber(String registrationNumber) {
         return customerLoanRepository
-                .getByCustomerInfoCitizenshipNumberOrEntityInfo_RegistrationNumber(registrationNumber,
-                        registrationNumber);
+            .getByCustomerInfoCitizenshipNumberOrEntityInfo_RegistrationNumber(registrationNumber,
+                registrationNumber);
     }
 
     @Override
@@ -167,7 +175,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -191,7 +199,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         User u = userService.getAuthenticated();
         if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
             customerLoanRepository
-                    .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
+                .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
             if (!customerLoanRepository.findById(id).isPresent()) {
                 return new CustomerLoan();
             } else {
@@ -282,7 +290,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }

@@ -8,4 +8,6 @@ import com.sb.solutions.api.customer.entity.Customer;
 public interface CustomerRepository extends JpaRepository<Customer, Long>,
     JpaSpecificationExecutor<Customer> {
 
+    Customer findCustomerByCitizenshipNumber(String citizenshipNumber);
+
 }
