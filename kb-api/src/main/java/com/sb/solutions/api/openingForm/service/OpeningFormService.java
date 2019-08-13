@@ -7,6 +7,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface OpeningFormService extends BaseService<OpeningForm> {
 
-    Map<Object, Object> getStatus(Long branchId);
+    Map<Object, Object> getStatus();
 
 }

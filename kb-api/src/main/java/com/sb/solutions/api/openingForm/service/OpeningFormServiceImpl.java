@@ -172,8 +172,10 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     }
 
     @Override
-    public Map<Object, Object> getStatus(Long branchId) {
-        return openingFormRepository.openingFormStatusCount(branchId);
+    public Map<Object, Object> getStatus() {
+        String currentUserBranches = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        return openingFormRepository.openingFormStatusCount(currentUserBranches);
     }
 
     public String writeJsonFile(String url, OpeningForm openingForm) {

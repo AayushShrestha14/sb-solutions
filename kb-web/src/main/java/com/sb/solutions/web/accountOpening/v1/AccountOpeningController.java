@@ -103,8 +103,8 @@ public class AccountOpeningController {
     }
 
     @GetMapping(value = "/statusCount")
-    public ResponseEntity<?> getStatus(@RequestParam("branchId") Long branchId) {
-        return new RestResponseDto().successModel(openingFormService.getStatus(branchId));
+    public ResponseEntity<?> getStatus() {
+        return new RestResponseDto().successModel(openingFormService.getStatus());
     }
 
     @GetMapping(value = "/all")
