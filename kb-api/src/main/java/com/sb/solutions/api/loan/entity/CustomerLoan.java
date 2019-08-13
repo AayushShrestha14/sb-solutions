@@ -51,15 +51,13 @@ import com.sb.solutions.core.enums.Priority;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerLoan extends BaseEntity<Long> {
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne
     private Customer customerInfo;
 
     @OneToOne
     private LoanConfig loan;
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne
     private EntityInfo entityInfo;
 
     private LoanType loanType = LoanType.NEW_LOAN;

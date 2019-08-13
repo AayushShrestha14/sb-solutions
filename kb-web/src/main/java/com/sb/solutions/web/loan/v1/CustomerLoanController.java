@@ -2,6 +2,8 @@ package com.sb.solutions.web.loan.v1;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
+import com.sb.solutions.api.customer.service.CustomerService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
@@ -48,9 +50,9 @@ public class CustomerLoanController {
     private final Mapper mapper;
 
     public CustomerLoanController(
-        @Autowired CustomerLoanService service,
-        @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+            @Autowired CustomerLoanService service,
+            @Autowired Mapper mapper,
+            @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
@@ -137,14 +139,6 @@ public class CustomerLoanController {
         logger.info("GET:/searchByCitizenship/{}", citizenshipNumber);
         return new RestResponseDto()
             .successModel(service.getByCitizenshipNumber(citizenshipNumber));
-    }
-
-    @GetMapping(value = "/searchByRegistrationNumber/{number}")
-    public ResponseEntity<?> getLoansByRegistrationNumber(
-        @PathVariable("number") String registraionNumber) {
-        logger.info("GET:/searchByRegistrationNumbe/{}", registraionNumber);
-        return new RestResponseDto()
-            .successModel(service.getByRegistrationNumber(registraionNumber));
     }
 
     @ApiImplicitParams({
