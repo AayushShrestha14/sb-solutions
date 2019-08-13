@@ -5,13 +5,15 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.core.enums.AccountStatus;
 
-public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long> {
+public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long>,
+    JpaSpecificationExecutor<OpeningForm> {
 
     Page<OpeningForm> findAllByBranchAndStatus(Branch branch, Pageable pageable,
         AccountStatus accountStatus);

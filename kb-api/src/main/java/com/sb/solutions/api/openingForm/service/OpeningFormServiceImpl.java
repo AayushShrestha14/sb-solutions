@@ -9,19 +9,23 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.openingForm.entity.OpeningAccount;
 import com.sb.solutions.api.openingForm.entity.OpeningCustomer;
 import com.sb.solutions.api.openingForm.entity.OpeningCustomerRelative;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
+import com.sb.solutions.api.openingForm.repository.specification.OpeningFormSpecBuilder;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
@@ -35,15 +39,18 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     private OpeningFormRepository openingFormRepository;
     private DateValidation dateValidation;
     private BranchService branchService;
+    private UserService userService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     @Autowired
     public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository,
         DateValidation dateValidation,
-        BranchService branchService) {
+        BranchService branchService,
+        UserService userService) {
         this.openingFormRepository = openingFormRepository;
         this.dateValidation = dateValidation;
         this.branchService = branchService;
+        this.userService = userService;
     }
 
     @Override
@@ -154,14 +161,14 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public Page<OpeningForm> findAllPageable(Object t, Pageable pageable) {
-        return openingFormRepository.findAll(pageable);
-    }
-
-    @Override
-    public Page<OpeningForm> findAllByBranchAndAccountStatus(Branch branch, Pageable pageable,
-        String accountStatus) {
-        AccountStatus status = AccountStatus.valueOf(accountStatus);
-        return openingFormRepository.findAllByBranchAndStatus(branch, pageable, status);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        String currentUserBranches = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        s.put("branch", s.getOrDefault("branch", currentUserBranches));
+        OpeningFormSpecBuilder builder = new OpeningFormSpecBuilder(s);
+        Specification<OpeningForm> specification = builder.build();
+        return openingFormRepository.findAll(specification, pageable);
     }
 
     @Override
