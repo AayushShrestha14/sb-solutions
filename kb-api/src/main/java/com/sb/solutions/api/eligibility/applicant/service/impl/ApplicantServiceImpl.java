@@ -104,6 +104,16 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
         double remainingAmount = ArithmeticExpressionUtils
             .parseExpression(formula); // new Expression
+
+        // Saving eligibility Answers and Obtained Points..
+        List<Answer> answers =
+            answerService.findByIds(
+                applicant.getAnswers().stream().map(Answer::getId).collect(Collectors.toList()));
+        applicant.setObtainedMarks(
+            answers.stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
+        applicant.getEligibilityAnswers()
+            .forEach(eligibilityAnswer -> eligibilityAnswer.setApplicant(applicant));
+
         if (remainingAmount <= 0) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
@@ -117,13 +127,6 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
         applicant.setEligibleAmount(eligibleAmount);
         applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
-        List<Answer> answers =
-            answerService.findByIds(
-                applicant.getAnswers().stream().map(Answer::getId).collect(Collectors.toList()));
-        applicant.setObtainedMarks(
-            answers.stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
-        applicant.getEligibilityAnswers()
-            .forEach(eligibilityAnswer -> eligibilityAnswer.setApplicant(applicant));
         return applicantRepository.save(applicant);
     }
 

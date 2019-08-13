@@ -46,7 +46,7 @@ public class AdminApplicantController {
         if (applicant == null) {
             return new RestResponseDto().failureModel("Not Found.");
         }
-        return new RestResponseDto().successModel(applicant);
+        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(applicant));
     }
 
     @ApiImplicitParams({
