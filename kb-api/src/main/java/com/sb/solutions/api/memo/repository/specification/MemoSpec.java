@@ -57,7 +57,7 @@ public class MemoSpec implements Specification<Memo> {
                 return criteriaBuilder.like(root.join("sentTo").get("name"), value + "%");
             case FILTER_BY_STAGES_RECEIVER:
                 return criteriaBuilder
-                    .equal(root.join("stages").get("sentTo"), Long.parseLong(value));
+                    .equal(root.join("stages").get("sentTo").get("id"), Long.parseLong(value));
             default:
                 return null;
         }
