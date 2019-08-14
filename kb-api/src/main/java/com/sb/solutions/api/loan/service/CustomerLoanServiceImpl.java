@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
 import com.sb.solutions.api.customer.entity.Customer;
@@ -87,7 +88,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getCustomerInfo() != null) {
             customer = this.customerService.save(customerLoan.getCustomerInfo());
         }
-        if (customerLoan.getEntityInfo() != null) {
+        if (customerLoan.getEntityInfo() != null
+            && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
             entityInfo = this.entityInfoService.save(customerLoan.getEntityInfo());
         }
         if (customerLoan.getId() == null) {
