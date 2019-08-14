@@ -2,14 +2,11 @@ package com.sb.solutions.web.accountOpening.v1;
 
 import javax.validation.Valid;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.openingForm.entity.OpeningCustomer;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.service.OpeningFormService;
@@ -36,15 +32,13 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
 @RequestMapping("/v1/accountOpening")
 public class AccountOpeningController {
 
-    @Value("${bank.name}")
-    private String bankName;
-
-    @Value("${bank.website}")
-    private String bankWebsite;
-
     private final OpeningFormService openingFormService;
     private final MailSenderService mailSenderService;
     private final Logger logger = LoggerFactory.getLogger(AccountOpeningController.class);
+    @Value("${bank.name}")
+    private String bankName;
+    @Value("${bank.website}")
+    private String bankWebsite;
 
     public AccountOpeningController(
         @Autowired OpeningFormService openingFormService,
@@ -55,8 +49,7 @@ public class AccountOpeningController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm,
-        BindingResult bindingResult) {
+    public ResponseEntity<?> saveCustomer(@Valid @RequestBody OpeningForm openingForm) {
         OpeningForm c = openingFormService.save(openingForm);
         if (c == null) {
             return new RestResponseDto().failureModel("Error Occurs");
@@ -82,7 +75,8 @@ public class AccountOpeningController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody OpeningForm openingForm) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id,
+        @RequestBody OpeningForm openingForm) {
         OpeningForm oldOpeningForm = openingFormService.findOne(id);
         AccountStatus previousStatus = oldOpeningForm.getStatus();
         OpeningForm newOpeningForm = openingFormService.save(openingForm);
@@ -109,27 +103,20 @@ public class AccountOpeningController {
     }
 
     @GetMapping(value = "/statusCount")
-    public ResponseEntity<?> getStatus(@RequestParam("branchId") Long branchId) {
-        return new RestResponseDto().successModel(openingFormService.getStatus(branchId));
+    public ResponseEntity<?> getStatus() {
+        return new RestResponseDto().successModel(openingFormService.getStatus());
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getCustomer() {
+    public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(openingFormService.findAll());
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getPageableCustomerByBranch(@RequestBody Branch branch,
-        @RequestParam("page") int page, @RequestParam("size") int size,
-        @RequestParam("accountStatus") String accountStatus) {
-        return new RestResponseDto().successModel(openingFormService
-            .findAllByBranchAndAccountStatus(branch, PaginationUtils.pageable(page, size),
-                accountStatus));
+    public ResponseEntity<?> getPageable(@RequestBody Object searchObject,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(
+            openingFormService.findAllPageable(searchObject, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping(value = "/uploadFile")
