@@ -9,7 +9,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  */
 public final class ArithmeticExpressionUtils {
 
-    private final static ExpressionParser parser = new SpelExpressionParser();
+    private static final ExpressionParser parser = new SpelExpressionParser();
 
     private ArithmeticExpressionUtils() {
     }

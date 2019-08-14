@@ -2,6 +2,8 @@ package com.sb.solutions.web.loan.v1;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
+import com.sb.solutions.api.customer.service.CustomerService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,9 +24,12 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
+import com.sb.solutions.web.user.dto.RoleDto;
+import com.sb.solutions.web.user.dto.UserDto;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -44,9 +50,9 @@ public class CustomerLoanController {
     private final Mapper mapper;
 
     public CustomerLoanController(
-        @Autowired CustomerLoanService service,
-        @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+            @Autowired CustomerLoanService service,
+            @Autowired Mapper mapper,
+            @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
@@ -71,12 +77,27 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 
+    @PostMapping("/close-renew-customer-loan")
+    public ResponseEntity<?> closeRenew(@Valid @RequestBody CustomerLoan customerLoan) {
+
+        logger.debug("saving Customer Loan {}", customerLoan);
+
+        return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") Long id) {
         return new RestResponseDto().successModel(service.findOne(id));
     }
 
+
+    @GetMapping("/{id}/delete")
+    public ResponseEntity<?> delByIdRoleMaker(@PathVariable("id") Long id) {
+        logger.info("deleting Customer Loan {}", id);
+        return new RestResponseDto()
+            .successModel(service.delCustomerLoan(id));
+    }
 
     @PostMapping("/status")
     public ResponseEntity<?> getfirst5ByDocStatus(@RequestBody CustomerLoan customerLoan) {
@@ -131,4 +152,22 @@ public class CustomerLoanController {
         return new RestResponseDto()
             .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
     }
+
+    @GetMapping(path = "/stats")
+    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId) {
+        logger.debug("REST request to get the statistical data about the loans.");
+        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId)));
+    }
+
+    @GetMapping(path = "/check-user-customer-loan/{id}")
+    public ResponseEntity<?> chkUserContainCustomerLoan(@PathVariable Long id) {
+        logger.debug("REST request to get the check data about the user.");
+        return new RestResponseDto().successModel(service.chkUserContainCustomerLoan(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.csv(searchDto));
+    }
+
 }

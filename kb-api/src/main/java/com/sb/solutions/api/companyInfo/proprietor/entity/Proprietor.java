@@ -1,6 +1,7 @@
 package com.sb.solutions.api.companyInfo.proprietor.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,10 +24,13 @@ public class Proprietor extends BaseEntity<Long> {
 
     private String contactNo;
 
+    @ManyToOne
     private Province province;
 
+    @ManyToOne
     private District district;
 
+    @ManyToOne
     private MunicipalityVdc municipalityVdc;
 
     private double share;

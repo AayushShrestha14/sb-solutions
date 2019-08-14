@@ -38,7 +38,9 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     }
 
     @Override
-    public List<AccountType> findAllByAccountPurpose(AccountPurpose accountPurpose) {
+    public List<AccountType> findAllByAccountPurposeId(Long accountPurposeId) {
+        AccountPurpose accountPurpose = new AccountPurpose();
+        accountPurpose.setId(accountPurposeId);
         return accountTypeRepository.findAllByAccountPurpose(accountPurpose);
     }
 }

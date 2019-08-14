@@ -8,18 +8,23 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -34,14 +39,12 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @EqualsAndHashCode(callSuper = true)
 public class DmsLoanFile extends BaseEntity<Long> {
 
-    private @NotNull String customerName;
-    private String citizenshipNumber;
-    private String contactNumber;
+    private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
+
     private double interestRate;
     private double proposedAmount;
     @Transient
     private String proposedAmountWord;
-    private String security;
     private String serviceChargeType;
     private double serviceChargeAmount;
     @Column(columnDefinition = "text")
@@ -50,41 +53,47 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private List<String> documentMap;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
-    @Transient
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Securities.class)
     private Set<Securities> securities;
     @Transient
-    private List<Map<Object, Object>> documentPathMaps;
+    private List<Map<String, String>> documentPathMaps;
     private Date tenure;
     private int tenureDuration;
     private Priority priority;
     private String recommendationConclusion;
     private String waiver;
+    private Double fmvTotal;
+    private Double totalLoanLimit;
+    private String groupExpo;
+    private Double fmvFundingPercent;
 
-    public List<Map<Object, Object>> getDocumentPathMaps() {
-        String tempPath = null;
+    public List<Map<String, String>> getDocumentPathMaps() {
+        String documentsPaths = null;
         Gson gson = new Gson();
-        List<Map<Object, Object>> mapList = new ArrayList<>();
+        List<Map<String, String>> mapList = new ArrayList<>();
         try {
-            tempPath = this.getDocumentPath();
-            List tempList = gson.fromJson(tempPath, List.class);
+            documentsPaths = this.getDocumentPath();
+            List<String> documentsPathList = gson.fromJson(documentsPaths, List.class);
             List<String> documentNames = new ArrayList<>();
             List<String> documentPaths = new ArrayList<>();
             int count = 0;
-            for (Object list : tempList) {
-                String toString = list.toString();
-                String[] arrayOfString = toString.split(":");
-                documentNames.add(arrayOfString[0]);
-                documentPaths.add(arrayOfString[1]);
+            if (CollectionUtils.isNotEmpty(documentsPathList)) {
+                for (String list : documentsPathList) {
+                    String[] arrayOfString = list.split(":");
+                    documentNames.add(arrayOfString[0]);
+                    documentPaths.add(arrayOfString[1]);
+                }
             }
             for (String documentPath : documentPaths) {
-                Map<Object, Object> map = new LinkedHashMap<>();
+                Map<String, String> map = new LinkedHashMap<>();
                 map.put(documentNames.get(count), documentPath);
                 count++;
                 mapList.add(map);
             }
             this.setDocumentPathMaps(mapList);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("unable to doc path {}", e);
         }
 
         return this.documentPathMaps;
@@ -95,20 +104,19 @@ public class DmsLoanFile extends BaseEntity<Long> {
             return NumberToWordsConverter
                 .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
         } catch (Exception e) {
+            logger.warn("unable to convert {}", e);
             return null;
         }
     }
 
     @PrePersist
     public void prePersist() {
-        String mapSecurity = "";
-        for (Securities securities : this.getSecurities()) {
-            mapSecurity += securities.ordinal() + ",";
+        try {
+            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+            this.setCreatedAt(new Date());
+        } catch (Exception e) {
+            logger.warn("unable to set document path or created at", e);
         }
-        mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-        this.setSecurity(mapSecurity);
-        this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
-        this.setCreatedAt(new Date());
     }
 
 
