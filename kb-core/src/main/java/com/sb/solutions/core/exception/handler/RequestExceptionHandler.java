@@ -1,5 +1,9 @@
 package com.sb.solutions.core.exception.handler;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Lists;
@@ -16,10 +20,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RequestExceptionHandler {
@@ -40,7 +40,7 @@ public class RequestExceptionHandler {
 
         if (null != violations) {
             response.put("message",
-                    "Validation failed for " + error.getBindingResult().getObjectName());
+                "Validation failed for " + error.getBindingResult().getObjectName());
 
             response.put("errorCount", error.getBindingResult().getErrorCount());
             response.put("errors", violations);
@@ -53,7 +53,7 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> messageNotReadableExceptionHandler(
-            HttpMessageNotReadableException ex) {
+        HttpMessageNotReadableException ex) {
 
         logger.error("Can not parse request", ex);
 
@@ -83,12 +83,12 @@ public class RequestExceptionHandler {
             final BeanPropertyBindingResult propertyResult = (BeanPropertyBindingResult) rs;
 
             final List<Violation> violations = Lists
-                    .newArrayListWithCapacity(ex.getBindingResult().getErrorCount());
+                .newArrayListWithCapacity(ex.getBindingResult().getErrorCount());
 
             for (FieldError error : propertyResult.getFieldErrors()) {
                 final Violation violation = new Violation(error.getField(),
-                        error.getRejectedValue(),
-                        error.getDefaultMessage());
+                    error.getRejectedValue(),
+                    error.getDefaultMessage());
 
                 violations.add(violation);
             }
@@ -104,14 +104,14 @@ public class RequestExceptionHandler {
         if (ex.getMostSpecificCause() instanceof InvalidFormatException) {
 
             final InvalidFormatException formatException = (InvalidFormatException) ex
-                    .getMostSpecificCause();
+                .getMostSpecificCause();
 
             final String field = formatException.getPath().stream().map(Reference::getFieldName)
-                    .collect(
-                            Collectors.joining(","));
+                .collect(
+                    Collectors.joining(","));
 
             final Violation violation = new Violation(field, formatException.getValue(),
-                    formatException.getOriginalMessage());
+                formatException.getOriginalMessage());
 
             return Lists.newArrayList(violation);
         }
@@ -121,13 +121,14 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationHandler(
-            ConstraintViolationException ex) {
+        ConstraintViolationException ex) {
 
         logger.warn("Can not parse request", ex);
 
         final Map<String, Object> response = Maps.newHashMap();
         //TODO need to identify relevant message
-        response.put("message", "Some field value need to have unique. Please check and try again.");
+        response
+            .put("message", "Some field value need to have unique. Please check and try again.");
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
 
