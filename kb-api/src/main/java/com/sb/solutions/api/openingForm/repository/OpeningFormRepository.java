@@ -1,5 +1,6 @@
 package com.sb.solutions.api.openingForm.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,5 @@ public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long>,
         + "       (select count(id)"
         + "        from opening_form"
         + "        where opening_form.branch_id in (:branchIds)) total", nativeQuery = true)
-    Map<Object, Object> openingFormStatusCount(String branchIds);
+    Map<Object, Object> openingFormStatusCount(List<Long> branchIds);
 }

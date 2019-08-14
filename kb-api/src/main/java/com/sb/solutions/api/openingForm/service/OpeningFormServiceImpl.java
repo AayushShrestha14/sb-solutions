@@ -173,8 +173,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public Map<Object, Object> getStatus() {
-        String currentUserBranches = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+        List<Long> currentUserBranches = userService.getRoleAccessFilterByBranch();
         return openingFormRepository.openingFormStatusCount(currentUserBranches);
     }
 
