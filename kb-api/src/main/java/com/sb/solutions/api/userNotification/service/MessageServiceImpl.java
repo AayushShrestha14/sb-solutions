@@ -1,13 +1,8 @@
 package com.sb.solutions.api.userNotification.service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.service.RoleService;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.api.user.service.UserService;
-import com.sb.solutions.api.userNotification.entity.Message;
-import com.sb.solutions.api.userNotification.repository.MessageRepository;
-import com.sb.solutions.api.userNotification.repository.specification.NotificationSpecBuilder;
-import com.sb.solutions.core.enums.Status;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,8 +10,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.api.userNotification.entity.Message;
+import com.sb.solutions.api.userNotification.repository.MessageRepository;
+import com.sb.solutions.api.userNotification.repository.specification.NotificationSpecBuilder;
+import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.Status;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -27,9 +29,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     public MessageServiceImpl(
-            MessageRepository messageRepository,
-            UserService userService,
-            RoleService roleService
+        MessageRepository messageRepository,
+        UserService userService,
+        RoleService roleService
     ) {
         this.messageRepository = messageRepository;
         this.userService = userService;
@@ -53,9 +55,26 @@ public class MessageServiceImpl implements MessageService {
 
         if (message.getId() == null) {
             message.setStatus(Status.ACTIVE);
-            message.setMessage(String.format("%s (%s) has %s you a loan document.",
-                    fromUser.getUsername(), fromRole.getRoleName(),
+            User toUser = userService.findOne(message.getToUserId());
+            Role toRole = roleService.findOne(message.getToRoleId());
+
+            if (message.getDocAction().equals(DocAction.FORWARD)
+                || message.getDocAction().equals(DocAction.BACKWARD)
+                || message.getDocAction().equals(DocAction.TRANSFER)) {
+                message.setMessage(String.format("%s (%s) has %s a loan document to %s (%s).",
+                    fromUser.getUsername(),
+                    fromRole.getRoleName(),
+                    message.getDocAction().toString().toLowerCase(),
+                    toUser.getUsername(),
+                    toRole.getRoleName()));
+            } else if (message.getDocAction().equals(DocAction.APPROVED)
+                || message.getDocAction().equals(DocAction.REJECT)
+                || message.getDocAction().equals(DocAction.CLOSED)) {
+                message.setMessage(String.format("%s (%s) has %s a loan document.",
+                    fromUser.getUsername(),
+                    fromRole.getRoleName(),
                     message.getDocAction().toString().toLowerCase()));
+            }
         }
         return messageRepository.save(message);
     }

@@ -2,6 +2,8 @@ package com.sb.solutions.web.loan.v1;
 
 import javax.validation.Valid;
 
+import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
+import com.sb.solutions.api.customer.service.CustomerService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +24,7 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
@@ -46,9 +50,9 @@ public class CustomerLoanController {
     private final Mapper mapper;
 
     public CustomerLoanController(
-        @Autowired CustomerLoanService service,
-        @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+            @Autowired CustomerLoanService service,
+            @Autowired Mapper mapper,
+            @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
@@ -61,18 +65,6 @@ public class CustomerLoanController {
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
                 userService.getAuthenticated());
         service.sendForwardBackwardLoan(c);
-        RoleDto fromRole = new RoleDto();
-        RoleDto toRole = new RoleDto();
-        UserDto fromUser = new UserDto();
-        UserDto toUser = new UserDto();
-        fromRole.setId(c.getCurrentStage().getFromRole().getId());
-        toRole.setId(c.getCurrentStage().getToRole().getId());
-        fromUser.setId(c.getCurrentStage().getFromUser().getId());
-        toUser.setId(c.getCurrentStage().getToUser().getId());
-        actionDto.setFromRole(fromRole);
-        actionDto.setToRole(toRole);
-        actionDto.setFromUser(fromUser);
-        actionDto.setToUser(toUser);
         return new RestResponseDto().successModel(actionDto);
     }
 
@@ -83,6 +75,14 @@ public class CustomerLoanController {
         logger.debug("saving Customer Loan {}", customerLoan);
 
         return new RestResponseDto().successModel(service.save(customerLoan));
+    }
+
+    @PostMapping("/close-renew-customer-loan")
+    public ResponseEntity<?> closeRenew(@Valid @RequestBody CustomerLoan customerLoan) {
+
+        logger.debug("saving Customer Loan {}", customerLoan);
+
+        return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
     }
 
 
@@ -141,14 +141,6 @@ public class CustomerLoanController {
             .successModel(service.getByCitizenshipNumber(citizenshipNumber));
     }
 
-    @GetMapping(value = "/searchByRegistrationNumber/{number}")
-    public ResponseEntity<?> getLoansByRegistrationNumber(
-        @PathVariable("number") String registraionNumber) {
-        logger.info("GET:/searchByRegistrationNumbe/{}", registraionNumber);
-        return new RestResponseDto()
-            .successModel(service.getByRegistrationNumber(registraionNumber));
-    }
-
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "Results page you want to retrieve (0..N)"),
@@ -171,6 +163,11 @@ public class CustomerLoanController {
     public ResponseEntity<?> chkUserContainCustomerLoan(@PathVariable Long id) {
         logger.debug("REST request to get the check data about the user.");
         return new RestResponseDto().successModel(service.chkUserContainCustomerLoan(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.csv(searchDto));
     }
 
 }

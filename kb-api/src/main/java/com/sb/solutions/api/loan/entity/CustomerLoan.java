@@ -51,15 +51,13 @@ import com.sb.solutions.core.enums.Priority;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerLoan extends BaseEntity<Long> {
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne
     private Customer customerInfo;
 
     @OneToOne
     private LoanConfig loan;
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne
     private EntityInfo entityInfo;
 
     private LoanType loanType = LoanType.NEW_LOAN;
@@ -76,6 +74,12 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanStage currentStage;
 
     private Priority priority;
+
+    private Long parentId;
+
+    private Long childId;
+
+    private Boolean isCloseRenew;
 
     @Transient
     private List previousList;

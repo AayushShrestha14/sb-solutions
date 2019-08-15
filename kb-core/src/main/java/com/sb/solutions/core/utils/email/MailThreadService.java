@@ -28,8 +28,7 @@ public class MailThreadService {
             try {
                 mailSenderService.sendMailWithAttachmentBcc(email);
             } catch (Exception e) {
-                logger.error("error sending email", e.getLocalizedMessage());
-                e.printStackTrace();
+                logger.error("error sending email", e);
             }
         }).start();
     }
@@ -39,8 +38,7 @@ public class MailThreadService {
             try {
                 mailSenderService.send(template, email);
             } catch (Exception e) {
-                logger.error("error sending email", e.getLocalizedMessage());
-                e.printStackTrace();
+                logger.error("error sending email", e);
             }
         }).start();
     }
@@ -50,10 +48,10 @@ public class MailThreadService {
         try {
             mailSenderService.sendMailWithAttachmentBcc(email);
         } catch (MessagingException e) {
-            logger.error("error sending email", e.getLocalizedMessage());
+            logger.error("error sending email", e);
             throw new ServiceValidationException(e.getLocalizedMessage());
         } catch (IOException e) {
-            logger.error("error sending email", e.getLocalizedMessage());
+            logger.error("error sending email", e);
             throw new ServiceValidationException(e.getLocalizedMessage());
         }
     }
