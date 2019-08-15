@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +21,8 @@ import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.IncomeSource;
+import com.sb.solutions.core.enums.Occupation;
 import com.sb.solutions.core.enums.Status;
 
 @Entity
@@ -32,6 +36,8 @@ public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
     private String customerId;
+    @Temporal(TemporalType.DATE)
+    private Date dob;
     private String accountNo;
     @ManyToOne
     private Province province;
@@ -41,8 +47,9 @@ public class Customer extends BaseEntity<Long> {
     private MunicipalityVdc municipalities;
     private String street;
     private String wardNumber;
-    private String telephone;
-    private String mobile;
+    private String contactNumber;
+    private Occupation occupation;
+    private IncomeSource incomeSource;
     private String email;
     private Date initialRelationDate;
     private String citizenshipNumber;

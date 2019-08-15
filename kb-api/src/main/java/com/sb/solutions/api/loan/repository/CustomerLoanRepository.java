@@ -58,11 +58,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + " join c.loan l WHERE c.branch.id = :branchId GROUP BY c.loan.id,l.name")
     List<PieChartDto> proposedAmountByBranchId(@Param("branchId") Long branchId);
 
-    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileCitizenshipNumber(
-        String generalCitizenShipNumber, String dmsCitizenShipNumber);
-
-    List<CustomerLoan> getByCustomerInfoCitizenshipNumberOrDmsLoanFileRegistrationNumber(
-        String generalRegistrationNumber, String dmsRegistrationNumber);
+    List<CustomerLoan> getByCustomerInfoCitizenshipNumber(String citizenshipNumber1);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "

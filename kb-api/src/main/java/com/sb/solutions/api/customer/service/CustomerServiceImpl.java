@@ -1,15 +1,18 @@
 package com.sb.solutions.api.customer.service;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.repository.CustomerRepository;
+import com.sb.solutions.api.customer.repository.specification.CustomerSpecBuilder;
 import com.sb.solutions.core.dto.SearchDto;
 
 @Service
@@ -36,9 +39,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<Customer> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(t, SearchDto.class);
-        return customerRepository.customerFilter("", pageable);
+        Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        final CustomerSpecBuilder customerSpecBuilder = new CustomerSpecBuilder(s);
+        Specification<Customer> specification = customerSpecBuilder.build();
+        return customerRepository.findAll(specification, pageable);
     }
 
+    @Override
+    public Customer findCustomerByCitizenshipNumber(String citizenshipNumber) {
+        return customerRepository.findCustomerByCitizenshipNumber(citizenshipNumber);
+    }
 }
 
