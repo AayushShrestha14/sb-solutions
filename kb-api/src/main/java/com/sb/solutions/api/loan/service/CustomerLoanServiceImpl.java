@@ -267,6 +267,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
+        User u = userService.getAuthenticated();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -274,6 +275,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess == null ? null : branchAccess);
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List customerLoanList = customerLoanRepository.findAll(specification);
