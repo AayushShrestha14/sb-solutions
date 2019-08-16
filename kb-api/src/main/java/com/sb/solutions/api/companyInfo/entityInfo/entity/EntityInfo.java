@@ -21,6 +21,7 @@ import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.BusinessType;
 
 @Entity
 @Data
@@ -47,6 +48,8 @@ public class EntityInfo extends BaseEntity<Long> {
 
     private String companyName;
     private String registrationNumber;
+    private Date establishmentDate;
+    private BusinessType businessType;
 
     @PrePersist
     public void prePersist() {
