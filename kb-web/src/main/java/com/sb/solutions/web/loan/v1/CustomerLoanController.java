@@ -1,9 +1,8 @@
 package com.sb.solutions.web.loan.v1;
 
+import java.text.ParseException;
 import javax.validation.Valid;
 
-import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
-import com.sb.solutions.api.customer.service.CustomerService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
@@ -24,12 +23,9 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
-import com.sb.solutions.web.user.dto.RoleDto;
-import com.sb.solutions.web.user.dto.UserDto;
 
 /**
  * @author Rujan Maharjan on 5/10/2019
@@ -124,13 +120,17 @@ public class CustomerLoanController {
     }
 
     @GetMapping(value = "/proposed-amount")
-    public ResponseEntity<?> getProposedAmount() {
-        return new RestResponseDto().successModel(service.proposedAmount());
+    public ResponseEntity<?> getProposedAmount(@RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
+        return new RestResponseDto().successModel(service.proposedAmount(startDate, endDate));
     }
 
     @GetMapping(value = "/loan-amount/{id}")
-    public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id) {
-        return new RestResponseDto().successModel(service.proposedAmountByBranch(id));
+    public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id,
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
+        return new RestResponseDto().successModel(service.proposedAmountByBranch(id, startDate,
+            endDate));
     }
 
     @GetMapping(value = "/searchByCitizenship/{number}")
@@ -154,9 +154,12 @@ public class CustomerLoanController {
     }
 
     @GetMapping(path = "/stats")
-    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId) {
+    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
         logger.debug("REST request to get the statistical data about the loans.");
-        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId)));
+        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId,
+            startDate, endDate)));
     }
 
     @GetMapping(path = "/check-user-customer-loan/{id}")
