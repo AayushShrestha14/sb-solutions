@@ -6,3 +6,6 @@ stages:
 build:
   stage: build
   script: ./mvnw clean package
+  only:
+    - master
+    - merge_requests

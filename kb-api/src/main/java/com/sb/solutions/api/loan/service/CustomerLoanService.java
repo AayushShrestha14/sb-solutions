@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,19 +26,18 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status);
 
 
-    List<PieChartDto> proposedAmount();
+    List<PieChartDto> proposedAmount(String startDate, String endDate) throws ParseException;
 
-    List<PieChartDto> proposedAmountByBranch(Long branchId);
+    List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate, String endDate) throws ParseException;
 
     List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber);
-
-    List<CustomerLoan> getByRegistrationNumber(String registrationNumber);
 
     Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable);
 
     CustomerLoan delCustomerLoan(Long id);
 
-    List<StatisticDto> getStats(Long branchId);
+    List<StatisticDto> getStats(Long branchId, String startDate, String endDate)
+        throws ParseException;
 
     Map<String, String> chkUserContainCustomerLoan(Long id);
 

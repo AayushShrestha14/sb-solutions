@@ -1744,4 +1744,9 @@
   <include file="alter_changeset/20190108_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="20190801_notificationMessage.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190508_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_customer.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_dms.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190809_alter_entity_info.xml" relativeToChangelogFile="true"/>
+  <include file="20190810_dms_loan_file_securities.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

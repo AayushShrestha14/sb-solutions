@@ -14,6 +14,7 @@ public class NotificationSpec implements Specification<Message> {
 
     private static final String FILTER_BY_STATUS = "status";
     private static final String FILTER_BY_USER_ID = "toId";
+    private static final String FILTER_BY_USER_ROLE = "toRole";
 
     private final String property;
     private final String value;
@@ -30,6 +31,8 @@ public class NotificationSpec implements Specification<Message> {
             case FILTER_BY_STATUS:
                 return criteriaBuilder.equal(root.get(property), Status.valueOf(value));
             case FILTER_BY_USER_ID:
+                return criteriaBuilder.equal(root.get(property), this.value);
+            case FILTER_BY_USER_ROLE:
                 return criteriaBuilder.equal(root.get(property), this.value);
             default:
                 return null;

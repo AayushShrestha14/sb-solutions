@@ -1,5 +1,8 @@
 package com.sb.solutions.web.notification;
 
+import com.sb.solutions.api.userNotification.entity.Message;
+import com.sb.solutions.api.userNotification.service.MessageService;
+import com.sb.solutions.core.dto.RestResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +11,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.sb.solutions.api.userNotification.entity.Message;
-import com.sb.solutions.api.userNotification.service.MessageService;
-import com.sb.solutions.core.dto.RestResponseDto;
 
 @RestController
 public class SocketController {
@@ -31,8 +30,8 @@ public class SocketController {
         if (message == null) {
             return new RestResponseDto().failureModel("Error saving message");
         } else {
-            if (message.getToId() != null) {
-                simpMessagingTemplate.convertAndSend(SocketController.API + message.getToId(), message);
+            if (message.getToId() != null && message.getToRole() != null) {
+                simpMessagingTemplate.convertAndSend(SocketController.API + message.getToId() + "/" + message.getToRole(), message);
                 return new RestResponseDto().successModel(service.save(message));
             } else {
                 logger.error("Error saving message {}", message);

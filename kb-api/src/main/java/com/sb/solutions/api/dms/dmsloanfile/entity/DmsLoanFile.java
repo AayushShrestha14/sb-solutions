@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
@@ -38,14 +40,11 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 public class DmsLoanFile extends BaseEntity<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
-    private @NotNull String customerName;
-    private String citizenshipNumber;
-    private String contactNumber;
+
     private double interestRate;
     private double proposedAmount;
     @Transient
     private String proposedAmountWord;
-    private String security;
     private String serviceChargeType;
     private double serviceChargeAmount;
     @Column(columnDefinition = "text")
@@ -54,7 +53,8 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private List<String> documentMap;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LoanDocument> documents;
-    @Transient
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Securities.class)
     private Set<Securities> securities;
     @Transient
     private List<Map<String, String>> documentPathMaps;
@@ -67,8 +67,6 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Double totalLoanLimit;
     private String groupExpo;
     private Double fmvFundingPercent;
-    private String companyName;
-    private String registrationNumber;
 
     public List<Map<String, String>> getDocumentPathMaps() {
         String documentsPaths = null;
@@ -113,17 +111,11 @@ public class DmsLoanFile extends BaseEntity<Long> {
 
     @PrePersist
     public void prePersist() {
-        String mapSecurity = "";
         try {
-            for (Securities securities : this.getSecurities()) {
-                mapSecurity += securities.ordinal() + ",";
-            }
-            mapSecurity = mapSecurity.substring(0, mapSecurity.length() - 1);
-            this.setSecurity(mapSecurity);
             this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
             this.setCreatedAt(new Date());
         } catch (Exception e) {
-            logger.warn("unable to mapSecurity {}", e);
+            logger.warn("unable to set document path or created at", e);
         }
     }
 
