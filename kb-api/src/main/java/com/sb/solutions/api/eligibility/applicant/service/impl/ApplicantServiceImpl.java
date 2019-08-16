@@ -131,6 +131,13 @@ public class ApplicantServiceImpl implements ApplicantService {
     }
 
     @Override
+    public Applicant update(Applicant applicant) {
+        Applicant updateApplicant = applicantRepository.getOne(applicant.getId());
+        updateApplicant.setEligibilityStatus(applicant.getEligibilityStatus());
+        return applicantRepository.save(updateApplicant);
+    }
+
+    @Override
     public Page<Applicant> findAllPageable(Object t, Pageable pageable) {
         logger.debug("Retrieving a page of applicant list.");
         ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();

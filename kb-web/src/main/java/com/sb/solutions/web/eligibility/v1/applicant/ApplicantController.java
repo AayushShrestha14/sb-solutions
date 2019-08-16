@@ -15,6 +15,7 @@ import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
 import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 
 @RestController
@@ -46,6 +47,12 @@ public class ApplicantController {
             return new RestResponseDto().failureModel("Oops! Something went wrong.");
         }
         return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(savedApplicant));
+    }
+
+    @PostMapping("/update")
+    public final ResponseEntity<?> updateApplicant(@RequestBody ApplicantDto applicantDto) {
+        Applicant applicant = applicantService.update(applicantMapper.mapDtoToEntity(applicantDto));
+        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(applicant));
     }
 
 }
