@@ -55,22 +55,22 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
-            + " join c.loan l WHERE c.branch.id IN (:branchId)  AND c.createdAt < :endDate GROUP BY"
-            + " c.loan.id, l.name")
+            + " join c.loan l WHERE c.branch.id IN (:branchId)  AND c.createdAt <= :endDate GROUP"
+            + " BY c.loan.id, l.name")
     List<PieChartDto> proposedAmountBefore(@Param("branchId") List<Long> branchId,
         @Param("endDate") Date endDate);
 
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
-            + " join c.loan l WHERE c.branch.id IN (:branchId)  AND c.createdAt > :startDate GROUP"
+            + " join c.loan l WHERE c.branch.id IN (:branchId)  AND c.createdAt >= :startDate GROUP"
             + " BY c.loan.id, l.name")
     List<PieChartDto> proposedAmountAfter(@Param("branchId") List<Long> branchId,
         @Param("startDate") Date startDate);
 
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"
-            + " join c.loan l WHERE c.branch.id IN (:branchId) AND (c.createdAt between "
-            + ":startDate AND :endDate) GROUP BY c.loan.id, l.name")
+            + " join c.loan l WHERE c.branch.id IN (:branchId) AND (c.createdAt >= "
+            + ":startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id, l.name")
     List<PieChartDto> proposedAmountBetween(@Param("branchId") List<Long> branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
@@ -97,7 +97,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) "
             + "FROM CustomerLoan c join c.loan l WHERE c.branch.id = :branchId AND (c.createdAt "
-            + "BETWEEN :startDate AND :endDate) GROUP BY c.loan.id, l.name")
+            + ">= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id, l.name")
     List<PieChartDto> proposedAmountByBranchIdAndDateBetween(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
@@ -126,8 +126,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-            + "AND (c.createdAt BETWEEN :startDate AND :endDate) GROUP BY c.loan.id, c.loan.name, c"
-            + ".documentStatus")
+            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id, c"
+            + ".loan.name, c.documentStatus")
     List<StatisticDto> getLasStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
@@ -154,7 +154,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId  "
-            + "AND (c.createdAt BETWEEN :startDate AND :endDate) GROUP BY c .loan .id, c.loan"
+            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c .loan .id, c.loan"
             + ".name, c.documentStatus")
     List<StatisticDto> getDmsStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
@@ -184,7 +184,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
             + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-            + "(:branchIds) AND (c.createdAt BETWEEN :startDate AND :endDate) GROUP BY c.loan.id,"
+            + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
             + " c.loan.name, c.documentStatus")
     List<StatisticDto> getLasStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
@@ -214,7 +214,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-            + "(:branchIds) AND (c.createdAt BETWEEN :startDate AND :endDate) GROUP BY c.loan.id,"
+            + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
             + "c.loan.name, c.documentStatus")
     List<StatisticDto> getDmsStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds, @Param(
         "startDate") Date startDate, @Param("endDate") Date endDate);
