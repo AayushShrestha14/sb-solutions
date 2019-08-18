@@ -3,12 +3,12 @@ package com.sb.solutions.api.eligibility.applicant.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,6 +32,7 @@ import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 
@@ -47,6 +48,8 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     private final SubmissionDocumentService submissionDocumentService;
 
+    private final UserService userService;
+
     private final AnswerService answerService;
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
@@ -54,6 +57,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     private final LoanConfigService loanConfigService;
 
     public ApplicantServiceImpl(ApplicantRepository applicantRepository,
+        @Autowired UserService userService,
         FileStorageService fileStorageService,
         SubmissionDocumentService submissionDocumentService, AnswerService answerService,
         EligibilityCriteriaService eligibilityCriteriaService,
@@ -61,6 +65,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         this.applicantRepository = applicantRepository;
         this.fileStorageService = fileStorageService;
         this.submissionDocumentService = submissionDocumentService;
+        this.userService = userService;
         this.answerService = answerService;
         this.eligibilityCriteriaService = eligibilityCriteriaService;
         this.loanConfigService = loanConfigService;
@@ -140,14 +145,17 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public Page<Applicant> findAllPageable(Object t, Pageable pageable) {
         logger.debug("Retrieving a page of applicant list.");
-        ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(t + ",");
-        while (matcher.find()) {
-            applicantSpecificationBuilder
-                .with(matcher.group(1), matcher.group(3), matcher.group(2));
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        /*String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
         }
-        Specification<Applicant> specification = applicantSpecificationBuilder.build();
+        s.put("branchIds", branchAccess);*/
+        final ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder(
+            s);
+        final Specification<Applicant> specification = applicantSpecificationBuilder.build();
         return applicantRepository.findAll(specification, pageable);
     }
 
