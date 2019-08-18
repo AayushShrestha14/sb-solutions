@@ -1750,4 +1750,5 @@
   <include file="20190810_dms_loan_file_securities.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190816_dms.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190818_applicant.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

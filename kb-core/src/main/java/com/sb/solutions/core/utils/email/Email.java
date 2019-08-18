@@ -23,5 +23,6 @@ public class Email {
     private String accountType;
     private String resetPasswordLink;
     private String expiry;
+    private String loanType;
 
 }
