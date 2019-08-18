@@ -64,9 +64,16 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private String recommendationConclusion;
     private String waiver;
     private Double fmvTotal;
+    private Double distressValue;
     private Double totalLoanLimit;
+    private String individualExposure;
+    private String institutionExposure;
     private String groupExpo;
     private Double fmvFundingPercent;
+    private Double incomeCoverageRatio;
+    private Double debtServiceCoverageRatio;
+    private String keyPersonName;
+    private String dealingProductName;
 
     public List<Map<String, String>> getDocumentPathMaps() {
         String documentsPaths = null;
