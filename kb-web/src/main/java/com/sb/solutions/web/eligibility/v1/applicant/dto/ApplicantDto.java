@@ -18,6 +18,8 @@ public class ApplicantDto extends BaseDto<Long> {
 
     private long phoneNumber;
 
+    private String email;
+
     private double requestAmount;
 
     private String remarks;
