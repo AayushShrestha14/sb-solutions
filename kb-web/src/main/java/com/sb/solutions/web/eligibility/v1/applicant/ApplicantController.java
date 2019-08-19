@@ -22,6 +22,7 @@ import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
+import com.sb.solutions.web.eligibility.v1.applicant.dto.ApplicantDto;
 import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 
 @RestController
@@ -82,6 +83,12 @@ public class ApplicantController {
             return new RestResponseDto()
                 .successModel(applicantMapper.mapEntityToDto(savedApplicant));
         }
+    }
+
+    @PostMapping("/update")
+    public final ResponseEntity<?> updateApplicant(@RequestBody ApplicantDto applicantDto) {
+        Applicant applicant = applicantService.update(applicantMapper.mapDtoToEntity(applicantDto));
+        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(applicant));
     }
 
 }
