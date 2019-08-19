@@ -18,6 +18,7 @@ public final class EmailConstant {
         .put(Template.ONE_TIME_PASSWORD, "/mail/customer-otp.html")
         .put(Template.TEST, "/mail/email-test.html")
         .put(Template.ACCOUNT_OPENING_ACCEPT, "/mail/account-opening-registration-accept")
+        .put(Template.ELIGIBILITY_APPROVE, "/mail/eligible-approve")
         .build();
 
     private EmailConstant() {
@@ -28,6 +29,7 @@ public final class EmailConstant {
         RESET_PASSWORD("Reset Password !!"),
         RESET_PASSWORD_SUCCESS("Password Reset Successful !!"),
         ELIGIBILITY_ELIGIBLE("You are Eligible !!"),
+        ELIGIBILITY_APPROVE("Thank You !! Loan request has been approved."),
         ACCOUNT_OPENING_THANK_YOU("Thank You !! Account Opening request is received."),
         ONE_TIME_PASSWORD("One Time Password"),
         TEST("Email Configuration Test"),
