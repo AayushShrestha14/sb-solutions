@@ -4,6 +4,8 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
 import com.sb.solutions.api.eligibility.common.EligibilityStatus;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.email.Email;
+import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 
 @RestController
@@ -22,17 +29,31 @@ import com.sb.solutions.web.eligibility.v1.applicant.mapper.ApplicantMapper;
 public class ApplicantController {
 
     static final String URL = "/v1/loan-configs/{loanConfigId}/applicants";
-
     private final Logger logger = LoggerFactory.getLogger(ApplicantController.class);
-
-
     private final ApplicantService applicantService;
-
     private final ApplicantMapper applicantMapper;
+    private final MailSenderService mailSenderService;
+    private final BranchService branchService;
+    private final LoanConfigService loanConfigService;
 
-    public ApplicantController(ApplicantService applicantService, ApplicantMapper applicantMapper) {
+    @Value("${bank.name}")
+    private String bankName;
+    @Value("${bank.website}")
+    private String bankWebsite;
+
+    @Autowired
+    public ApplicantController(
+        ApplicantService applicantService,
+        ApplicantMapper applicantMapper,
+        MailSenderService mailSenderService,
+        BranchService branchService,
+        LoanConfigService loanConfigService
+    ) {
         this.applicantService = applicantService;
         this.applicantMapper = applicantMapper;
+        this.mailSenderService = mailSenderService;
+        this.branchService = branchService;
+        this.loanConfigService = loanConfigService;
     }
 
     @PostMapping
@@ -44,8 +65,23 @@ public class ApplicantController {
         final Applicant savedApplicant = applicantService.save(applicant, loanConfigId);
         if (savedApplicant == null) {
             return new RestResponseDto().failureModel("Oops! Something went wrong.");
+        } else {
+            if (savedApplicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE) {
+                Email email = new Email();
+                email.setBankName(this.bankName);
+                email.setBankWebsite(this.bankWebsite);
+                email.setBankBranch(
+                    branchService.findOne(savedApplicant.getBranch().getId()).getName());
+                email.setTo(savedApplicant.getEmail());
+                email.setToName(savedApplicant.getFullName());
+                email.setLoanType(
+                    loanConfigService.findOne(savedApplicant.getLoanConfig().getId()).getName());
+                mailSenderService.send(Template.ELIGIBILITY_ELIGIBLE, email);
+                logger.debug("Email sent for Customer Eligibility {}", savedApplicant);
+            }
+            return new RestResponseDto()
+                .successModel(applicantMapper.mapEntityToDto(savedApplicant));
         }
-        return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(savedApplicant));
     }
 
 }
