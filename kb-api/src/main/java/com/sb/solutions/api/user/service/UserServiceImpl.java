@@ -41,7 +41,6 @@ import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.api.user.repository.specification.UserSpecBuilder;
 import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -168,7 +167,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String csv(SearchDto searchDto) {
+    public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
         final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
@@ -290,7 +289,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId,Long userId) {
+    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
         List<User> users = userRepository.findAll();
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
@@ -300,7 +299,8 @@ public class UserServiceImpl implements UserService {
             List<UserDto> userDtoList = new ArrayList<>();
             for (User u : users) {
                 UserDto userDto = new UserDto();
-                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L && u.getId() != userId) {
+                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L
+                    && u.getId() != userId) {
                     List<BranchDto> branchDto = new ArrayList<>();
 
                     userDto.setId(u.getId());
