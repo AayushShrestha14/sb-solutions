@@ -68,17 +68,7 @@ public class ApplicantController {
             return new RestResponseDto().failureModel("Oops! Something went wrong.");
         } else {
             if (savedApplicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE) {
-                Email email = new Email();
-                email.setBankName(this.bankName);
-                email.setBankWebsite(this.bankWebsite);
-                email.setBankBranch(
-                    branchService.findOne(savedApplicant.getBranch().getId()).getName());
-                email.setTo(savedApplicant.getEmail());
-                email.setToName(savedApplicant.getFullName());
-                email.setLoanType(
-                    loanConfigService.findOne(savedApplicant.getLoanConfig().getId()).getName());
-                mailSenderService.send(Template.ELIGIBILITY_ELIGIBLE, email);
-                logger.debug("Email sent for Customer Eligibility {}", savedApplicant);
+                sendMail(savedApplicant);
             }
             return new RestResponseDto()
                 .successModel(applicantMapper.mapEntityToDto(savedApplicant));
@@ -88,7 +78,28 @@ public class ApplicantController {
     @PostMapping("/update")
     public final ResponseEntity<?> updateApplicant(@RequestBody ApplicantDto applicantDto) {
         Applicant applicant = applicantService.update(applicantMapper.mapDtoToEntity(applicantDto));
+        if (applicant.getEligibilityStatus() == EligibilityStatus.APPROVED) {
+            sendMail(applicant);
+        }
         return new RestResponseDto().successModel(applicantMapper.mapEntityToDto(applicant));
+    }
+
+    private void sendMail(Applicant applicant) {
+        Email email = new Email();
+        email.setBankName(this.bankName);
+        email.setBankWebsite(this.bankWebsite);
+        email.setBankBranch(
+            branchService.findOne(applicant.getBranch().getId()).getName());
+        email.setTo(applicant.getEmail());
+        email.setToName(applicant.getFullName());
+        email.setLoanType(
+            loanConfigService.findOne(applicant.getLoanConfig().getId()).getName());
+        if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE) {
+            mailSenderService.send(Template.ELIGIBILITY_ELIGIBLE, email);
+        } else if (applicant.getEligibilityStatus() == EligibilityStatus.APPROVED) {
+            mailSenderService.send(Template.ELIGIBILITY_APPROVE, email);
+        }
+        logger.debug("Email sent for Customer Eligibility {}", applicant);
     }
 
 }
