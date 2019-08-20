@@ -26,12 +26,10 @@ import com.sb.solutions.core.enums.Status;
 @EqualsAndHashCode(callSuper = true)
 public class EligibilityCriteria extends BaseEntity<Long> {
 
-    private double thresholdAmount;
-
     private double percentageOfAmount;
 
     @OneToMany(mappedBy = "eligibilityCriteria")
-    @Where(clause = "status != 'DELETED'")
+    @Where(clause = "status != 2")
     @Cascade({CascadeType.PERSIST, CascadeType.MERGE})
     private List<EligibilityQuestion> questions = new ArrayList<>();
 

@@ -52,13 +52,13 @@
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_proposal_created_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_proposal_modified_by_id"
-          referencedTableName="user"
+          referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="created_at" type="DATE">

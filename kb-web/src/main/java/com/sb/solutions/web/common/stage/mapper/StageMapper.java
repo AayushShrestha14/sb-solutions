@@ -39,15 +39,26 @@ public class StageMapper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        currentStage.setFromUser(currentUser);
-        currentStage.setFromRole(currentUser.getRole());
-        currentStage.setToUser(stageDto.getToUser());
-        currentStage.setToRole(stageDto.getToRole());
+
+
         currentStage.setDocAction(stageDto.getDocAction());
         currentStage.setComment(stageDto.getComment());
+
+        if (!stageDto.getDocAction().equals(DocAction.TRANSFER)) {
+            currentStage.setFromUser(currentUser);
+            currentStage.setFromRole(currentUser.getRole());
+        }else{
+            currentStage.setFromUser(currentStage.getToUser());
+            currentStage.setFromRole(currentStage.getToRole());
+            currentStage.setComment("Transfer By Administrator");
+        }
+
+        currentStage.setToUser(stageDto.getToUser());
+        currentStage.setToRole(stageDto.getToRole());
         if (stageDto.getDocAction().equals(DocAction.BACKWARD)) {
             currentStage = this.sendBackward(previousList, currentStage, currentUser, createdBy);
         }
+
 
         if (stageDto.getDocAction().equals(DocAction.APPROVED)
             || stageDto.getDocumentStatus().equals(DocStatus.CLOSED)

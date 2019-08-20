@@ -68,8 +68,14 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     }
 
     @Override
-    public List<LoanConfig> getLoanConfigsActivatedForEligbility() {
+    public List<LoanConfig> getLoanConfigsActivatedForEligibility() {
         logger.debug("Getting list of Loan configuration activated for eligibility.");
         return loanConfigRepository.findAllByEnableEligibility(true);
+    }
+
+    @Override
+    public LoanConfig getLoanConfigActivatedForEligibility(Long loanConfigId) {
+        logger.debug("Getting Loan configuration activated for eligibility.");
+        return loanConfigRepository.findLoanConfigByIdAndEnableEligibility(loanConfigId, true);
     }
 }

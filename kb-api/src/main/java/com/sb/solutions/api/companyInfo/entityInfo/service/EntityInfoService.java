@@ -5,4 +5,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface EntityInfoService extends BaseService<EntityInfo> {
 
+    EntityInfo findEntityInfoByRegistrationNumber(String registrationNumber);
+
 }

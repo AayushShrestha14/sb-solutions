@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
@@ -25,16 +26,14 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     Map<Object, Object> roleStatusCount();
 
     @Query(value = "Select distinct p.id as id,p.role_name as roleName from role p "
-        + "left join user u on p.id = u.role_id "
-        + "where p.status=1 "
-        + "and p.id <>:id group by p.id", nativeQuery = true)
-    List<Map<Object, Object>> activeRole(@Param("id") Long id);
+        + "where p.status=1 and p.id <> 1 ", nativeQuery = true)
+    List<Map<Object, Object>> activeRole();
 
     @Query("select"
         + " new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,"
         + " (SELECT u.username from User u where r.createdBy=u.id),"
         + " (SELECT u.username from User u where r.modifiedBy=u.id),"
-        + " r.roleType,r.roleAccess) from Role r")
+        + " r.roleType,r.roleAccess,r.version) from Role r")
     List<Role> findAll();
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Role c"
@@ -42,4 +41,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     boolean chkByRoleType(@Param("roleType") RoleType roleType);
 
     List<Role> getByRoleTypeAndStatus(RoleType roleType, Status status);
+
+    @Query("select new com.sb.solutions.api.rolePermissionRight.dto.RoleDto(r.id,r.roleName)  from Role r")
+    List<RoleDto> getRoleDto();
 }

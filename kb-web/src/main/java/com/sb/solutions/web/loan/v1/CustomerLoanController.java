@@ -1,5 +1,6 @@
 package com.sb.solutions.web.loan.v1;
 
+import java.text.ParseException;
 import javax.validation.Valid;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,9 +46,9 @@ public class CustomerLoanController {
     private final Mapper mapper;
 
     public CustomerLoanController(
-        @Autowired CustomerLoanService service,
-        @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+            @Autowired CustomerLoanService service,
+            @Autowired Mapper mapper,
+            @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
@@ -69,6 +71,14 @@ public class CustomerLoanController {
         logger.debug("saving Customer Loan {}", customerLoan);
 
         return new RestResponseDto().successModel(service.save(customerLoan));
+    }
+
+    @PostMapping("/close-renew-customer-loan")
+    public ResponseEntity<?> closeRenew(@Valid @RequestBody CustomerLoan customerLoan) {
+
+        logger.debug("saving Customer Loan {}", customerLoan);
+
+        return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
     }
 
 
@@ -110,13 +120,17 @@ public class CustomerLoanController {
     }
 
     @GetMapping(value = "/proposed-amount")
-    public ResponseEntity<?> getProposedAmount() {
-        return new RestResponseDto().successModel(service.proposedAmount());
+    public ResponseEntity<?> getProposedAmount(@RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
+        return new RestResponseDto().successModel(service.proposedAmount(startDate, endDate));
     }
 
     @GetMapping(value = "/loan-amount/{id}")
-    public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id) {
-        return new RestResponseDto().successModel(service.proposedAmountByBranch(id));
+    public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id,
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
+        return new RestResponseDto().successModel(service.proposedAmountByBranch(id, startDate,
+            endDate));
     }
 
     @GetMapping(value = "/searchByCitizenship/{number}")
@@ -140,8 +154,23 @@ public class CustomerLoanController {
     }
 
     @GetMapping(path = "/stats")
-    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId) {
+    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate) throws ParseException {
         logger.debug("REST request to get the statistical data about the loans.");
-        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId)));
+        return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId,
+            startDate, endDate)));
     }
+
+    @GetMapping(path = "/check-user-customer-loan/{id}")
+    public ResponseEntity<?> chkUserContainCustomerLoan(@PathVariable Long id) {
+        logger.debug("REST request to get the check data about the user.");
+        return new RestResponseDto().successModel(service.chkUserContainCustomerLoan(id));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/csv")
+    public ResponseEntity<?> csv(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.csv(searchDto));
+    }
+
 }

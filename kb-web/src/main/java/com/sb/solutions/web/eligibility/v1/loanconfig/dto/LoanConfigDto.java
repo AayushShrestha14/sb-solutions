@@ -13,5 +13,7 @@ public class LoanConfigDto {
 
     private List<DocumentDto> eligibilityDocuments;
 
+    private Double minimumProposedAmount;
+
     private long totalPoints;
 }

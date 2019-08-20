@@ -5,4 +5,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface CustomerService extends BaseService<Customer> {
 
+    Customer findCustomerByCitizenshipNumber(String citizenshipNumber);
+
 }

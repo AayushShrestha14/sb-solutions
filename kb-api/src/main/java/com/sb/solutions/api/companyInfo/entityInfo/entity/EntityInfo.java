@@ -21,6 +21,7 @@ import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.BusinessType;
 
 @Entity
 @Data
@@ -30,28 +31,39 @@ import com.sb.solutions.core.enitity.BaseEntity;
 public class EntityInfo extends BaseEntity<Long> {
 
     @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private LegalStatus legalStatus;
     @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Capital capital;
     @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Swot swot;
     @OneToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<ManagementTeam> managementTeamList;
     @OneToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Proprietor> proprietorsList;
+
+    private String companyName;
+    private String registrationNumber;
+    private Date establishmentDate;
+    private BusinessType businessType;
 
     @PrePersist
     public void prePersist() {
         Date date = new Date();
         this.setLastModifiedAt(date);
-        this.capital.setLastModifiedAt(date);
-        this.legalStatus.setLastModifiedAt(date);
-        this.swot.setLastModifiedAt(date);
+        if (this.capital != null) {
+            this.capital.setLastModifiedAt(date);
+        }
+        if (this.legalStatus != null) {
+            this.legalStatus.setLastModifiedAt(date);
+        }
+        if (this.swot != null) {
+            this.swot.setLastModifiedAt(date);
+        }
         if (CollectionUtils.isNotEmpty(this.managementTeamList)) {
             for (ManagementTeam managementTeam : this.managementTeamList) {
                 managementTeam.setLastModifiedAt(date);
