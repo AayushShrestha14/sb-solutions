@@ -296,7 +296,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final List customerLoanList = customerLoanRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("branch,name", " Branch");
-        header.put("dmsLoanFile,customerName", "Name");
+        header.put("customerInfo,customerName", "Name");
         header.put("loan,name", "Loan Name");
         header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
         header.put("loanType", "Type");
