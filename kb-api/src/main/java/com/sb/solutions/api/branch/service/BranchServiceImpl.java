@@ -95,7 +95,10 @@ public class BranchServiceImpl implements BranchService {
         Map<String, String> header = new LinkedHashMap<>();
         header.put("name", " Name");
         header.put("province,name", "Province");
-        header.put("province,district", "District");
+        header.put("district,name", "District");
+        header.put("municipalityVdc,name", "Municipality or Vdc");
+        header.put("streetName", "Street Name");
+        header.put("wardNumber", "Ward No.");
         header.put("branchCode", "Branch Code");
         return csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
 
