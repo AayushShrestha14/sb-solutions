@@ -12,7 +12,6 @@ import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 
 /**
@@ -36,7 +35,7 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds);
 
-    String csv(SearchDto searchDto);
+    String csv(Object searchDto);
 
     List<Long> getRoleAccessFilterByBranch();
 
