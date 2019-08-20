@@ -1,23 +1,16 @@
 package com.sb.solutions.web.notification;
 
+import com.sb.solutions.api.userNotification.entity.Message;
+import com.sb.solutions.api.userNotification.service.MessageService;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.sb.solutions.api.userNotification.entity.Message;
-import com.sb.solutions.api.userNotification.service.MessageService;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PaginationUtils;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -30,7 +23,7 @@ public class NotificationController {
 
     @Autowired
     public NotificationController(
-        MessageService messageService
+            MessageService messageService
     ) {
         this.service = messageService;
     }
@@ -52,15 +45,15 @@ public class NotificationController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(path = "/list")
     public ResponseEntity<?> getPageable(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "/all")

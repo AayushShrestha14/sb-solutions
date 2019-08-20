@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -148,14 +150,44 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public List<PieChartDto> proposedAmount() {
+    public List<PieChartDto> proposedAmount(String startDate, String endDate)
+        throws ParseException {
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        return customerLoanRepository.proposedAmount(branchAccess);
+        List<PieChartDto> data = new ArrayList<>();
+        if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty())) {
+            data = customerLoanRepository.proposedAmount(branchAccess);
+        } else if (startDate == null || startDate.isEmpty()) {
+            data = customerLoanRepository.proposedAmountBefore(branchAccess,
+                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+        } else if (endDate == null || endDate.isEmpty()) {
+            data = customerLoanRepository.proposedAmountAfter(branchAccess, new SimpleDateFormat(
+                "MM/dd/yyyy").parse(startDate));
+        } else {
+            data = customerLoanRepository.proposedAmountBetween(branchAccess, new SimpleDateFormat(
+                "MM/dd/yyyy").parse(startDate), new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+        }
+        return data;
     }
 
     @Override
-    public List<PieChartDto> proposedAmountByBranch(Long branchId) {
-        return customerLoanRepository.proposedAmountByBranchId(branchId);
+    public List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate,
+        String endDate) throws ParseException {
+        List<PieChartDto> data = new ArrayList<>();
+        if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty())) {
+            data = customerLoanRepository.proposedAmountByBranchId(branchId);
+        } else if (startDate == null || startDate.isEmpty()) {
+            data = customerLoanRepository.proposedAmountByBranchIdAndDateBefore(branchId,
+                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+        } else if (endDate == null || endDate.isEmpty()) {
+            data = customerLoanRepository.proposedAmountByBranchIdAndDateAfter(branchId,
+                new SimpleDateFormat(
+                "MM/dd/yyyy").parse(startDate));
+        } else {
+            data = customerLoanRepository.proposedAmountByBranchIdAndDateBetween(branchId,
+                new SimpleDateFormat(
+                "MM/dd/yyyy").parse(startDate), new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+        }
+        return data;
     }
 
     @Override
@@ -205,16 +237,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public List<StatisticDto> getStats(Long branchId) {
+    public List<StatisticDto> getStats(Long branchId, String startDate, String endDate)
+        throws ParseException {
         List<StatisticDto> statistics = new ArrayList<>();
         logger.debug("Request to get the statistics about the existing loans.");
         ProductMode productMode = findActiveProductMode();
         switch (productMode.getProduct()) {
             case DMS:
-                statistics = getDmsStatistics(branchId);
+                statistics = getDmsStatistics(branchId, startDate, endDate);
                 break;
             case LAS:
-                statistics = getLasStatistics(branchId);
+                statistics = getLasStatistics(branchId, startDate, endDate);
                 break;
             default:
         }
@@ -239,22 +272,86 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return productMode;
     }
 
-    private List<StatisticDto> getDmsStatistics(Long branchId) {
+    private List<StatisticDto> getDmsStatistics(Long branchId, String startDate, String endDate)
+        throws ParseException {
+        List<StatisticDto> data = new ArrayList<>();
         if (branchId == 0) {
             List<Long> branches = userService.getRoleAccessFilterByBranch();
-            return customerLoanRepository.getDmsStatistics(branches);
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getDmsStatistics(branches);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getDmsStatisticsAndDateBefore(branches,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository.getDmsStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                    "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository
+                    .getDmsStatisticsAndDateBetween(branches, new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate),
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
         } else {
-            return customerLoanRepository.getDmsStatisticsByBranchId(branchId);
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getDmsStatisticsByBranchId(branchId);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBefore(branchId,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateAfter(branchId,
+                    new SimpleDateFormat(
+                    "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBetween(branchId,
+                    new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate),
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
         }
+        return data;
     }
 
-    private List<StatisticDto> getLasStatistics(Long branchId) {
+    private List<StatisticDto> getLasStatistics(Long branchId, String startDate, String endDate)
+        throws ParseException {
+        List<StatisticDto> data = new ArrayList<>();
         if (branchId == 0) {
             List<Long> branches = userService.getRoleAccessFilterByBranch();
-            return customerLoanRepository.getLasStatistics(branches);
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getLasStatistics(branches);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsAndDateBefore(branches,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                    "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository.getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate),
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
         } else {
-            return customerLoanRepository.getLasStatisticsByBranchId(branchId);
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getLasStatisticsByBranchId(branchId);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBefore(branchId,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateAfter(branchId,
+                    new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBetween(branchId,
+                    new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate),
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
+
         }
+        return data;
     }
 
     @Override
