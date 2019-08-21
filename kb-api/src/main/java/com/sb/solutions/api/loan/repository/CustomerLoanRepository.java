@@ -224,8 +224,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     void deleteByIdAndCurrentStageDocAction(Long id, DocAction docAction);
 
     @Query("SELECT COUNT(c) FROM CustomerLoan c JOIN c.currentStage s"
-        + " WHERE s.toUser.id = :id AND c.documentStatus= :docStatus")
-    Integer chkUserContainCustomerLoan(@Param("id") Long id,
+        + " WHERE s.toUser.id = :id AND s.toRole.id=:rId AND c.documentStatus= :docStatus")
+    Integer chkUserContainCustomerLoan(@Param("id") Long id,@Param("rId") Long rId,
         @Param("docStatus") DocStatus docStatus);
 
     @Modifying
