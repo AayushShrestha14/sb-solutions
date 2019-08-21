@@ -1751,5 +1751,4 @@
   <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190816_dms.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190818_applicant.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20190820_applicant_remove_default.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
