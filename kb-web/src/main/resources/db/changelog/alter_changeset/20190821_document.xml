@@ -5,7 +5,7 @@
   <changeSet author="elvin" id="33_add_document_display_name">
     <addColumn tableName="document">
       <column name="display_name" type="VARCHAR(256)" defaultValue="">
-        <constraints nullable="false"/>
+        <constraints nullable="false" unique="true"/>
       </column>
     </addColumn>
   </changeSet>
