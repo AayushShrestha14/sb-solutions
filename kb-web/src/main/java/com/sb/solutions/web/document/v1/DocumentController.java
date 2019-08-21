@@ -22,6 +22,8 @@ import com.sb.solutions.api.document.service.LoanCycleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.web.document.v1.dto.DocumentDto;
+import com.sb.solutions.web.document.v1.mapper.DocumentMapper;
 
 
 @RestController
@@ -30,17 +32,22 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final LoanCycleService loanCycleService;
+    private final DocumentMapper documentMapper;
 
-    public DocumentController(@Autowired DocumentService documentService,
-                              @Autowired LoanCycleService loanCycleService) {
+    public DocumentController(
+        @Autowired DocumentService documentService,
+        @Autowired LoanCycleService loanCycleService,
+        @Autowired DocumentMapper documentMapper
+    ) {
         this.documentService = documentService;
         this.loanCycleService = loanCycleService;
+        this.documentMapper = documentMapper;
     }
 
     @PostMapping
-    public ResponseEntity<?> addDocument(@Valid @RequestBody Document document) {
+    public ResponseEntity<?> addDocument(@Valid @RequestBody DocumentDto documentDto) {
 
-        final Document doc = documentService.save(document);
+        final Document doc = documentService.save(documentMapper.mapDtoToEntity(documentDto));
 
         if (doc != null) {
             return new RestResponseDto().successModel(doc);

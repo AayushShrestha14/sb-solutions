@@ -46,6 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
+        document.setName(document.getDisplayName().trim().replaceAll("\\s", "-"));
         document.setLastModifiedAt(new Date());
         if (document.getId() == null) {
             document.setStatus(Status.ACTIVE);
