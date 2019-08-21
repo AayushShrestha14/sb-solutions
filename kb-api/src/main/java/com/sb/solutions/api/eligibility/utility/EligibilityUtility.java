@@ -21,18 +21,21 @@ public class EligibilityUtility {
         return new String(mockFormulaChar);
     }
 
-    public static Map<String, Long> extractOperands(String expression,
+    public static Map<String, String> extractOperands(String expression,
         List<EligibilityQuestion> eligibilityQuestions) {
         final char[] characters = expression.toCharArray();
-        final Map<String, Long> operands = new HashMap<>();
+        final Map<String, String> operands = new HashMap<>();
         for (char ch : characters) {
             if (Character.isLetter(ch)) {
                 eligibilityQuestions.stream()
                     .filter(eligibilityQuestion -> eligibilityQuestion.getOperandCharacter()
-                        .equals(String.valueOf(ch)) && eligibilityQuestion.getStatus()
-                        == Status.ACTIVE)
+                        .equals(String.valueOf(ch))
+                        && eligibilityQuestion.getStatus() == Status.ACTIVE)
                     .findAny().map(eligibilityQuestion -> operands
-                    .put(String.valueOf(ch), eligibilityQuestion.getId()));
+                    .put(String.valueOf(ch), String.valueOf(eligibilityQuestion.getId())));
+                if (ch == 'I') {
+                    operands.put("I", "reserved");
+                }
             }
         }
         return operands;
