@@ -131,6 +131,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public void sendForwardBackwardLoan(CustomerLoan customerLoan) {
+        if (customerLoan.getCurrentStage() == null
+            || customerLoan.getCurrentStage().getToRole() == null
+            || customerLoan.getCurrentStage().getToUser() == null) {
+            logger.warn("Empty current Stage{}",customerLoan.getCurrentStage());
+            throw new ServiceValidationException("Unable to perform Task");
+        }
         customerLoanRepository.save(customerLoan);
     }
 
@@ -181,11 +187,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else if (endDate == null || endDate.isEmpty()) {
             data = customerLoanRepository.proposedAmountByBranchIdAndDateAfter(branchId,
                 new SimpleDateFormat(
-                "MM/dd/yyyy").parse(startDate));
+                    "MM/dd/yyyy").parse(startDate));
         } else {
             data = customerLoanRepository.proposedAmountByBranchIdAndDateBetween(branchId,
                 new SimpleDateFormat(
-                "MM/dd/yyyy").parse(startDate), new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                    "MM/dd/yyyy").parse(startDate),
+                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
         }
         return data;
     }
@@ -256,7 +263,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Map<String, String> chkUserContainCustomerLoan(Long id) {
-        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id, DocStatus.PENDING);
+        User u = userService.findOne(id);
+        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id,u.getRole().getId(), DocStatus.PENDING);
         Map<String, String> map = new HashMap<>();
         map.put("count", String.valueOf(count));
         map.put("status", count == 0 ? "false" : "true");
@@ -284,8 +292,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 data = customerLoanRepository.getDmsStatisticsAndDateBefore(branches,
                     new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             } else if (endDate == null || endDate.isEmpty()) {
-                data = customerLoanRepository.getDmsStatisticsAndDateAfter(branches, new SimpleDateFormat(
-                    "MM/dd/yyyy").parse(startDate));
+                data = customerLoanRepository
+                    .getDmsStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate));
             } else {
                 data = customerLoanRepository
                     .getDmsStatisticsAndDateBetween(branches, new SimpleDateFormat(
@@ -302,12 +311,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             } else if (endDate == null || endDate.isEmpty()) {
                 data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateAfter(branchId,
                     new SimpleDateFormat(
-                    "MM/dd/yyyy").parse(startDate));
+                        "MM/dd/yyyy").parse(startDate));
             } else {
                 data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBetween(branchId,
                     new SimpleDateFormat(
-                            "MM/dd/yyyy").parse(startDate),
-                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                        "MM/dd/yyyy").parse(startDate),
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             }
         }
         return data;
@@ -325,10 +334,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 data = customerLoanRepository.getLasStatisticsAndDateBefore(branches,
                     new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             } else if (endDate == null || endDate.isEmpty()) {
-                data = customerLoanRepository.getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
-                    "MM/dd/yyyy").parse(startDate));
+                data = customerLoanRepository
+                    .getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate));
             } else {
-                data = customerLoanRepository.getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
+                data = customerLoanRepository
+                    .getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
                             "MM/dd/yyyy").parse(startDate),
                         new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             }
