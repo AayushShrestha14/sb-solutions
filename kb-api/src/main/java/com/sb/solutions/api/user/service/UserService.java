@@ -35,6 +35,8 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds);
 
+    List<User> findByRoleAndBranchId(Long roleId, Long branchId);
+
     String csv(Object searchDto);
 
     List<Long> getRoleAccessFilterByBranch();
