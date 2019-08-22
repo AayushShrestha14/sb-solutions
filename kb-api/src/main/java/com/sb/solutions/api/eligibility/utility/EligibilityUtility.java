@@ -10,15 +10,18 @@ import com.sb.solutions.core.enums.Status;
 public class EligibilityUtility {
 
     public static String convertToMockFormula(String formula) {
-        char[] mockFormulaChar = formula.toCharArray();
-        int i = -1;
-        for (char ch : mockFormulaChar) {
-            i++;
-            if (Character.isLetter(ch)) {
-                mockFormulaChar[i] = '2';
+
+        int len = formula.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            char c = formula.charAt(i);
+            if (Character.isLetter(c)) {
+                sb.append("2.0");
+            } else {
+                sb.append(c);
             }
         }
-        return new String(mockFormulaChar);
+        return sb.toString();
     }
 
     public static Map<String, String> extractOperands(String expression,
