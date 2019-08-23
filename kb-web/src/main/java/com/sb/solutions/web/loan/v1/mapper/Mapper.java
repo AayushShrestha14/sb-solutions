@@ -109,14 +109,14 @@ public class Mapper {
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
         loanStage = this
             .loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage,
-                currentUserDto);
+                currentUserDto,customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
     }
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
-        StageDto currentStage, UserDto currentUser) {
+        StageDto currentStage, UserDto currentUser,CustomerLoan customerLoan) {
         if (currentStage.getDocAction().equals(DocAction.CLOSED)
             || currentStage.getDocAction().equals(DocAction.APPROVED)
             || currentStage.getDocAction().equals(DocAction.REJECT)) {
@@ -132,7 +132,7 @@ public class Mapper {
             }
         }
         return stageMapper
-            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,customerLoan);
     }
 
     public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {
