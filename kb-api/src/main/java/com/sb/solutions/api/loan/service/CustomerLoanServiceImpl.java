@@ -1,5 +1,13 @@
 package com.sb.solutions.api.loan.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +43,7 @@ import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -42,6 +52,7 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -56,6 +67,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ProductModeService productModeService;
     private final CustomerService customerService;
     private final EntityInfoService entityInfoService;
+    private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -108,6 +120,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         customerLoan.setCustomerInfo(customer);
         customerLoan.setEntityInfo(entityInfo);
+        if(customerLoan.getSiteVisit().getId() == null) {
+            try {
+                String url = UploadDir.initialDocument;
+                customerLoan.getSiteVisit().setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
+            }catch (Exception e) {
+                throw new ServiceValidationException("File Fail to Save");
+            }
+        }
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -409,6 +429,76 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         header.put("loanCategory", "Loan Category");
         header.put("documentStatus", "Status");
         return csvMaker.csv("customer_loan", header, customerLoanList, UploadDir.customerLoanCsv);
+    }
+
+    public Object readJsonFile(String url) {
+        org.json.simple.parser.JSONParser parser = new JSONParser();
+        try {
+            FileReader reader = new FileReader(FilePath.getOSPath() + url);
+            try {
+                Object obj = parser.parse(reader);
+                return obj;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (org.json.simple.parser.ParseException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String writeJsonFile(String url, Object siteVisitData) {
+        String jsonPath;
+        String SITEVISIT = "siteVisit";
+        Path path = Paths.get(FilePath.getOSPath() + url);
+        if(!Files.exists(path)) {
+            new File(FilePath.getOSPath() + url).mkdirs();
+        }
+        jsonPath = url + SITEVISIT + System.currentTimeMillis() + ".json";
+        File file = new File(FilePath.getOSPath() + jsonPath);
+        file.getParentFile().mkdirs();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.write(jsonConverter.convertToJson(siteVisitData));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.flush();
+            return jsonPath;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String updateJsonFile(String url, Object siteVisitData) {
+        String jsonPath = url;
+        try {
+            FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
+            try {
+                writer.write(jsonConverter.convertToJson(siteVisitData));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                writer.flush();
+                return jsonPath;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

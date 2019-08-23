@@ -71,10 +71,10 @@ public class CustomerLoan extends BaseEntity<Long> {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private DmsLoanFile dmsLoanFile;
 
-    /*@ManyToOne(cascade = {
+    @ManyToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE
     })
-    private SiteVisit siteVisit;*/
+    private SiteVisit siteVisit;
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
