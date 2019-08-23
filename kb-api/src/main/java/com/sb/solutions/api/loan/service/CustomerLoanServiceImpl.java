@@ -88,6 +88,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan findOne(Long id) {
+        CustomerLoan customerLoan =customerLoanRepository.findById(id).get();
+        String url = customerLoan.getSiteVisit().getPath();
+        customerLoan.getSiteVisit().setData(readJsonFile(url));
         return customerLoanRepository.findById(id).get();
     }
 
@@ -118,16 +121,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-        customerLoan.setCustomerInfo(customer);
-        customerLoan.setEntityInfo(entityInfo);
         if(customerLoan.getSiteVisit().getId() == null) {
             try {
                 String url = UploadDir.initialDocument;
                 customerLoan.getSiteVisit().setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
+                System.out.println(customerLoan.getSiteVisit().getData());
             }catch (Exception e) {
                 throw new ServiceValidationException("File Fail to Save");
             }
         }
+        customerLoan.setCustomerInfo(customer);
+        customerLoan.setEntityInfo(entityInfo);
         return customerLoanRepository.save(customerLoan);
     }
 
