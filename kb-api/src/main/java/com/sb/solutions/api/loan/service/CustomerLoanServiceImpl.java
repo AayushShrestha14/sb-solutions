@@ -1,39 +1,7 @@
 package com.sb.solutions.api.loan.service;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
@@ -51,15 +19,30 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -96,9 +79,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
-        String url = customerLoan.getFinancial().getPath();
-        customerLoan.getFinancial()
-            .setData(readJsonFile(url));
+        if (customerLoan.getFinancial() != null) {
+            String url = customerLoan.getFinancial().getPath();
+            customerLoan.getFinancial()
+                    .setData(readJsonFile(url));
+        }
         return customerLoan;
     }
 
@@ -131,27 +116,29 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         customerLoan.setCustomerInfo(customer);
         customerLoan.setEntityInfo(entityInfo);
-        if (customerLoan.getFinancial().getId() == null) {
-            try {
-                String url = UploadDir.initialDocument;
-//                    + customerLoan
-//                    .getCustomerInfo().getCustomerName()
-//                    + "_"
-//                    + customerLoan.getCustomerInfo().getCitizenshipNumber()
-//                    + "/"
-//                    + customerLoan.getLoan().getName() + "/";
-                customerLoan.getFinancial()
-                    .setPath(writeJsonFile(url, customerLoan.getFinancial().getData()));
-            } catch (Exception exception) {
-                throw new ServiceValidationException("File Fail to Save");
-            }
-        } else {
-            try {
-                String url = customerLoan.getFinancial().getPath();
-                customerLoan.getFinancial()
-                    .setPath(updateJsonFile(url, customerLoan.getFinancial().getData()));
-            } catch (Exception exception) {
-                throw new ServiceValidationException("File Fail to Save");
+        if (customerLoan.getFinancial() != null) {
+            if (customerLoan.getFinancial().getId() == null) {
+                try {
+                    String url = UploadDir.initialDocument
+                            + customerLoan
+                            .getCustomerInfo().getCustomerName().replace(" ", "_")
+                            + "_"
+                            + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                            + "/"
+                            + customerLoan.getLoan().getId() + "/";
+                    customerLoan.getFinancial()
+                            .setPath(writeJsonFile(url, customerLoan.getFinancial().getData()));
+                } catch (Exception exception) {
+                    throw new ServiceValidationException("File Fail to Save");
+                }
+            } else {
+                try {
+                    String url = customerLoan.getFinancial().getPath();
+                    customerLoan.getFinancial()
+                            .setPath(updateJsonFile(url, customerLoan.getFinancial().getData()));
+                } catch (Exception exception) {
+                    throw new ServiceValidationException("File Fail to Save");
+                }
             }
         }
         return customerLoanRepository.save(customerLoan);
