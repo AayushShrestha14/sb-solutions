@@ -3,6 +3,7 @@ package com.sb.solutions.web.loan.v1.mapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,16 +18,18 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
+import com.sb.solutions.web.loan.v1.dto.BarChartDto;
+import com.sb.solutions.web.loan.v1.dto.SeriesDto;
 import com.sb.solutions.web.user.dto.UserDto;
 
 /**
@@ -57,27 +60,26 @@ public class Mapper {
         User currentUser) {
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
-            if (!"Dms".equals(productMode.getProduct().toString())) {
-                if (productMode != null) {
-                    ApprovalLimit approvalLimit = approvalLimitService
-                        .getByRoleAndLoan(currentUser.getRole().getId(),
-                            customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
-                    if (approvalLimit == null) {
-                        throw new RuntimeException("Authority Limit Error");
-                    }
-                    if (customerLoan.getDmsLoanFile() != null) {
-                        if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
-                            .getAmount()) {
-                            throw new RuntimeException("Amount Exceed");
-                        }
+            if (productMode == null) {
+
+                ApprovalLimit approvalLimit = approvalLimitService
+                    .getByRoleAndLoan(currentUser.getRole().getId(),
+                        customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
+                if (approvalLimit == null) {
+                    throw new RuntimeException("Authority Limit Error");
+                }
+                if (customerLoan.getDmsLoanFile() != null) {
+                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
+                        .getAmount()) {
+                        throw new RuntimeException("Amount Exceed");
                     }
                 }
+
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        customerLoan.setLoanType(LoanType.NEW_LOAN);
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();
@@ -107,14 +109,14 @@ public class Mapper {
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
         loanStage = this
             .loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage,
-                currentUserDto);
+                currentUserDto,customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
     }
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
-        StageDto currentStage, UserDto currentUser) {
+        StageDto currentStage, UserDto currentUser,CustomerLoan customerLoan) {
         if (currentStage.getDocAction().equals(DocAction.CLOSED)
             || currentStage.getDocAction().equals(DocAction.APPROVED)
             || currentStage.getDocAction().equals(DocAction.REJECT)) {
@@ -130,6 +132,24 @@ public class Mapper {
             }
         }
         return stageMapper
-            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,customerLoan);
+    }
+
+    public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {
+        final List<BarChartDto> charts = new ArrayList<>();
+        Map<String, List<StatisticDto>> mappedStats =
+            statistics.stream().collect(Collectors.groupingBy(StatisticDto::getLoanType));
+        for (Map.Entry<String, List<StatisticDto>> entry : mappedStats.entrySet()) {
+            final BarChartDto barChart = new BarChartDto();
+            barChart.setName(entry.getKey());
+            entry.getValue().forEach(statisticDto -> {
+                final SeriesDto series = new SeriesDto();
+                series.setName(statisticDto.getStatus().toString());
+                series.setValue(statisticDto.getTotalAmount());
+                barChart.getSeries().add(series);
+            });
+            charts.add(barChart);
+        }
+        return charts;
     }
 }

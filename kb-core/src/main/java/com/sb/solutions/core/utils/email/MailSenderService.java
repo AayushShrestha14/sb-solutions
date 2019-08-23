@@ -22,7 +22,12 @@ import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import com.sb.solutions.core.constant.EmailConstant;
 
 @Service
 public class MailSenderService {
@@ -35,6 +40,25 @@ public class MailSenderService {
 
     @Autowired
     private JavaMailSenderImpl javaMailSender;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+
+    public void send(EmailConstant.Template template, Email email) {
+        this.javaMailSender.send(mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+            message.setSubject(template.get());
+            message.setTo(email.getTo());
+            message.setFrom(new InternetAddress(username));
+
+            final Context ctx = new Context();
+            ctx.setVariable("data", email);
+            String content = templateEngine.process(EmailConstant.MAIL.get(template), ctx);
+            message.setText(content, true);
+        });
+
+    }
 
 
     public void sendMailWithAttachmentBcc(Email email) throws MessagingException, IOException {

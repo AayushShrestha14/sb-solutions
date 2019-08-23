@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.core.constant.EmailConstant;
 import com.sb.solutions.core.exception.ServiceValidationException;
 
 @Service
@@ -27,8 +28,17 @@ public class MailThreadService {
             try {
                 mailSenderService.sendMailWithAttachmentBcc(email);
             } catch (Exception e) {
-                logger.error("error sending email", e.getLocalizedMessage());
-                e.printStackTrace();
+                logger.error("error sending email", e);
+            }
+        }).start();
+    }
+
+    public void sendMain(EmailConstant.Template template, Email email) {
+        new Thread(() -> {
+            try {
+                mailSenderService.send(template, email);
+            } catch (Exception e) {
+                logger.error("error sending email", e);
             }
         }).start();
     }
@@ -38,11 +48,18 @@ public class MailThreadService {
         try {
             mailSenderService.sendMailWithAttachmentBcc(email);
         } catch (MessagingException e) {
-            logger.error("error sending email", e.getLocalizedMessage());
+            logger.error("error sending email", e);
             throw new ServiceValidationException(e.getLocalizedMessage());
         } catch (IOException e) {
-            logger.error("error sending email", e.getLocalizedMessage());
+            logger.error("error sending email", e);
             throw new ServiceValidationException(e.getLocalizedMessage());
         }
+    }
+
+    public void testMail(EmailConstant.Template template, Email email) {
+
+        mailSenderService.send(template, email);
+
+
     }
 }

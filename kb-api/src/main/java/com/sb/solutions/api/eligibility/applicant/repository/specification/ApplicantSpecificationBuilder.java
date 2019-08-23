@@ -2,37 +2,40 @@ package com.sb.solutions.api.eligibility.applicant.repository.specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
-import com.sb.solutions.api.eligibility.common.SearchCriteria;
 
 public class ApplicantSpecificationBuilder {
 
-    private final List<SearchCriteria> queryParams;
+    private final Map<String, String> params;
 
 
-    public ApplicantSpecificationBuilder() {
-        this.queryParams = new ArrayList<>();
-    }
-
-    public ApplicantSpecificationBuilder with(String key, Object value, String operation) {
-        queryParams.add(new SearchCriteria(key, value, operation));
-        return this;
+    public ApplicantSpecificationBuilder(Map<String, String> params) {
+        this.params = params;
     }
 
     public Specification<Applicant> build() {
-        if (queryParams.size() == 0) {
+        if (MapUtils.isEmpty(params)) {
             return null;
         }
-        List<Specification> specifications =
-            queryParams.stream().map(ApplicantSpecification::new).collect(Collectors.toList());
-        Specification result = specifications.get(0);
-        for (int i = 1; i < specifications.size(); i++) {
-            result = Specification.where(result).and(specifications.get(i));
+
+        final List<String> properties = new ArrayList<>(params.keySet());
+
+        final String firstProperty = properties.get(0);
+
+        Specification<Applicant> spec = new ApplicantSpecification(properties.get(0),
+            params.get(firstProperty));
+
+        for (int i = 1; i < properties.size(); i++) {
+            final String property = properties.get(i);
+            spec = Specification.where(spec)
+                .and(new ApplicantSpecification(property, params.get(property)));
         }
-        return result;
+
+        return spec;
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 
 /**
@@ -35,4 +36,8 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
 
     @Query(value = "SELECT b FROM Branch b where b.id not in (:branchId)")
     List<Branch> getByIdNotIn(@Param("branchId") List<Long> branchId);
+
+    @Query(value = "SELECT new com.sb.solutions.api.branch.dto.BranchDto(b.id,b.name) FROM Branch b ")
+    List<BranchDto> getBranch();
+
 }

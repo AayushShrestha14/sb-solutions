@@ -3,89 +3,42 @@ package com.sb.solutions.api.eligibility.utility;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import com.sb.solutions.api.eligibility.question.entity.EligibilityQuestion;
+import com.sb.solutions.core.enums.Status;
 
 public class EligibilityUtility {
 
-    public static final double evaluateExpression(String expression) {
-        char[] tokens = expression.toCharArray();
-        Stack<Double> values = new Stack<>();
-        Stack<Character> operators = new Stack<>();
-        for (int i = 0; i < tokens.length; i++) {
-            if (tokens[i] == ' ') {
-                continue;
-            }
-            if (tokens[i] >= '0' && tokens[i] <= '9') {
-                StringBuffer strBuff = new StringBuffer();
-                while (i < tokens.length && ((tokens[i] >= '0' && tokens[i] <= '9')
-                    || tokens[i] == '.')) {
-                    strBuff.append(tokens[i++]);
-                }
-                values.push(Double.parseDouble(strBuff.toString()));
-            } else if (tokens[i] == '(') {
-                operators.push(tokens[i]);
-            } else if (tokens[i] == ')') {
-                while (operators.peek() != '(') {
-                    values.push(doOperations(operators.pop(), values.pop(), values.pop()));
-                }
-                operators.pop();
-            } else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*'
-                || tokens[i] == '/') {
-                while (!operators.empty() && hasPrecedence(tokens[i], operators.peek())) {
-                    values.push(doOperations(operators.pop(), values.pop(), values.pop()));
-                }
-                operators.push(tokens[i]);
+    public static String convertToMockFormula(String formula) {
+
+        int len = formula.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            char c = formula.charAt(i);
+            if (Character.isLetter(c)) {
+                sb.append("2.0");
+            } else {
+                sb.append(c);
             }
         }
-        while (!operators.empty()) {
-            values.push(doOperations(operators.pop(), values.pop(), values.pop()));
-        }
-        return values.pop();
+        return sb.toString();
     }
 
-    private static double doOperations(char operator, double b, double a) {
-        switch (operator) {
-            case '+':
-                return a + b;
-            case '-':
-                return a - b;
-            case '*':
-                return a * b;
-            case '/':
-                if (b == 0) {
-                    throw new UnsupportedOperationException("Can not divide by zero");
-                }
-                return a / b;
-            default:
-                return 0;
-        }
-    }
-
-    private static boolean hasPrecedence(char firstOperand, char secondOperand) {
-        if (secondOperand == '(' || secondOperand == ')') {
-            return false;
-        }
-        if ((firstOperand == '*' || firstOperand == '/') && (secondOperand == '+'
-            || secondOperand == '-')) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public static final Map<String, Long> extractOperands(String expression,
+    public static Map<String, String> extractOperands(String expression,
         List<EligibilityQuestion> eligibilityQuestions) {
         final char[] characters = expression.toCharArray();
-        final Map<String, Long> operands = new HashMap<>();
+        final Map<String, String> operands = new HashMap<>();
         for (char ch : characters) {
-            if (ch >= 'A' && ch <= 'Z') {
+            if (Character.isLetter(ch)) {
                 eligibilityQuestions.stream()
                     .filter(eligibilityQuestion -> eligibilityQuestion.getOperandCharacter()
-                        .equals(String.valueOf(ch)))
+                        .equals(String.valueOf(ch))
+                        && eligibilityQuestion.getStatus() == Status.ACTIVE)
                     .findAny().map(eligibilityQuestion -> operands
-                    .put(String.valueOf(ch), eligibilityQuestion.getId()));
+                    .put(String.valueOf(ch), String.valueOf(eligibilityQuestion.getId())));
+                if (ch == 'I') {
+                    operands.put("I", "reserved");
+                }
             }
         }
         return operands;

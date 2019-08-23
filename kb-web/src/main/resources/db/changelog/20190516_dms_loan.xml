@@ -10,13 +10,13 @@
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_stage_created_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_stage_modified_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATETIME">
@@ -31,13 +31,13 @@
             <column name="from_user_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_stage_from_user_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="to_user_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_stage_to_user_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
 
@@ -104,13 +104,13 @@
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_dms_loan_file_created_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_dms_loan_file_modified_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
 
@@ -137,13 +137,13 @@
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_document_created_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_loan_document_modified_by_id"
-                             referencedTableName="user"
+                             referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATE">

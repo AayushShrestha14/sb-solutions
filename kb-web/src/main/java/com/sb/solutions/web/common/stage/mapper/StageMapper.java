@@ -1,6 +1,7 @@
 package com.sb.solutions.web.common.stage.mapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
@@ -35,18 +37,28 @@ public class StageMapper {
 
 
     public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy,
-        StageDto currentStage, UserDto currentUser) {
+        StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        currentStage.setFromUser(currentUser);
-        currentStage.setFromRole(currentUser.getRole());
-        currentStage.setToUser(stageDto.getToUser());
-        currentStage.setToRole(stageDto.getToRole());
+
         currentStage.setDocAction(stageDto.getDocAction());
         currentStage.setComment(stageDto.getComment());
+
+        if (!stageDto.getDocAction().equals(DocAction.TRANSFER)) {
+            currentStage.setFromUser(currentUser);
+            currentStage.setFromRole(currentUser.getRole());
+        } else {
+            currentStage.setFromUser(currentStage.getToUser());
+            currentStage.setFromRole(currentStage.getToRole());
+            currentStage.setComment("Transfer By Administrator");
+        }
+
+        currentStage.setToUser(stageDto.getToUser());
+        currentStage.setToRole(stageDto.getToRole());
         if (stageDto.getDocAction().equals(DocAction.BACKWARD)) {
-            currentStage = this.sendBackward(previousList, currentStage, currentUser, createdBy);
+            currentStage = this
+                .sendBackward(previousList, currentStage, currentUser, createdBy, customerLoan);
         }
 
         if (stageDto.getDocAction().equals(DocAction.APPROVED)
@@ -61,7 +73,7 @@ public class StageMapper {
 
 
     private StageDto sendBackward(List previousList, StageDto currentStage, UserDto currentUser,
-        Long createdBy) {
+        Long createdBy, CustomerLoan customerLoan) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -74,9 +86,19 @@ public class StageMapper {
                 currentStage.setToRole(r);
                 try {
                     final List<User> users = userService
-                        .findByRoleAndBranch(r.getId(), userService.getRoleAccessFilterByBranch());
+                        .findByRoleAndBranchId(r.getId(), customerLoan.getBranch().getId());
+                    final List<Long> userIdList = users.stream().map(User::getId)
+                        .collect(Collectors.toList());
+                    if (userIdList.contains(createdBy)) {
+                        java.util.Optional<User> u = users.stream().
+                            filter(p -> p.getId().equals(createdBy)).
+                            findFirst();
+                        currentStage.setToUser(objectMapper.convertValue(u.get(), UserDto.class));
+                    } else {
+                        currentStage
+                            .setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
+                    }
 
-                    currentStage.setToUser(objectMapper.convertValue(users.get(0), UserDto.class));
 
                 } catch (Exception e) {
                     logger.error("Error occurred while mapping stage", e);

@@ -50,7 +50,7 @@ public class RoleController {
                 List<RoleHierarchy> roleHierarchies = roleHierarchyService.findAll();
                 RoleHierarchy roleHierarchy = new RoleHierarchy();
                 roleHierarchy.setRole(r);
-                roleHierarchy.setRoleOrder((roleHierarchies.size()) + 1L);
+                roleHierarchy.setRoleOrder(roleHierarchies.size() + 1L);
                 roleHierarchyService.save(roleHierarchy);
             }
             return new RestResponseDto().successModel(r.getRoleName());
@@ -68,6 +68,15 @@ public class RoleController {
         return new RestResponseDto().successModel(roleService.roleStatusCount());
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/edit")
+
+    public ResponseEntity<?> editRole(@Valid @RequestBody Role role) {
+        final Role r = roleService.save(role);
+
+        return new RestResponseDto().successModel(r.getRoleName());
+
+    }
+
     @GetMapping("/{id}")
     @Produces("application/json")
     public ResponseEntity<?> getByRoleId(@PathVariable("id") Long id) {
@@ -79,12 +88,12 @@ public class RoleController {
         return new RestResponseDto().successModel(roleService.activeRole());
     }
 
-    @GetMapping(value = "maker")
+    @GetMapping("maker")
     public ResponseEntity<?> chkMaker() {
         return new RestResponseDto().successModel(roleService.isMaker());
     }
 
-    @GetMapping(value = "getApproval")
+    @GetMapping("getApproval")
     public ResponseEntity<?> getApproval() {
         return new RestResponseDto().successModel(roleService.getApproval());
     }

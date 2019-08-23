@@ -3,12 +3,12 @@ package com.sb.solutions.api.eligibility.applicant.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,7 +30,11 @@ import com.sb.solutions.api.eligibility.document.entity.SubmissionDocument;
 import com.sb.solutions.api.eligibility.document.service.SubmissionDocumentService;
 import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.api.filestorage.service.FileStorageService;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 
 
 @Service
@@ -44,19 +48,27 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     private final SubmissionDocumentService submissionDocumentService;
 
+    private final UserService userService;
+
     private final AnswerService answerService;
 
     private final EligibilityCriteriaService eligibilityCriteriaService;
 
+    private final LoanConfigService loanConfigService;
+
     public ApplicantServiceImpl(ApplicantRepository applicantRepository,
+        @Autowired UserService userService,
         FileStorageService fileStorageService,
         SubmissionDocumentService submissionDocumentService, AnswerService answerService,
-        EligibilityCriteriaService eligibilityCriteriaService) {
+        EligibilityCriteriaService eligibilityCriteriaService,
+        LoanConfigService loanConfigService) {
         this.applicantRepository = applicantRepository;
         this.fileStorageService = fileStorageService;
         this.submissionDocumentService = submissionDocumentService;
+        this.userService = userService;
         this.answerService = answerService;
         this.eligibilityCriteriaService = eligibilityCriteriaService;
+        this.loanConfigService = loanConfigService;
     }
 
     @Override
@@ -84,30 +96,32 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.debug("Saving the applicant information.");
         final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaService
             .getByStatus(Status.ACTIVE);
+        LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
         String formula = eligibilityCriteria.getFormula();
-        Map<String, Long> operands = EligibilityUtility
+
+        // Mapping Operand Characters to their respective questions via QuestionId
+        Map<String, String> operands = EligibilityUtility
             .extractOperands(formula, eligibilityCriteria.getQuestions());
-        for (Map.Entry<String, Long> operand : operands.entrySet()) {
+
+        // Replacing mapped operand character with applicant answers for respective questions
+        for (Map.Entry<String, String> operand : operands.entrySet()) {
             for (EligibilityAnswer eligibilityAnswer : applicant.getEligibilityAnswers()) {
-                if (eligibilityAnswer.getEligibilityQuestion().getId().equals(operand.getValue())) {
+                if (String.valueOf(eligibilityAnswer.getEligibilityQuestion().getId()).equals(operand.getValue())) {
                     formula = formula
                         .replace(operand.getKey(), String.valueOf(eligibilityAnswer.getValue()));
                 }
             }
+            final String interestRateCharacter = "I";
+            if (interestRateCharacter.equalsIgnoreCase(operand.getKey())) {
+                formula = formula.replace(operand.getKey(), String.valueOf(currentLoanConfig.getInterestRate()));
+            }
         }
-        double remainingAmount = EligibilityUtility.evaluateExpression(formula);
-        if (remainingAmount <= 0) {
-            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
-            return applicantRepository.save(applicant);
-        }
-        double annualAmount = remainingAmount * 12;
-        double eligibleAmount = (annualAmount * eligibilityCriteria.getPercentageOfAmount()) / 100;
-        if (eligibleAmount < eligibilityCriteria.getThresholdAmount()) {
-            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
-            return applicantRepository.save(applicant);
-        }
-        applicant.setEligibleAmount(eligibleAmount);
-        applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
+
+        // Extracting remaining amount via mapped formula
+        double remainingAmount = ArithmeticExpressionUtils
+            .parseExpression(formula);
+
+        // Saving eligibility Answers and Obtained Points..
         List<Answer> answers =
             answerService.findByIds(
                 applicant.getAnswers().stream().map(Answer::getId).collect(Collectors.toList()));
@@ -115,20 +129,43 @@ public class ApplicantServiceImpl implements ApplicantService {
             answers.stream().map(Answer::getPoints).mapToLong(Long::valueOf).sum());
         applicant.getEligibilityAnswers()
             .forEach(eligibilityAnswer -> eligibilityAnswer.setApplicant(applicant));
+
+        if (remainingAmount <= 0) {
+            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
+            return applicantRepository.save(applicant);
+        }
+        double eligibleAmount =
+            remainingAmount * eligibilityCriteria.getPercentageOfAmount() / 100D;
+        if (eligibleAmount < currentLoanConfig.getMinimumProposedAmount()) {
+            applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
+            return applicantRepository.save(applicant);
+        }
+        applicant.setEligibleAmount(eligibleAmount);
+        applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
         return applicantRepository.save(applicant);
+    }
+
+    @Override
+    public Applicant update(Applicant applicant) {
+        Applicant updateApplicant = applicantRepository.getOne(applicant.getId());
+        updateApplicant.setEligibilityStatus(applicant.getEligibilityStatus());
+        return applicantRepository.save(updateApplicant);
     }
 
     @Override
     public Page<Applicant> findAllPageable(Object t, Pageable pageable) {
         logger.debug("Retrieving a page of applicant list.");
-        ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-        Matcher matcher = pattern.matcher(String.valueOf(t) + ",");
-        while (matcher.find()) {
-            applicantSpecificationBuilder
-                .with(matcher.group(1), matcher.group(3), matcher.group(2));
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        /*String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
         }
-        Specification<Applicant> specification = applicantSpecificationBuilder.build();
+        s.put("branchIds", branchAccess);*/
+        final ApplicantSpecificationBuilder applicantSpecificationBuilder = new ApplicantSpecificationBuilder(
+            s);
+        final Specification<Applicant> specification = applicantSpecificationBuilder.build();
         return applicantRepository.findAll(specification, pageable);
     }
 

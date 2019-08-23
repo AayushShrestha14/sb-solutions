@@ -37,6 +37,8 @@ public class Applicant extends BaseEntity<Long> {
 
     private long phoneNumber;
 
+    private String email;
+
     private double requestAmount;
 
     private String remarks;
