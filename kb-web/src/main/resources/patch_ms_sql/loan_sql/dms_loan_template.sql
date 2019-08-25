@@ -16,9 +16,9 @@ END;
 
 
 BEGIN
-DECLARE @count smallint
-SET @count = (Select count(*) from loan_template where id = 5)
-if(@count = 0)
+DECLARE @count_financial smallint
+SET @count_financial = (Select count(*) from loan_template where id = 5)
+if(@count_financial = 0)
 BEGIN
 
 SET IDENTITY_INSERT loan_template on
