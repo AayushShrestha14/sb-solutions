@@ -127,7 +127,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoan.getSiteVisit().setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
                 System.out.println(customerLoan.getSiteVisit().getData());
             }catch (Exception e) {
-                throw new ServiceValidationException("File Fail to Save");
+                throw new ServiceValidationException("Fail to Save File");
+            }
+        } else {
+            try {
+                String url =customerLoan.getSiteVisit().getPath();
+                customerLoan.getSiteVisit().setPath(updateJsonFile(url, customerLoan.getSiteVisit().getData()));
+            } catch (Exception ex) {
+                throw new ServiceValidationException("Fail to Save File");
             }
         }
         customerLoan.setCustomerInfo(customer);
