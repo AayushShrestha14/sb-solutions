@@ -33,8 +33,7 @@ public class ProposalServiceImpl implements ProposalService {
 
     @Override
     public Proposal save(Proposal proposal) {
-//        return proposalRepository.save(proposal);
-        return null;
+        return proposalRepository.save(proposal);
     }
 
     @Override
