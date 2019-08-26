@@ -27,16 +27,16 @@ INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, statu
 
  SET IDENTITY_INSERT sub_nav ON
 INSERT  INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES
-(4, 'Questions','/home/admin/eligibility/question', 'fa fa-question-circle'),
-(5, 'General Questions','/home/admin/eligibility/general-question', 'fa fa-exclamation-circle'),
+/*(4, 'Questions','/home/admin/eligibility/question', 'fa fa-question-circle'),
+(5, 'General Questions','/home/admin/eligibility/general-question', 'fa fa-exclamation-circle'),*/
 (6, 'New Requests','/home/admin/eligibility/new-requests', 'fa fa-flag'),
 (7, 'Eligible ','/home/admin/eligibility/eligible', 'fa fa-check-circle'),
 (8, 'Non Eligible','/home/admin/eligibility/non-eligible', 'fa fa-exclamation-circle')
  SET IDENTITY_INSERT sub_nav Off
 
 INSERT  INTO permission_sub_navs (permission_id, sub_navs_id) VALUES
-(18, 4),
-(18, 5),
+/*(18, 4),
+(18, 5),*/
 (18, 6),
 (18, 7),
 (18, 8)
