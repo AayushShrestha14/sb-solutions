@@ -1,15 +1,15 @@
 package com.sb.solutions.core.utils.email;
 
-import java.io.IOException;
-import javax.mail.MessagingException;
-
+import com.sb.solutions.core.constant.EmailConstant;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.core.constant.EmailConstant;
-import com.sb.solutions.core.exception.ServiceValidationException;
+import javax.mail.MessagingException;
+import java.io.IOException;
 
 @Service
 public class MailThreadService {
@@ -17,6 +17,12 @@ public class MailThreadService {
     private final Logger logger = LoggerFactory.getLogger(MailThreadService.class);
 
     private final MailSenderService mailSenderService;
+
+    @Value("${bank.name}")
+    private String bankName;
+
+    @Value("${bank.website}")
+    private String bankWebsite;
 
     public MailThreadService(@Autowired MailSenderService mailSenderService) {
 
@@ -57,7 +63,8 @@ public class MailThreadService {
     }
 
     public void testMail(EmailConstant.Template template, Email email) {
-
+        email.setBankName(bankName);
+        email.setBankWebsite(bankWebsite);
         mailSenderService.send(template, email);
 
 
