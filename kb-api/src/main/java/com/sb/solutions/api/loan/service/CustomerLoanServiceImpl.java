@@ -1,9 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -47,30 +44,13 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.*;
+import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.Product;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
-import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 /**
@@ -111,7 +91,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             String url = customerLoan.getFinancial().getPath();
             customerLoan.getFinancial()
-                    .setData(readJsonFile(url));
+                .setData(readJsonFile(url));
         }
         if (customerLoan.getSiteVisit() != null) {
             String url = customerLoan.getSiteVisit().getPath();
@@ -147,18 +127,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-        if(customerLoan.getSiteVisit().getId() == null) {
+        if (customerLoan.getSiteVisit().getId() == null) {
             try {
                 String url = UploadDir.initialDocument;
-                customerLoan.getSiteVisit().setPath(writeJsonFiles(url, customerLoan.getSiteVisit().getData()));
+                customerLoan.getSiteVisit()
+                    .setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
                 System.out.println(customerLoan.getSiteVisit().getData());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new ServiceValidationException("Fail to Save File");
             }
         } else {
             try {
-                String url =customerLoan.getSiteVisit().getPath();
-                customerLoan.getSiteVisit().setPath(updateJsonFiles(url, customerLoan.getSiteVisit().getData()));
+                String url = customerLoan.getSiteVisit().getPath();
+                customerLoan.getSiteVisit()
+                    .setPath(updateJsonFile(url, customerLoan.getSiteVisit().getData()));
             } catch (Exception ex) {
                 throw new ServiceValidationException("Fail to Save File");
             }
@@ -169,14 +151,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             if (customerLoan.getFinancial().getId() == null) {
                 try {
                     String url = UploadDir.initialDocument
-                            + customerLoan
-                            .getCustomerInfo().getCustomerName().replace(" ", "_")
-                            + "_"
-                            + customerLoan.getCustomerInfo().getCitizenshipNumber()
-                            + "/"
-                            + customerLoan.getLoan().getId() + "/";
+                        + customerLoan
+                        .getCustomerInfo().getCustomerName().replace(" ", "_")
+                        + "_"
+                        + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                        + "/"
+                        + customerLoan.getLoan().getId() + "/";
                     customerLoan.getFinancial()
-                            .setPath(writeJsonFile(url, customerLoan.getFinancial().getData()));
+                        .setPath(writeJsonFile(url, customerLoan.getFinancial().getData()));
                 } catch (Exception exception) {
                     throw new ServiceValidationException("File Fail to Save");
                 }
@@ -184,7 +166,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 try {
                     String url = customerLoan.getFinancial().getPath();
                     customerLoan.getFinancial()
-                            .setPath(updateJsonFile(url, customerLoan.getFinancial().getData()));
+                        .setPath(updateJsonFile(url, customerLoan.getFinancial().getData()));
                 } catch (Exception exception) {
                     throw new ServiceValidationException("File Fail to Save");
                 }
@@ -216,7 +198,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getCurrentStage() == null
             || customerLoan.getCurrentStage().getToRole() == null
             || customerLoan.getCurrentStage().getToUser() == null) {
-            logger.warn("Empty current Stage{}",customerLoan.getCurrentStage());
+            logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
         customerLoanRepository.save(customerLoan);
@@ -346,7 +328,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public Map<String, String> chkUserContainCustomerLoan(Long id) {
         User u = userService.findOne(id);
-        Integer count = customerLoanRepository.chkUserContainCustomerLoan(id,u.getRole().getId(), DocStatus.PENDING);
+        Integer count = customerLoanRepository
+            .chkUserContainCustomerLoan(id, u.getRole().getId(), DocStatus.PENDING);
         Map<String, String> map = new HashMap<>();
         map.put("count", String.valueOf(count));
         map.put("status", count == 0 ? "false" : "true");
@@ -514,60 +497,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return null;
     }
 
-    public String writeJsonFiles(String url, Object siteVisitData) {
-        String jsonPath;
-        String SITEVISIT = "siteVisit";
-        Path path = Paths.get(FilePath.getOSPath() + url);
-        if(!Files.exists(path)) {
-            new File(FilePath.getOSPath() + url).mkdirs();
-        }
-        jsonPath = url + SITEVISIT + System.currentTimeMillis() + ".json";
-        File file = new File(FilePath.getOSPath() + jsonPath);
-        file.getParentFile().mkdirs();
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            writer.write(jsonConverter.convertToJson(siteVisitData));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            writer.flush();
-            return jsonPath;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    public String updateJsonFiles(String url, Object siteVisitData) {
-        String jsonPath = url;
-        try {
-            FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
-            try {
-                writer.write(jsonConverter.convertToJson(siteVisitData));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                writer.flush();
-                return jsonPath;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-
-    public String writeJsonFile(String url, Object financialData) {
+    public String writeJsonFile(String url, Object data) {
         String jsonPath;
         String FINANCIAL = "financial";
         Path path = Paths.get(FilePath.getOSPath() + url);
@@ -580,40 +511,41 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         FileWriter writer = null;
         try {
             writer = new FileWriter(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            writer.write(jsonConverter.convertToJson(financialData));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            writer.flush();
+
+            writer.write(jsonConverter.convertToJson(data));
             return jsonPath;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occured {}", e);
+        } finally {
+            try {
+                writer.flush();
+
+            } catch (IOException e) {
+                logger.error("Error occured {}", e);
+            }
         }
+
         return null;
     }
 
-    public String updateJsonFile(String url, Object financialData) {
-        String jsonPath = url;
+    public String updateJsonFile(String url, Object data) {
+        FileWriter writer = null;
         try {
-            FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
-            try {
-                writer.write(jsonConverter.convertToJson(financialData));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writer = new FileWriter(FilePath.getOSPath() + url);
+
+            writer.write(jsonConverter.convertToJson(data));
+
+            return url;
+
+        } catch (IOException e) {
+            logger.error("Error occured {}", e);
+        } finally {
             try {
                 writer.flush();
-                return jsonPath;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error occured {}", e);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
         }
         return null;
     }
