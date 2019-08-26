@@ -1,19 +1,14 @@
 package com.sb.solutions.api.user.repository.specification;
 
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
+import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.*;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class UserSpec implements Specification<User> {
 
@@ -35,7 +30,10 @@ public class UserSpec implements Specification<User> {
         CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_NAME:
-                return criteriaBuilder.like(root.get(property), value + "%");
+                return criteriaBuilder
+                    .like(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
+
+
             case FILTER_BY_BRANCH:
                 if (value.equalsIgnoreCase(RoleAccess.ALL.toString())) {
                     return criteriaBuilder
