@@ -4,5 +4,5 @@
             (2, 'Company Info', '#companyInfo', 2, 1, NULL, NULL, NULL, '2019-05-28', '2019-05-06', 0),
              (4, 'Proposal', '#proposalInfo',4, 1, NULL, NULL, NULL,'2019-05-28', '2019-05-06', 0);
 
-  DELETE FROM loan_template WHERE id = 3;
+--   DELETE FROM loan_template WHERE id = 3;
 
