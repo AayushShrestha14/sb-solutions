@@ -4,7 +4,7 @@ server:
     enabled: true
 spring:
   profiles:
-    active: dev
+    active: prod
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -37,7 +37,7 @@ logging:
   level:
     org:
       hibernate:
-        SQL: debug
+        SQL: error
 
 management:
   endpoints:
@@ -54,5 +54,5 @@ file:
   upload-directory: C:/
 
 bank:
-  name: Mahalaxmi Bank
-  website: http://www.mahalaxmibank.com/
+  name: United Finance Ltd
+  website: http://www.ufl.com.np/
