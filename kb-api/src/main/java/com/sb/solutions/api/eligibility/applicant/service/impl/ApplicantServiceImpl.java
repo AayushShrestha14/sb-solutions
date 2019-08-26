@@ -96,7 +96,12 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.debug("Saving the applicant information.");
         final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaService
             .getByStatus(Status.ACTIVE);
+        if (eligibilityCriteria == null) {
+            // this block will be executed if there is no any questions
+            return applicantRepository.save(applicant);
+        }
         LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
+
         String formula = eligibilityCriteria.getFormula();
 
         // Mapping Operand Characters to their respective questions via QuestionId
