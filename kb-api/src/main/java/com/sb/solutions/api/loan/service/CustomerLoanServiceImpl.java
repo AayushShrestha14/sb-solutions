@@ -423,6 +423,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
+        User u = userService.getAuthenticated();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -430,12 +431,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List customerLoanList = customerLoanRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("branch,name", " Branch");
-        header.put("dmsLoanFile,customerName", "Name");
+        header.put("customerInfo,customerName", "Name");
         header.put("loan,name", "Loan Name");
         header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
         header.put("loanType", "Type");
