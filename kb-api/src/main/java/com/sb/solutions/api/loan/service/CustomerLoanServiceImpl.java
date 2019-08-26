@@ -150,7 +150,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if(customerLoan.getSiteVisit().getId() == null) {
             try {
                 String url = UploadDir.initialDocument;
-                customerLoan.getSiteVisit().setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
+                customerLoan.getSiteVisit().setPath(writeJsonFiles(url, customerLoan.getSiteVisit().getData()));
                 System.out.println(customerLoan.getSiteVisit().getData());
             }catch (Exception e) {
                 throw new ServiceValidationException("Fail to Save File");
@@ -158,7 +158,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else {
             try {
                 String url =customerLoan.getSiteVisit().getPath();
-                customerLoan.getSiteVisit().setPath(updateJsonFile(url, customerLoan.getSiteVisit().getData()));
+                customerLoan.getSiteVisit().setPath(updateJsonFiles(url, customerLoan.getSiteVisit().getData()));
             } catch (Exception ex) {
                 throw new ServiceValidationException("Fail to Save File");
             }
@@ -514,7 +514,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return null;
     }
 
-    public String writeJsonFile(String url, Object siteVisitData) {
+    public String writeJsonFiles(String url, Object siteVisitData) {
         String jsonPath;
         String SITEVISIT = "siteVisit";
         Path path = Paths.get(FilePath.getOSPath() + url);
@@ -544,7 +544,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return null;
     }
 
-    public String updateJsonFile(String url, Object siteVisitData) {
+    public String updateJsonFiles(String url, Object siteVisitData) {
         String jsonPath = url;
         try {
             FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
@@ -618,18 +618,5 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return null;
     }
 
-    public Object readJsonFile(String url) {
-        Gson gson = new Gson();
-        try {
-            JsonReader reader = new JsonReader(new FileReader(FilePath.getOSPath() + url));
-            Object obj = gson.fromJson(reader, Object.class);
-            return obj;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 }
 
