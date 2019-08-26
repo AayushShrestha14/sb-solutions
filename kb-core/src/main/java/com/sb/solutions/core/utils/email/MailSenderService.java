@@ -50,7 +50,7 @@ public class MailSenderService {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
             message.setSubject(template.get());
             message.setTo(email.getTo());
-            message.setFrom(new InternetAddress(username));
+            message.setFrom(new InternetAddress(javaMailSender.getUsername()));
 
             final Context ctx = new Context();
             ctx.setVariable("data", email);
@@ -75,7 +75,7 @@ public class MailSenderService {
         MimeMessage message = new MimeMessage(session);
 
         // Set From: header field of the header.
-        message.setFrom(new InternetAddress(username));
+        message.setFrom(new InternetAddress(javaMailSender.getUsername()));
         // Set To: header field of the header.
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email.getTo()));
 
