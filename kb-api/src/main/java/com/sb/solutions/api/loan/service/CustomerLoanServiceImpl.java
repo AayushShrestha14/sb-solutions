@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan.service;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -45,13 +47,30 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 /**
@@ -88,10 +107,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan findOne(Long id) {
-        CustomerLoan customerLoan =customerLoanRepository.findById(id).get();
-        String url = customerLoan.getSiteVisit().getPath();
-        customerLoan.getSiteVisit().setData(readJsonFile(url));
-        return customerLoanRepository.findById(id).get();
+        CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
+        if (customerLoan.getFinancial() != null) {
+            String url = customerLoan.getFinancial().getPath();
+            customerLoan.getFinancial()
+                    .setData(readJsonFile(url));
+        }
+        if (customerLoan.getSiteVisit() != null) {
+            String url = customerLoan.getSiteVisit().getPath();
+            customerLoan.getSiteVisit().setData(readJsonFile(url));
+        }
+        return customerLoan;
     }
 
     @Override
@@ -139,6 +165,31 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         customerLoan.setCustomerInfo(customer);
         customerLoan.setEntityInfo(entityInfo);
+        if (customerLoan.getFinancial() != null) {
+            if (customerLoan.getFinancial().getId() == null) {
+                try {
+                    String url = UploadDir.initialDocument
+                            + customerLoan
+                            .getCustomerInfo().getCustomerName().replace(" ", "_")
+                            + "_"
+                            + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                            + "/"
+                            + customerLoan.getLoan().getId() + "/";
+                    customerLoan.getFinancial()
+                            .setPath(writeJsonFile(url, customerLoan.getFinancial().getData()));
+                } catch (Exception exception) {
+                    throw new ServiceValidationException("File Fail to Save");
+                }
+            } else {
+                try {
+                    String url = customerLoan.getFinancial().getPath();
+                    customerLoan.getFinancial()
+                            .setPath(updateJsonFile(url, customerLoan.getFinancial().getData()));
+                } catch (Exception exception) {
+                    throw new ServiceValidationException("File Fail to Save");
+                }
+            }
+        }
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -421,6 +472,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
+        User u = userService.getAuthenticated();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -428,12 +480,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List customerLoanList = customerLoanRepository.findAll(specification);
         Map<String, String> header = new LinkedHashMap<>();
         header.put("branch,name", " Branch");
-        header.put("dmsLoanFile,customerName", "Name");
+        header.put("customerInfo,customerName", "Name");
         header.put("loan,name", "Loan Name");
         header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
         header.put("loanType", "Type");
@@ -513,5 +566,70 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
 
+
+    public String writeJsonFile(String url, Object financialData) {
+        String jsonPath;
+        String FINANCIAL = "financial";
+        Path path = Paths.get(FilePath.getOSPath() + url);
+        if (!Files.exists(path)) {
+            new File(FilePath.getOSPath() + url).mkdirs();
+        }
+        jsonPath = url + FINANCIAL + System.currentTimeMillis() + ".json";
+        File file = new File(FilePath.getOSPath() + jsonPath);
+        file.getParentFile().mkdirs();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.write(jsonConverter.convertToJson(financialData));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.flush();
+            return jsonPath;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String updateJsonFile(String url, Object financialData) {
+        String jsonPath = url;
+        try {
+            FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
+            try {
+                writer.write(jsonConverter.convertToJson(financialData));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                writer.flush();
+                return jsonPath;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Object readJsonFile(String url) {
+        Gson gson = new Gson();
+        try {
+            JsonReader reader = new JsonReader(new FileReader(FilePath.getOSPath() + url));
+            Object obj = gson.fromJson(reader, Object.class);
+            return obj;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
 

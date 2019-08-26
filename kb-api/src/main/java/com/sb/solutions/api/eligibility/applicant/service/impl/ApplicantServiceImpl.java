@@ -96,19 +96,35 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.debug("Saving the applicant information.");
         final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaService
             .getByStatus(Status.ACTIVE);
+        if (eligibilityCriteria == null) {
+            // this block will be executed if there is no any questions
+            return applicantRepository.save(applicant);
+        }
+        LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
+
         String formula = eligibilityCriteria.getFormula();
-        Map<String, Long> operands = EligibilityUtility
+
+        // Mapping Operand Characters to their respective questions via QuestionId
+        Map<String, String> operands = EligibilityUtility
             .extractOperands(formula, eligibilityCriteria.getQuestions());
-        for (Map.Entry<String, Long> operand : operands.entrySet()) {
+
+        // Replacing mapped operand character with applicant answers for respective questions
+        for (Map.Entry<String, String> operand : operands.entrySet()) {
             for (EligibilityAnswer eligibilityAnswer : applicant.getEligibilityAnswers()) {
-                if (eligibilityAnswer.getEligibilityQuestion().getId().equals(operand.getValue())) {
+                if (String.valueOf(eligibilityAnswer.getEligibilityQuestion().getId()).equals(operand.getValue())) {
                     formula = formula
                         .replace(operand.getKey(), String.valueOf(eligibilityAnswer.getValue()));
                 }
             }
+            final String interestRateCharacter = "I";
+            if (interestRateCharacter.equalsIgnoreCase(operand.getKey())) {
+                formula = formula.replace(operand.getKey(), String.valueOf(currentLoanConfig.getInterestRate()));
+            }
         }
+
+        // Extracting remaining amount via mapped formula
         double remainingAmount = ArithmeticExpressionUtils
-            .parseExpression(formula); // new Expression
+            .parseExpression(formula);
 
         // Saving eligibility Answers and Obtained Points..
         List<Answer> answers =
@@ -125,7 +141,6 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
         double eligibleAmount =
             remainingAmount * eligibilityCriteria.getPercentageOfAmount() / 100D;
-        LoanConfig currentLoanConfig = loanConfigService.findOne(loanConfigId);
         if (eligibleAmount < currentLoanConfig.getMinimumProposedAmount()) {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
