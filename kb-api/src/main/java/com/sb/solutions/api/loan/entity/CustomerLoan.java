@@ -36,6 +36,7 @@ import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -70,6 +71,11 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private DmsLoanFile dmsLoanFile;
+
+    @ManyToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE
+    })
+    private SiteVisit siteVisit;
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
