@@ -127,10 +127,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-        if(customerLoan.getSiteVisit() != null) {
+
+        customerLoan.setCustomerInfo(customer);
+        customerLoan.setEntityInfo(entityInfo);
+
+        if (customerLoan.getSiteVisit() != null) {
             if (customerLoan.getSiteVisit().getId() == null) {
                 try {
-                    String url = UploadDir.initialDocument;
+                    String url = UploadDir.initialDocument
+                        + customerLoan.getCustomerInfo().getCustomerName().replace(" ", "_")
+                        + "_"
+                        + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                        + "/"
+                        + customerLoan.getLoan().getId() + "/";
                     customerLoan.getSiteVisit()
                         .setPath(writeJsonFile(url, customerLoan.getSiteVisit().getData()));
                     System.out.println(customerLoan.getSiteVisit().getData());
@@ -147,8 +156,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
         }
-        customerLoan.setCustomerInfo(customer);
-        customerLoan.setEntityInfo(entityInfo);
+
         if (customerLoan.getFinancial() != null) {
             if (customerLoan.getFinancial().getId() == null) {
                 try {
