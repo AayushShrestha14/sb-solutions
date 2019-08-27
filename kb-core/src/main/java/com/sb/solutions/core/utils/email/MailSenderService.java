@@ -32,11 +32,6 @@ import com.sb.solutions.core.constant.EmailConstant;
 @Service
 public class MailSenderService {
 
-    @Value("${spring.mail.username}")
-    private String username;
-
-    @Value("${spring.mail.password}")
-    private String password;
 
     @Autowired
     private JavaMailSenderImpl javaMailSender;

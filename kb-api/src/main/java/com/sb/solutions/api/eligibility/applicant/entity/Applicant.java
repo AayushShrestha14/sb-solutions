@@ -8,6 +8,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,6 +49,9 @@ public class Applicant extends BaseEntity<Long> {
     private long obtainedMarks;
 
     private double eligibleAmount;
+
+    @Transient
+    private double emiAmount;
 
     @ManyToOne
     @JoinColumn(name = "loan_config_id")
