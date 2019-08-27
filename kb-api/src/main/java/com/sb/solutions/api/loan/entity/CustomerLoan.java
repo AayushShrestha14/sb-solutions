@@ -32,9 +32,11 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
+import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -70,6 +72,11 @@ public class CustomerLoan extends BaseEntity<Long> {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private DmsLoanFile dmsLoanFile;
 
+    @ManyToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE
+    })
+    private SiteVisit siteVisit;
+
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 
@@ -92,6 +99,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Proposal proposal;
+
+    @OneToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private Financial financial;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
