@@ -104,6 +104,8 @@ public class ApplicantServiceImpl implements ApplicantService {
 
         String formula = eligibilityCriteria.getFormula();
 
+        final double interestRate = currentLoanConfig.getInterestRate();
+
         // Mapping Operand Characters to their respective questions via QuestionId
         Map<String, String> operands = EligibilityUtility
             .extractOperands(formula, eligibilityCriteria.getQuestions());
@@ -118,7 +120,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             }
             final String interestRateCharacter = "I";
             if (interestRateCharacter.equalsIgnoreCase(operand.getKey())) {
-                formula = formula.replace(operand.getKey(), String.valueOf(currentLoanConfig.getInterestRate()));
+                formula = formula.replace(operand.getKey(), String.valueOf(interestRate));
             }
         }
 
@@ -145,8 +147,16 @@ public class ApplicantServiceImpl implements ApplicantService {
             applicant.setEligibilityStatus(EligibilityStatus.NOT_ELIGIBLE);
             return applicantRepository.save(applicant);
         }
+
+        // Calculating EMI Amount--
+        String emiFormula = "L*(I/1200.0)*(((1.0+(I/1200.0))^(I*12.0))/(((1.0+(I/1200.0))^(I*12.0))-1))";
+        emiFormula = emiFormula.replace("I", "" + interestRate).replace("L", "" + eligibleAmount);
+        final double emiAmount = ArithmeticExpressionUtils.parseExpression(emiFormula);
+        applicant.setEmiAmount(emiAmount);
+
         applicant.setEligibleAmount(eligibleAmount);
         applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
+
         return applicantRepository.save(applicant);
     }
 

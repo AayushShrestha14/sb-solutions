@@ -40,4 +40,6 @@ public class ApplicantDto extends BaseDto<Long> {
 
     private double eligibleAmount;
 
+    private double emiAmount;
+
 }
