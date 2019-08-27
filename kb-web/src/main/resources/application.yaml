@@ -22,10 +22,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-  mail:
-    username: sbsolutionstest@gmail.com
-    password: testsbsolutions123
-
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -43,7 +39,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
   endpoint:
     refresh:
       enabled: true
