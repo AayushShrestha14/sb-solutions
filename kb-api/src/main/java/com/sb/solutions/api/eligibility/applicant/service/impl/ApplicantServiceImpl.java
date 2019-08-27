@@ -149,7 +149,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
 
         // Calculating EMI Amount--
-        String emiFormula = "L*(I/1200.0)*(((1.0+I/1200.0)^(I*12.0))/(((1.0+(I/1200.0))^(I*12.0))-1))";
+        String emiFormula = "L*(I/1200.0)*(((1.0+(I/1200.0))^(I*12.0))/(((1.0+(I/1200.0))^(I*12.0))-1))";
         emiFormula = emiFormula.replace("I", "" + interestRate).replace("L", "" + eligibleAmount);
         final double emiAmount = ArithmeticExpressionUtils.parseExpression(emiFormula);
         applicant.setEmiAmount(emiAmount);
