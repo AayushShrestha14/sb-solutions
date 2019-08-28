@@ -105,6 +105,9 @@ public class ApplicantServiceImpl implements ApplicantService {
         String formula = eligibilityCriteria.getFormula();
 
         final double interestRate = currentLoanConfig.getInterestRate();
+        final String interestRateCharacter = "I";
+        final String tenureCharacter = "T";
+        Double tenureValue = null;
 
         // Mapping Operand Characters to their respective questions via QuestionId
         Map<String, String> operands = EligibilityUtility
@@ -117,8 +120,10 @@ public class ApplicantServiceImpl implements ApplicantService {
                     formula = formula
                         .replace(operand.getKey(), String.valueOf(eligibilityAnswer.getValue()));
                 }
+                if (tenureCharacter.equalsIgnoreCase(operand.getKey())) {
+                    tenureValue = eligibilityAnswer.getValue();
+                }
             }
-            final String interestRateCharacter = "I";
             if (interestRateCharacter.equalsIgnoreCase(operand.getKey())) {
                 formula = formula.replace(operand.getKey(), String.valueOf(interestRate));
             }
@@ -149,11 +154,13 @@ public class ApplicantServiceImpl implements ApplicantService {
         }
 
         // Calculating EMI Amount--
-        String emiFormula = "L*(I/1200.0)*(((1.0+(I/1200.0))^(I*12.0))/(((1.0+(I/1200.0))^(I*12.0))-1))";
-        emiFormula = emiFormula.replace("I", "" + interestRate).replace("L", "" + eligibleAmount);
-        final double emiAmount = ArithmeticExpressionUtils.parseExpression(emiFormula);
-        applicant.setEmiAmount(emiAmount);
+        String emiFormula = "L*(I/1200.0)*(((1.0+(I/1200.0))^(T*12.0))/(((1.0+(I/1200.0))^(T*12.0))-1))";
+        emiFormula = emiFormula.replace("I", String.valueOf(interestRate)).replace("L", String.valueOf(eligibleAmount))
+        .replace("T", String.valueOf(tenureValue == null ? 10 : tenureValue));
 
+        final double emiAmount = ArithmeticExpressionUtils.parseExpression(emiFormula);
+
+        applicant.setEmiAmount(emiAmount);
         applicant.setEligibleAmount(eligibleAmount);
         applicant.setEligibilityStatus(EligibilityStatus.ELIGIBLE);
 
