@@ -58,23 +58,27 @@ public class FileUploadUtils {
         }
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String branchName,
+        String type,
         String name, String citizenNumber, String documentName) {
-        String url = null;
+        final String UNDER_SCORE = "_";
+        final String BLANK = " ";
+        citizenNumber = getDigitsFromString(citizenNumber);
+        name = name.replace(BLANK, UNDER_SCORE);
+        type = type.replace(BLANK, UNDER_SCORE);
+        String url;
         if (multipartFile.isEmpty()) {
-            return new RestResponseDto().failureModel("No image is selected");
+            return new RestResponseDto().failureModel("No File is selected");
         } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
             return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
         }
 
         try {
             final byte[] bytes = multipartFile.getBytes();
-            final FilePath filePath = new FilePath();
+            url = new StringBuilder(UploadDir.initialDocument).append(branchName).append("/")
+                .append(name).append(UNDER_SCORE).append(citizenNumber).append("/")
+                .append(type).append("/").toString();
 
-            url = UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type
-                + "/";
-            String returnUrl =
-                UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type + "/";
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
@@ -82,10 +86,10 @@ public class FileUploadUtils {
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
                 .toLowerCase();
             url = url + name + "_" + documentName + "." + fileExtension;
-            returnUrl = returnUrl + name + "_" + documentName + "." + fileExtension;
+
             path = Paths.get(FilePath.getOSPath() + url);
             Files.write(path, bytes);
-            return new RestResponseDto().successModel(returnUrl);
+            return new RestResponseDto().successModel(url);
         } catch (IOException e) {
             log.error("Error while saving file", e);
             return new RestResponseDto().failureModel("Fail");
@@ -132,6 +136,17 @@ public class FileUploadUtils {
             e.printStackTrace();
             return new RestResponseDto().failureModel("Fail");
         }
+    }
+
+    private static String getDigitsFromString(String citizenNumber) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < citizenNumber.length(); i++) {
+            char c = citizenNumber.charAt(i);
+            if (Character.isDigit(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
 
