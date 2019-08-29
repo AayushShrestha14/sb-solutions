@@ -116,15 +116,4 @@ public class DmsLoanFile extends BaseEntity<Long> {
         }
     }
 
-    @PrePersist
-    public void prePersist() {
-        try {
-            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
-            this.setCreatedAt(new Date());
-        } catch (Exception e) {
-            logger.warn("unable to set document path or created at", e);
-        }
-    }
-
-
 }

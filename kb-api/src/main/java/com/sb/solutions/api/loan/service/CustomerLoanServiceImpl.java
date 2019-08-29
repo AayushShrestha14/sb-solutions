@@ -2,15 +2,10 @@ package com.sb.solutions.api.loan.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import com.sb.solutions.api.financial.service.FinancialService;
+import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,21 +53,18 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ProductModeService productModeService;
     private final CustomerService customerService;
     private final EntityInfoService entityInfoService;
-    private final FinancialService financialService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
         @Autowired CustomerService customerService,
         @Autowired EntityInfoService entityInfoService,
-        @Autowired FinancialService financialService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
         this.customerService = customerService;
         this.entityInfoService = entityInfoService;
-        this.financialService = financialService;
     }
 
     @Override
@@ -100,6 +92,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getLoan() == null) {
             throw new ServiceValidationException("Loan can not be null");
         }
+
+        customerLoan.getDmsLoanFile().setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
+        customerLoan.getDmsLoanFile().setCreatedAt(new Date());
 
         Customer customer = null;
         EntityInfo entityInfo = null;
@@ -131,7 +126,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     jsonPath = url + SITEVISIT + System.currentTimeMillis() + ".json";
                     customerLoan.getSiteVisit()
                             .setPath(this.jsonConverter.writeJsonFile(url, jsonPath, customerLoan.getSiteVisit().getData()));
-                    System.out.println(customerLoan.getSiteVisit().getData());
                 } catch (Exception e) {
                     throw new ServiceValidationException("Fail to Save File");
                 }
@@ -445,6 +439,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if(object.getSiteVisit() != null){
             object.getSiteVisit().setId(null);
+        }
+
+        if(!object.getDmsLoanFile().getDocuments().isEmpty()){
+            object.getDmsLoanFile().getDocuments().forEach(loanDocument -> loanDocument.setId(null));
         }
 
         LoanStage stage = new LoanStage();
