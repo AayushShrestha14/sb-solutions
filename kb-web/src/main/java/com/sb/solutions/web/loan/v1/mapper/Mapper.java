@@ -93,13 +93,13 @@ public class Mapper {
 
                         previousListTemp.add(objectMapper.writeValueAsString(previous));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Failed to handle JSON data");
                     }
                 });
                 String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Failed to Get Stage data");
             }
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());
