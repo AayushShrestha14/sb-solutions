@@ -1757,4 +1757,7 @@
   <include file="alter_changeset/20192608_drop_email_constraint_user.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190710_sitevisit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190826_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_proposal_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_dms_data_type.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

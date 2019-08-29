@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,7 +11,7 @@ import com.sb.solutions.core.enums.DocStatus;
 @AllArgsConstructor
 public class StatisticDto {
 
-    double totalAmount;
+    BigDecimal totalAmount;
 
     DocStatus status;
 
