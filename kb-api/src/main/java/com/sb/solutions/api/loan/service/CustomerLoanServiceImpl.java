@@ -120,7 +120,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if(customerLoan.getSiteVisit() != null) {
             if (customerLoan.getSiteVisit().getId() == null) {
                 try {
-                    String url = UploadDir.initialDocument;
+                    String url = UploadDir.initialDocument
+                            + customerLoan.getCustomerInfo().getCustomerName().replace(" ", "_")
+                            + "_"
+                            + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                            + "/"
+                            + customerLoan.getLoan().getId() + "/";
                     String jsonPath;
                     String SITEVISIT = "site_visit";
                     jsonPath = url + SITEVISIT + System.currentTimeMillis() + ".json";
