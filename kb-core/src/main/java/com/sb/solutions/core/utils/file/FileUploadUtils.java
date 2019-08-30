@@ -20,7 +20,6 @@ public class FileUploadUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
 
-    private static final int MAX_FILE_SIZE = 10000000;
     private static String url;
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
@@ -75,11 +74,6 @@ public class FileUploadUtils {
         name = name.replace(BLANK, UNDER_SCORE);
         type = type.replace(BLANK, UNDER_SCORE);
         String url;
-        if (multipartFile.isEmpty()) {
-            return new RestResponseDto().failureModel("No File is selected");
-        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
-            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
-        }
 
         try {
             final byte[] bytes = multipartFile.getBytes();
@@ -124,9 +118,7 @@ public class FileUploadUtils {
         String branch, String type, String name) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
-        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
-            return new RestResponseDto().failureModel("Image Size more than 400kb");
-        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
+        }  else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
             && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
