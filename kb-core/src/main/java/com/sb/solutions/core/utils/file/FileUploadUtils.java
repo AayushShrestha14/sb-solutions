@@ -53,14 +53,22 @@ public class FileUploadUtils {
 
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            log.error("Error wile writing file", e);
+            log.error("Error wile writing file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
+
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String branchName,
+    /**
+     * File is uploaded  and renamed that of documenttype
+     */
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile,
+        String branchName,
         String type,
-        String name, String citizenNumber, String documentName) {
+        String name,
+        String citizenNumber,
+        String documentName,
+        String action) {
         final String UNDER_SCORE = "_";
         final String BLANK = " ";
         citizenNumber = getDigitsFromString(citizenNumber);
@@ -77,21 +85,37 @@ public class FileUploadUtils {
             final byte[] bytes = multipartFile.getBytes();
             url = new StringBuilder(UploadDir.initialDocument).append(branchName).append("/")
                 .append(name).append(UNDER_SCORE).append(citizenNumber).append("/")
-                .append(type).append("/").toString();
+                .append(type).append("/").append(action).append("/").toString();
 
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
+            // check if file under same name exits, if exists delete it
+            File dir = path.toFile();
+            if (dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                for (File f : files) {
+                    // remove file if exists
+                    if (f.getName().toLowerCase().contains(documentName.toLowerCase())) {
+                        try {
+                            f.delete();
+                        } catch (Exception e) {
+                            log.error("Failed to delete file {} {}", f, e);
+                        }
+                    }
+                }
+
+            }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
                 .toLowerCase();
-            url = url + name + "_" + documentName + "." + fileExtension;
+            url = url + documentName.toLowerCase() + "." + fileExtension;
 
             path = Paths.get(FilePath.getOSPath() + url);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(url);
         } catch (IOException e) {
-            log.error("Error while saving file", e);
+            log.error("Error while saving file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
