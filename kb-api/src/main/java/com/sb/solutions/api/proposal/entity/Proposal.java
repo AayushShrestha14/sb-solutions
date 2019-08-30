@@ -1,5 +1,6 @@
 package com.sb.solutions.api.proposal.entity;
 
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -20,7 +21,7 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
 
-    private double proposedLimit;
+    private BigDecimal proposedLimit;
     private double interestRate;
     private double baseRate;
     private double premiumRateOnBaseRate;
