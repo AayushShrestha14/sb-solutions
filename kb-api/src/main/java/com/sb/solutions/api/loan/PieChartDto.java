@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,6 @@ import lombok.NoArgsConstructor;
 public class PieChartDto {
 
     private String name;
-    private double value;
+    private BigDecimal value;
 
 }

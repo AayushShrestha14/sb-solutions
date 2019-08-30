@@ -1,5 +1,6 @@
 package com.sb.solutions.api.dms.dmsloanfile.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -42,7 +43,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private static final Logger logger = LoggerFactory.getLogger(DmsLoanFile.class);
 
     private double interestRate;
-    private double proposedAmount;
+    private BigDecimal proposedAmount;
     @Transient
     private String proposedAmountWord;
     private String serviceChargeType;
