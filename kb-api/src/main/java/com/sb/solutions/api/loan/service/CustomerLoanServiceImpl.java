@@ -440,6 +440,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getDmsLoanFile().setId(null);
             object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
         }
+
         LoanStage stage = new LoanStage();
         stage.setToRole(userService.getAuthenticated().getRole());
         stage.setFromRole(userService.getAuthenticated().getRole());
