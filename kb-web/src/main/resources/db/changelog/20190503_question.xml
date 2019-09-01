@@ -1,41 +1,41 @@
 <databaseChangeLog
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="1-create-question" author="rawseek">
-        <createTable tableName="question">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="description" type="VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="maximum_points" type="BIGINT"/>
-            <column name="appearance_order" type="BIGINT"/>
-            <column name="status" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="loan_config_id" type="BIGINT"/>
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="loan_config_id"
-                                 baseTableName="question"
-                                 constraintName="fk_question_loan_config_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="loan_config"/>
-    </changeSet>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="1-create-question" author="rawseek">
+    <createTable tableName="question">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="maximum_points" type="BIGINT"/>
+      <column name="appearance_order" type="BIGINT"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="loan_config_id" type="BIGINT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="loan_config_id"
+      baseTableName="question"
+      constraintName="fk_question_loan_config_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="loan_config"/>
+  </changeSet>
 </databaseChangeLog>

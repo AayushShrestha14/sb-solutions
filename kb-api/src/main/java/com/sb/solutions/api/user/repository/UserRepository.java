@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User, Long>,
     @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
     List<User> userCsvFilter(@Param("name") String name);
 
-    List<User>  findByRoleIdAndBranchId(Long roleId,Long branchId);
+    List<User> findByRoleIdAndBranchId(Long roleId, Long branchId);
 
     @Query(value =
         "  SELECT a.type FROM role r "

@@ -13,13 +13,13 @@
       columnName="contact_number"
       tableName="dms_loan_file"/>
     <dropColumn
-            columnName="company_name"
-            tableName="dms_loan_file"/>
+      columnName="company_name"
+      tableName="dms_loan_file"/>
     <dropColumn
-            columnName="registration_number"
-            tableName="dms_loan_file"/>
+      columnName="registration_number"
+      tableName="dms_loan_file"/>
     <dropColumn
-            columnName="security"
-            tableName="dms_loan_file"/>
+      columnName="security"
+      tableName="dms_loan_file"/>
   </changeSet>
 </databaseChangeLog>

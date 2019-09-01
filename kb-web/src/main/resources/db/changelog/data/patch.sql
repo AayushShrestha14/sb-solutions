@@ -1,8 +1,13 @@
-INSERT INTO role (id, created_at,  last_modified_at,  role_name, status,role_type,role_access) VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1,1,2);
+INSERT INTO role (id, created_at, last_modified_at, role_name, status, role_type, role_access)
+VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1, 1, 2);
 
 -- password = admin1234
-INSERT INTO users (id, created_at, last_modified_at, account_no, email, name, password, profile_picture, signature_image, status, user_name, branch_id, role_id, created_by_id, modified_by_id) VALUES
-(1, '2019-04-04 12:52:44', '2019-04-04 12:53:13' , NULL, 'admin@admin.com', 'SPADMIN', '$2a$10$cSqKGvZvEGEzQhRFRyDVyuCR3Lf0e7FcpIfxd/0t5IOG9U.3flG8m', NULL, NULL, 1, 'SPADMIN', NULL, 1, NULL, NULL);
+INSERT INTO users (id, created_at, last_modified_at, account_no, email, name, password,
+                   profile_picture, signature_image, status, user_name, branch_id, role_id,
+                   created_by_id, modified_by_id)
+VALUES (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', NULL, 'admin@admin.com', 'SPADMIN',
+        '$2a$10$cSqKGvZvEGEzQhRFRyDVyuCR3Lf0e7FcpIfxd/0t5IOG9U.3flG8m', NULL, NULL, 1, 'SPADMIN',
+        NULL, 1, NULL, NULL);
 
 
 -- INSERT INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (1,  'Branch', 'fa fa-bank', '/home/admin/branch', 10, 1);
