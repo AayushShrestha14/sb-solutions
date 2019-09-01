@@ -98,7 +98,7 @@ public class DmsLoanFileController {
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
         return FileUploadUtils
-            .uploadFile(multipartFile, branchName, type, name, citizenNumber, documentName,action);
+            .uploadFile(multipartFile, branchName, type, name, citizenNumber, documentName, action);
 
     }
 
