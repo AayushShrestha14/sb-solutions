@@ -20,7 +20,6 @@ public class FileUploadUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
 
-    private static final int MAX_FILE_SIZE = 10000000;
     private static String url;
 
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type) {
@@ -53,41 +52,64 @@ public class FileUploadUtils {
 
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            log.error("Error wile writing file", e);
+            log.error("Error wile writing file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
+
     }
 
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String type,
-        String name, String citizenNumber, String documentName) {
-        String url = null;
-        if (multipartFile.isEmpty()) {
-            return new RestResponseDto().failureModel("No image is selected");
-        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
-            return new RestResponseDto().failureModel("File Size Exceeds the maximum size");
-        }
+    /**
+     * File is uploaded  and renamed that of documenttype
+     */
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile,
+        String branchName,
+        String type,
+        String name,
+        String citizenNumber,
+        String documentName,
+        String action) {
+        final String UNDER_SCORE = "_";
+        final String BLANK = " ";
+        citizenNumber = getDigitsFromString(citizenNumber);
+        name = name.replace(BLANK, UNDER_SCORE);
+        type = type.replace(BLANK, UNDER_SCORE);
+        String url;
 
         try {
             final byte[] bytes = multipartFile.getBytes();
-            final FilePath filePath = new FilePath();
+            url = new StringBuilder(UploadDir.initialDocument).append(branchName).append("/")
+                .append(name).append(UNDER_SCORE).append(citizenNumber).append("/")
+                .append(type).append("/").append(action).append("/").toString();
 
-            url = UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type
-                + "/";
-            String returnUrl =
-                UploadDir.initialDocument + name + "_" + citizenNumber + "/" + type + "/";
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
+            // check if file under same name exits, if exists delete it
+            File dir = path.toFile();
+            if (dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                for (File f : files) {
+                    // remove file if exists
+                    if (f.getName().toLowerCase().contains(documentName.toLowerCase())) {
+                        try {
+                            f.delete();
+                        } catch (Exception e) {
+                            log.error("Failed to delete file {} {}", f, e);
+                        }
+                    }
+                }
+
+            }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
                 .toLowerCase();
-            url = url + name + "_" + documentName + "." + fileExtension;
-            returnUrl = returnUrl + name + "_" + documentName + "." + fileExtension;
+            url = url + documentName.toLowerCase() + "." + fileExtension;
+
             path = Paths.get(FilePath.getOSPath() + url);
             Files.write(path, bytes);
-            return new RestResponseDto().successModel(returnUrl);
+            return new RestResponseDto().successModel(url);
         } catch (IOException e) {
-            log.error("Error while saving file", e);
+            log.error("Error while saving file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
@@ -96,9 +118,7 @@ public class FileUploadUtils {
         String branch, String type, String name) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
-        } else if (multipartFile.getSize() > MAX_FILE_SIZE) {
-            return new RestResponseDto().failureModel("Image Size more than 400kb");
-        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
+        }  else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
             && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
@@ -132,6 +152,17 @@ public class FileUploadUtils {
             e.printStackTrace();
             return new RestResponseDto().failureModel("Fail");
         }
+    }
+
+    private static String getDigitsFromString(String citizenNumber) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < citizenNumber.length(); i++) {
+            char c = citizenNumber.charAt(i);
+            if (Character.isDigit(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
 
