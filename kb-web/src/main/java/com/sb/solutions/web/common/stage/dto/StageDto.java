@@ -33,4 +33,8 @@ public class StageDto extends BaseDto<Long> {
     private DocStatus documentStatus;
 
     private String comment;
+    /*
+    This notify flag will set during Approval Stage only
+     */
+    private boolean notify = false;
 }

@@ -23,6 +23,7 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
@@ -46,9 +47,9 @@ public class CustomerLoanController {
     private final Mapper mapper;
 
     public CustomerLoanController(
-            @Autowired CustomerLoanService service,
-            @Autowired Mapper mapper,
-            @Autowired UserService userService) {
+        @Autowired CustomerLoanService service,
+        @Autowired Mapper mapper,
+        @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
@@ -60,6 +61,10 @@ public class CustomerLoanController {
         final CustomerLoan c = mapper
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
                 userService.getAuthenticated());
+        if (actionDto.isNotify() && actionDto.getDocAction().equals(DocAction.APPROVED)) {
+            // TODO - create notify boolean type and  notifed  big int type in custoemr load.
+
+        }
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
