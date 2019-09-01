@@ -153,7 +153,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/get-all-doc-transfer/{id}")
+    @GetMapping(path = "/get-all-doc-transfer/{id}")
     public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
         return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null,id));
     }
