@@ -1,38 +1,11 @@
 package com.sb.solutions.api.loan.service;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -45,14 +18,31 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -154,7 +144,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setCustomerInfo(customer);
         customerLoan.setEntityInfo(entityInfo);
         if (customerLoan.getDmsLoanFile() != null) {
-            dmsLoanFileService.save(customerLoan.getDmsLoanFile());
+            customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
         }
         if (customerLoan.getFinancial() != null) {
             if (customerLoan.getFinancial().getId() == null) {
@@ -445,8 +435,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         object.setParentId(tempParentId);
         object.setId(null);
         object.setDocumentStatus(DocStatus.PENDING);
-        object.getDmsLoanFile().setId(null);
 
+        if (object.getDmsLoanFile() != null) {
+            object.getDmsLoanFile().setId(null);
+            object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
+        }
         LoanStage stage = new LoanStage();
         stage.setToRole(userService.getAuthenticated().getRole());
         stage.setFromRole(userService.getAuthenticated().getRole());
