@@ -24,14 +24,6 @@ public class WebConfig implements WebMvcConfigurer {
             .setCachePeriod(3600)
             .resourceChain(true)
             .addResolver(new PathResourceResolver());
-
-        String myExternalFilePath1 = "file:///" + FilePath.getOSPath() + "/accountRequest/";
-        registry.addResourceHandler("/accountRequest/**")
-            .addResourceLocations(myExternalFilePath1)
-            .setCachePeriod(3600)
-            .resourceChain(true)
-            .addResolver(new PathResourceResolver());
-
         registry
             .addResourceHandler("/resources/**")
             .addResourceLocations("/resources/");
