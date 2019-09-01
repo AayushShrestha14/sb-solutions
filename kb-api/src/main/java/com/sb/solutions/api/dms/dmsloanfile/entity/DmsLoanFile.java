@@ -110,22 +110,25 @@ public class DmsLoanFile extends BaseEntity<Long> {
     public String getProposedAmountWord() {
         try {
             return NumberToWordsConverter
-                .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+                    .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
         } catch (Exception e) {
             logger.warn("unable to convert {}", e);
             return null;
         }
     }
 
-    @PrePersist
-    public void prePersist() {
-        try {
-            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
-            this.setCreatedAt(new Date());
-        } catch (Exception e) {
-            logger.warn("unable to set document path or created at", e);
-        }
+
     }
+//    @PrePersist
+//    public void prePersist() {
+//        try {
+//            this.setDocumentPath(new Gson().toJson(this.getDocumentMap()));
+//            this.setCreatedAt(new Date());
+//        } catch (Exception e) {
+//            logger.warn("unable to set document path or created at", e);
+//        }
+//    }
 
 
-}
+
+

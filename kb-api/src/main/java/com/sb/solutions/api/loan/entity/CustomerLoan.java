@@ -68,8 +68,7 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private LoanApprovalType loanCategory;
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
     @ManyToOne(cascade = {
