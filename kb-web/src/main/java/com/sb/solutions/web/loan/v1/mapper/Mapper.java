@@ -1,5 +1,6 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +40,10 @@ import com.sb.solutions.web.user.dto.UserDto;
 @Component
 public class Mapper {
 
-    private final StageMapper stageMapper;
-
-    private final ApprovalLimitService approvalLimitService;
-
-    private final ProductModeService productModeService;
-
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
+    private final StageMapper stageMapper;
+    private final ApprovalLimitService approvalLimitService;
+    private final ProductModeService productModeService;
 
 
     public Mapper(@Autowired StageMapper stageMapper,
@@ -69,8 +67,9 @@ public class Mapper {
                     throw new RuntimeException("Authority Limit Error");
                 }
                 if (customerLoan.getDmsLoanFile() != null) {
-                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
-                        .getAmount()) {
+                    if (customerLoan.getDmsLoanFile().getProposedAmount().compareTo(approvalLimit
+                        .getAmount()) == 1) {
+                        // proposed amount is greater than approval limit
                         throw new RuntimeException("Amount Exceed");
                     }
                 }
@@ -94,13 +93,13 @@ public class Mapper {
 
                         previousListTemp.add(objectMapper.writeValueAsString(previous));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Failed to handle JSON data");
                     }
                 });
                 String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Failed to Get Stage data");
             }
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());
@@ -109,14 +108,14 @@ public class Mapper {
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
         loanStage = this
             .loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage,
-                currentUserDto,customerLoan);
+                currentUserDto, customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
     }
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
-        StageDto currentStage, UserDto currentUser,CustomerLoan customerLoan) {
+        StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
         if (currentStage.getDocAction().equals(DocAction.CLOSED)
             || currentStage.getDocAction().equals(DocAction.APPROVED)
             || currentStage.getDocAction().equals(DocAction.REJECT)) {
@@ -132,7 +131,8 @@ public class Mapper {
             }
         }
         return stageMapper
-            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,customerLoan);
+            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,
+                customerLoan);
     }
 
     public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {

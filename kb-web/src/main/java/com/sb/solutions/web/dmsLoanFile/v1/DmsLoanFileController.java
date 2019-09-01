@@ -83,9 +83,11 @@ public class DmsLoanFileController {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type, @RequestParam("citizenNumber") String citizenNumber,
+        @RequestParam("type") String type,
+        @RequestParam("citizenNumber") String citizenNumber,
         @RequestParam("customerName") String name,
-        @RequestParam("documentName") String documentName) {
+        @RequestParam("documentName") String documentName,
+        @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         String branchName = userService.getAuthenticated().getBranch().get(0).getName()
             .replace(" ", "_");
@@ -96,7 +98,7 @@ public class DmsLoanFileController {
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
         return FileUploadUtils
-            .uploadFile(multipartFile, branchName, type, name, citizenNumber, documentName);
+            .uploadFile(multipartFile, branchName, type, name, citizenNumber, documentName,action);
 
     }
 

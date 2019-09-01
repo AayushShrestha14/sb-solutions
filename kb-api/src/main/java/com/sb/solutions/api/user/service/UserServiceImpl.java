@@ -229,6 +229,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String dismissAllBranchAndRole(User user) {
+
         user.setBranch(new ArrayList<Branch>());
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
