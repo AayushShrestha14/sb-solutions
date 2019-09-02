@@ -296,7 +296,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
         List<RoleDto> finalRoleDtoList = new ArrayList<>();
