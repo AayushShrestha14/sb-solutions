@@ -155,7 +155,8 @@ public class UserController {
 
     @GetMapping(path = "/get-all-doc-transfer/{id}")
     public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
-        return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null,id));
+        return new RestResponseDto()
+            .successModel(userService.getRoleWiseBranchWiseUserList(null, null, id));
     }
 
     @PostMapping(value = "/resetPassword")
@@ -188,11 +189,11 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto passwordDto) {
         User user = userService.getByUsername(passwordDto.getUsername());
 
-        if(!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())){
+        if (!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())) {
             return new RestResponseDto().failureModel("Invalid Old Password");
         }
         userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
-            return new RestResponseDto().successModel("Password Changed Successfully");
+        return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
 }

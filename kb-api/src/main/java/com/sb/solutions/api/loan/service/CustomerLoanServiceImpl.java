@@ -27,6 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
 import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
@@ -122,7 +125,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getCustomerInfo() != null) {
             customer = this.customerService.save(customerLoan.getCustomerInfo());
         }
-        if (customerLoan.getEntityInfo() != null && customerLoan.getEntityInfo().getId() != null
+        if (customerLoan.getEntityInfo() != null
             && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
             entityInfo = this.entityInfoService.save(customerLoan.getEntityInfo());
         }
@@ -536,12 +539,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     public String writeJsonFile(String url, Object data) {
         String jsonPath;
-        String FINANCIAL = "financial";
+        final String financial = "financial";
         Path path = Paths.get(FilePath.getOSPath() + url);
         if (!Files.exists(path)) {
             new File(FilePath.getOSPath() + url).mkdirs();
         }
-        jsonPath = url + FINANCIAL + System.currentTimeMillis() + ".json";
+        jsonPath = url + financial + System.currentTimeMillis() + ".json";
         File file = new File(FilePath.getOSPath() + jsonPath);
         file.getParentFile().mkdirs();
         FileWriter writer = null;

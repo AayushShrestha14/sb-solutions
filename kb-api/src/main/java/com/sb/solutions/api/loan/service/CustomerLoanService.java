@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
 
@@ -28,7 +27,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     List<PieChartDto> proposedAmount(String startDate, String endDate) throws ParseException;
 
-    List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate, String endDate) throws ParseException;
+    List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate, String endDate)
+        throws ParseException;
 
     List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber);
 

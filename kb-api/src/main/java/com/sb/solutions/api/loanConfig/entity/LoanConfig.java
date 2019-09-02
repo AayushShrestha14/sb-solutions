@@ -25,6 +25,7 @@ import com.sb.solutions.core.enums.Status;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class LoanConfig extends BaseEntity<Long> {
+
     @Column(unique = true)
     private @NotNull(message = "name should not be null") String name;
     @ManyToMany

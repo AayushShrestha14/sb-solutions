@@ -11,7 +11,7 @@ import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.repository.FinancialRepository;
 
 @Service
-public class FinancialServiceImpl implements FinancialService  {
+public class FinancialServiceImpl implements FinancialService {
 
     FinancialRepository financialRepository;
 

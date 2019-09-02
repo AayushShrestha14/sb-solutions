@@ -200,24 +200,27 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
             + "(:branchIds) AND (c.createdAt >= :startDate) GROUP BY c.loan.id, c.loan.name, "
             + "c.documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds, @Param(
-        "startDate") Date startDate);
+    List<StatisticDto> getDmsStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds,
+        @Param(
+            "startDate") Date startDate);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
             + "(:branchIds) AND (c.createdAt <= :endDate) GROUP BY c.loan.id,c.loan.name, c"
             + ".documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds, @Param(
-        "endDate") Date endDate);
+    List<StatisticDto> getDmsStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds,
+        @Param(
+            "endDate") Date endDate);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.dmsLoanFile.proposedAmount), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
             + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
             + "c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds, @Param(
-        "startDate") Date startDate, @Param("endDate") Date endDate);
+    List<StatisticDto> getDmsStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
+        @Param(
+            "startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Modifying
     @Transactional
@@ -225,14 +228,13 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Query("SELECT COUNT(c) FROM CustomerLoan c JOIN c.currentStage s"
         + " WHERE s.toUser.id = :id AND s.toRole.id=:rId AND c.documentStatus= :docStatus")
-    Integer chkUserContainCustomerLoan(@Param("id") Long id,@Param("rId") Long rId,
+    Integer chkUserContainCustomerLoan(@Param("id") Long id, @Param("rId") Long rId,
         @Param("docStatus") DocStatus docStatus);
 
     @Modifying
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.isCloseRenew = true ,c.childId = :cId  WHERE c.id = :id")
-    void updateCloseRenewChildId(@Param("cId") Long cId,@Param("id") Long id);
-
+    void updateCloseRenewChildId(@Param("cId") Long cId, @Param("id") Long id);
 
 
 }
