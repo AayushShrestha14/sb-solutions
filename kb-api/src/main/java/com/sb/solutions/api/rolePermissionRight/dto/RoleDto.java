@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.user.dto.UserDto;
 
 @Data

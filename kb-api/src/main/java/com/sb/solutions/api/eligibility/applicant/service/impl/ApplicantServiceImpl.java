@@ -116,7 +116,8 @@ public class ApplicantServiceImpl implements ApplicantService {
         // Replacing mapped operand character with applicant answers for respective questions
         for (Map.Entry<String, String> operand : operands.entrySet()) {
             for (EligibilityAnswer eligibilityAnswer : applicant.getEligibilityAnswers()) {
-                if (String.valueOf(eligibilityAnswer.getEligibilityQuestion().getId()).equals(operand.getValue())) {
+                if (String.valueOf(eligibilityAnswer.getEligibilityQuestion().getId())
+                    .equals(operand.getValue())) {
                     formula = formula
                         .replace(operand.getKey(), String.valueOf(eligibilityAnswer.getValue()));
                 }
@@ -155,8 +156,9 @@ public class ApplicantServiceImpl implements ApplicantService {
 
         // Calculating EMI Amount--
         String emiFormula = "L*(I/1200.0)*(((1.0+(I/1200.0))^(T*12.0))/(((1.0+(I/1200.0))^(T*12.0))-1))";
-        emiFormula = emiFormula.replace("I", String.valueOf(interestRate)).replace("L", String.valueOf(eligibleAmount))
-        .replace("T", String.valueOf(tenureValue == null ? 10 : tenureValue));
+        emiFormula = emiFormula.replace("I", String.valueOf(interestRate))
+            .replace("L", String.valueOf(eligibleAmount))
+            .replace("T", String.valueOf(tenureValue == null ? 10 : tenureValue));
 
         final double emiAmount = ArithmeticExpressionUtils.parseExpression(emiFormula);
 

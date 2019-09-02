@@ -1,15 +1,16 @@
 package com.sb.solutions.core.utils.email;
 
-import com.sb.solutions.core.constant.EmailConstant;
-import com.sb.solutions.core.exception.ServiceValidationException;
+import java.io.IOException;
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
+import com.sb.solutions.core.constant.EmailConstant;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 @Service
 public class MailThreadService {

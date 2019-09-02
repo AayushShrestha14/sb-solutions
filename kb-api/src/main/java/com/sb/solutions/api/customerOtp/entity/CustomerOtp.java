@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerOtp {
+
     @Id
     @GeneratedValue
     private Long id;

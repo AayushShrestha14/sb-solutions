@@ -1,11 +1,20 @@
 package com.sb.solutions.api.dms.dmsloanfile.entity;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Transient;
+
 import com.google.gson.Gson;
-import com.sb.solutions.api.loanDocument.entity.LoanDocument;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.Priority;
-import com.sb.solutions.core.enums.Securities;
-import com.sb.solutions.core.utils.NumberToWordsConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,9 +23,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.*;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Priority;
+import com.sb.solutions.core.enums.Securities;
+import com.sb.solutions.core.utils.NumberToWordsConverter;
 
 @Entity
 @Data
@@ -37,7 +47,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private String documentPath;
     @Transient
     private List<String> documentMap;
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private Set<LoanDocument> documents;
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Securities.class)
@@ -95,7 +105,7 @@ public class DmsLoanFile extends BaseEntity<Long> {
     public String getProposedAmountWord() {
         try {
             return NumberToWordsConverter
-                    .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
+                .calculateAmountInWords(String.valueOf(this.getProposedAmount()));
         } catch (Exception e) {
             logger.warn("unable to convert {}", e);
             return null;

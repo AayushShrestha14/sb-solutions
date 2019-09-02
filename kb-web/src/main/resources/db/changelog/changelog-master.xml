@@ -1738,7 +1738,8 @@
   <include file="20190716_closure_document.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190724_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="20190724_customer_otp.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20190728_alter_loan_config_new_field.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190728_alter_loan_config_new_field.xml"
+    relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_eligibility_criteria.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_alter_customer_loan.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190108_alter_dms.xml" relativeToChangelogFile="true"/>
@@ -1748,16 +1749,20 @@
   <include file="alter_changeset/20190804_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190809_alter_entity_info.xml" relativeToChangelogFile="true"/>
   <include file="20190810_dms_loan_file_securities.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml"
+    relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190816_dms.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190818_applicant.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190821_document.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190709_financial.xml" relativeToChangelogFile="true"/>
-  <include file="loan_form/20190709_alter_customer_loan_financial.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20192608_drop_email_constraint_user.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190709_alter_customer_loan_financial.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20192608_drop_email_constraint_user.xml"
+    relativeToChangelogFile="true"/>
   <include file="loan_form/20190710_sitevisit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190826_alter_customer_loan.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190829_change_data_type.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20190829_change_proposal_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_proposal_data_type.xml"
+    relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190829_change_dms_data_type.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

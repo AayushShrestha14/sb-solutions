@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.repository.CustomerRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerSpecBuilder;
-import com.sb.solutions.core.dto.SearchDto;
 
 @Service
 @AllArgsConstructor
