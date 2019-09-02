@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -65,10 +66,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE
-    })
-    private SiteVisit siteVisit;
+    @OneToMany
+    private List<SiteVisit> siteVisit;
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
