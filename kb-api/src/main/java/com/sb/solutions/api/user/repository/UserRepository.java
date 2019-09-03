@@ -38,6 +38,9 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     List<User> findByRoleId(Long roleId);
 
+    @Query("SELECT u FROM User u where u.role is not null and u.status = :status")
+    List<User> findUserNotDisMissAndActive(@Param("status") Status status);
+
 
     Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
 
