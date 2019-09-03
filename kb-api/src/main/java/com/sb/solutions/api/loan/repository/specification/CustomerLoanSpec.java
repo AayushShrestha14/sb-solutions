@@ -32,6 +32,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
     private static final String FILTER_BY_TYPE = "loanNewRenew";
+    private static final String FILTER_BY_NOTIFY = "notify";
 
     private final String property;
     private final String value;
@@ -87,6 +88,11 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_TYPE:
                 return criteriaBuilder.equal(root.get("loanType"), LoanType.valueOf(value));
+
+            case FILTER_BY_NOTIFY:
+                Predicate notifyPredicate = criteriaBuilder.equal(root.get("notify"), Boolean.valueOf(value));
+                Predicate notedByPredicate = criteriaBuilder.isNull(root.get("notedBy"));
+                return criteriaBuilder.and(notifyPredicate, notedByPredicate);
 
             default:
                 return null;
