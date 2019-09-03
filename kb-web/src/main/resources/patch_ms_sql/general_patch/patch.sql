@@ -6,7 +6,7 @@ if(@count < 1)
 BEGIN
 SET IDENTITY_INSERT role ON
 INSERT  INTO role (id, created_at,  last_modified_at,  role_name, status,role_type,role_access) VALUES
- (1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1,1,2)
+(1, '2019-04-04 12:52:44', '2019-04-04 12:53:13', 'admin', 1,1,2)
 SET IDENTITY_INSERT role OFF
 -- password = admin1234
 

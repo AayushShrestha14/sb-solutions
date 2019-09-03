@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findByRoleAndBranchId(Long roleId, Long branchId) {
-        return userRepository.findByRoleIdAndBranchId(roleId,branchId);
+        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
     }
 
     @Override
@@ -296,7 +296,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
         List<RoleDto> finalRoleDtoList = new ArrayList<>();

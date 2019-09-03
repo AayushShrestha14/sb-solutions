@@ -8,7 +8,7 @@ if(@chckLoanConfig = 0)
 BEGIN
 SET IDENTITY_INSERT permission on
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status)
- VALUES (2,  'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1)
+VALUES (2,  'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1)
 SET IDENTITY_INSERT permission off
 
 SET IDENTITY_INSERT role_permission_rights on
@@ -38,29 +38,29 @@ SET IDENTITY_INSERT permission off
 
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT******************************
 SET IDENTITY_INSERT role_permission_rights on
- INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (4, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  4, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (4, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  4, 1)
 
- INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (5, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  5, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (5, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  5, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (7, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  7, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (7, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  7, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (8, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  8, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (8, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  8, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (9, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  9, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (9, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  9, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (10, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  10, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (10, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  10, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (11, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  11, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (11, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  11, 1)
 
-  INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
- VALUES (12, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  12, 1)
+INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)
+VALUES (12, '2019-04-04 13:17:01',  '2019-04-04 13:17:07',  12, 1)
 
 
 SET IDENTITY_INSERT role_permission_rights off
@@ -263,43 +263,43 @@ if(@ChkAPiMap = 0)
 BEGIN
 -- ************************APPROVAL LIMIT MAP*******************************************
 INSERT  INTO role_permission_rights_api_rights values (7,5)
-INSERT  INTO role_permission_rights_api_rights values (7,6)
+                                                      INSERT  INTO role_permission_rights_api_rights values (7,6)
 INSERT  INTO role_permission_rights_api_rights values (7,34)
 
--- ************************APPROVAL LIMIT MAP*******************************************
+                                                       -- ************************APPROVAL LIMIT MAP*******************************************
 
 
--- ************************COMPANY MAP*******************************************
+                                                       -- ************************COMPANY MAP*******************************************
 INSERT  INTO role_permission_rights_api_rights values (11,7)
 INSERT  INTO role_permission_rights_api_rights values (11,8)
 INSERT  INTO role_permission_rights_api_rights values (11,9)
 
--- ************************COMPANY MAP*******************************************
+                                                       -- ************************COMPANY MAP*******************************************
 
--- ************************NEPSE MAP*******************************************
+                                                       -- ************************NEPSE MAP*******************************************
 INSERT  INTO role_permission_rights_api_rights values (8,10)
 INSERT  INTO role_permission_rights_api_rights values (8,11)
 
--- ************************NEPSE MAP*******************************************
+                                                       -- ************************NEPSE MAP*******************************************
 
 
--- ************************SEGMENT MAP*******************************************
+                                                       -- ************************SEGMENT MAP*******************************************
 INSERT  INTO role_permission_rights_api_rights values (9,13)
 INSERT  INTO role_permission_rights_api_rights values (9,14)
 INSERT  INTO role_permission_rights_api_rights values (9,15)
 INSERT  INTO role_permission_rights_api_rights values (9,31)
 
--- ************************SEGMENT MAP*******************************************
+                                                       -- ************************SEGMENT MAP*******************************************
 
--- ************************SUB-SEGMENT*******************************************
+                                                       -- ************************SUB-SEGMENT*******************************************
 INSERT  INTO role_permission_rights_api_rights values (10,16)
 INSERT  INTO role_permission_rights_api_rights values (10,17)
 INSERT  INTO role_permission_rights_api_rights values (10,18)
 INSERT  INTO role_permission_rights_api_rights values (10,32)
 
--- ************************SUB-SEGMENT*******************************************
+                                                       -- ************************SUB-SEGMENT*******************************************
 
--- ************************SECTOR*******************************************
+                                                       -- ************************SECTOR*******************************************
 
 INSERT  INTO role_permission_rights_api_rights values (5,19)
 INSERT  INTO role_permission_rights_api_rights values (5,20)
@@ -308,9 +308,9 @@ INSERT  INTO role_permission_rights_api_rights values (5,33)
 
 
 
--- ************************SECTOR*******************************************
+                                                       -- ************************SECTOR*******************************************
 
--- ************************SUB-SECTOR*******************************************
+                                                       -- ************************SUB-SECTOR*******************************************
 
 INSERT  INTO role_permission_rights_api_rights values (12,22)
 INSERT  INTO role_permission_rights_api_rights values (12,23)
@@ -318,10 +318,10 @@ INSERT  INTO role_permission_rights_api_rights values (12,24)
 INSERT  INTO role_permission_rights_api_rights values (12,25)
 
 
--- ************************SUB-SECTOR*******************************************
+                                                       -- ************************SUB-SECTOR*******************************************
 
 
--- ************************VALUATOR*******************************************
+                                                       -- ************************VALUATOR*******************************************
 
 INSERT  INTO role_permission_rights_api_rights values (4,26)
 INSERT  INTO role_permission_rights_api_rights values (4,27)

@@ -52,7 +52,8 @@ public class CustomerOtpController {
 
     @PostMapping
     public ResponseEntity<?> generateOTP(@RequestBody CustomerOtpDto customerOtpDto) {
-        CustomerOtp customerOtp = customerOtpService.findByEmailOrMobile(customerOtpDto.getEmail(), customerOtpDto.getMobile());
+        CustomerOtp customerOtp = customerOtpService
+            .findByEmailOrMobile(customerOtpDto.getEmail(), customerOtpDto.getMobile());
         if (customerOtp == null) {
             customerOtp = customerOtpMapper.mapDtoToEntity(customerOtpDto);
         }
@@ -62,7 +63,8 @@ public class CustomerOtpController {
         final CustomerOtp savedCustomerOtp = customerOtpService.save(customerOtp);
         logger.debug("One Time Password (OTP) generated. {}", savedCustomerOtp);
         sendOtpMail(customerOtpDto, savedCustomerOtp.getOtp());
-        return new RestResponseDto().successModel(customerOtpMapper.mapEntityToDto(savedCustomerOtp));
+        return new RestResponseDto()
+            .successModel(customerOtpMapper.mapEntityToDto(savedCustomerOtp));
     }
 
     @PostMapping(value = "/verify")

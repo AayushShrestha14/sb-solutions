@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.branch.v1.dto.BranchCustomerEndDto;
 import com.sb.solutions.web.branch.v1.mapper.BranchCustomerEndMapper;
@@ -100,7 +99,8 @@ public class BranchController {
 
     @GetMapping(value = "/limited")
     public ResponseEntity<?> getBranchWithLimitedInfo() {
-        List<BranchCustomerEndDto> branchDtoList = branchCustomerEndMapper.mapEntitiesToDtos(branchService.findAll());
+        List<BranchCustomerEndDto> branchDtoList = branchCustomerEndMapper
+            .mapEntitiesToDtos(branchService.findAll());
         return new RestResponseDto().successModel(branchDtoList);
     }
 

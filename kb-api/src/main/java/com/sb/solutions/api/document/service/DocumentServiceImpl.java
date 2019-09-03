@@ -25,7 +25,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final LoanCycleRepository loanCycleRepository;
 
     public DocumentServiceImpl(@Autowired DocumentRepository documentRepository,
-                               @Autowired LoanCycleRepository loanCycleRepository) {
+        @Autowired LoanCycleRepository loanCycleRepository) {
         this.documentRepository = documentRepository;
         this.loanCycleRepository = loanCycleRepository;
     }
@@ -77,7 +77,8 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
         Status status = Status.valueOf("ACTIVE");
-        for (Document document : documentRepository.findByLoanCycleContainingAndStatus(loanCycle, status)) {
+        for (Document document : documentRepository
+            .findByLoanCycleContainingAndStatus(loanCycle, status)) {
             document.getLoanCycle().remove(loanCycle);
         }
         for (Long id : ids) {

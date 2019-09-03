@@ -1,30 +1,30 @@
 <databaseChangeLog
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="5-create-loan-config-eligibility-documents" author="rawseek">
-        <createTable tableName="loan_config_eligibility_documents">
-            <column name="loan_config_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="eligibility_documents_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="5-create-loan-config-eligibility-documents" author="rawseek">
+    <createTable tableName="loan_config_eligibility_documents">
+      <column name="loan_config_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="eligibility_documents_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="loan_config_id"
-                                 baseTableName="loan_config_eligibility_documents"
-                                 constraintName="fk_loan_config_eligibility_loan_config_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="loan_config"/>
-        <addForeignKeyConstraint baseColumnNames="eligibility_documents_id"
-                                 baseTableName="loan_config_eligibility_documents"
-                                 constraintName="fk_loan_config_eligibility_eligibility_documents_id"
-                                 onDelete="RESTRICT"
-                                 onUpdate="CASCADE"
-                                 referencedColumnNames="id"
-                                 referencedTableName="document"/>
-    </changeSet>
+    <addForeignKeyConstraint baseColumnNames="loan_config_id"
+      baseTableName="loan_config_eligibility_documents"
+      constraintName="fk_loan_config_eligibility_loan_config_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="loan_config"/>
+    <addForeignKeyConstraint baseColumnNames="eligibility_documents_id"
+      baseTableName="loan_config_eligibility_documents"
+      constraintName="fk_loan_config_eligibility_eligibility_documents_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="document"/>
+  </changeSet>
 </databaseChangeLog>
