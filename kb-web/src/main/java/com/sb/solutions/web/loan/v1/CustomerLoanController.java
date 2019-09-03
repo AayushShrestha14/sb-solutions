@@ -61,10 +61,6 @@ public class CustomerLoanController {
         final CustomerLoan c = mapper
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
                 userService.getAuthenticated());
-        if (actionDto.isNotify() && actionDto.getDocAction().equals(DocAction.APPROVED)) {
-            // TODO - create notify boolean type and  notifed  big int type in custoemr load.
-
-        }
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }

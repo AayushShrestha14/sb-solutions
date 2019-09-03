@@ -74,6 +74,9 @@ public class Mapper {
                 }
 
             }
+            if (loanActionDto.isNotify()) {
+                customerLoan.setNotify(true);
+            }
         }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);

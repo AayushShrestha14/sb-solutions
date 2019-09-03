@@ -5,11 +5,11 @@
   <changeSet id="34-alter-customer-loan" author="elvin">
     <addColumn
       tableName="customer_loan">
-      <column name="notify" type="BOOLEAN"/>
+      <column name="notify" type="BOOLEAN" defaultValue="false"/>
     </addColumn>
     <addColumn
       tableName="customer_loan">
-      <column name="noted_by" type="BIGINT"/>
+      <column name="noted_by" type="BIGINT" defaultValue="0"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>
