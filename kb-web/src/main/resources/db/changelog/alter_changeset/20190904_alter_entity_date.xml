@@ -1,0 +1,126 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="35-change-entity-date-type" author="elvin">
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="answer"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="answer"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="applicant"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="applicant"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="approval_limit"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="approval_limit"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="branch"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="branch"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="capital"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="capital"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="company"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="company"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="customer"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="customer"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="customer_loan"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="customer_loan"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="customer_relative"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="customer_relative"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="dms_loan_file"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="dms_loan_file"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="document"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="document"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="eligibility_answer"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="eligibility_answer"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="eligibility_criteria"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="eligibility_criteria"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="eligibility_question"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="eligibility_question"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="entity_info"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="entity_info"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="guarantor"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="guarantor"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="legal_status"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="legal_status"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="loan_config"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="loan_config"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="loan_cycle"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="loan_cycle"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="loan_document"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="loan_document"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="loan_template"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="loan_template"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="management_team"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="management_team"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="memo"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="memo"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="memo_stage"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="memo_stage"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="memo_type"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="memo_type"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="nepse_company"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="nepse_company"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="proposal"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="proposal"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="proprietor"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="proprietor"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="question"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="question"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="role"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="role"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="role_hierarchy"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="role_hierarchy"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="role_permission_rights"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="role_permission_rights"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="sector"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="sector"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="segment"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="segment"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="sub_sector"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="sub_sector"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="sub_segment"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="sub_segment"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="submission_document"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="submission_document"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="swot"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="swot"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="users"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="users"/>
+
+    <modifyDataType columnName="created_at" newDataType="DATETIME" tableName="valuator"/>
+    <modifyDataType columnName="last_modified_at" newDataType="DATETIME" tableName="valuator"/>
+  </changeSet>
+</databaseChangeLog>
