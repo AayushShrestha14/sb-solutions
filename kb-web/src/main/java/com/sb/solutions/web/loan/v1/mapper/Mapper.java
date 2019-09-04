@@ -118,7 +118,9 @@ public class Mapper {
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
         StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
-        if (currentStage.getDocAction().equals(DocAction.CLOSED)
+        if (stageDto.getDocAction().equals(DocAction.NOTED)) {
+            customerLoan.setNotedBy(currentUser.getId());
+        } else if (currentStage.getDocAction().equals(DocAction.CLOSED)
             || currentStage.getDocAction().equals(DocAction.APPROVED)
             || currentStage.getDocAction().equals(DocAction.REJECT)) {
 
