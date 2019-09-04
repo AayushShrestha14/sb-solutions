@@ -93,6 +93,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Branch branch;
 
+    private Boolean notify;
+
+    private Long notedBy;
+
     private String offerLetterUrl;
 
     @OneToOne(cascade = {

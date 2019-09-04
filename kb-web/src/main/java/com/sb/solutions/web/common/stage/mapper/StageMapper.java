@@ -62,8 +62,9 @@ public class StageMapper {
         }
 
         if (stageDto.getDocAction().equals(DocAction.APPROVED)
-            || stageDto.getDocumentStatus().equals(DocStatus.CLOSED)
-            || stageDto.getDocumentStatus().equals(DocStatus.REJECTED)) {
+            || stageDto.getDocAction().equals(DocAction.CLOSED)
+            || stageDto.getDocAction().equals(DocAction.REJECT)
+            || stageDto.getDocAction().equals(DocAction.NOTED)) {
             currentStage = this.approvedCloseReject(currentStage, currentUser);
         }
 

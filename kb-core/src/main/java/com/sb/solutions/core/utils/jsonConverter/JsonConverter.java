@@ -1,16 +1,22 @@
 package com.sb.solutions.core.utils.jsonConverter;
 
-import com.google.gson.Gson;
-import com.sb.solutions.core.constant.FilePath;
-import com.sb.solutions.core.exception.ServiceValidationException;
-import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.google.gson.Gson;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sb.solutions.core.constant.FilePath;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 public class JsonConverter {
 
@@ -40,11 +46,8 @@ public class JsonConverter {
         try {
             FileReader reader = new FileReader(FilePath.getOSPath() + url);
             try {
-                Object obj = parser.parse(reader);
-                return obj;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (org.json.simple.parser.ParseException e) {
+                return parser.parse(reader);
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
         } catch (IOException e) {
@@ -70,13 +73,13 @@ public class JsonConverter {
             writer.write(this.convertToJson(data));
             return jsonFileName;
         } catch (IOException e) {
-            logger.error("Error occured {}", e);
+            logger.error("Error occurred {}", e);
         } finally {
             try {
                 writer.flush();
 
             } catch (IOException e) {
-                logger.error("Error occured {}", e);
+                logger.error("Error occurred {}", e);
             }
         }
 
@@ -93,12 +96,12 @@ public class JsonConverter {
             return url;
 
         } catch (IOException e) {
-            logger.error("Error occured {}", e);
+            logger.error("Error occurred {}", e);
         } finally {
             try {
                 writer.flush();
             } catch (IOException e) {
-                logger.error("Error occured {}", e);
+                logger.error("Error occurred {}", e);
             }
 
         }
