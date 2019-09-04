@@ -149,8 +149,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                         + "/"
                         + customerLoan.getLoan().getId() + "/";
                     String jsonPath;
-                    String SITEVISIT = "site_visit";
-                    jsonPath = url + SITEVISIT + System.currentTimeMillis() + ".json";
+                    String siteVisit = "site_visit";
+                    jsonPath = url + siteVisit + System.currentTimeMillis() + ".json";
                     customerLoan.getSiteVisit()
                         .setPath(this.jsonConverter
                             .writeJsonFile(url, jsonPath, customerLoan.getSiteVisit().getData()));
@@ -189,8 +189,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                         + "/"
                         + customerLoan.getLoan().getId() + "/";
                     String jsonFileName;
-                    String FINANCIAL = "financial";
-                    jsonFileName = url + FINANCIAL + System.currentTimeMillis() + ".json";
+                    String financial = "financial";
+                    jsonFileName = url + financial + System.currentTimeMillis() + ".json";
                     customerLoan.getFinancial()
                         .setPath(this.jsonConverter.writeJsonFile(url, jsonFileName,
                             customerLoan.getFinancial().getData()));
