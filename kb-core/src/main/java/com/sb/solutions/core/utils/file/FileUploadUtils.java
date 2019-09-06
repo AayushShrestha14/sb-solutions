@@ -61,25 +61,11 @@ public class FileUploadUtils {
     /**
      * File is uploaded  and renamed that of documenttype
      */
-    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile,
-        String branchName,
-        String type,
-        String name,
-        String citizenNumber,
-        String documentName,
-        String action) {
-        final String UNDER_SCORE = "_";
-        final String BLANK = " ";
-        citizenNumber = getDigitsFromString(citizenNumber);
-        name = name.replace(BLANK, UNDER_SCORE);
-        type = type.replace(BLANK, UNDER_SCORE);
-        String url;
+    public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String url,
+        String documentName) {
 
         try {
             final byte[] bytes = multipartFile.getBytes();
-            url = new StringBuilder(UploadDir.initialDocument).append(branchName).append("/")
-                .append(name).append(UNDER_SCORE).append(citizenNumber).append("/")
-                .append(type).append("/").append(action).append("/").toString();
 
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
@@ -118,7 +104,7 @@ public class FileUploadUtils {
         String branch, String type, String name) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
-        }  else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
             && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
@@ -154,16 +140,7 @@ public class FileUploadUtils {
         }
     }
 
-    private static String getDigitsFromString(String citizenNumber) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < citizenNumber.length(); i++) {
-            char c = citizenNumber.charAt(i);
-            if (Character.isDigit(c)) {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
+
 
 
 }

@@ -32,9 +32,11 @@ import com.sb.solutions.api.dms.dmsloanfile.repository.DmsLoanFileRepository;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.web.common.constant.PathBuilder;
 
 @RestController
 @RequestMapping(value = "/v1/dms-loan-file")
@@ -97,8 +99,12 @@ public class DmsLoanFileController {
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
+        String uploadPath =  new PathBuilder(UploadDir.initialDocument).withAction(action)
+            .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
+            .withCustomerName(name).withLoanType(type).build();
+        logger.info("File Upload Path {}", uploadPath);
         return FileUploadUtils
-            .uploadFile(multipartFile, branchName, type, name, citizenNumber, documentName, action);
+            .uploadFile(multipartFile, uploadPath, documentName);
 
     }
 
