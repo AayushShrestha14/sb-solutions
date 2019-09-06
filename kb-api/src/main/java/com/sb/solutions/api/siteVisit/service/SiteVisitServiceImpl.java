@@ -13,7 +13,7 @@ import com.sb.solutions.api.siteVisit.repository.SiteVisitRepository;
 @Service
 public class SiteVisitServiceImpl implements SiteVisitService {
 
-    SiteVisitRepository siteVisitRepository;
+    final SiteVisitRepository siteVisitRepository;
 
     @Autowired
     public SiteVisitServiceImpl(SiteVisitRepository siteVisitRepository) {
@@ -38,5 +38,10 @@ public class SiteVisitServiceImpl implements SiteVisitService {
     @Override
     public Page<SiteVisit> findAllPageable(Object t, Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public List<SiteVisit> saveAll(List<SiteVisit> siteVisits) {
+        return siteVisitRepository.saveAll(siteVisits);
     }
 }

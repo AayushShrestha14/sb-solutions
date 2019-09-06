@@ -11,8 +11,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -71,10 +73,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @ManyToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE
-    })
-    private SiteVisit siteVisit;
+    @OneToMany
+    @JoinColumn(name = "customer_loan_id")
+    private List<SiteVisit> siteVisit = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
