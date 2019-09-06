@@ -35,12 +35,12 @@ public class BaseEntity<PK extends Serializable> extends AbstractPersistable<PK>
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt = new Date();
 
     @LastModifiedDate
     @Column(name = "last_modified_at", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastModifiedAt = new Date();
 
     @CreatedBy

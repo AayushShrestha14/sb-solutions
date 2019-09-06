@@ -31,6 +31,7 @@ import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
@@ -41,8 +42,10 @@ import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.api.user.repository.specification.UserSpecBuilder;
 import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
@@ -58,6 +61,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
+    private final CustomerLoanRepository customerLoanRepository;
     private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
@@ -65,13 +69,15 @@ public class UserServiceImpl implements UserService {
         @Autowired BranchRepository branchRepository,
         @Autowired RoleRepository roleRepository,
         @Autowired CustomJdbcTokenStore customJdbcTokenStore,
-        @Autowired BCryptPasswordEncoder passwordEncoder) {
+        @Autowired BCryptPasswordEncoder passwordEncoder,
+        @Autowired CustomerLoanRepository customerLoanRepository) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
         this.roleRepository = roleRepository;
         this.customJdbcTokenStore = customJdbcTokenStore;
+        this.customerLoanRepository = customerLoanRepository;
 
     }
 
@@ -229,7 +235,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String dismissAllBranchAndRole(User user) {
-
+        Integer i = customerLoanRepository
+            .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
+                DocStatus.PENDING);
+        if (i > 0) {
+            throw new ServiceValidationException("This user have " + i
+                + " Customer Loan pending  Please transfer the loan before dismiss.");
+        }
         user.setBranch(new ArrayList<Branch>());
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
@@ -296,7 +308,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
         List<RoleDto> finalRoleDtoList = new ArrayList<>();
