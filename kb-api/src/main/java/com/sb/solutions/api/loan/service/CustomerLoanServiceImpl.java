@@ -141,41 +141,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
 
         }
-        List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
-        SiteVisit siteVisitTemp = null;
-        if (customerLoan.getSiteVisit() != null) {
-            if (true) {
-                siteVisitTemp = this.siteVisitService.save((SiteVisit) customerLoan.getSiteVisit());
-                try {
-                    String url = UploadDir.initialDocument
-                        + customerLoan.getCustomerInfo().getCustomerName().replace(" ", "_")
-                        + "_"
-                        + customerLoan.getCustomerInfo().getCitizenshipNumber()
-                        + "/"
-                        + customerLoan.getLoan().getId() + "/";
-                    for (SiteVisit siteVisit : siteVisitList
-                    ) {
-                        siteVisit
-                            .setPath(writeJsonFile(url, siteVisit.getData()));
-                    }
-
-                } catch (Exception e) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
-            } else {
-                try {
-                    for (SiteVisit siteVisit: siteVisitList
-                    ) {
-                        String url = siteVisit.getPath();
-                        siteVisit
-                            .setPath(updateJsonFile(url, siteVisit.getData()));
-                    }
-
-                } catch (Exception ex) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
-            }
-        }
 
         if (customerLoan.getDmsLoanFile() != null) {
             customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
@@ -205,7 +170,45 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
         }
-        customerLoan.setSiteVisit((List<SiteVisit>) siteVisitTemp);
+        List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
+        List<SiteVisit> siteVisitTemp = null;
+        if (customerLoan.getSiteVisit() != null) {
+
+            if (true) {
+                siteVisitTemp = siteVisitList;
+                try {
+                    String url = UploadDir.initialDocument
+                        + customerLoan.getCustomerInfo().getCustomerName().replace(" ", "_")
+                        + "_"
+                        + customerLoan.getCustomerInfo().getCitizenshipNumber()
+                        + "/"
+                        + customerLoan.getLoan().getId() + "/";
+                    for (SiteVisit siteVisit : siteVisitList
+                    ) {
+                        siteVisit
+                            .setPath(writeJsonFile(url, siteVisit.getData()));
+                    }
+                    siteVisitTemp = this.siteVisitService.saveAll(siteVisitList);
+
+                } catch (Exception e) {
+                    throw new ServiceValidationException("Fail to Save File");
+                }
+            } else {
+                try {
+                    for (SiteVisit siteVisit: siteVisitList
+                    ) {
+                        String url = siteVisit.getPath();
+                        siteVisit
+                            .setPath(updateJsonFile(url, siteVisit.getData()));
+                    }
+
+                } catch (Exception ex) {
+                    throw new ServiceValidationException("Fail to Save File");
+                }
+            }
+        }
+
+        customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
         customerLoan.setEntityInfo(entityInfo);
         return customerLoanRepository.save(customerLoan);
