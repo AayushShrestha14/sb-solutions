@@ -1765,5 +1765,7 @@
   <include file="alter_changeset/20190829_change_proposal_data_type.xml"
     relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190829_change_dms_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190902_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190904_alter_entity_date.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190906_site_visit_entity_changes.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

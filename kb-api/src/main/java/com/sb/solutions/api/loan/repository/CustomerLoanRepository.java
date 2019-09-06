@@ -45,7 +45,10 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl"
         + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE "
-        + "  cl.branch_id IN (:bid) )total", nativeQuery = true)
+        + "  cl.branch_id IN (:bid) )total,"
+
+        + "(SELECT COUNT(cl.id) FROM customer_loan cl WHERE cl.notify = 1 AND "
+        + "cl.noted_by IS NULL) notify", nativeQuery = true)
     Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
 
     @Query(value =
