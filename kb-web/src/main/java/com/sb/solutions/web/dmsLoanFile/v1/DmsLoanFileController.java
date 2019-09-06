@@ -36,7 +36,7 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
-import com.sb.solutions.web.common.constant.PathBuilder;
+import com.sb.solutions.core.utils.PathBuilder;
 
 @RestController
 @RequestMapping(value = "/v1/dms-loan-file")

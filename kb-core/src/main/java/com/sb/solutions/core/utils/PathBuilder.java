@@ -1,4 +1,4 @@
-package com.sb.solutions.web.common.constant;
+package com.sb.solutions.core.utils;
 
 /**
  * this utility method is use for chaining folder path for json file or document file
