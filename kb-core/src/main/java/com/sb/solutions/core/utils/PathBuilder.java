@@ -67,7 +67,7 @@ public class PathBuilder {
         return sb.append(branchName).append("/")
             .append(customerName.trim().replace(" ", "_")).append("_")
             .append(getDigitsFromString(customerCitizenship)).append("/")
-            .append(loanType).append("/")
+            .append(loanType.trim().replace(" ", "_")).append("/")
             .append(action).append("/")
             .append(jsonPath ? "json/" : "doc/").toString();
     }
