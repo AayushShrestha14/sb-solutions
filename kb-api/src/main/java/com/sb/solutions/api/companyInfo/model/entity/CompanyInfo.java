@@ -1,4 +1,4 @@
-package com.sb.solutions.api.companyInfo.entityInfo.entity;
+package com.sb.solutions.api.companyInfo.model.entity;
 
 import java.util.Date;
 import java.util.Set;
@@ -28,7 +28,7 @@ import com.sb.solutions.core.enums.BusinessType;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class EntityInfo extends BaseEntity<Long> {
+public class CompanyInfo extends BaseEntity<Long> {
 
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})

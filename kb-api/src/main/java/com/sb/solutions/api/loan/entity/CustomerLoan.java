@@ -31,7 +31,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
@@ -62,7 +62,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanConfig loan;
 
     @ManyToOne
-    private EntityInfo entityInfo;
+    private CompanyInfo companyInfo;
 
     private LoanType loanType = LoanType.NEW_LOAN;
 
