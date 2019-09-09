@@ -22,8 +22,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
-import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
@@ -64,7 +64,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ProductModeService productModeService;
     private final CustomerService customerService;
     private final DmsLoanFileService dmsLoanFileService;
-    private final EntityInfoService entityInfoService;
+    private final CompanyInfoService companyInfoService;
     private final LoanConfigService loanConfigService;
     private final SiteVisitService siteVisitService;
     private JsonConverter jsonConverter = new JsonConverter();
@@ -72,7 +72,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
         @Autowired CustomerService customerService,
-        @Autowired EntityInfoService entityInfoService,
+        @Autowired CompanyInfoService companyInfoService,
         @Autowired LoanConfigService loanConfigService,
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
@@ -81,7 +81,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.userService = userService;
         this.productModeService = productModeService;
         this.customerService = customerService;
-        this.entityInfoService = entityInfoService;
+        this.companyInfoService = companyInfoService;
         this.loanConfigService = loanConfigService;
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
@@ -123,13 +123,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.getDmsLoanFile().setCreatedAt(new Date());
 
         Customer customer = null;
-        EntityInfo entityInfo = null;
+        CompanyInfo companyInfo = null;
         if (customerLoan.getCustomerInfo() != null) {
             customer = this.customerService.save(customerLoan.getCustomerInfo());
         }
-        if (customerLoan.getEntityInfo() != null
+        if (customerLoan.getCompanyInfo() != null
             && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
-            entityInfo = this.entityInfoService.save(customerLoan.getEntityInfo());
+            companyInfo = this.companyInfoService.save(customerLoan.getCompanyInfo());
         }
         if (customerLoan.getId() == null) {
             customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
@@ -230,7 +230,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
-        customerLoan.setEntityInfo(entityInfo);
+        customerLoan.setCompanyInfo(companyInfo);
         return customerLoanRepository.save(customerLoan);
     }
 

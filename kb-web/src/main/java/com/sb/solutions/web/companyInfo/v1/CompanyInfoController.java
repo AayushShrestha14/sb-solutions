@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.companyInfo.entityInfo.entity.EntityInfo;
-import com.sb.solutions.api.companyInfo.entityInfo.service.EntityInfoService;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 
@@ -19,22 +19,22 @@ import com.sb.solutions.core.utils.PaginationUtils;
 @RequestMapping(value = "/v1/companyInfo")
 public class CompanyInfoController {
 
-    private final EntityInfoService entityInfoService;
+    private final CompanyInfoService companyInfoService;
 
-    public CompanyInfoController(@Autowired EntityInfoService entityInfoService) {
-        this.entityInfoService = entityInfoService;
+    public CompanyInfoController(@Autowired CompanyInfoService companyInfoService) {
+        this.companyInfoService = companyInfoService;
     }
 
     @PostMapping
-    public ResponseEntity<?> saveCompanyInfo(@Valid @RequestBody EntityInfo entityInfo) {
-        return new RestResponseDto().successModel(entityInfoService.save(entityInfo));
+    public ResponseEntity<?> saveCompanyInfo(@Valid @RequestBody CompanyInfo companyInfo) {
+        return new RestResponseDto().successModel(companyInfoService.save(companyInfo));
     }
 
     @PostMapping("/list")
     public ResponseEntity<?> getPageable(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(entityInfoService.findAllPageable(searchDto, PaginationUtils
+            .successModel(companyInfoService.findAllPageable(searchDto, PaginationUtils
                 .pageable(page, size)));
     }
 }
