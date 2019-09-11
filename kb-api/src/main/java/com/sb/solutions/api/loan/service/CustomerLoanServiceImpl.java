@@ -501,7 +501,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getDmsLoanFile().setId(null);
             object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
         }
-        object.getDmsLoanFile().setId(null);
         if (object.getFinancial() != null) {
             object.getFinancial().setId(null);
         }
