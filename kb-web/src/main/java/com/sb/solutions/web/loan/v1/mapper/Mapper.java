@@ -1,5 +1,6 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,7 @@ public class Mapper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();
@@ -126,7 +128,8 @@ public class Mapper {
 
             logger.error("Error while performing the action");
 
-            throw new RuntimeException("Cannot Perform the action");
+            throw new RuntimeException(
+                "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
