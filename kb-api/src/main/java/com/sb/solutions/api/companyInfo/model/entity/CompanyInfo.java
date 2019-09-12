@@ -50,6 +50,7 @@ public class CompanyInfo extends BaseEntity<Long> {
     private String registrationNumber;
     private Date establishmentDate;
     private BusinessType businessType;
+    private String panNumber;
 
     @PrePersist
     public void prePersist() {
