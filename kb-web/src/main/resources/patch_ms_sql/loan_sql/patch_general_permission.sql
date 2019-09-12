@@ -10,7 +10,7 @@ INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, statu
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 2, 1)
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (13,  'Document', 'fa fa-file', '/home/admin/document', 55, 1)
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (100,  'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1)
-INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fas fa-home', '/home/admin/dashboard', 1, 1)
+INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (17,  'Dashboard', 'fas fa-home', '/home/dashboard', 1, 1)
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (105,  'Email Configuration', 'fas fa-cogs', '/home/admin/email-config', 55, 1)
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES (102,  'Catalogue', 'fa fa-file-alt', '/home/admin/catalogue', 60, 1)
 SET IDENTITY_INSERT permission OFF
