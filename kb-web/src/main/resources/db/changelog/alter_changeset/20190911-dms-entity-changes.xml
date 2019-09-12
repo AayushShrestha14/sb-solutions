@@ -6,5 +6,9 @@
     <modifyDataType tableName="dms_loan_file" columnName="individual_exposure" newDataType="DOUBLE"/>
     <modifyDataType tableName="dms_loan_file" columnName="institution_exposure" newDataType="DOUBLE"/>
     <modifyDataType tableName="dms_loan_file" columnName="group_expo" newDataType="DOUBLE"/>
+
+    <addColumn tableName="company_info">
+      <column name="pan_number" type="VARCHAR(256)"/>
+    </addColumn>
   </changeSet>
 </databaseChangeLog>
