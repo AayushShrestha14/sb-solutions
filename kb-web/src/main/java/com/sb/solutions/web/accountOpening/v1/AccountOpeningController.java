@@ -122,7 +122,9 @@ public class AccountOpeningController {
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
         @RequestParam("type") String type, @RequestParam("name") String name,
-        @RequestParam("branch") String branch) {
-        return FileUploadUtils.uploadAccountOpeningFile(multipartFile, branch, type, name);
+        @RequestParam("branch") String branch, @RequestParam("citizenship") String citizenship,
+        @RequestParam("customerName") String customerName) {
+        return FileUploadUtils
+            .uploadAccountOpeningFile(multipartFile, branch, type, name, citizenship, customerName);
     }
 }
