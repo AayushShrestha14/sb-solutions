@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +33,13 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 @Service
 public class OpeningFormServiceImpl implements OpeningFormService {
 
+    private final Logger logger = LoggerFactory.getLogger(OpeningFormServiceImpl.class);
     private OpeningFormRepository openingFormRepository;
     private DateValidation dateValidation;
     private BranchService branchService;
@@ -141,7 +145,14 @@ public class OpeningFormServiceImpl implements OpeningFormService {
             openingForm.setRequestedDate(new Date());
             openingForm.setStatus(AccountStatus.NEW_REQUEST);
             try {
-                String url = UploadDir.accountRequest + openingForm.getBranch().getName() + "/";
+                String url = new PathBuilder(UploadDir.initialDocument)
+                    .withBranch(openingForm.getBranch().getName())
+                    .withCustomerName(openingForm.getFullName())
+                    .withCitizenship(
+                        openingForm.getOpeningAccount().getOpeningCustomers().iterator().next()
+                            .getCitizenNumber())
+                    .isJsonPath(true)
+                    .buildAccountOpening();
                 openingForm.setCustomerDetailsJson(writeJsonFile(url, openingForm));
             } catch (Exception exception) {
                 throw new ServiceValidationException("File Fail to Save");
@@ -177,7 +188,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         return openingFormRepository.openingFormStatusCount(currentUserBranches);
     }
 
-    public String writeJsonFile(String url, OpeningForm openingForm) {
+    private String writeJsonFile(String url, OpeningForm openingForm) {
         String jsonPath;
         Path path = Paths.get(FilePath.getOSPath() + url);
         if (!Files.exists(path)) {
@@ -190,40 +201,47 @@ public class OpeningFormServiceImpl implements OpeningFormService {
         try {
             writer = new FileWriter(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred while writing the file {}", e.getMessage());
         }
         try {
             writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred while writing the file {}", e.getMessage());
         }
         try {
             writer.flush();
             return jsonPath;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred while flushing file writer {}", e.getMessage());
         }
         return null;
     }
 
-    public String updateJsonFile(String url, OpeningForm openingForm) {
+    private String updateJsonFile(String url, OpeningForm openingForm) {
         String jsonPath = url;
         try {
             FileWriter writer = new FileWriter(FilePath.getOSPath() + url);
             try {
                 writer.write(jsonConverter.convertToJson(openingForm.getOpeningAccount()));
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error occurred while writing the file {}", e.getMessage());
             }
             try {
                 writer.flush();
                 return jsonPath;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error occurred while flushing file writer {}", e.getMessage());
             }
         } catch (Exception e) {
-            jsonPath = writeJsonFile(
-                UploadDir.accountRequest + openingForm.getBranch().getName() + "/", openingForm);
+            String uploadUrl = new PathBuilder(UploadDir.initialDocument)
+                .withBranch(openingForm.getBranch().getName())
+                .withCustomerName(openingForm.getFullName())
+                .withCitizenship(
+                    openingForm.getOpeningAccount().getOpeningCustomers().iterator().next()
+                        .getCitizenNumber())
+                .isJsonPath(true)
+                .buildAccountOpening();
+            jsonPath = writeJsonFile(uploadUrl, openingForm);
             return jsonPath;
         }
         return null;

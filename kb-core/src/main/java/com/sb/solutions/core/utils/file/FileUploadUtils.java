@@ -15,10 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PathBuilder;
 
 public class FileUploadUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
 
     private static String url;
 
@@ -52,7 +53,7 @@ public class FileUploadUtils {
 
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            log.error("Error wile writing file {}", e);
+            logger.error("Error wile writing file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
 
@@ -81,7 +82,7 @@ public class FileUploadUtils {
                         try {
                             f.delete();
                         } catch (Exception e) {
-                            log.error("Failed to delete file {} {}", f, e);
+                            logger.error("Failed to delete file {} {}", f, e);
                         }
                     }
                 }
@@ -95,13 +96,13 @@ public class FileUploadUtils {
             Files.write(path, bytes);
             return new RestResponseDto().successModel(url);
         } catch (IOException e) {
-            log.error("Error while saving file {}", e);
+            logger.error("Error while saving file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }
 
     public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile,
-        String branch, String type, String name) {
+        String branch, String type, String name, String citizenship, String customerName) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
@@ -110,7 +111,12 @@ public class FileUploadUtils {
         }
         try {
             final byte[] bytes = multipartFile.getBytes();
-            url = UploadDir.accountRequest + branch + "/";
+            url = new PathBuilder(UploadDir.initialDocument)
+                .withBranch(branch)
+                .withCustomerName(customerName)
+                .withCitizenship(citizenship)
+                .isJsonPath(false)
+                .buildAccountOpening();
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
@@ -135,7 +141,7 @@ public class FileUploadUtils {
             Files.write(path, bytes);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error uploading account opening file {}", e.getMessage());
             return new RestResponseDto().failureModel("Fail");
         }
     }

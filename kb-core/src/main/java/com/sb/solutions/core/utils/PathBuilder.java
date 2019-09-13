@@ -71,4 +71,17 @@ public class PathBuilder {
             .append(action).append("/")
             .append(jsonPath ? "json/" : "doc/").toString();
     }
+
+    public String buildAccountOpening() {
+        StringBuilder sb = new StringBuilder(this.basePath);
+        return sb.append(branchName)
+            .append("/")
+            .append(customerName.trim().replace(" ", "_"))
+            .append("_")
+            .append(getDigitsFromString(customerCitizenship)).append("/")
+            .append("AccountOpening")
+            .append("/")
+            .append(jsonPath ? "json/" : "doc/")
+            .toString();
+    }
 }
