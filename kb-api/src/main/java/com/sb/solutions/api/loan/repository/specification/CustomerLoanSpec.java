@@ -33,6 +33,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
     private static final String FILTER_BY_TYPE = "loanNewRenew";
     private static final String FILTER_BY_NOTIFY = "notify";
+    private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
 
     private final String property;
     private final String value;
@@ -93,6 +94,10 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Predicate notifyPredicate = criteriaBuilder.equal(root.get("notify"), Boolean.valueOf(value));
                 Predicate notedByPredicate = criteriaBuilder.isNull(root.get("notedBy"));
                 return criteriaBuilder.and(notifyPredicate, notedByPredicate);
+
+            case FILTER_BY_CUSTOMER_NAME:
+                return criteriaBuilder
+                    .like(criteriaBuilder.lower(root.join("customerInfo").get(property)), value.toLowerCase() + "%");
 
             default:
                 return null;

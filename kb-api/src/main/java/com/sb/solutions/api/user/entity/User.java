@@ -64,6 +64,8 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     private String signatureImage;
     private String profilePicture;
 
+    private Boolean isDefaultCommittee = false;
+
     @Transient
     @JsonIgnore
     private List<String> authorityList;

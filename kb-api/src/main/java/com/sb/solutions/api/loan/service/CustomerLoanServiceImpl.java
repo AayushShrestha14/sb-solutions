@@ -342,6 +342,31 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        User u = userService.getAuthenticated();
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
+            Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (s.containsKey("branchIds")) {
+                branchAccess = s.get("branchIds");
+            }
+            s.put("branchIds", branchAccess);
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+            logger.info("query for pull {}", s);
+            final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+            final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+            return customerLoanRepository.findAll(specification, pageable);
+        }
+        return null;
+    }
+
+    @Override
     public CustomerLoan delCustomerLoan(Long id) {
         Optional<CustomerLoan> customerLoan = customerLoanRepository.findById(id);
         if (!customerLoan.isPresent()) {

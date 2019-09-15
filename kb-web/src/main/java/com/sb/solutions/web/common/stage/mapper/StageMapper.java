@@ -15,7 +15,6 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.user.dto.RoleDto;
 import com.sb.solutions.web.user.dto.UserDto;
@@ -66,6 +65,10 @@ public class StageMapper {
             || stageDto.getDocAction().equals(DocAction.REJECT)
             || stageDto.getDocAction().equals(DocAction.NOTED)) {
             currentStage = this.approvedCloseReject(currentStage, currentUser);
+        }
+
+        if (stageDto.getDocAction().equals(DocAction.PULLED)) {
+
         }
 
         return objectMapper.convertValue(currentStage, classType);

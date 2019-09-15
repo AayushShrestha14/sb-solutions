@@ -75,5 +75,7 @@ public interface UserRepository extends JpaRepository<User, Long>,
         + " u join u.role r GROUP BY r.id,r.roleName")
     List<PieChartDto> getStatisticsBasedOnRoles();
 
+    List<User>  findByRoleIdAndIsDefaultCommittee(Long id,Boolean isCommittee);
+
 }
 

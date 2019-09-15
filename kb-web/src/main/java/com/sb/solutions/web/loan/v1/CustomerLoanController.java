@@ -23,7 +23,6 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
@@ -152,6 +151,18 @@ public class CustomerLoanController {
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
+    @PostMapping(value = "/committee-pull")
+    public ResponseEntity<?> getCommitteePull(@RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto()
+            .successModel(service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(path = "/stats")
