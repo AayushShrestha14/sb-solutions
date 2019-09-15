@@ -62,9 +62,9 @@ public class DmsLoanFile extends BaseEntity<Long> {
     private Double fmvTotal;
     private Double distressValue;
     private Double totalLoanLimit;
-    private String individualExposure;
-    private String institutionExposure;
-    private String groupExpo;
+    private Double individualExposure;
+    private Double institutionExposure;
+    private Double groupExpo;
     private Double fmvFundingPercent;
     private Double incomeCoverageRatio;
     private Double debtServiceCoverageRatio;

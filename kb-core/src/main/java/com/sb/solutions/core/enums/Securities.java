@@ -9,9 +9,10 @@ public enum Securities {
     PUBLIC_SHARE("Public Share"),
     EDUCATION_CERTIFICATE("Education Certificate"),
     MARKETABLE_SECURITIES("Marketable Securities"),
-    GOLD("Gold"),
+    GOLD_AND_SILVER("Gold & Silver"),
     PERSONAL_GUARANTOR("Personal Guarantor"),
-    PROMOTER_SHARE("Promoter Share");
+    PROMOTER_SHARE("Promoter Share"),
+    CORPORATE("Corporate");
 
     private final String value;
 

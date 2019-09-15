@@ -84,20 +84,24 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_TO_USER:
                 return criteriaBuilder
-                    .equal(root.join("currentStage", JoinType.LEFT).join("toUser").get("id"),
+                    .equal(
+                        root.join("currentStage", JoinType.LEFT).join(FILTER_BY_TO_USER).get("id"),
                         Long.valueOf(value));
 
             case FILTER_BY_TYPE:
                 return criteriaBuilder.equal(root.get("loanType"), LoanType.valueOf(value));
 
             case FILTER_BY_NOTIFY:
-                Predicate notifyPredicate = criteriaBuilder.equal(root.get("notify"), Boolean.valueOf(value));
+                Predicate notifyPredicate = criteriaBuilder
+                    .equal(root.get(FILTER_BY_NOTIFY), Boolean.valueOf(value));
                 Predicate notedByPredicate = criteriaBuilder.isNull(root.get("notedBy"));
                 return criteriaBuilder.and(notifyPredicate, notedByPredicate);
 
             case FILTER_BY_CUSTOMER_NAME:
                 return criteriaBuilder
-                    .like(criteriaBuilder.lower(root.join("customerInfo").get(property)), value.toLowerCase() + "%");
+                    .like(criteriaBuilder
+                            .lower(root.join("customerInfo").get(FILTER_BY_CUSTOMER_NAME)),
+                        value.toLowerCase() + "%");
 
             default:
                 return null;
