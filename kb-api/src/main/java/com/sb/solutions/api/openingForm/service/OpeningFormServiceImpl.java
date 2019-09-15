@@ -183,6 +183,11 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     }
 
     @Override
+    public List<OpeningForm> saveAll(List<OpeningForm> list) {
+        return openingFormRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> getStatus() {
         List<Long> currentUserBranches = userService.getRoleAccessFilterByBranch();
         return openingFormRepository.openingFormStatusCount(currentUserBranches);

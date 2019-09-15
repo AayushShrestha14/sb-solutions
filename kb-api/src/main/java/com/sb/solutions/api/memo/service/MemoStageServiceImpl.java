@@ -38,4 +38,9 @@ public class MemoStageServiceImpl implements MemoStageService {
     public Page<MemoStage> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<MemoStage> saveAll(List<MemoStage> list) {
+        return repository.saveAll(list);
+    }
 }

@@ -67,4 +67,9 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
         final Specification<DmsLoanFile> specification = dmsSpecBuilder.build();
         return dmsLoanFileRepository.findAll(specification, pageable);
     }
+
+    @Override
+    public List<DmsLoanFile> saveAll(List<DmsLoanFile> list) {
+        return dmsLoanFileRepository.saveAll(list);
+    }
 }

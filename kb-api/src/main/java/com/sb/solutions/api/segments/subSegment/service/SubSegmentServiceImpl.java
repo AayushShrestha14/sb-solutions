@@ -49,6 +49,11 @@ public class SubSegmentServiceImpl implements SubSegmentService {
     }
 
     @Override
+    public List<SubSegment> saveAll(List<SubSegment> list) {
+        return subSegmentRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> subSegmentStatusCount() {
         return subSegmentRepository.subSegmentStatusCount();
     }

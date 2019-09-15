@@ -194,6 +194,11 @@ public class ApplicantServiceImpl implements ApplicantService {
     }
 
     @Override
+    public List<Applicant> saveAll(List<Applicant> list) {
+        return applicantRepository.saveAll(list);
+    }
+
+    @Override
     public Applicant saveDocuments(List<DocumentDTO> documents, long applicantId) {
         logger.debug("Saving documents of the applicant.");
         Applicant applicant = applicantRepository.getOne(applicantId);

@@ -43,6 +43,11 @@ public class MunicipalityVdcServiceImpl implements MunicipalityVdcService {
     }
 
     @Override
+    public List<MunicipalityVdc> saveAll(List<MunicipalityVdc> list) {
+        return municipalityVdcRepository.saveAll(list);
+    }
+
+    @Override
     public List<MunicipalityVdc> findAllByDistrict(District district) {
         return municipalityVdcRepository.findAllByDistrict(district);
     }

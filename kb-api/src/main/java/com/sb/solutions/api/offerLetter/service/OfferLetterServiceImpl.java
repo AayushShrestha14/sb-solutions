@@ -38,4 +38,9 @@ public class OfferLetterServiceImpl implements OfferLetterService {
     public Page<OfferLetter> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<OfferLetter> saveAll(List<OfferLetter> list) {
+        return offerLetterRepository.saveAll(list);
+    }
 }
