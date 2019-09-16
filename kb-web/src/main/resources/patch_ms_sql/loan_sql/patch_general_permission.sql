@@ -144,13 +144,13 @@ BEGIN
         END
 
 
-    if (@countPull < 1)
-        BEGIN
-            SET IDENTITY_INSERT permission ON
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (125, 'Pull', 'fas fa-angle-double-down', '/home/loan/pull', 100, 1)
-            SET IDENTITY_INSERT permission OFF
-        END
+--     if (@countPull < 1)
+--         BEGIN
+--             SET IDENTITY_INSERT permission ON
+--             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+--             VALUES (125, 'Pull', 'fas fa-angle-double-down', '/home/loan/pull', 100, 1)
+--             SET IDENTITY_INSERT permission OFF
+--         END
 
 
 END;
