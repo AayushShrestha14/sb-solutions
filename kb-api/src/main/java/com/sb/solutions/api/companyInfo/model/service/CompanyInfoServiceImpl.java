@@ -49,6 +49,11 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
     }
 
     @Override
+    public List<CompanyInfo> saveAll(List<CompanyInfo> list) {
+        return companyInfoRepository.saveAll(list);
+    }
+
+    @Override
     public CompanyInfo findCompanyInfoByRegistrationNumber(String registrationNumber) {
         return companyInfoRepository.findCompanyInfoByRegistrationNumber(registrationNumber);
     }

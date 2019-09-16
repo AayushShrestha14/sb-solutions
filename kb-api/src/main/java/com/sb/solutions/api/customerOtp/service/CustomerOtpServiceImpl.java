@@ -41,6 +41,11 @@ public class CustomerOtpServiceImpl implements CustomerOtpService {
     }
 
     @Override
+    public List<CustomerOtp> saveAll(List<CustomerOtp> list) {
+        return repository.saveAll(list);
+    }
+
+    @Override
     public void delete(CustomerOtp customerOtp) {
         repository.delete(customerOtp);
     }

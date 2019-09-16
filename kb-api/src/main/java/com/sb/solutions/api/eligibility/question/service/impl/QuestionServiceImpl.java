@@ -83,6 +83,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Question> saveAll(List<Question> list) {
+        return questionRepository.saveAll(list);
+    }
+
+    @Override
     public List<Question> findByLoanConfigId(Long loanConfigId) {
         return questionRepository.findByLoanConfigIdAndStatusNot(loanConfigId, Status.DELETED);
     }

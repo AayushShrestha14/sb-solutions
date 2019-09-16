@@ -48,4 +48,9 @@ public class SubmissionDocumentServiceImpl implements SubmissionDocumentService 
         logger.debug("Retrieving submission documents.");
         return submissionDocumentRepository.findAll(pageable);
     }
+
+    @Override
+    public List<SubmissionDocument> saveAll(List<SubmissionDocument> list) {
+        return submissionDocumentRepository.saveAll(list);
+    }
 }

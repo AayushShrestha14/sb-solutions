@@ -206,6 +206,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> saveAll(List<User> list) {
+        return userRepository.saveAll(list);
+    }
+
+    @Override
     public List<Long> getRoleAccessFilterByBranch() {
         User u = this.getAuthenticated();
         List<Long> branchIdList = new ArrayList<>();

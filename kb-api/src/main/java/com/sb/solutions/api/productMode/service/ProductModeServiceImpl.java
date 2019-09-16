@@ -45,6 +45,11 @@ public class ProductModeServiceImpl implements ProductModeService {
     }
 
     @Override
+    public List<ProductMode> saveAll(List<ProductMode> list) {
+        return productModeRepository.saveAll(list);
+    }
+
+    @Override
     public ProductMode getByProduct(Product product, Status status) {
         return productModeRepository.getByProductAndStatus(product, status);
     }

@@ -48,6 +48,11 @@ public class ValuatorServiceImpl implements ValuatorService {
     }
 
     @Override
+    public List<Valuator> saveAll(List<Valuator> list) {
+        return valuatorRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> valuatorStatusCount() {
         return valuatorRepository.valuatorStatusCount();
     }

@@ -52,6 +52,11 @@ public class RolePermissionRightServiceImpl implements RolePermissionRightServic
     }
 
     @Override
+    public List<RolePermissionRights> saveAll(List<RolePermissionRights> list) {
+        return rolePermissionRightRepository.saveAll(list);
+    }
+
+    @Override
     public List<RolePermissionRights> getByRoleId(Long id) {
         return rolePermissionRightRepository.findByRole(id);
     }

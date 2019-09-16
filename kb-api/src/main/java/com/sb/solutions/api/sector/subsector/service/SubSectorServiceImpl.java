@@ -50,6 +50,11 @@ public class SubSectorServiceImpl implements SubSectorService {
     }
 
     @Override
+    public List<SubSector> saveAll(List<SubSector> list) {
+        return subSectorRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> subSectorStatusCount() {
         return subSectorRepository.subSectorStatusCount();
     }

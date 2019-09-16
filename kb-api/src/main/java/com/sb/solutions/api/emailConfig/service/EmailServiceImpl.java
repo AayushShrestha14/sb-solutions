@@ -55,4 +55,9 @@ public class EmailServiceImpl implements EmailConfigService {
     public Page<EmailConfig> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<EmailConfig> saveAll(List<EmailConfig> list) {
+        return emailConfigRepository.saveAll(list);
+    }
 }

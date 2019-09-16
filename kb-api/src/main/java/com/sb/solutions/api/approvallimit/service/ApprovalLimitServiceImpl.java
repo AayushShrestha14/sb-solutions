@@ -63,6 +63,11 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     }
 
     @Override
+    public List<ApprovalLimit> saveAll(List<ApprovalLimit> list) {
+        return approvalLimitRepository.saveAll(list);
+    }
+
+    @Override
     public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId,
         LoanApprovalType loanApprovalType) {
         return approvalLimitRepository

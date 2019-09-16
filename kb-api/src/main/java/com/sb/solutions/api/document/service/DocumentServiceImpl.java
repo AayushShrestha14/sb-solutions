@@ -61,6 +61,11 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
+    @Override
+    public List<Document> saveAll(List<Document> list) {
+        return documentRepository.saveAll(list);
+    }
+
 
     @Override
     public List<Document> getByCycleContainingAndStatus(Long loanCycleId, String statusName) {
