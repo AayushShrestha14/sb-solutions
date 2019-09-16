@@ -44,6 +44,7 @@ import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleAccess;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -165,11 +166,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
-        if (r.getRoleAccess().equals(RoleAccess.ALL)) {
+        if (r.getRoleAccess().equals(RoleAccess.ALL) && (!r.getRoleType()
+            .equals(RoleType.COMMITTEE))) {
             return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL,
                 roleRepository.getOne(Long.valueOf(1)), roleId);
         }
+        if (r.getRoleType().equals(RoleType.COMMITTEE)) {
+            return userRepository.findByRoleIdAndIsDefaultCommittee(r.getId(), true);
+        }
         return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
+    }
+
+    @Override
+    public List<User> findByRoleIdAndIsDefaultCommittee(Long roleId, Boolean isTrue) {
+        return userRepository.findByRoleIdAndIsDefaultCommittee(roleId, true);
     }
 
     @Override

@@ -15,7 +15,6 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.user.dto.RoleDto;
 import com.sb.solutions.web.user.dto.UserDto;
@@ -45,7 +44,8 @@ public class StageMapper {
         currentStage.setDocAction(stageDto.getDocAction());
         currentStage.setComment(stageDto.getComment());
 
-        if (!stageDto.getDocAction().equals(DocAction.TRANSFER)) {
+        if (!stageDto.getDocAction().equals(DocAction.TRANSFER) && !stageDto.getDocAction()
+            .equals(DocAction.PULLED)) {
             currentStage.setFromUser(currentUser);
             currentStage.setFromRole(currentUser.getRole());
         } else {
@@ -54,8 +54,16 @@ public class StageMapper {
             currentStage.setComment("Transfer By Administrator");
         }
 
-        currentStage.setToUser(stageDto.getToUser());
-        currentStage.setToRole(stageDto.getToRole());
+        if (stageDto.getDocAction().equals(DocAction.PULLED)) {
+            currentStage.setComment("PULLED");
+            currentStage.setToUser(currentUser);
+            currentStage.setToRole(currentUser.getRole());
+            logger.info("pulled document {}", customerLoan, currentStage);
+        } else {
+            currentStage.setToUser(stageDto.getToUser());
+            currentStage.setToRole(stageDto.getToRole());
+        }
+
         if (stageDto.getDocAction().equals(DocAction.BACKWARD)) {
             currentStage = this
                 .sendBackward(previousList, currentStage, currentUser, createdBy, customerLoan);
@@ -78,7 +86,6 @@ public class StageMapper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
         for (Object obj : previousList) {
             StageDto maker = objectMapper.convertValue(obj, StageDto.class);
             if (maker.getFromUser().getId().equals(createdBy)) {

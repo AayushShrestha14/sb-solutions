@@ -29,7 +29,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query(value = "SELECT "
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
         + " ON l.id=cl.current_stage_id WHERE cl.document_status=0 AND l.to_role_id IN (:id)"
-        + " AND cl.branch_id IN (:bid)) pending,"
+        + " AND cl.branch_id IN (:bid) AND l.to_user_id=:uid) pending,"
 
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
         + " ON l.id=cl.current_stage_id WHERE cl.document_status=1"
@@ -49,7 +49,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
         + "(SELECT COUNT(cl.id) FROM customer_loan cl WHERE cl.notify = 1 AND "
         + "cl.noted_by IS NULL) notify", nativeQuery = true)
-    Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid);
+    Map<String, Integer> statusCount(@Param("id") Long id, @Param("bid") List<Long> bid,
+        @Param("uid") Long uid);
 
     @Query(value =
         "SELECT NEW com.sb.solutions.api.loan.PieChartDto(l.name,SUM(c.dmsLoanFile.proposedAmount)) FROM CustomerLoan c"

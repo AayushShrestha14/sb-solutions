@@ -272,7 +272,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess);
+        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
 
     @Override
@@ -344,6 +344,41 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        User u = userService.getAuthenticated();
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
+            Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (s.containsKey("branchIds")) {
+                branchAccess = s.get("branchIds");
+            }
+            s.put("branchIds", branchAccess);
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+            logger.info("query for pull {}", s);
+            final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+            final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+            Page<CustomerLoan> customerLoanList = customerLoanRepository
+                .findAll(specification, pageable);
+            for (CustomerLoan c : customerLoanList.getContent()) {
+                for (LoanStage l : c.getPreviousList()) {
+                    if (l.getToUser().getId() == (u.getId())) {
+                        c.setPulled(true);
+                        break;
+                    }
+                }
+            }
+            return customerLoanList;
+        }
+        return null;
     }
 
     @Override
@@ -533,7 +568,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
-        User u = userService.getAuthenticated();
+        final User u = userService.getAuthenticated();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -541,6 +576,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
+        boolean isPullCsv = false;
+        if (s.get("committee") != null) {
+            isPullCsv = true;
+        }
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+        }
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List customerLoanList = customerLoanRepository.findAll(specification);

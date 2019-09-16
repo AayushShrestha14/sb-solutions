@@ -13,7 +13,9 @@ public enum DocAction {
     REJECT("Reject"),
     CLOSED("Close"),
     TRANSFER("Transfer"),
-    NOTED("Noted");
+    NOTED("Noted"),
+    PULLED("Pulled"),
+    BACKWARD_TO_COMMITTEE("Backward To Committee");
 
     private final String value;
 
