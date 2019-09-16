@@ -577,7 +577,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         s.put("branchIds", branchAccess);
         boolean isPullCsv = false;
-        if(s.get("committee") != null){
+        if (s.get("committee") != null) {
             isPullCsv = true;
         }
         if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
