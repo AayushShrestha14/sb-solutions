@@ -143,6 +143,7 @@ public class UserController {
             // mailing
             Email email = new Email();
             email.setTo(savedUser.getEmail());
+            email.setToName(savedUser.getName());
             email.setResetPasswordLink(
                 referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
