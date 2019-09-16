@@ -267,7 +267,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess,u.getId());
+        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
 
     @Override

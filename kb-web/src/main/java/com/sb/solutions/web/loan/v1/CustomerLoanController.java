@@ -162,7 +162,8 @@ public class CustomerLoanController {
     public ResponseEntity<?> getCommitteePull(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
+            .successModel(
+                service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(path = "/stats")
