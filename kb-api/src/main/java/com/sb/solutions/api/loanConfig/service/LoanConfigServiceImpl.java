@@ -58,6 +58,11 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     }
 
     @Override
+    public List<LoanConfig> saveAll(List<LoanConfig> list) {
+        return loanConfigRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> loanStatusCount() {
         return loanConfigRepository.loanStatusCount();
     }

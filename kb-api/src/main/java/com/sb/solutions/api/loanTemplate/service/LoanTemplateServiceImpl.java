@@ -51,4 +51,9 @@ public class LoanTemplateServiceImpl implements LoanTemplateService {
         return loanTemplateRepository
             .loanTemplateFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
+
+    @Override
+    public List<LoanTemplate> saveAll(List<LoanTemplate> list) {
+        return loanTemplateRepository.saveAll(list);
+    }
 }

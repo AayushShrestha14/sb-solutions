@@ -48,6 +48,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Company> saveAll(List<Company> list) {
+        return companyRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> companyStatusCount() {
         return companyRepository.companyStatusCount();
     }

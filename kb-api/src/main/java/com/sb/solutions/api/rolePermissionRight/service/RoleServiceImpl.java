@@ -77,6 +77,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<Role> saveAll(List<Role> list) {
+        return roleRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> roleStatusCount() {
         return roleRepository.roleStatusCount();
     }

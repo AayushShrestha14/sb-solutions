@@ -45,6 +45,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<Customer> saveAll(List<Customer> list) {
+        return customerRepository.saveAll(list);
+    }
+
+    @Override
     public Customer findCustomerByCitizenshipNumber(String citizenshipNumber) {
         return customerRepository.findCustomerByCitizenshipNumber(citizenshipNumber);
     }

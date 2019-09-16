@@ -40,4 +40,9 @@ public class ProposalServiceImpl implements ProposalService {
     public Page<Proposal> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Proposal> saveAll(List<Proposal> list) {
+        return proposalRepository.saveAll(list);
+    }
 }

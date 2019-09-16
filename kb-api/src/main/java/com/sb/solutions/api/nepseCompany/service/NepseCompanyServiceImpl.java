@@ -49,6 +49,11 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
     }
 
     @Override
+    public List<NepseCompany> saveAll(List<NepseCompany> list) {
+        return nepseCompanyRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> nepseStatusCount() {
         return nepseCompanyRepository.nepseCompanyStatusCount();
     }

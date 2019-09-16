@@ -38,6 +38,11 @@ public class AccountTypeServiceImpl implements AccountTypeService {
     }
 
     @Override
+    public List<AccountType> saveAll(List<AccountType> list) {
+        return accountTypeRepository.saveAll(list);
+    }
+
+    @Override
     public List<AccountType> findAllByAccountPurposeId(Long accountPurposeId) {
         AccountPurpose accountPurpose = new AccountPurpose();
         accountPurpose.setId(accountPurposeId);

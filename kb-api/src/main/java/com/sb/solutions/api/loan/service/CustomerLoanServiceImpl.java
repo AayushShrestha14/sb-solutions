@@ -253,6 +253,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> saveAll(List<CustomerLoan> list) {
+        return customerLoanRepository.saveAll(list);
+    }
+
+    @Override
     public void sendForwardBackwardLoan(CustomerLoan customerLoan) {
         if (customerLoan.getCurrentStage() == null
             || customerLoan.getCurrentStage().getToRole() == null

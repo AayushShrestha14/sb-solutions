@@ -51,4 +51,9 @@ public class SectorServiceImpl implements SectorService {
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return sectorRepository.sectorFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
+
+    @Override
+    public List<Sector> saveAll(List<Sector> list) {
+        return sectorRepository.saveAll(list);
+    }
 }

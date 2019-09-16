@@ -39,4 +39,9 @@ public class FinancialServiceImpl implements FinancialService {
     public Page<Financial> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Financial> saveAll(List<Financial> list) {
+        return financialRepository.saveAll(list);
+    }
 }

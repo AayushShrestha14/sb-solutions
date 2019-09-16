@@ -48,6 +48,11 @@ public class SegmentServiceImpl implements SegmentService {
     }
 
     @Override
+    public List<Segment> saveAll(List<Segment> list) {
+        return segmentRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> segmentStatusCount() {
         return segmentRepository.segmentStatusCount();
     }

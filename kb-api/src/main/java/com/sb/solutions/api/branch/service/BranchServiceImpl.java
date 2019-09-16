@@ -79,6 +79,11 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    public List<Branch> saveAll(List<Branch> list) {
+        return branchRepository.saveAll(list);
+    }
+
+    @Override
     public Map<Object, Object> branchStatusCount() {
         return branchRepository.branchStatusCount();
     }

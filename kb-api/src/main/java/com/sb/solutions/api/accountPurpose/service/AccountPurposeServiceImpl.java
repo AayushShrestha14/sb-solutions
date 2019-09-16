@@ -35,4 +35,9 @@ public class AccountPurposeServiceImpl implements AccountPurposeService {
     public Page<AccountPurpose> findAllPageable(Object t, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<AccountPurpose> saveAll(List<AccountPurpose> list) {
+        return accountPurposeRepository.saveAll(list);
+    }
 }

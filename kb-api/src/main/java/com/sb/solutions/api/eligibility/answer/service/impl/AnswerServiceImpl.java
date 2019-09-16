@@ -59,6 +59,11 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepository.findAll(pageable);
     }
 
+    @Override
+    public List<Answer> saveAll(List<Answer> list) {
+        return answerRepository.saveAll(list);
+    }
+
 
     @Transactional
     @Override
