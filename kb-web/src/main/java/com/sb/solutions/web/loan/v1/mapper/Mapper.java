@@ -57,7 +57,7 @@ public class Mapper {
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
         User currentUser) {
-        if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) || (!loanActionDto
+        if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) && (!loanActionDto
             .getDocAction()
             .equals(DocAction.TRANSFER))) {
             Preconditions.checkArgument(
