@@ -68,6 +68,8 @@ INSERT  INTO permission_api_list(permission_id, api_list_id)
 values (17, 46)
 
 END
+DELETE FROM role_permission_rights_api_rights WHERE api_rights_id IN (40,46)
+DELETE FROM permission_api_list where api_list_id IN (40,46)
 END;
 
 
