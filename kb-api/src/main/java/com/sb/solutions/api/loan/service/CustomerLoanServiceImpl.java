@@ -576,7 +576,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
-        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
+        boolean isPullCsv = false;
+        if(s.get("committee") != null){
+            isPullCsv = true;
+        }
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
             s.put("currentUserRole", u.getRole().getId().toString());
             s.put("toUser",
                 userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
