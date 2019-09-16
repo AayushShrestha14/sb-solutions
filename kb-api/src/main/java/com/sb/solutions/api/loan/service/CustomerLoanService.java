@@ -33,6 +33,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber);
 
     Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable);
+
     Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable);
 
     CustomerLoan delCustomerLoan(Long id);

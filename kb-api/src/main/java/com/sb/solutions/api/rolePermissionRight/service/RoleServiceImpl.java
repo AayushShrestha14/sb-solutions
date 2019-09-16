@@ -53,8 +53,7 @@ public class RoleServiceImpl implements RoleService {
         logger.info("saving role {}", role);
         role.setRoleName(role.getRoleName().toUpperCase());
         final Role r = roleRepository.save(role);
-        if (role.getId() != null &&
-            role.getRoleType().equals(RoleType.COMMITTEE)) {
+        if (role.getId() != null && role.getRoleType().equals(RoleType.COMMITTEE)) {
             User u = new User();
             u.setRole(r);
             u.setName(u.getRole().getRoleName().concat("- default"));
