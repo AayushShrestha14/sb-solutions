@@ -267,7 +267,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticated();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess);
+        return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess,u.getId());
     }
 
     @Override
@@ -361,7 +361,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.info("query for pull {}", s);
             final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
             final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-            return customerLoanRepository.findAll(specification, pageable);
+            Page<CustomerLoan> customerLoanList = customerLoanRepository
+                .findAll(specification, pageable);
+            for (CustomerLoan c : customerLoanList.getContent()) {
+                for (LoanStage l : c.getPreviousList()) {
+                    if (l.getToUser().getId() == (u.getId())) {
+                        c.setPulled(true);
+                        break;
+                    }
+                }
+            }
+            return customerLoanList;
         }
         return null;
     }

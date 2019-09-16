@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,13 @@ public class Mapper {
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
         User currentUser) {
+        if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) || (!loanActionDto
+            .getDocAction()
+            .equals(DocAction.TRANSFER))) {
+            Preconditions.checkArgument(
+                customerLoan.getCurrentStage().getToUser().getId() == currentUser.getId(),
+                "Sorry this document is not under you!!");
+        }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
             if (productMode == null) {

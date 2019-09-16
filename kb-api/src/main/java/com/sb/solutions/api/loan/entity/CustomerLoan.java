@@ -115,6 +115,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Boolean isValidated = false;
 
     @Transient
+    private Boolean pulled = false;
+
+    @Transient
     private List<LoanStage> distinctPreviousList;
 
     public List<LoanStage> getPreviousList() {
@@ -141,7 +144,8 @@ public class CustomerLoan extends BaseEntity<Long> {
                 .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
         return list.stream()
             .filter(distinctByKey(
-                p -> p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId()))
+                p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
+            .filter(p -> !p.getToUser().getIsDefaultCommittee())
             .collect(Collectors.toList());
     }
 

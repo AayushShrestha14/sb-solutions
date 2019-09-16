@@ -44,7 +44,8 @@ public class StageMapper {
         currentStage.setDocAction(stageDto.getDocAction());
         currentStage.setComment(stageDto.getComment());
 
-        if (!stageDto.getDocAction().equals(DocAction.TRANSFER)) {
+        if (!stageDto.getDocAction().equals(DocAction.TRANSFER) && !stageDto.getDocAction()
+            .equals(DocAction.PULLED)) {
             currentStage.setFromUser(currentUser);
             currentStage.setFromRole(currentUser.getRole());
         } else {
@@ -53,8 +54,16 @@ public class StageMapper {
             currentStage.setComment("Transfer By Administrator");
         }
 
-        currentStage.setToUser(stageDto.getToUser());
-        currentStage.setToRole(stageDto.getToRole());
+        if (stageDto.getDocAction().equals(DocAction.PULLED)) {
+            currentStage.setComment("PULLED");
+            currentStage.setToUser(currentUser);
+            currentStage.setToRole(currentUser.getRole());
+            logger.info("pulled document {}", customerLoan, currentStage);
+        } else {
+            currentStage.setToUser(stageDto.getToUser());
+            currentStage.setToRole(stageDto.getToRole());
+        }
+
         if (stageDto.getDocAction().equals(DocAction.BACKWARD)) {
             currentStage = this
                 .sendBackward(previousList, currentStage, currentUser, createdBy, customerLoan);
@@ -67,10 +76,6 @@ public class StageMapper {
             currentStage = this.approvedCloseReject(currentStage, currentUser);
         }
 
-        if (stageDto.getDocAction().equals(DocAction.PULLED)) {
-
-        }
-
         return objectMapper.convertValue(currentStage, classType);
 
     }
@@ -81,7 +86,6 @@ public class StageMapper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
         for (Object obj : previousList) {
             StageDto maker = objectMapper.convertValue(obj, StageDto.class);
             if (maker.getFromUser().getId().equals(createdBy)) {
