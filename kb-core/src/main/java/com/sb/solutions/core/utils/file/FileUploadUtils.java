@@ -141,7 +141,7 @@ public class FileUploadUtils {
             Files.write(path, bytes);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            logger.error("Error uploading account opening file {}", e.getMessage());
+            logger.error("Error uploading account opening file {}", e);
             return new RestResponseDto().failureModel("Fail");
         }
     }

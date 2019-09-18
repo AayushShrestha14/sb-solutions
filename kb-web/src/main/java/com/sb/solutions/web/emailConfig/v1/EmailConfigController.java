@@ -75,7 +75,7 @@ public class EmailConfigController {
             mailThreadService.testMail(EmailConstant.Template.TEST, email);
             logger.info(" sending Email config {}", emailConfig);
         } catch (Exception e) {
-            logger.error("Error while sending Email config {}", emailConfig);
+            logger.error("Error while sending Email config {}", e);
             return new RestResponseDto()
                 .failureModel("Error occurred while Sending  Email config " + emailConfig);
         }
