@@ -9,21 +9,21 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (1, 'Branch', 'fas fa-university', '/home/admin/branch', 10, 1)
+            VALUES (1, 'Branch', 'camera-outline', '/home/admin/branch', 10, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (3, 'Role and Permission', 'fas fa-lock', '/home/admin/role', 19, 1)
+            VALUES (3, 'Role and Permission', 'lock-outline', '/home/admin/role', 19, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 2, 1)
+            VALUES (6, 'Users', 'person-add-outline', '/home/admin/user', 2, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (13, 'Document', 'fa fa-file', '/home/admin/document', 55, 1)
+            VALUES (13, 'Document', 'book-outline', '/home/admin/document', 55, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (100, 'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1)
+            VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 20, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (17, 'Dashboard', 'fas fa-home', '/home/admin/dashboard', 1, 1)
+            VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (105, 'Email Configuration', 'fas fa-cogs', '/home/admin/email-config', 55, 1)
+            VALUES (105, 'Email Configuration', 'inbox-outline', '/home/admin/email-config', 55, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (102, 'Catalogue', 'fa fa-file-alt', '/home/admin/catalogue', 60, 1)
+            VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 60, 1)
             SET IDENTITY_INSERT permission OFF
 
 
