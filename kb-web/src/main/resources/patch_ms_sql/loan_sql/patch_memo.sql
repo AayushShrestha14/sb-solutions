@@ -6,7 +6,7 @@ BEGIN
 
 SET IDENTITY_INSERT permission ON
 INSERT  INTO permission (id, permission_name, fa_icon, front_url, orders, status) VALUES
-(15,'Memo', 'fa fa-envelope', null, 62, 1)
+(15,'Memo', 'hard-drive-outline', null, 62, 1)
 SET IDENTITY_INSERT permission Off
 
 SET IDENTITY_INSERT role_permission_rights ON
@@ -16,9 +16,9 @@ SET IDENTITY_INSERT role_permission_rights Off
 
 SET IDENTITY_INSERT sub_nav ON
 INSERT  INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES
-(1,'Under Review','/home/memo/underReview', 'fa fa-envelope-open'),
-(2, 'Compose','/home/memo/compose', 'fa fa-edit'),
-(3,'Memo Type','/home/memo/type', 'fa fa-bookmark')
+(1,'Under Review','/home/memo/underReview', 'inbox-outline'),
+(2, 'Compose','/home/memo/compose', 'message-square-outline'),
+(3,'Memo Type','/home/memo/type', 'file-text-outline')
 SET IDENTITY_INSERT sub_nav Off
 
 INSERT  INTO permission_sub_navs (permission_id, sub_navs_id) VALUES

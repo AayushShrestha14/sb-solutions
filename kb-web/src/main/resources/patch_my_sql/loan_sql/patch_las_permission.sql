@@ -1,35 +1,35 @@
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (1, 'Branch', 'fas fa-university', '/home/admin/branch', 10, 1);
+VALUES (1, 'Branch', 'camera-outline', '/home/admin/branch', 10, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (2, 'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1);
+VALUES (2, 'Loan Configuration', 'smartphone-outline', '/home/admin/config', 30, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (3, 'Role and Permission', 'fas fa-lock', '/home/admin/role', 19, 1);
+VALUES (3, 'Role and Permission', 'shield-outline', '/home/admin/role', 19, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (4, 'Valuator', 'fas fa-money-check', '/home/admin/valuator', 25, 1);
+VALUES (4, 'Valuator', 'plus-circle-outline', '/home/admin/valuator', 25, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (5, 'Sector', 'fas fa-hands-helping', '/home/admin/sector', 50, 1);
+VALUES (5, 'Sector', 'plus-circle-outline', '/home/admin/sector', 50, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 1, 1);
+VALUES (6, 'Users', 'person-add-outline', '/home/admin/user', 1, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (7, 'Approval Limit', 'fas fa-indent', '/home/admin/approvalLimit', 2, 1);
+VALUES (7, 'Approval Limit', 'plus-circle-outline', '/home/admin/approvalLimit', 2, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (8, 'Nepse Company', 'fas fa-money-bill-wave', '/home/admin/nepse', 21, 1);
+VALUES (8, 'Nepse Company', 'plus-circle-outline', '/home/admin/nepse', 21, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (9, 'Segment', 'fa fa-user', '/home/admin/segment', 22, 1);
+VALUES (9, 'Segment', 'plus-circle-outline', '/home/admin/segment', 22, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (10, 'Sub Segment', 'fa fa-user', '/home/admin/sub-segment', 23, 1);
+VALUES (10, 'Sub Segment', 'plus-circle-outline', '/home/admin/sub-segment', 23, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (11, 'Company', 'fas fa-desktop', '/home/admin/company', 24, 1);
+VALUES (11, 'Company', 'map-outline', '/home/admin/company', 24, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (12, 'SubSector', 'fa fa-user', '/home/admin/subSector', 51, 1);
+VALUES (12, 'SubSector', 'plus-circle-outline', '/home/admin/subSector', 51, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (13, 'Document', 'fa fa-file', '/home/admin/document', 55, 1);
+VALUES (13, 'Document', 'book-outline', '/home/admin/document', 55, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (100, 'Role Hierarchy', 'fas fa-sitemap', '/home/admin/roleHierarchy', 20, 1);
+VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 20, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (17, 'Dashboard', 'fas fa-home', '/home/admin/dashboard', 1, 1);
+VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (102, 'Catalogue', 'fa fa-file-alt', '/home/admin/catalogue', 60, 1);
+VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 60, 1);
 
 
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT******************************

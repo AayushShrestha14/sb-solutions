@@ -9,7 +9,7 @@ DELETE FROM permission WHERE id in (4,8,11)
 BEGIN
 SET IDENTITY_INSERT permission ON
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES
-(2,  'Loan Configuration', 'fas fa-cogs', '/home/admin/config', 30, 1)
+(2,  'Loan Configuration', 'settings-2-outline', '/home/admin/config', 30, 1)
 SET IDENTITY_INSERT permission OFF
 
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --

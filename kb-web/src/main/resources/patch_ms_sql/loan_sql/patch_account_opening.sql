@@ -6,7 +6,7 @@ BEGIN
 SET IDENTITY_INSERT permission on
 
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status)
-VALUES (19,  'Account Opening', 'fa fa-money-check', '/home/admin/openingAccount', 56, 1)
+VALUES (19,  'Account Opening', 'book-open-outline', '/home/admin/openingAccount', 56, 1)
 SET IDENTITY_INSERT permission off
 
 SET IDENTITY_INSERT role_permission_rights on
