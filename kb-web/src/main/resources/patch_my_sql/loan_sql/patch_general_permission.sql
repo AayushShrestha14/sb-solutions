@@ -6,13 +6,15 @@ INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, 
 VALUES (6, 'Users', 'fa fa-user', '/home/admin/user', 2, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
 VALUES (13, 'Document', 'fa fa-file', '/home/admin/document', 55, 1);
-INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 20, 1);
+# INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+# VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 20, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
 VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1);
 INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
 VALUES (105, 'Email Configuration', 'inbox-outline', '/home/admin/email-config', 55, 1);
 
+INSERT IGNORE INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+VALUES (2, 'Loan Configuration', 'smartphone-outline', '/home/admin/config', 30, 1);
 
 
 -- **********************MAP PERMISSION TO ADMIN ROLE DEFAULT****************************** --
@@ -34,9 +36,9 @@ VALUES (6, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 6, 1);
 INSERT IGNORE INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
 VALUES (13, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 13, 1);
 
--- Role Hierarchy --
+-- Loan Configuration --
 INSERT IGNORE INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-VALUES (100, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 100, 1);
+VALUES (2, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 2, 1);
 
 
 -- Dashboard --

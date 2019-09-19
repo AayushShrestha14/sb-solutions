@@ -4,7 +4,7 @@ server:
     enabled: true
 spring:
   profiles:
-    active: prod
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -50,5 +50,5 @@ file:
   upload-directory: C:/
 
 bank:
-  name: United Finance Ltd
-  website: http://www.ufl.com.np/
+  name: Shine Resunga Development Bank Ltd.
+  website: https://www.srdb.com.np
