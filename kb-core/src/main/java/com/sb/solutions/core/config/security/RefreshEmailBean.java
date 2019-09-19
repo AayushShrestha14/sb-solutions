@@ -46,7 +46,13 @@ public class RefreshEmailBean {
                 props.put("mail.smtp.starttls.enable", "true");
                 props.put("mail.debug", "true");
                 props.put("mail.smtp.host", String.valueOf(map.get(0).get("host")));
-                props.put("mail.smtp.port", String.valueOf(map.get(0).get("port")));
+                props.put("mail.smtp.socketFactory.port",
+                    String.valueOf(map.get(0).get("port")));
+                props.put("mail.smtp.socketFactory.class",
+                    "javax.net.ssl.SSLSocketFactory");
+//                props.put("mail.smtp.host", String.valueOf(map.get(0).get("host")));
+//                props.put("mail.smtp.port", String.valueOf(map.get(0).get("port")));
+
                 return mailSender;
 
             }
