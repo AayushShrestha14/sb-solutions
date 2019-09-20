@@ -1773,4 +1773,5 @@
   <include file="alter_changeset/20190909-entity-info-to-company-info.xml"
     relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190911-dms-entity-changes.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190920_alter_customer.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
