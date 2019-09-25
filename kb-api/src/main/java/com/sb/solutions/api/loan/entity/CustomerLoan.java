@@ -1,6 +1,9 @@
 package com.sb.solutions.api.loan.entity;
 
+import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -123,6 +126,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     public List<LoanStage> getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
