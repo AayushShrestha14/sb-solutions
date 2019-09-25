@@ -10,14 +10,12 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @author Rujan Maharjan on 6/7/2019 date Format for conversion= dd-mm-yyyy format
  */
 
-@Component
 public class DateConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
