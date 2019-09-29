@@ -25,6 +25,7 @@ import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.repository.ProductModeRepository;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
@@ -128,17 +129,18 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     populator.execute(dataSource);
                 }
 
-                if (productMode.getProduct().equals(Product.ACCOUNT)) {
+
+                if (productMode.getProduct().equals(Product.MEMO)) {
                     ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/loan_sql/patch_account_opening.sql");
+                        baseServerFolder + "/loan_sql/patch_memo.sql");
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                     populator.execute(dataSource);
                 }
 
-                if (productMode.getProduct().equals(Product.MEMO)) {
+                if (productMode.getProduct().equals(Product.OFFER_LETTER)) {
                     ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/loan_sql/patch_memo.sql");
+                        baseServerFolder + "/general_patch/offer_letter.sql");
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                     populator.execute(dataSource);
@@ -206,6 +208,8 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
             populator.execute(dataSource);
         }
+
+        Role Role = new Role();
     }
 
     @Bean

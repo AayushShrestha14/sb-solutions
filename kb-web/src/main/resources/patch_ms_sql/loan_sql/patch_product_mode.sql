@@ -6,6 +6,7 @@ VALUES
 ('2', '1',0,'MEMO'),
 ('3', '2',0,'ACCOUNT'),
 ('4', '3',1,'ELIGIBILITY'),
-('5', '4',0,'LAS');
+('5', '4',0,'LAS'),
+('6', '5',1,'OFFER LETTER');
 
 SET IDENTITY_INSERT product_mode OFF;

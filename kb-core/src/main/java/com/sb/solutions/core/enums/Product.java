@@ -9,7 +9,8 @@ public enum Product {
     MEMO("Memo"),
     ACCOUNT("Account"),
     ELIGIBILITY("Eligibility"),
-    LAS("Las");
+    LAS("Las"),
+    OFFER_LETTER("Offer");
 
     private final String value;
 
