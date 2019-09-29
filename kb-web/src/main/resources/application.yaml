@@ -52,3 +52,16 @@ file:
 bank:
   name: United Finance Ltd
   website: http://www.ufl.com.np/
+
+mailproperty:
+  additionalHeaders:
+    mail:
+      transport:
+        protocol: smtp
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+      debug: true

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import com.sb.solutions.core.config.security.property.MailProperties;
 import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermissionDao;
 
 /**
@@ -22,10 +23,17 @@ import com.sb.solutions.core.config.security.roleAndPermission.RoleAndPermission
 @Configuration
 public class RefreshEmailBean {
 
-    @Autowired
-    RoleAndPermissionDao roleAndPermissionDao;
-
     private static final Logger logger = LoggerFactory.getLogger(RefreshEmailBean.class);
+    private final RoleAndPermissionDao roleAndPermissionDao;
+    private final MailProperties mailProperties;
+
+    @Autowired
+    public RefreshEmailBean(
+        MailProperties mailProperties,
+        RoleAndPermissionDao roleAndPermissionDao) {
+        this.mailProperties = mailProperties;
+        this.roleAndPermissionDao = roleAndPermissionDao;
+    }
 
     @RefreshScope
     @Bean
@@ -36,23 +44,14 @@ public class RefreshEmailBean {
             if (!map.isEmpty()) {
                 mailSender.setHost(String.valueOf(map.get(0).get("host")));
                 mailSender.setPort((Integer.parseInt(map.get(0).get("port").toString())));
-
                 mailSender.setUsername(String.valueOf(map.get(0).get("username")));
                 mailSender.setPassword(String.valueOf(map.get(0).get("password")));
 
                 Properties props = mailSender.getJavaMailProperties();
-                props.put("mail.transport.protocol", "smtp");
-                props.put("mail.smtp.auth", "true");
-                props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.debug", "true");
                 props.put("mail.smtp.host", String.valueOf(map.get(0).get("host")));
                 props.put("mail.smtp.socketFactory.port",
                     String.valueOf(map.get(0).get("port")));
-                props.put("mail.smtp.socketFactory.class",
-                    "javax.net.ssl.SSLSocketFactory");
-//                props.put("mail.smtp.host", String.valueOf(map.get(0).get("host")));
-//                props.put("mail.smtp.port", String.valueOf(map.get(0).get("port")));
-
+                this.mailProperties.getAdditionalHeaders().forEach(props::put);
                 return mailSender;
 
             }

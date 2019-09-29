@@ -29,6 +29,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
+import com.sb.solutions.core.config.security.property.MailProperties;
 import com.sb.solutions.core.constant.CurrentDbServer;
 import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.Status;
@@ -41,7 +42,7 @@ import com.sb.solutions.core.enums.Status;
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-@EnableConfigurationProperties({FileStorageProperties.class})
+@EnableConfigurationProperties({FileStorageProperties.class, MailProperties.class})
 public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired
