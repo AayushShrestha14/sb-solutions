@@ -25,7 +25,6 @@ import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.repository.ProductModeRepository;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
@@ -60,6 +59,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired
     DataSource dataSource;
+
 
     @Value("${server.port}")
     private String port;
@@ -130,7 +130,6 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     populator.execute(dataSource);
                 }
 
-
                 if (productMode.getProduct().equals(Product.MEMO)) {
                     ClassPathResource dataResource = new ClassPathResource(
                         baseServerFolder + "/loan_sql/patch_memo.sql");
@@ -145,6 +144,13 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                     populator.execute(dataSource);
+
+                    ClassPathResource cadResource = new ClassPathResource(
+                        baseServerFolder + "/general_patch/role_cad.sql");
+                    ResourceDatabasePopulator cadPopulator = new ResourceDatabasePopulator(
+                        cadResource);
+                    cadPopulator.execute(dataSource);
+
                 }
 
                 if (productMode.getProduct().equals(Product.LAS)) {
@@ -210,7 +216,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             populator.execute(dataSource);
         }
 
-        Role Role = new Role();
+
     }
 
     @Bean
