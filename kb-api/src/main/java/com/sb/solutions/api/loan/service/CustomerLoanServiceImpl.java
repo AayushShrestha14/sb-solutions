@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.proposal.service.ProposalService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +69,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CompanyInfoService companyInfoService;
     private final LoanConfigService loanConfigService;
     private final SiteVisitService siteVisitService;
+    private final ProposalService proposalService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -76,6 +79,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired LoanConfigService loanConfigService,
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
+        @Autowired ProposalService proposalService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -85,6 +89,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.loanConfigService = loanConfigService;
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
+        this.proposalService = proposalService;
     }
 
     @Override
@@ -107,7 +112,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 String url = siteVisit.getPath();
                 siteVisit.setData(this.jsonConverter.readJsonFile(url));
             }
-
+        }
+        if (customerLoan.getProposal() != null){
+            List<Proposal> proposalList = customerLoan.getProposal();
+            for(Proposal proposal : proposalList){
+                String url = proposal.getPath();
+                proposal.setData(this.jsonConverter.readJsonFile(url));
+            }
         }
         return customerLoan;
     }
@@ -227,10 +238,54 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
         }
+        //Proposal
+        List<Proposal> proposalList = customerLoan.getProposal();
+        List<Proposal> proposalTemp = null;
+        if(customerLoan.getProposal() != null){
 
+            proposalTemp = proposalList;
+            try{
+                String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                        .withAction(
+                                customerLoan.getLoanType().toString().toLowerCase().replace("\\s+", "")
+                                        .replace("loan", "").trim())
+                        .isJsonPath(true)
+                        .withBranch(customerLoan.getBranch().getName())
+                        .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
+                        .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
+                        .withLoanType(customerLoan.getLoanType().toString()).build();
+                String jsonFileName;
+                String part_name= "purpose";
+                jsonFileName = uploadPath + part_name + System.currentTimeMillis() + ".json";
+                for(Proposal proposal : proposalList){
+                    proposal.setPath(
+                            jsonConverter.writeJsonFile(uploadPath, jsonFileName, proposal.getData())
+                    );
+                }
+                proposalTemp = this.proposalService.saveAll(proposalList);
+            }
+
+            catch (Exception e) {
+                throw new ServiceValidationException("Fail to Save File");
+            }
+
+        }
+        else {
+            try {
+                for (Proposal proposal : proposalList
+                ) {
+                    String url = proposal.getPath();
+                    proposal.setPath(jsonConverter.updateJsonFile(url, proposal.getData()));
+                }
+
+            } catch (Exception ex) {
+                throw new ServiceValidationException("Fail to Save File");
+            }
+        }
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
         customerLoan.setCompanyInfo(companyInfo);
+        customerLoan.setProposal(proposalTemp);
         return customerLoanRepository.save(customerLoan);
     }
 

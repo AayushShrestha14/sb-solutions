@@ -56,7 +56,6 @@ import com.sb.solutions.core.utils.csv.CsvMaker;
 public class UserServiceImpl implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private final BaseHttpService baseHttpService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -79,7 +78,6 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
         this.customJdbcTokenStore = customJdbcTokenStore;
         this.customerLoanRepository = customerLoanRepository;
-
     }
 
     @Override
@@ -105,7 +103,6 @@ public class UserServiceImpl implements UserService {
                     .getClass() + "; Expected type User");
         }
     }
-
 
     @Override
     public User getByUsername(String username) {

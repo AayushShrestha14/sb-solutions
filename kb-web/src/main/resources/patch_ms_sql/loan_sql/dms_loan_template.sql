@@ -64,3 +64,39 @@ SET IDENTITY_INSERT loan_template off
 END
 END;
 
+--patch to make proposal visible
+BEGIN
+DECLARE @count_proposal smallint
+SET @count_proposal = (Select count(*) from loan_template where id = 8)
+if(@count_proposal = 0)
+BEGIN
+
+SET IDENTITY_INSERT loan_template on
+
+INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+(8, 'Proposal', '#proposalInfo',8, 1, NULL, NULL, NULL,'2019-08-23', '2019-08-23', 0)
+
+SET IDENTITY_INSERT loan_template off
+
+END
+END;
+
+-- --patch to make security visible
+-- BEGIN
+-- DECLARE @count_security smallint
+-- SET @count_security = (Select count(*) from loan_template where id = 8)
+-- if(@count_security = 0)
+-- BEGIN
+--
+-- SET IDENTITY_INSERT loan_template on
+--
+-- INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+-- (9, 'Security', '#security',9, 1, NULL, NULL, NULL,'2019-08-23', '2019-08-23', 0)
+--
+-- SET IDENTITY_INSERT loan_template off
+--
+-- END
+-- END;
+--
+
+

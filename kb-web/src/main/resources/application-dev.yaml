@@ -1,7 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/cp_master
-    username: root
+    url: jdbc:sqlserver://localhost:1433;databaseName=cp_master
+    username: sa
     password: root
-
 

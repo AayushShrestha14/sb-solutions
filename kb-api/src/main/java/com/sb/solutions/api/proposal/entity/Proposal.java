@@ -20,21 +20,23 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
-
-    private BigDecimal proposedLimit;
-    private double interestRate;
-    private double baseRate;
-    private double premiumRateOnBaseRate;
-    private ServiceChargeMethod serviceChargeMethod;
-    private double serviceCharge;
-    private double tenureDurationInMonths;
-    private double cibCharge;
-    private RepaymentMode repaymentMode;
-    private String purposeOfSubmission;
-    private String disbursementCriteria;
-    private String creditInformationReportStatus;
-    private String incomeFromTheAccount;
-    private String borrowerInformation;
+    private String path;
+    @Transient
+    private Object data;
+    private Long proposedLimit;
+//    private double interestRate;
+//    private double baseRate;
+//    private double premiumRateOnBaseRate;
+//    private ServiceChargeMethod serviceChargeMethod;
+//    private double serviceCharge;
+//    private double tenureDurationInMonths;
+//    private double cibCharge;
+//    private RepaymentMode repaymentMode;
+//    private String purposeOfSubmission;
+//    private String disbursementCriteria;
+//    private String creditInformationReportStatus;
+//    private String incomeFromTheAccount;
+//    private String borrowerInformation;
     @Transient
     private String proposedAmountInWords;
 
