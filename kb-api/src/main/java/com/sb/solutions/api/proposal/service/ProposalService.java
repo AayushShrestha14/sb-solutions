@@ -6,5 +6,4 @@ import com.sb.solutions.core.service.BaseService;
 import java.util.List;
 
 public interface ProposalService extends BaseService<Proposal> {
-    List<Proposal> saveAll(List<Proposal> proposals);
 }
