@@ -75,4 +75,5 @@ public class OpeningCustomer {
     private boolean residentialPermitOfForeign;
     private String residentialPermitOfForeignType;
     private boolean highProfileRelation;
+    private String residentialPermitOfForeignCountryName;
 }
