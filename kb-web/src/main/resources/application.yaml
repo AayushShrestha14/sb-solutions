@@ -4,7 +4,7 @@ server:
     enabled: true
 spring:
   profiles:
-    active: dev
+    active: prod
   thymeleaf:
     enabled: true
     check-template-location: true
