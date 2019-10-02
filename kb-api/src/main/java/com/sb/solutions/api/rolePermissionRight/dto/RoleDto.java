@@ -31,6 +31,7 @@ public class RoleDto {
     private RoleAccess roleAccess;
 
     private Status status;
+
     public RoleDto(Long id, String name) {
         this.id = id;
         this.name = name;
