@@ -74,5 +74,6 @@ public class OpeningCustomer {
     private String convictedCrime;
     private boolean residentialPermitOfForeign;
     private String residentialPermitOfForeignType;
+    private boolean highProfileRelation;
     private String residentialPermitOfForeignCountryName;
 }

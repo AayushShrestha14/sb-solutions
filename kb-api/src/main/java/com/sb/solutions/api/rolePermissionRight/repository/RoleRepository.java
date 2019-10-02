@@ -44,4 +44,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query("select new com.sb.solutions.api.rolePermissionRight.dto.RoleDto(r.id,r.roleName)  from Role r")
     List<RoleDto> getRoleDto();
+
+    @Query("SELECT r FROM Role r WHERE r.roleName = 'CAD'")
+    Role getRoleCAD();
 }
