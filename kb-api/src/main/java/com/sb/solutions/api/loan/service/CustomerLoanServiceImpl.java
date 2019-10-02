@@ -30,6 +30,7 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
@@ -369,7 +370,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             Page<CustomerLoan> customerLoanList = customerLoanRepository
                 .findAll(specification, pageable);
             for (CustomerLoan c : customerLoanList.getContent()) {
-                for (LoanStage l : c.getPreviousList()) {
+                for (LoanStageDto l : c.getPreviousList()) {
                     if (l.getToUser().getId() == (u.getId())) {
                         c.setPulled(true);
                         break;
