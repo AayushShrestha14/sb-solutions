@@ -23,7 +23,7 @@ public class Proposal extends BaseEntity<Long> {
     private String path;
     @Transient
     private Object data;
-    private Long proposedLimit;
+    private BigDecimal proposedLimit;
 //    private double interestRate;
 //    private double baseRate;
 //    private double premiumRateOnBaseRate;
