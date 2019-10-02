@@ -39,6 +39,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -123,7 +124,12 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     private List<LoanStage> distinctPreviousList;
 
-    public List<LoanStage> getPreviousList() {
+    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    public List<LoanStageDto> getPreviousList() {
         if (this.getPreviousStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
@@ -132,7 +138,7 @@ public class CustomerLoan extends BaseEntity<Long> {
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
                 this.previousList = objectMapper.readValue(this.getPreviousStageList(),
-                    typeFactory.constructCollectionType(List.class, LoanStage.class));
+                    typeFactory.constructCollectionType(List.class, LoanStageDto.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -142,8 +148,8 @@ public class CustomerLoan extends BaseEntity<Long> {
         return this.previousList;
     }
 
-    public List<LoanStage> getDistinctPreviousList() {
-        Collection<LoanStage> list =
+    public List<LoanStageDto> getDistinctPreviousList() {
+        Collection<LoanStageDto> list =
             CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils
                 .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
         return list.stream()
@@ -151,10 +157,5 @@ public class CustomerLoan extends BaseEntity<Long> {
                 p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
             .filter(p -> !p.getToUser().getIsDefaultCommittee())
             .collect(Collectors.toList());
-    }
-
-    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
