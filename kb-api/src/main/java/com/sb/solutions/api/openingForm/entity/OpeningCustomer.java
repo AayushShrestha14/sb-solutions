@@ -48,6 +48,11 @@ public class OpeningCustomer {
     private String voterIssuedPlace;
     private Date voterIssuedDate;
     private String voterImagePath;
+    private String licenseNumber;
+    private String licenseIssuedPlace;
+    private String licenseIssuedDate;
+    private String licenseExpireDate;
+    private String licenseImagePath;
     private String passportNumber;
     private String passportIssuedPlace;
     private Date passportIssuedDate;

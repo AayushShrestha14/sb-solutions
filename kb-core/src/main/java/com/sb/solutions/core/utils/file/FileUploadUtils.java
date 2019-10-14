@@ -138,6 +138,10 @@ public class FileUploadUtils {
                         url + name + "_" + System.currentTimeMillis() + "_voter." + FileUtils
                             .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
+                case "license":
+                     imagePath = url + name + "_" + System.currentTimeMillis() + "license." + FileUtils
+                                     .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                     break;
                 case "id":
                     imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
                         .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
