@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -109,10 +110,15 @@ public class DmsLoanFileController {
     }
 
     @PostMapping("/download")
-    public ResponseEntity<?> downloadFile(@RequestBody String path,
-        HttpServletResponse response) throws FileNotFoundException {
+    public ResponseEntity<?> downloadFile(@RequestBody String path) {
         File file = new File(FilePath.getOSPath() + path);
-        final InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        final InputStreamResource resource;
+        try {
+            resource = new InputStreamResource(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            logger.error("File not found {}", e.getMessage());
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
             String.format("attachment; filename=\"%s\"", file.getName()));
