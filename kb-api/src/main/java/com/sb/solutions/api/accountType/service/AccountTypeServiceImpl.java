@@ -2,20 +2,24 @@ package com.sb.solutions.api.accountType.service;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.repository.AccountTypeRepository;
 
 @Service
-@AllArgsConstructor
 public class AccountTypeServiceImpl implements AccountTypeService {
 
     private AccountTypeRepository accountTypeRepository;
+
+    public AccountTypeServiceImpl(
+        @Autowired AccountTypeRepository accountTypeRepository
+    ) {
+        this.accountTypeRepository = accountTypeRepository;
+    }
 
     @Override
     public List<AccountType> findAll() {
@@ -42,10 +46,4 @@ public class AccountTypeServiceImpl implements AccountTypeService {
         return accountTypeRepository.saveAll(list);
     }
 
-    @Override
-    public List<AccountType> findAllByAccountPurposeId(Long accountPurposeId) {
-        AccountPurpose accountPurpose = new AccountPurpose();
-        accountPurpose.setId(accountPurposeId);
-        return accountTypeRepository.findAllByAccountPurpose(accountPurpose);
-    }
 }

@@ -2,9 +2,8 @@ package com.sb.solutions.web.accountType.v1;
 
 import javax.validation.Valid;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +16,21 @@ import com.sb.solutions.api.accountType.service.AccountTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
 
 @RestController
-@AllArgsConstructor
-@RequestMapping("/v1/accountType")
+@RequestMapping(AccountTypeController.URL)
 public class AccountTypeController {
+
+    static final String URL = "/v1/accountType";
 
     private final AccountTypeService accountTypeService;
 
+    public AccountTypeController(
+        @Autowired AccountTypeService accountTypeService
+    ) {
+        this.accountTypeService = accountTypeService;
+    }
+
     @PostMapping
-    public ResponseEntity<?> saveAccountType(@Valid @RequestBody AccountType accountType,
-        BindingResult bindingResult) {
+    public ResponseEntity<?> saveAccountType(@Valid @RequestBody AccountType accountType) {
         AccountType a = accountTypeService.save(accountType);
         if (a == null) {
             return new RestResponseDto().failureModel("Error Occurs");
@@ -34,16 +39,14 @@ public class AccountTypeController {
         }
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return new RestResponseDto().successModel(accountTypeService.findOne(id));
+    }
 
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAccountType() {
         return new RestResponseDto().successModel(accountTypeService.findAll());
     }
 
-    @GetMapping(value = "/accountPurpose/{accountPurposeId}")
-    public ResponseEntity<?> getAccountTypeBuAccountPurpose(
-        @PathVariable Long accountPurposeId) {
-        return new RestResponseDto()
-            .successModel(accountTypeService.findAllByAccountPurposeId(accountPurposeId));
-    }
 }
