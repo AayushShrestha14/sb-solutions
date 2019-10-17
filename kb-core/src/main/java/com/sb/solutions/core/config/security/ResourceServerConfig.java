@@ -40,6 +40,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .antMatchers(HttpMethod.POST, "/v1/customer-otp/verify").permitAll()
             .antMatchers(HttpMethod.POST, "/v1/customer-otp/regenerate").permitAll()
             .antMatchers("/v1/accountType/all").permitAll()
+            .antMatchers("/v1/accountPurpose/all").permitAll()
             .antMatchers(HttpMethod.GET,"/v1/accountPurpose/accountType/*").permitAll()
             .antMatchers("/v1/accountOpening").permitAll()
             .antMatchers("/v1/accountOpening/uploadFile").permitAll()
