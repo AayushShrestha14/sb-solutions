@@ -30,7 +30,7 @@ public class AccountTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveAccountType(@Valid @RequestBody AccountType accountType) {
+    public ResponseEntity<?> save(@Valid @RequestBody AccountType accountType) {
         AccountType a = accountTypeService.save(accountType);
         if (a == null) {
             return new RestResponseDto().failureModel("Error Occurs");
@@ -45,7 +45,7 @@ public class AccountTypeController {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getAccountType() {
+    public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(accountTypeService.findAll());
     }
 

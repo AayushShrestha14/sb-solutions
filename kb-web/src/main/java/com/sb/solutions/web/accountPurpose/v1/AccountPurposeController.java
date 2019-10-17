@@ -35,13 +35,13 @@ public class AccountPurposeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveAccountPurpose(@Valid @RequestBody AccountPurpose accountPurpose) {
+    public ResponseEntity<?> save(@Valid @RequestBody AccountPurpose accountPurpose) {
         AccountPurpose a = accountPurposeService.save(accountPurpose);
         return new RestResponseDto().successModel(a);
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<?> getAccountPurpose() {
+    public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(accountPurposeService.findAll());
     }
 
