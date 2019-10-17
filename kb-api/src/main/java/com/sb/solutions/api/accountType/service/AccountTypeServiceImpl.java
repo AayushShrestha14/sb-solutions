@@ -1,14 +1,18 @@
 package com.sb.solutions.api.accountType.service;
 
 import java.util.List;
+import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.repository.AccountTypeRepository;
+import com.sb.solutions.api.accountType.repository.spec.AccountTypeSpecBuilder;
 
 @Service
 public class AccountTypeServiceImpl implements AccountTypeService {
@@ -38,7 +42,11 @@ public class AccountTypeServiceImpl implements AccountTypeService {
 
     @Override
     public Page<AccountType> findAllPageable(Object t, Pageable pageable) {
-        return null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> map = objectMapper.convertValue(t, Map.class);
+        final AccountTypeSpecBuilder builder = new AccountTypeSpecBuilder(map);
+        final Specification<AccountType> specification = builder.build();
+        return accountTypeRepository.findAll(specification, pageable);
     }
 
     @Override
