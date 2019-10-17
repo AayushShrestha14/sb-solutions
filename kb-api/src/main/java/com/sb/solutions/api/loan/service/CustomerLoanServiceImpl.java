@@ -27,6 +27,7 @@ import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
+import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -68,6 +69,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CompanyInfoService companyInfoService;
     private final LoanConfigService loanConfigService;
     private final SiteVisitService siteVisitService;
+    private final FinancialService financialService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -77,6 +79,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired LoanConfigService loanConfigService,
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
+        @Autowired FinancialService financialService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -86,6 +89,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.loanConfigService = loanConfigService;
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
+        this.financialService = financialService;
     }
 
     @Override
@@ -96,11 +100,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
-        if (customerLoan.getFinancial() != null) {
-            String url = customerLoan.getFinancial().getPath();
-            customerLoan.getFinancial()
-                .setData(this.jsonConverter.readJsonFile(url));
-        }
         if (customerLoan.getSiteVisit() != null) {
             List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
             for (SiteVisit siteVisit : siteVisitList
@@ -149,40 +148,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
         }
         if (customerLoan.getFinancial() != null) {
-            if (customerLoan.getFinancial().getId() == null) {
-                try {
-                    String url = UploadDir.initialDocument
-                        + customerLoan.getBranch().getName()
-                        + "/"
-                        + customerLoan.getCustomerInfo().getCustomerName().replace(" ", "_")
-                        + "_"
-                        + customerLoan.getCustomerInfo().getCitizenshipNumber()
-                        + "/"
-                        + loanConfigService.findOne(customerLoan.getLoan().getId()).getName()
-                        + "/"
-                        + customerLoan.getLoanType()
-                        + "/"
-                        + customerLoan.getLoan().getId() + "/";
-                    String jsonFileName;
-                    String financial = "financial";
-                    jsonFileName = url + financial + System.currentTimeMillis() + ".json";
-                    customerLoan.getFinancial()
-                        .setPath(this.jsonConverter.writeJsonFile(url, jsonFileName,
-                            customerLoan.getFinancial().getData()));
-                } catch (Exception exception) {
-                    throw new ServiceValidationException("File Fail to Save");
-                }
-            } else {
-                try {
-                    String url = customerLoan.getFinancial().getPath();
-                    customerLoan.getFinancial()
-                        .setPath(this.jsonConverter
-                            .updateJsonFile(url, customerLoan.getFinancial().getData()));
-                } catch (Exception exception) {
-                    throw new ServiceValidationException("File Fail to Save");
-                }
-            }
+            this.financialService.save(customerLoan.getFinancial());
         }
+
         List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
         List<SiteVisit> siteVisitTemp = null;
         if (customerLoan.getSiteVisit() != null) {

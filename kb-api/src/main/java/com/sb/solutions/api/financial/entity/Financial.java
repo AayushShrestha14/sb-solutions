@@ -16,9 +16,5 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Financial extends BaseEntity<Long> {
-
-    private String path;
-
-    @Transient
-    private Object data;
+    private String data;
 }
