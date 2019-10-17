@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
@@ -16,6 +18,7 @@ import com.sb.solutions.api.accountPurpose.service.AccountPurposeService;
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.accountType.service.AccountTypeService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PaginationUtils;
 
 @RestController
 @RequestMapping(AccountPurposeController.URL)
@@ -40,6 +43,13 @@ public class AccountPurposeController {
         return new RestResponseDto().successModel(a);
     }
 
+    @PostMapping(value = "/list")
+    public ResponseEntity<?> getPageable(@RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(
+            accountPurposeService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(accountPurposeService.findAll());
@@ -51,6 +61,19 @@ public class AccountPurposeController {
         AccountType accountType = accountTypeService.findOne(accountTypeId);
         return new RestResponseDto()
             .successModel(accountType.getAccountPurpose());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestBody AccountPurpose accountPurpose) {
+
+        final AccountPurpose savedAccountPurpose = accountPurposeService.save(accountPurpose);
+
+        if (null == savedAccountPurpose) {
+            return new RestResponseDto()
+                .failureModel("Error occurred while saving Account Purpose " + accountPurpose);
+        }
+
+        return new RestResponseDto().successModel(savedAccountPurpose);
     }
 
 }

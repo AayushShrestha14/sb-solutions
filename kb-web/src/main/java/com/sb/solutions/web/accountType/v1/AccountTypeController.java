@@ -43,7 +43,7 @@ public class AccountTypeController {
     }
 
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getPageableBranch(@RequestBody Object searchDto,
+    public ResponseEntity<?> getPageable(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
             accountTypeService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
