@@ -17,7 +17,6 @@ import com.sb.solutions.core.enums.Status;
 @EqualsAndHashCode(callSuper = true)
 public class Company extends BaseEntity<Long> {
 
-
     private String name;
 
     private Status status;
