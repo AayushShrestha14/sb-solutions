@@ -35,7 +35,6 @@ import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
-import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -60,14 +59,13 @@ import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomerLoanServiceImpl.class);
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
     private final ProductModeService productModeService;
     private final CustomerService customerService;
     private final DmsLoanFileService dmsLoanFileService;
     private final CompanyInfoService companyInfoService;
-    private final LoanConfigService loanConfigService;
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private JsonConverter jsonConverter = new JsonConverter();
@@ -76,7 +74,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired UserService userService,
         @Autowired CustomerService customerService,
         @Autowired CompanyInfoService companyInfoService,
-        @Autowired LoanConfigService loanConfigService,
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
         @Autowired FinancialService financialService,
@@ -86,7 +83,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.productModeService = productModeService;
         this.customerService = customerService;
         this.companyInfoService = companyInfoService;
-        this.loanConfigService = loanConfigService;
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
