@@ -5,7 +5,7 @@ SET @count = (select count(*) from account_type)
 if (@count = 0)
 BEGIN
 SET IDENTITY_INSERT account_type ON
-INSERT INTO account_type (id, name) VALUES (1, 'Current'), (2, 'Saving'), (3, 'Others')
+INSERT INTO account_type (id, name) VALUES (1, 'Current'), (2, 'Saving')
 SET IDENTITY_INSERT account_type OFF
 
 SET IDENTITY_INSERT account_purpose ON
@@ -24,8 +24,7 @@ INSERT  INTO account_purpose (id, name) VALUES
 (2, 'Remittance'),
 (3, 'Business Transactions'),
 (4, 'Investment'),
-(5, 'Loan Purpose'),
-(6, 'Others')
+(5, 'Loan Purpose')
 SET IDENTITY_INSERT account_purpose Off
 
 INSERT  INTO account_type_account_purpose (account_type_id, account_purpose_id) VALUES
