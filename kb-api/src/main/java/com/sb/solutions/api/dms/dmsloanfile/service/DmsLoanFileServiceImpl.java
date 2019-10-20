@@ -45,11 +45,11 @@ public class DmsLoanFileServiceImpl implements DmsLoanFileService {
     public DmsLoanFile save(DmsLoanFile dmsLoanFile) {
         if (dmsLoanFile.getTenure() != null && !DateValidation
             .isFutureDate(dmsLoanFile.getTenure())) {
-                final Violation violation = new Violation("tenure", dmsLoanFile.getTenure(),
-                    "Invalid tenure date");
+            final Violation violation = new Violation("tenure", dmsLoanFile.getTenure(),
+                "Invalid tenure date");
 
-                throw new ServiceValidationException("Invalid dms Loan",
-                    Lists.newArrayList(violation));
+            throw new ServiceValidationException("Invalid dms Loan",
+                Lists.newArrayList(violation));
         }
         logger.debug("docs {}", dmsLoanFile.getDocumentMap());
         dmsLoanFile.setDocumentPath(gson.toJson(dmsLoanFile.getDocumentMap()));
