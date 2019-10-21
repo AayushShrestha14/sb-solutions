@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://103.98.131.67:1433;databaseName=daphe
+    username: root
+    password: root
