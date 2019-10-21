@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.security.service.SecurityService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CompanyInfoService companyInfoService;
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
+    private final SecurityService securityService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -77,6 +79,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
         @Autowired FinancialService financialService,
+        @Autowired SecurityService securityservice,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -86,6 +89,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
+        this.securityService = securityservice;
     }
 
     @Override
@@ -145,6 +149,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getFinancial() != null) {
             this.financialService.save(customerLoan.getFinancial());
+        }
+        if (customerLoan.getSecurity() != null){
+            this.securityService.save(customerLoan.getSecurity());
         }
 
         List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();

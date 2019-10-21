@@ -17,8 +17,5 @@ import javax.persistence.Transient;
 
 
 public class Security extends BaseEntity<Long> {
-    private String path;
-
-    @Transient
-    private Object data;
+    private String data;
 }

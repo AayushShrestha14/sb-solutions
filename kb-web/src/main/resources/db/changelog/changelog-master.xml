@@ -1775,6 +1775,9 @@
   <include file="alter_changeset/20190911-dms-entity-changes.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190920_alter_customer.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191017_alter_financial.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190926_security.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20191021_alter_customer_loan_security.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191020_alter_security.xml" relativeToChangelogFile="true"/>
 
   <changeSet id="24-create-revinfo-table" author="msucil">
     <createTable tableName="revinfo">
