@@ -104,6 +104,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private String offerLetterUrl;
 
+    @OneToOne
+    private CustomerOfferLetter customerOfferLetter;
+
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Proposal proposal;
@@ -122,7 +125,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Boolean pulled = false;
 
     @Transient
-    private List<LoanStage> distinctPreviousList;
+    private List<LoanStageDto> distinctPreviousList;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

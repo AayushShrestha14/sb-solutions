@@ -186,4 +186,17 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.csv(searchDto));
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "Results page you want to retrieve (0..N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "Number of records per page.")})
+    @PostMapping(value = "/issue-offer-letter")
+    public ResponseEntity<?> getIssuedOfferLetter(@RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto()
+            .successModel(
+                service.getIssuedOfferLetter(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
 }

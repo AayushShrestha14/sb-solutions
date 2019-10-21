@@ -383,6 +383,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        s.put("documentStatus", DocStatus.APPROVED.name());
+//        s.put("offerLetter","true");
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification, pageable);
+    }
+
+    @Override
     public CustomerLoan delCustomerLoan(Long id) {
         Optional<CustomerLoan> customerLoan = customerLoanRepository.findById(id);
         if (!customerLoan.isPresent()) {
