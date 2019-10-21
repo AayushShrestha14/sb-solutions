@@ -130,9 +130,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             .findByCustomerLoanId(customerLoanId);
         if (!customerOfferLetterList.isEmpty()) {
             for (CustomerOfferLetter c : customerOfferLetterList) {
-                if (c.getPath().equalsIgnoreCase("") || c.getPath() == null) {
-                    customerOfferLetter = c;
-                }
+                customerOfferLetter = c;
+                break;
+
             }
         }
         customerOfferLetter.setCustomerLoanId(customerLoanId);
