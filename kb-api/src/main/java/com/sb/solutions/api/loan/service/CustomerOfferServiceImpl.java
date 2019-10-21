@@ -12,12 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.loan.OfferLetterStage;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.CustomerOfferRepository;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
@@ -31,11 +35,15 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     private CustomerLoanRepository customerRepository;
 
+    private UserService userService;
+
     public CustomerOfferServiceImpl(
         @Autowired CustomerOfferRepository customerOfferRepository,
-        @Autowired CustomerLoanRepository customerRepository) {
+        @Autowired CustomerLoanRepository customerRepository,
+        @Autowired UserService userService) {
         this.customerOfferRepository = customerOfferRepository;
         this.customerRepository = customerRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -52,6 +60,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     public CustomerOfferLetter save(CustomerOfferLetter customerOfferLetter) {
         Preconditions
             .checkNotNull(customerOfferLetter.getCustomerLoanId(), "Customer Cannot be empty");
+        customerOfferLetter.setOfferLetterStage(this.initStage());
         CustomerOfferLetter customerOfferLetter1 = customerOfferRepository
             .save(customerOfferLetter);
         final CustomerLoan customerLoan = customerRepository
@@ -127,6 +136,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             }
         }
         customerOfferLetter.setCustomerLoanId(customerLoanId);
+        customerOfferLetter.setOfferLetterStage(this.initStage());
         RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
         customerOfferLetter.setDocStatus(DocStatus.PENDING);
         customerOfferLetter.setPath(restResponseDto.getDetail().toString());
@@ -136,5 +146,18 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         customerLoan.setCustomerOfferLetter(customerOfferLetter1);
         customerRepository.save(customerLoan);
         return customerOfferLetter1;
+    }
+
+
+    private OfferLetterStage initStage() {
+        User user = userService.getAuthenticated();
+        final OfferLetterStage offerLetterStage = new OfferLetterStage();
+        offerLetterStage.setFromRole(user.getRole());
+        offerLetterStage.setToRole(user.getRole());
+        offerLetterStage.setFromUser(user);
+        offerLetterStage.setToUser(user);
+        offerLetterStage.setComment("DRAFT");
+        offerLetterStage.setDocAction(DocAction.DRAFT);
+        return offerLetterStage;
     }
 }
