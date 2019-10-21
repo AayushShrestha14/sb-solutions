@@ -30,10 +30,10 @@ import com.sb.solutions.api.openingForm.repository.specification.OpeningFormSpec
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.date.validation.DateValidation;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.date.DateValidation;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
 @Service
@@ -41,18 +41,16 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     private final Logger logger = LoggerFactory.getLogger(OpeningFormServiceImpl.class);
     private OpeningFormRepository openingFormRepository;
-    private DateValidation dateValidation;
     private BranchService branchService;
     private UserService userService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     @Autowired
-    public OpeningFormServiceImpl(OpeningFormRepository openingFormRepository,
-        DateValidation dateValidation,
+    public OpeningFormServiceImpl(
+        OpeningFormRepository openingFormRepository,
         BranchService branchService,
         UserService userService) {
         this.openingFormRepository = openingFormRepository;
-        this.dateValidation = dateValidation;
         this.branchService = branchService;
         this.userService = userService;
     }
@@ -74,73 +72,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public OpeningForm save(OpeningForm openingForm) {
         openingForm.setBranch(branchService.findOne(openingForm.getBranch().getId()));
-        if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null) {
-            if (!dateValidation
-                .checkDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
-                throw new ServiceValidationException("Invalid Date of Birth of Nominee");
-            }
-        }
-        if (openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth() != null) {
-            if (!dateValidation
-                .checkDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
-                throw new ServiceValidationException("Invalid Date of Birth of Beneficiaries");
-            }
-        }
-        for (OpeningCustomer openingCustomer : openingForm.getOpeningAccount()
-            .getOpeningCustomers()) {
-            if (openingCustomer.getDateOfBirthAD() != null) {
-                if (!dateValidation.checkDate(openingCustomer.getDateOfBirthAD())) {
-                    throw new ServiceValidationException("Invalid Date of Birth of Customer");
-                }
-            }
-            if (openingCustomer.getCitizenIssuedDate() != null) {
-                if (!dateValidation.checkDate(openingCustomer.getCitizenIssuedDate())) {
-                    throw new ServiceValidationException("Invalid Citizen Issued Date of Customer");
-                }
-            }
-            if (openingCustomer.getPassportIssuedDate() != null) {
-                if (!dateValidation.checkDate(openingCustomer.getPassportIssuedDate())) {
-                    throw new ServiceValidationException(
-                        "Invalid Password Issued Date of Customer");
-                }
-            }
-            if (openingCustomer.getPassportExpireDate() != null) {
-                if (dateValidation.checkDate(openingCustomer.getPassportExpireDate())) {
-                    throw new ServiceValidationException(
-                        "Invalid Passport Expire Date of Customer");
-                }
-            }
-            if (openingCustomer.getIdCardIssuedDate() != null) {
-                if (!dateValidation.checkDate(openingCustomer.getIdCardIssuedDate())) {
-                    throw new ServiceValidationException("Invalid Id Issued Date of Customer");
-                }
-            }
-            if (openingCustomer.getIdCardExpireDate() != null) {
-                if (dateValidation.checkDate(openingCustomer.getIdCardExpireDate())) {
-                    throw new ServiceValidationException("Invalid Id Expire Date of Customer");
-                }
-            }
-            if (openingCustomer.getVisaIssueDate() != null) {
-                if (!dateValidation.checkDate(openingCustomer.getVisaIssueDate())) {
-                    throw new ServiceValidationException("Invalid Visa Issued Date of Customer");
-                }
-            }
-            if (openingCustomer.getVisaValidity() != null) {
-                if (dateValidation.checkDate(openingCustomer.getVisaValidity())) {
-                    throw new ServiceValidationException("Invalid Visa Validity Date of Customer");
-                }
-            }
-            for (OpeningCustomerRelative openingCustomerRelative : openingCustomer.getKyc()
-                .getCustomerRelatives()) {
-                if (openingCustomerRelative.getCitizenshipIssuedDate() != null) {
-                    if (!dateValidation
-                        .checkDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
-                        throw new ServiceValidationException(
-                            "Invalid Citizen Issued Date of Customer Relative");
-                    }
-                }
-            }
-        }
+        validateDateFields(openingForm);
         if (openingForm.getId() == null) {
             openingForm.setRequestedDate(new Date());
             openingForm.setStatus(AccountStatus.NEW_REQUEST);
@@ -191,6 +123,78 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public Map<Object, Object> getStatus() {
         List<Long> currentUserBranches = userService.getRoleAccessFilterByBranch();
         return openingFormRepository.openingFormStatusCount(currentUserBranches);
+    }
+
+    private void validateDateFields(OpeningForm openingForm) {
+        // Nominee
+        if (openingForm.getOpeningAccount().getNominee().getDateOfBirth() != null && !DateValidation
+            .isPreviousDate(openingForm.getOpeningAccount().getNominee().getDateOfBirth())) {
+            throw new ServiceValidationException("Invalid Date of Birth of Nominee");
+        }
+        // Beneficiary
+        if (openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth() != null
+            && !DateValidation
+            .isPreviousDate(openingForm.getOpeningAccount().getBeneficiary().getDateOfBirth())) {
+            throw new ServiceValidationException("Invalid Date of Birth of Beneficiary");
+        }
+        // Applicant
+        for (OpeningCustomer openingCustomer : openingForm.getOpeningAccount()
+            .getOpeningCustomers()) {
+            if (openingCustomer.getDateOfBirthAD() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getDateOfBirthAD())) {
+                throw new ServiceValidationException("Invalid Date of Birth of Customer");
+            }
+            if (openingCustomer.getCitizenIssuedDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getCitizenIssuedDate())) {
+                throw new ServiceValidationException("Invalid Citizen Issued Date of Customer");
+            }
+            if (openingCustomer.getPassportIssuedDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getPassportIssuedDate())) {
+                throw new ServiceValidationException(
+                    "Invalid Password Issued Date of Customer");
+            }
+            if (openingCustomer.getPassportExpireDate() != null && !DateValidation
+                .isFutureDate(openingCustomer.getPassportExpireDate())) {
+                throw new ServiceValidationException(
+                    "Invalid Passport Expire Date of Customer");
+            }
+            if (openingCustomer.getIdCardIssuedDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getIdCardIssuedDate())) {
+                throw new ServiceValidationException("Invalid Id Issued Date of Customer");
+            }
+            if (openingCustomer.getIdCardExpireDate() != null && !DateValidation
+                .isFutureDate(openingCustomer.getIdCardExpireDate())) {
+                throw new ServiceValidationException("Invalid Id Expire Date of Customer");
+            }
+            if (openingCustomer.getVisaIssueDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getVisaIssueDate())) {
+                throw new ServiceValidationException("Invalid Visa Issued Date of Customer");
+            }
+            if (openingCustomer.getVisaValidity() != null && !DateValidation
+                .isFutureDate(openingCustomer.getVisaValidity())) {
+                throw new ServiceValidationException("Invalid Visa Validity Date of Customer");
+            }
+            if (openingCustomer.getVoterIssuedDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getVoterIssuedDate())) {
+                throw new ServiceValidationException("Invalid Voter Issued Date");
+            }
+            if (openingCustomer.getLicenseIssuedDate() != null && !DateValidation
+                .isPreviousDate(openingCustomer.getLicenseIssuedDate())) {
+                throw new ServiceValidationException("Invalid Driving License Issued Date");
+            }
+            if (openingCustomer.getLicenseExpireDate() != null && !DateValidation
+                .isFutureDate(openingCustomer.getLicenseExpireDate())) {
+                throw new ServiceValidationException("Invalid Driving License Expiry Date");
+            }
+            for (OpeningCustomerRelative openingCustomerRelative : openingCustomer.getKyc()
+                .getCustomerRelatives()) {
+                if (openingCustomerRelative.getCitizenshipIssuedDate() != null && !DateValidation
+                    .isPreviousDate(openingCustomerRelative.getCitizenshipIssuedDate())) {
+                    throw new ServiceValidationException(
+                        "Invalid Citizen Issued Date of Customer Relative");
+                }
+            }
+        }
     }
 
     private String writeJsonFile(String url, OpeningForm openingForm) {

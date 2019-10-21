@@ -15,8 +15,12 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
     properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
+        hibernate:
+              enable_lazy_load_no_trans: true
+        org:
+          hibernate:
+            envers:
+              audit_table_suffix: _audit
   servlet:
     multipart:
       max-file-size: 10MB
@@ -52,3 +56,16 @@ file:
 bank:
   name: United Finance Ltd
   website: http://www.ufl.com.np/
+
+mailproperty:
+  additionalHeaders:
+    mail:
+      transport:
+        protocol: smtp
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+      debug: true

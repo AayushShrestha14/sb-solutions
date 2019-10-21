@@ -122,26 +122,44 @@ public class FileUploadUtils {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
             String imagePath;
-            if (type.equals("citizen")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
-                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            } else if (type.equals("passport")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
-                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            } else if (type.equals("id")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
-                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            } else if (type.equals("photo")) {
-                imagePath = url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
-                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
-            } else {
-                return new RestResponseDto().failureModel("wrong file type");
+            switch (type) {
+                case "citizen":
+                    imagePath =
+                        url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                case "passport":
+                    imagePath =
+                        url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                case "voter":
+                    imagePath =
+                        url + name + "_" + System.currentTimeMillis() + "_voter." + FileUtils
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                case "license":
+                    imagePath =
+                        url + name + "_" + System.currentTimeMillis() + "_license." + FileUtils
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                case "id":
+                    imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
+                        .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                case "photo":
+                    imagePath =
+                        url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    break;
+                default:
+                    return new RestResponseDto().failureModel("wrong file type");
             }
             path = Paths.get(FilePath.getOSPath() + imagePath);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(imagePath);
         } catch (IOException e) {
-            logger.error("Error uploading account opening file {}", e);
+            logger.error("Error uploading account opening file {}", e.getMessage());
             return new RestResponseDto().failureModel("Fail");
         }
     }

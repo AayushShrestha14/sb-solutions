@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.NotAudited;
 
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
@@ -37,11 +38,17 @@ public class Customer extends BaseEntity<Long> {
     @Temporal(TemporalType.DATE)
     private Date dob;
     private String accountNo;
+
     @ManyToOne
+    @NotAudited
     private Province province;
+
     @ManyToOne
+    @NotAudited
     private District district;
+
     @ManyToOne
+    @NotAudited
     private MunicipalityVdc municipalities;
     private String street;
     private String wardNumber;
@@ -54,6 +61,7 @@ public class Customer extends BaseEntity<Long> {
     private Date citizenshipIssuedDate;
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomerRelative> customerRelatives;
 }
