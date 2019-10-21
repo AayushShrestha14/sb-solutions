@@ -114,11 +114,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 siteVisit.setData(this.jsonConverter.readJsonFile(url));
             }
         }
-        if (customerLoan.getProposal() != null){
-            Proposal proposal = customerLoan.getProposal();
-                String url = proposal.getPath();
-            proposal.setData(this.jsonConverter.readJsonFile(url));
-        }
         return customerLoan;
     }
 
@@ -242,42 +237,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Proposal proposalTemp = null;
         if(customerLoan.getProposal() != null){
 
-            proposalTemp = proposal;
-            try{
-                String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                        .withAction(
-                                customerLoan.getLoanType().toString().toLowerCase().replace("\\s+", "")
-                                        .replace("loan", "").trim())
-                        .isJsonPath(true)
-                        .withBranch(customerLoan.getBranch().getName())
-                        .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
-                        .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
-                        .withLoanType(customerLoan.getLoanType().toString()).build();
-                String jsonFileName;
-                String part_name= "purpose";
-                jsonFileName = uploadPath + part_name + System.currentTimeMillis() + ".json";
-
-                proposal.setPath(
-                            jsonConverter.writeJsonFile(uploadPath, jsonFileName, proposal.getData())
-                    );
-
-                proposalTemp = this.proposalService.save(proposal);
-            }
-
-            catch (Exception e) {
-                throw new ServiceValidationException("Fail to Save File");
-            }
+            this.proposalService.save(customerLoan.getProposal());
 
         }
-        else {
-            try {
-                    String url = proposal.getPath();
-                    proposal.setPath(jsonConverter.updateJsonFile(url, proposal.getData()));
 
-            } catch (Exception ex) {
-                throw new ServiceValidationException("Fail to Save File");
-            }
-        }
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
         customerLoan.setCompanyInfo(companyInfo);

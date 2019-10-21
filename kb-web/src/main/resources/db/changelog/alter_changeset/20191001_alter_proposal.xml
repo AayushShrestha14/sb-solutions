@@ -23,4 +23,22 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="40-drop-proposal-to-json" author="Aabishkar">
+<preConditions>
+  <columnExists tableName="proposal" columnName="path"/>
+</preConditions>
+    <dropColumn tableName="proposal" columnName="path"/>
+  </changeSet>
+
+  <changeSet id="40-add-proposal-to-json" author="Aabishkar">
+<preConditions>
+  <not>
+    <columnExists tableName="proposal" columnName="data"/>
+  </not>
+</preConditions>
+    <addColumn tableName="proposal">
+      <column name="data" type="LONGTEXT"></column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
