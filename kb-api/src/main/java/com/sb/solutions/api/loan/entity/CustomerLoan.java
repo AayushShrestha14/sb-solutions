@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.security.entity.Security;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -111,6 +112,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Financial financial;
+
+    @OneToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private Security security;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
