@@ -78,9 +78,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @OneToMany
-    @JoinColumn(name = "customer_loan_id")
-    private List<SiteVisit> siteVisit = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "site_visit_id")
+    private SiteVisit siteVisit;
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;

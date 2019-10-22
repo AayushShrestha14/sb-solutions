@@ -1779,6 +1779,9 @@
   <include file="loan_form/20191021_alter_customer_loan_security.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191020_alter_security.xml" relativeToChangelogFile="true"/>
 
+  <include file="alter_changeset/20190909_alter_site_visit_table.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191020_json_alter_site_visit.xml" relativeToChangelogFile="true"/>
+
   <changeSet id="24-create-revinfo-table" author="msucil">
     <createTable tableName="revinfo">
       <column name="rev" type="INT" autoIncrement="true">
