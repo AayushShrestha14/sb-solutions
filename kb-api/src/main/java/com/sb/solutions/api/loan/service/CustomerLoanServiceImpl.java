@@ -38,6 +38,8 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
+import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -70,6 +72,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final SecurityService securityService;
+    private final ProposalService proposalService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -80,6 +83,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired SiteVisitService siteVisitService,
         @Autowired FinancialService financialService,
         @Autowired SecurityService securityservice,
+        @Autowired ProposalService proposalService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -90,6 +94,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.securityService = securityservice;
+        this.proposalService = proposalService;
     }
 
     @Override
@@ -152,10 +157,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 siteVisitTemp = siteVisit;
                     siteVisitTemp = this.siteVisitService.save(siteVisit);
             }
+        }
+        //Proposal
+        Proposal proposal = customerLoan.getProposal();
+        Proposal proposalTemp = null;
+        if(customerLoan.getProposal() != null){
+
+            this.proposalService.save(customerLoan.getProposal());
+
+        }
 
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
         customerLoan.setCompanyInfo(companyInfo);
+        customerLoan.setProposal(proposal);
         return customerLoanRepository.save(customerLoan);
     }
 
