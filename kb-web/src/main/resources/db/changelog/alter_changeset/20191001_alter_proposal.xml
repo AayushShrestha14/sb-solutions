@@ -41,4 +41,19 @@
       <column name="data" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
+
+
+
+  <changeSet id="40-add-proposal-proposal_limit" author="Aabishkar">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="proposal_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="proposed_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+
 </databaseChangeLog>
