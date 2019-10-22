@@ -1,0 +1,41 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="23-alter-site-visit-drop-foreign-constraint" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyName="fk_site_visit_customer_loan_id" foreignKeyTableName="site_visit"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="site_visit" constraintName="fk_site_visit_customer_loan_id"/>
+  </changeSet>
+
+  <changeSet id="23-alter-site-visit-drop-column" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="site_visit" columnName="customer_loan_id"/>
+    </preConditions>
+    <dropColumn tableName="site_visit" columnName="customer_loan_id"/>
+  </changeSet>
+
+  <changeSet id="23-alter-site-visit-add-column" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="site_visit_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="site_visit_id" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="23-alter-site-visit-add-foreign-constraint" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <foreignKeyConstraintExists foreignKeyTableName="customer_loan" foreignKeyName="fk_customer_loan_site_visit_id"/>
+      </not>
+    </preConditions>
+    <addForeignKeyConstraint baseTableName="customer_loan" baseColumnNames="site_visit_id" constraintName="fk_customer_loan_site_visit_id"
+      referencedTableName="site_visit" referencedColumnNames="id"/>
+  </changeSet>
+</databaseChangeLog>
+
+

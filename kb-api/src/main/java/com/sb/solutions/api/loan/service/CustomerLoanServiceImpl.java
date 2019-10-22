@@ -101,15 +101,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.getFinancial()
                 .setData(this.jsonConverter.readJsonFile(url));
         }
-        if (customerLoan.getSiteVisit() != null) {
-            List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
-            for (SiteVisit siteVisit : siteVisitList
-            ) {
-                String url = siteVisit.getPath();
-                siteVisit.setData(this.jsonConverter.readJsonFile(url));
-            }
-
-        }
         return customerLoan;
     }
 
@@ -183,51 +174,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
         }
-        List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
-        List<SiteVisit> siteVisitTemp = null;
-        if (customerLoan.getSiteVisit() != null) {
+        SiteVisit siteVisit = customerLoan.getSiteVisit();
+        SiteVisit siteVisitTemp = null;
 
-            if (true) {
-                siteVisitTemp = siteVisitList;
-                try {
-                    String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                        .withAction(
-                            customerLoan.getLoanType().toString().toLowerCase().replace("\\s+", "")
-                                .replace("loan", "").trim())
-                        .isJsonPath(true)
-                        .withBranch(customerLoan.getBranch().getName())
-                        .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
-                        .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
-                        .withLoanType(customerLoan.getLoanType().toString()).build();
-
-                    String jsonFileName;
-                    String site = "siteVisit";
-                    jsonFileName = uploadPath + site + System.currentTimeMillis() + ".json";
-                    for (SiteVisit siteVisit : siteVisitList
-                    ) {
-                        siteVisit
-                            .setPath(jsonConverter
-                                .writeJsonFile(uploadPath, jsonFileName, siteVisit.getData()));
-                    }
-                    siteVisitTemp = this.siteVisitService.saveAll(siteVisitList);
-
-                } catch (Exception e) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
-            } else {
-                try {
-                    for (SiteVisit siteVisit : siteVisitList
-                    ) {
-                        String url = siteVisit.getPath();
-                        siteVisit
-                            .setPath(jsonConverter.updateJsonFile(url, siteVisit.getData()));
-                    }
-
-                } catch (Exception ex) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
+        if (siteVisit != null) {
+                siteVisitTemp = siteVisit;
+                    siteVisitTemp = this.siteVisitService.save(siteVisit);
             }
-        }
 
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
@@ -532,7 +485,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        List<SiteVisit> siteVisitList = object.getSiteVisit();
+        SiteVisit siteVisit = object.getSiteVisit();
         final Long tempParentId = object.getId();
         object.setParentId(tempParentId);
         object.setId(null);
@@ -546,10 +499,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getFinancial().setId(null);
         }
         if (object.getSiteVisit() != null) {
-            for (SiteVisit siteVisit : siteVisitList
-            ) {
-                siteVisit.setId(null);
-            }
+            siteVisit.setId(null);
         }
 
         LoanStage stage = new LoanStage();

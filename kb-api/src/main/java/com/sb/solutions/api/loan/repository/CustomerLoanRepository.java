@@ -239,6 +239,4 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.isCloseRenew = true ,c.childId = :cId  WHERE c.id = :id")
     void updateCloseRenewChildId(@Param("cId") Long cId, @Param("id") Long id);
-
-
 }
