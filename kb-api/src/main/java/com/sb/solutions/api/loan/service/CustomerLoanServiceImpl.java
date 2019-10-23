@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.sb.solutions.api.security.service.SecurityService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +39,7 @@ import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
+import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -51,7 +51,6 @@ import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
@@ -147,21 +146,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             this.financialService.save(customerLoan.getFinancial());
         }
-        if (customerLoan.getSecurity() != null){
+        if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
         }
         SiteVisit siteVisit = customerLoan.getSiteVisit();
         SiteVisit siteVisitTemp = null;
 
         if (siteVisit != null) {
-                siteVisitTemp = siteVisit;
-                    siteVisitTemp = this.siteVisitService.save(siteVisit);
-            }
+            siteVisitTemp = siteVisit;
+            siteVisitTemp = this.siteVisitService.save(siteVisit);
         }
         //Proposal
         Proposal proposal = customerLoan.getProposal();
         Proposal proposalTemp = null;
-        if(customerLoan.getProposal() != null){
+        if (customerLoan.getProposal() != null) {
 
             this.proposalService.save(customerLoan.getProposal());
 

@@ -84,7 +84,7 @@ END;
 -- --patch to make security visible
 BEGIN
 DECLARE @count_security smallint
-SET @count_security = (Select count(*) from loan_template where id = 8)
+SET @count_security = (Select count(*) from loan_template where id = 9)
 if(@count_security = 0)
 BEGIN
 
