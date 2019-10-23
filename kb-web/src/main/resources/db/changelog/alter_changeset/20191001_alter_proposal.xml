@@ -1,0 +1,59 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="40-create-proposal" author="aabishkar">
+    <dropColumn tableName="proposal" columnName="base_rate"/>
+    <dropColumn tableName="proposal" columnName="cib_charge"/>
+    <dropColumn tableName="proposal" columnName="proposed_limit"/>
+    <dropColumn tableName="proposal" columnName="interest_rate"/>
+    <dropColumn tableName="proposal" columnName="premium_rate_on_base_rate"/>
+    <dropColumn tableName="proposal" columnName="service_charge"/>
+    <dropColumn tableName="proposal" columnName="service_charge_method"/>
+    <dropColumn tableName="proposal" columnName="repayment_mode"/>
+    <dropColumn tableName="proposal" columnName="tenure_duration_in_months"/>
+    <dropColumn tableName="proposal" columnName="purpose_of_submission"/>
+    <dropColumn tableName="proposal" columnName="disbursement_criteria"/>
+    <dropColumn tableName="proposal" columnName="credit_information_report_status"/>
+    <dropColumn tableName="proposal" columnName="income_from_the_account"/>
+    <dropColumn tableName="proposal" columnName="borrower_information"/>
+    <addColumn tableName="proposal">
+      <column name="path" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="40-drop-proposal-to-json" author="Aabishkar">
+<preConditions onFail="MARK_RAN">
+  <columnExists tableName="proposal" columnName="path"/>
+</preConditions>
+    <dropColumn tableName="proposal" columnName="path"/>
+  </changeSet>
+
+  <changeSet id="40-add-proposal-to-json" author="Aabishkar">
+<preConditions onFail="MARK_RAN">
+  <not>
+    <columnExists tableName="proposal" columnName="data"/>
+  </not>
+</preConditions>
+    <addColumn tableName="proposal">
+      <column name="data" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+
+
+  <changeSet id="40-add-proposal-proposal_limit" author="Aabishkar">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="proposal_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="proposed_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+
+</databaseChangeLog>

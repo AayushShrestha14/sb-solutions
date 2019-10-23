@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.sb.solutions.api.security.service.SecurityService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,9 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
+import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.proposal.service.ProposalService;
+import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -49,7 +51,6 @@ import com.sb.solutions.core.enums.Product;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 
@@ -70,6 +71,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final SecurityService securityService;
+    private final ProposalService proposalService;
     private JsonConverter jsonConverter = new JsonConverter();
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -80,6 +82,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired SiteVisitService siteVisitService,
         @Autowired FinancialService financialService,
         @Autowired SecurityService securityservice,
+        @Autowired ProposalService proposalService,
         ProductModeService productModeService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -90,6 +93,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.securityService = securityservice;
+        this.proposalService = proposalService;
     }
 
     @Override
@@ -100,15 +104,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
-        if (customerLoan.getSiteVisit() != null) {
-            List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
-            for (SiteVisit siteVisit : siteVisitList
-            ) {
-                String url = siteVisit.getPath();
-                siteVisit.setData(this.jsonConverter.readJsonFile(url));
-            }
 
-        }
         return customerLoan;
     }
 
@@ -150,59 +146,29 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             this.financialService.save(customerLoan.getFinancial());
         }
-        if (customerLoan.getSecurity() != null){
+        if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
         }
+        SiteVisit siteVisit = customerLoan.getSiteVisit();
+        SiteVisit siteVisitTemp = null;
 
-        List<SiteVisit> siteVisitList = customerLoan.getSiteVisit();
-        List<SiteVisit> siteVisitTemp = null;
-        if (customerLoan.getSiteVisit() != null) {
+        if (siteVisit != null) {
+            siteVisitTemp = siteVisit;
+            siteVisitTemp = this.siteVisitService.save(siteVisit);
+        }
+        //Proposal
+        Proposal proposal = customerLoan.getProposal();
+        Proposal proposalTemp = null;
+        if (customerLoan.getProposal() != null) {
 
-            if (true) {
-                siteVisitTemp = siteVisitList;
-                try {
-                    String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                        .withAction(
-                            customerLoan.getLoanType().toString().toLowerCase().replace("\\s+", "")
-                                .replace("loan", "").trim())
-                        .isJsonPath(true)
-                        .withBranch(customerLoan.getBranch().getName())
-                        .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
-                        .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
-                        .withLoanType(customerLoan.getLoanType().toString()).build();
+            this.proposalService.save(customerLoan.getProposal());
 
-                    String jsonFileName;
-                    String site = "siteVisit";
-                    jsonFileName = uploadPath + site + System.currentTimeMillis() + ".json";
-                    for (SiteVisit siteVisit : siteVisitList
-                    ) {
-                        siteVisit
-                            .setPath(jsonConverter
-                                .writeJsonFile(uploadPath, jsonFileName, siteVisit.getData()));
-                    }
-                    siteVisitTemp = this.siteVisitService.saveAll(siteVisitList);
-
-                } catch (Exception e) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
-            } else {
-                try {
-                    for (SiteVisit siteVisit : siteVisitList
-                    ) {
-                        String url = siteVisit.getPath();
-                        siteVisit
-                            .setPath(jsonConverter.updateJsonFile(url, siteVisit.getData()));
-                    }
-
-                } catch (Exception ex) {
-                    throw new ServiceValidationException("Fail to Save File");
-                }
-            }
         }
 
         customerLoan.setSiteVisit(siteVisitTemp);
         customerLoan.setCustomerInfo(customer);
         customerLoan.setCompanyInfo(companyInfo);
+        customerLoan.setProposal(proposal);
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -503,7 +469,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        List<SiteVisit> siteVisitList = object.getSiteVisit();
+        SiteVisit siteVisit = object.getSiteVisit();
         final Long tempParentId = object.getId();
         object.setParentId(tempParentId);
         object.setId(null);
@@ -517,10 +483,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getFinancial().setId(null);
         }
         if (object.getSiteVisit() != null) {
-            for (SiteVisit siteVisit : siteVisitList
-            ) {
-                siteVisit.setId(null);
-            }
+            siteVisit.setId(null);
         }
 
         LoanStage stage = new LoanStage();
