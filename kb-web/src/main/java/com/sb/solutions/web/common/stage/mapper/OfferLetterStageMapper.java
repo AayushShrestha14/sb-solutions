@@ -139,7 +139,7 @@ public class OfferLetterStageMapper {
                             }
                         }
                     }
-                }else{
+                } else {
                     currentStage.setToUser(currentStage.getFromUser());
                     currentStage.setToRole(currentStage.getToRole());
                 }

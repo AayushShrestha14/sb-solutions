@@ -13,6 +13,6 @@ public interface CustomerOfferService extends BaseService<CustomerOfferLetter> {
 
     CustomerOfferLetter action(CustomerOfferLetter stageDto);
 
-    CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,Long customerLoanId);
+    CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile, Long customerLoanId);
 
 }
