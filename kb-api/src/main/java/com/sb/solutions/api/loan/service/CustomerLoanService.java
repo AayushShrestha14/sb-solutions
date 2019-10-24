@@ -35,6 +35,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable);
 
     Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable);
+
     Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable);
 
     CustomerLoan delCustomerLoan(Long id);

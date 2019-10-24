@@ -82,8 +82,18 @@
       <column name="is_offer_letter_approved" type="BOOLEAN" defaultValue="false">
 
       </column>
+      <column name="initial_information" type="LONGTEXT">
+
+      </column>
       <column name="supported_information" type="LONGTEXT">
 
+      </column>
+
+      <column name="offer_letter_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_offer_letter_id"
+          referencedTableName="offer_letter"
+          referencedColumnNames="id"/>
       </column>
 
       <column name="offer_letter_stage_list" type="LONGTEXT">

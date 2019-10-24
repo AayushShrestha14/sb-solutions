@@ -393,7 +393,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
-//        s.put("offerLetter","true");
+        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticated().getId()));
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);

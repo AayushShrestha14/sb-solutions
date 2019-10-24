@@ -77,5 +77,8 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     List<User>  findByRoleIdAndIsDefaultCommittee(Long id,Boolean isCommittee);
 
+
+    List<User>  findByRoleRoleNameAndStatus(String roleName,Status status);
+
 }
 

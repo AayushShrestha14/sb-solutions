@@ -23,6 +23,7 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
@@ -87,14 +88,22 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     }
 
     @Override
-    public CustomerOfferLetter action(CustomerOfferLetter stageDto) {
-        return null;
+    public CustomerOfferLetter action(CustomerOfferLetter customerOfferLetter) {
+
+        return customerOfferRepository.save(customerOfferLetter);
     }
 
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
         Long customerLoanId) {
         final CustomerLoan customerLoan = customerRepository.getOne(customerLoanId);
+        CustomerOfferLetter customerOfferLetter = customerLoan.getCustomerOfferLetter();
+        if (customerOfferLetter == null) {
+            logger.info("Please select a offer letter and save before uploading file {}",
+                customerLoan);
+            throw new ServiceValidationException(
+                "Please select a offer letter and save before uploading file");
+        }
         String action = "new";
         switch (customerLoan.getLoanType()) {
             case NEW_LOAN:
@@ -125,16 +134,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         logger.info("File Upload Path offer letter {}", uploadPath, nameBuilder);
         ResponseEntity responseEntity = FileUploadUtils
             .uploadFile(multipartFile, uploadPath, nameBuilder.toString());
-        CustomerOfferLetter customerOfferLetter = new CustomerOfferLetter();
-        List<CustomerOfferLetter> customerOfferLetterList = customerOfferRepository
-            .findByCustomerLoanId(customerLoanId);
-        if (!customerOfferLetterList.isEmpty()) {
-            for (CustomerOfferLetter c : customerOfferLetterList) {
-                customerOfferLetter = c;
-                break;
 
-            }
-        }
         customerOfferLetter.setCustomerLoanId(customerLoanId);
         customerOfferLetter.setOfferLetterStage(this.initStage());
         RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
@@ -160,4 +160,6 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         offerLetterStage.setDocAction(DocAction.DRAFT);
         return offerLetterStage;
     }
+
+
 }
