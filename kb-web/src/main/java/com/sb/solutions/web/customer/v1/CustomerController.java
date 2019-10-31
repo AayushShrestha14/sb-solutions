@@ -74,4 +74,10 @@ public class CustomerController {
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(customerService.findAll());
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> getByCustomerId(@RequestBody String customerId){
+        return new RestResponseDto()
+                    .successModel(customerService.findCustomerByCustomerId(customerId));
+    }
 }

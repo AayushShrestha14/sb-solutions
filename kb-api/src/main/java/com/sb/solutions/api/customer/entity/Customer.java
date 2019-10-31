@@ -1,6 +1,7 @@
 package com.sb.solutions.api.customer.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -63,5 +64,5 @@ public class Customer extends BaseEntity<Long> {
     private Status status = Status.ACTIVE;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<CustomerRelative> customerRelatives;
+    private List<CustomerRelative> customerRelatives;
 }
