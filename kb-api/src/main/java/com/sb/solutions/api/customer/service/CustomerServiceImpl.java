@@ -53,5 +53,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomerByCitizenshipNumber(String citizenshipNumber) {
         return customerRepository.findCustomerByCitizenshipNumber(citizenshipNumber);
     }
+
+    @Override
+    public Customer findCustomerByCustomerId(String customerId) {
+
+        return customerRepository.findCustomerByCustomerId(customerId);
+    }
 }
 
