@@ -82,4 +82,3 @@ SET IDENTITY_INSERT loan_template off
 END
 END;
 
-

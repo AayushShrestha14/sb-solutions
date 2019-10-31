@@ -36,7 +36,7 @@ public class Customer extends BaseEntity<Long> {
     private String title;
     private String customerName;
     private String customerId;
-
+    @Temporal(TemporalType.DATE)
     private Date dob;
     private String accountNo;
 
