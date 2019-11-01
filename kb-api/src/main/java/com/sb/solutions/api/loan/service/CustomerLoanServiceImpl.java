@@ -112,9 +112,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Loan can not be null");
         }
 
-        customerLoan.getDmsLoanFile()
-            .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
-        customerLoan.getDmsLoanFile().setCreatedAt(new Date());
+        if (customerLoan.getDmsLoanFile() != null) {
+            customerLoan.getDmsLoanFile()
+                .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
+            customerLoan.getDmsLoanFile().setCreatedAt(new Date());
+        }
 
         Customer customer = null;
         CompanyInfo companyInfo = null;
