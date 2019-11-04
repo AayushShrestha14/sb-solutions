@@ -98,9 +98,9 @@ public class StageMapper {
                     final List<Long> userIdList = users.stream().map(User::getId)
                         .collect(Collectors.toList());
                     if (userIdList.contains(createdBy)) {
-                        java.util.Optional<User> u = users.stream().
-                            filter(p -> p.getId().equals(createdBy)).
-                            findFirst();
+                        java.util.Optional<User> u = users.stream()
+                            .filter(p -> p.getId().equals(createdBy))
+                            .findFirst();
                         currentStage.setToUser(objectMapper.convertValue(u.get(), UserDto.class));
                     } else {
                         currentStage

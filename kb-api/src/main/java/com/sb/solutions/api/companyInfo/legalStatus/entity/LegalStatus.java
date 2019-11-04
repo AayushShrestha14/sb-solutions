@@ -17,21 +17,15 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class LegalStatus extends BaseEntity<Long> {
 
-    private String companyName;
-
     private String corporateStructure;
 
     private String registeredOffice;
 
     private String registeredUnderAct;
 
-    private String registrationNo;
-
     private Date registrationDate;
 
     private String panRegistrationOffice;
-
-    private String panNumber;
 
     private Date panRegistrationDate;
 

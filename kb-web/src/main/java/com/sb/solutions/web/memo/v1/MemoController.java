@@ -97,7 +97,6 @@ public class MemoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable long id) {
         service.deleteById(id);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

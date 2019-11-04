@@ -1,0 +1,23 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="46-alter-legal-status" author="yunish" >
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status" columnName="company_name"/>
+    </preConditions>
+    <dropColumn tableName="legal_status" columnName="company_name"/>
+  </changeSet>
+  <changeSet id="46-alter-legal-status-pan-number" author="yunish" >
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status" columnName="pan_number"/>
+    </preConditions>
+    <dropColumn tableName="legal_status" columnName="pan_number"/>
+  </changeSet>
+  <changeSet id="46-alter-legal-status-registration" author="yunish" >
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status" columnName="registration_no"/>
+    </preConditions>
+    <dropColumn tableName="legal_status" columnName="registration_no"/>
+  </changeSet>
+</databaseChangeLog>
