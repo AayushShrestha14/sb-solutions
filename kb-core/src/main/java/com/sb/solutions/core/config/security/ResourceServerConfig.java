@@ -52,7 +52,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/v1/eligibility-criterias").permitAll()
             .antMatchers("/swagger-ui.html").authenticated()
             .antMatchers("/actuator/**").authenticated()
-            .antMatchers("/swagger-ui.html").authenticated()
+            .antMatchers("/swagger-ui.html").permitAll()
             .antMatchers("/v1/**")
             .authenticated()
             .and()

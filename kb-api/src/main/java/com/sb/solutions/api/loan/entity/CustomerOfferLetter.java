@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -23,7 +25,6 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.loan.OfferLetterStage;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.offerLetter.entity.OfferLetter;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 
@@ -34,33 +35,30 @@ import com.sb.solutions.core.enums.DocStatus;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerOfferLetter extends BaseEntity<Long> {
 
-    private String path;
 
     private Boolean isOfferLetterIssued = false;
 
     private Boolean isOfferLetterApproved = false;
 
-    private DocStatus  docStatus;
+    private DocStatus docStatus;
 
-    private Long customerLoanId;
+    @OneToOne
+    private CustomerLoan customerLoan;
 
     @OneToOne(cascade = CascadeType.ALL)
     private OfferLetterStage offerLetterStage;
 
     private String offerLetterStageList;
 
-    private String initialInformation;
-
-    private String supportedInformation;
-
-    @OneToOne
-    private OfferLetter offerLetter;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name="offer_letter_Path_customer_loan")
+    private List<CustomerOfferLetterPath> customerOfferLetterPath;
 
     @Transient
     private List previousList;
 
     public List<LoanStageDto> getPreviousList() {
-        if (this.getOfferLetterStageList()!= null) {
+        if (this.getOfferLetterStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);

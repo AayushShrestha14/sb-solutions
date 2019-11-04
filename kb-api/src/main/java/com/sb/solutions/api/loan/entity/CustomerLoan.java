@@ -39,6 +39,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
@@ -104,9 +105,6 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private String offerLetterUrl;
 
-    @OneToOne
-    private CustomerOfferLetter customerOfferLetter;
-
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Proposal proposal;
@@ -123,6 +121,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @Transient
     private Boolean pulled = false;
+
+    @Transient
+    private CustomerOfferLetterDto customerOfferLetter;
 
     @Transient
     private List<LoanStageDto> distinctPreviousList;

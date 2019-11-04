@@ -42,6 +42,11 @@ public class OfferLetterStageMapper {
 
     public CustomerOfferLetter actionMapper(StageDto stageDto,
         CustomerOfferLetter customerOfferLetter, User user, Long loanCreatedBranch) {
+        if(customerOfferLetter == null){
+            logger.error("customerOfferLetter has not been created for action", customerOfferLetter);
+            throw new ServiceValidationException(
+                "Cannot perform action offer letter is not saved yet!!");
+        }
         if (customerOfferLetter.getIsOfferLetterApproved()) {
             logger.error("Restrict to take action on approved offer letter{}", customerOfferLetter);
             throw new ServiceValidationException(
