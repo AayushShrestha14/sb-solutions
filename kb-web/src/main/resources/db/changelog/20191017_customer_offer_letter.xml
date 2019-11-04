@@ -136,10 +136,10 @@
 
       </column>
 
-      <column name="initialInformation" type="LONGTEXT">
+      <column name="initial_information" type="LONGTEXT">
 
       </column>
-      <column name="supportedInformation" type="LONGTEXT">
+      <column name="supported_information" type="LONGTEXT">
 
       </column>
 
