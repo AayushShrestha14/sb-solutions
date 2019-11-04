@@ -1,21 +1,22 @@
 package com.sb.solutions.api.security.service;
 
-import com.sb.solutions.api.security.entity.Security;
-import com.sb.solutions.api.security.repository.SecurityRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.security.entity.Security;
+import com.sb.solutions.api.security.repository.SecurityRepository;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
+
     final SecurityRepository securityRepository;
 
     @Autowired
-    public SecurityServiceImpl(SecurityRepository securityRepository)
-    {
+    public SecurityServiceImpl(SecurityRepository securityRepository) {
         this.securityRepository = securityRepository;
     }
 

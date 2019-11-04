@@ -76,8 +76,8 @@ public class CustomerController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> getByCustomerId(@RequestBody String customerId){
+    public ResponseEntity<?> getByCustomerId(@RequestBody String customerId) {
         return new RestResponseDto()
-                    .successModel(customerService.findCustomerByCustomerId(customerId));
+            .successModel(customerService.findCustomerByCustomerId(customerId));
     }
 }
