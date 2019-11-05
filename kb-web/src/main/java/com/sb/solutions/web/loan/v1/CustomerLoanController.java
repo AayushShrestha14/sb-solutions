@@ -3,12 +3,14 @@ package com.sb.solutions.web.loan.v1;
 import java.text.ParseException;
 import javax.validation.Valid;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
 
@@ -186,4 +192,28 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.csv(searchDto));
     }
 
+    @PostMapping("/uploadFile")
+    public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("type") String type,
+        @RequestParam("citizenNumber") String citizenNumber,
+        @RequestParam("customerName") String name,
+        @RequestParam("documentName") String documentName,
+        @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
+
+        String branchName = userService.getAuthenticated().getBranch().get(0).getName()
+            .replace(" ", "_");
+        Preconditions.checkNotNull(citizenNumber.equals("null") ? null
+                : (StringUtils.isEmpty(citizenNumber) ? null : citizenNumber),
+            "Citizenship Number is required to upload file.");
+        Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
+            : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
+            + "is required to upload file.");
+        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
+            .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
+            .withCustomerName(name).withLoanType(type).build();
+        logger.info("File Upload Path {}", uploadPath);
+        return FileUploadUtils
+            .uploadFile(multipartFile, uploadPath, documentName);
+
+    }
 }
