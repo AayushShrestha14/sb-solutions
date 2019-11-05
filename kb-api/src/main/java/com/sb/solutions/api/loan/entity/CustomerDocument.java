@@ -19,5 +19,5 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CustomerDocument extends BaseEntity<Long> {
-    private List<String> documents;
+    private String docPath;
 }
