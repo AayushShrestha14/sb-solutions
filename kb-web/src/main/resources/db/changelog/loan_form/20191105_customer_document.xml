@@ -8,6 +8,15 @@
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="document_path" type="VARCHAR(256)"/>
+      <column name="documents_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
+    <addForeignKeyConstraint baseTableName="customer_document"
+      baseColumnNames="documents_id"
+      constraintName="fk_customer_document_document_id"
+      referencedTableName="document"
+      referencedColumnNames="id"/>
+
   </changeSet>
 </databaseChangeLog>
