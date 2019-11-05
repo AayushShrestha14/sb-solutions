@@ -1,5 +1,6 @@
 package com.sb.solutions.core.utils;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -7,28 +8,47 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class NepaliNumberConverter {
 
+    private static final Logger logger = LoggerFactory.getLogger(NepaliNumberConverter.class);
+
+    private NepaliNumberConverter() {
+    }
 
     public static String englishNumberToNepali(String number) {
+
         String nepNumber = "";
 
-        List<Character> characterList = number.chars().mapToObj(e -> (char) e)
-            .collect(Collectors.toList());
+        try {
+            BigDecimal value = new BigDecimal(number);
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.ROOT);
+            currencyFormatter.setMaximumFractionDigits(5);
+            String formattedCurrency = currencyFormatter.format(value);
 
-        for (Character c : characterList) {
-            if (!c.toString().equalsIgnoreCase(",")) {
-                nepNumber = nepNumber + mapper(c.toString());
-            } else {
-                nepNumber = nepNumber + c.toString();
+            List<Character> characterList = formattedCurrency.chars().mapToObj(e -> (char) e)
+                .collect(Collectors.toList());
+
+            for (Character c : characterList) {
+                if (Character.isDigit(c)) {
+                    nepNumber = nepNumber + mapper(c.toString());
+                } else {
+                    nepNumber = nepNumber + c.toString();
+                }
             }
+            nepNumber = nepNumber.replace("¤", "");
+        } catch (Exception e) {
+            logger.error(
+                "Error while converting {}",
+                e.getMessage());
         }
-        nepNumber = nepNumber.replace("null", "");
 
         return nepNumber;
     }
 
-    public static String mapper(String num) {
+    private static String mapper(String num) {
         Map<String, String> map = new HashMap<>();
         map.put("1", "१");
         map.put("2", "२");
@@ -47,12 +67,7 @@ public class NepaliNumberConverter {
     }
 
     public static void main(String[] args) {
-        int amount = 1234567890;
+        System.out.println(englishNumberToNepali("11178789898054311123.44398"));
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("en", "NEP"));
-
-        String moneyString = formatter.format(amount);
-        System.out.println(englishNumberToNepali(moneyString));
-        System.out.println(moneyString);
     }
 }

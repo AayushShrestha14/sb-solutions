@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +31,10 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
@@ -69,6 +72,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final LoanConfigService loanConfigService;
     private final SiteVisitService siteVisitService;
     private JsonConverter jsonConverter = new JsonConverter();
+    private CustomerOfferService customerOfferService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -77,7 +81,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired LoanConfigService loanConfigService,
         @Autowired DmsLoanFileService dmsLoanFileService,
         @Autowired SiteVisitService siteVisitService,
-        ProductModeService productModeService) {
+        ProductModeService productModeService,
+        @Autowired CustomerOfferService customerOfferService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -86,6 +91,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.loanConfigService = loanConfigService;
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
+        this.customerOfferService = customerOfferService;
     }
 
     @Override
@@ -109,6 +115,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 siteVisit.setData(this.jsonConverter.readJsonFile(url));
             }
 
+        }
+        CustomerOfferLetter customerOfferLetter = customerOfferService
+            .findByCustomerLoanId(customerLoan.getId());
+        if (customerOfferLetter != null) {
+            CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
+            BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
+            customerOfferLetterDto.setId(customerOfferLetter.getId());
+            customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
         }
         return customerLoan;
     }
