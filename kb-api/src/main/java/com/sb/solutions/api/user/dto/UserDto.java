@@ -27,4 +27,5 @@ public class UserDto {
     private String name;
 
     private List<BranchDto> branch;
+    private String signatureImage;
 }
