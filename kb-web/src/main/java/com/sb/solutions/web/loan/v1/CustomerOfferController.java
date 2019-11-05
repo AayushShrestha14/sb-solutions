@@ -83,9 +83,15 @@ public class CustomerOfferController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getByCustomerLoanId(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         return new RestResponseDto().successModel(
             customerOfferService.findOne(id));
+    }
+
+    @GetMapping(path = "/customer-loan/{id}")
+    public ResponseEntity<?> getByCustomerLoanId(@PathVariable Long id) {
+        return new RestResponseDto().successModel(
+            customerOfferService.findByCustomerLoanId(id));
     }
 
     @ApiImplicitParams({

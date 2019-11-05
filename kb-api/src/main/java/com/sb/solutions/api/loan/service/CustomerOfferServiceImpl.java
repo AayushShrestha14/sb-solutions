@@ -71,7 +71,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     @Override
     public CustomerOfferLetter findOne(Long id) {
-        return customerOfferRepository.findByCustomerLoanId(id);
+        return customerOfferRepository.getOne(id);
     }
 
     @Override
