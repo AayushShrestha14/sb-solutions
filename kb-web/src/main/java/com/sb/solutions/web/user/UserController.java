@@ -40,12 +40,11 @@ import com.sb.solutions.web.user.dto.ChangePasswordDto;
 @RequestMapping("/v1/user")
 public class UserController {
 
-    @Value("${bank.name}")
-    private String bankName;
-
     private final UserService userService;
     private final RoleService roleService;
     private final MailSenderService mailSenderService;
+    @Value("${bank.name}")
+    private String bankName;
 
     @Autowired
     public UserController(

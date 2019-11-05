@@ -1,7 +1,6 @@
-package com.sb.solutions.api.financial.entity;
+package com.sb.solutions.api.security.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +14,8 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Financial extends BaseEntity<Long> {
+
+public class Security extends BaseEntity<Long> {
+
     private String data;
 }

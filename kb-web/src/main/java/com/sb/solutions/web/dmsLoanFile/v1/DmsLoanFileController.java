@@ -3,7 +3,6 @@ package com.sb.solutions.web.dmsLoanFile.v1;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -36,8 +35,8 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 
 @RestController
 @RequestMapping(value = "/v1/dms-loan-file")
@@ -100,7 +99,7 @@ public class DmsLoanFileController {
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
-        String uploadPath =  new PathBuilder(UploadDir.initialDocument).withAction(action)
+        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
             .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
             .withCustomerName(name).withLoanType(type).build();
         logger.info("File Upload Path {}", uploadPath);

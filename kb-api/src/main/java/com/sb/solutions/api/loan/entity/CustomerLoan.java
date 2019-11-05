@@ -17,7 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -43,6 +42,7 @@ import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
@@ -78,9 +78,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @OneToMany
-    @JoinColumn(name = "customer_loan_id")
-    private List<SiteVisit> siteVisit = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "site_visit_id")
+    private SiteVisit siteVisit;
 
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
@@ -112,6 +112,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = {
         CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Financial financial;
+
+    @OneToOne(cascade = {
+        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    private Security security;
 
     @Lob
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -1,3 +1,36 @@
+
+BEGIN
+DECLARE @count_customerInfo smallint
+SET @count_customerInfo = (Select count(*) from loan_template where id = 1)
+if(@count_customerInfo = 0)
+BEGIN
+
+SET IDENTITY_INSERT loan_template on
+
+INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+(1, 'Customer Info', '#basicInfo',1, 1, NULL, NULL, NULL,'2019-04-04', '2019-04-04', 0)
+
+SET IDENTITY_INSERT loan_template off
+
+END
+END;
+
+BEGIN
+DECLARE @count_customerInfo smallint
+SET @count_customerInfo = (Select count(*) from loan_template where id = 2)
+if(@count_customerInfo = 0)
+BEGIN
+
+SET IDENTITY_INSERT loan_template on
+
+INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+(2, 'Company Info', '#companyInfo', 2, 1, NULL, NULL, NULL, '2019-05-28', '2019-05-06', 0)
+
+SET IDENTITY_INSERT loan_template off
+
+END
+END;
+
 BEGIN
 DECLARE @count smallint
 SET @count = (Select count(*) from loan_template where id = 3)
@@ -63,4 +96,40 @@ SET IDENTITY_INSERT loan_template off
 
 END
 END;
+
+--patch to make proposal visible
+BEGIN
+DECLARE @count_proposal smallint
+SET @count_proposal = (Select count(*) from loan_template where id = 8)
+if(@count_proposal = 0)
+BEGIN
+
+SET IDENTITY_INSERT loan_template on
+
+INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+(8, 'Proposal', '#proposalInfo',8, 1, NULL, NULL, NULL,'2019-08-23', '2019-08-23', 0)
+
+SET IDENTITY_INSERT loan_template off
+
+END
+END;
+
+-- --patch to make security visible
+BEGIN
+DECLARE @count_security smallint
+SET @count_security = (Select count(*) from loan_template where id = 9)
+if(@count_security = 0)
+BEGIN
+
+SET IDENTITY_INSERT loan_template on
+
+INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+(9, 'Security', '#security',9, 1, NULL, NULL, NULL,'2019-08-23', '2019-08-23', 0)
+
+SET IDENTITY_INSERT loan_template off
+
+END
+END;
+
+
 
