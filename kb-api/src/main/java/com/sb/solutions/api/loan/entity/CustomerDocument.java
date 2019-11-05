@@ -1,14 +1,14 @@
 package com.sb.solutions.api.loan.entity;
 
-import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
@@ -22,6 +22,8 @@ import com.sb.solutions.core.enitity.BaseEntity;
 public class CustomerDocument extends BaseEntity<Long> {
 
     private String documentPath;
-    @Transient
-    private List<String> documentMap;
+
+    @OneToOne
+    private Document document;
+
 }
