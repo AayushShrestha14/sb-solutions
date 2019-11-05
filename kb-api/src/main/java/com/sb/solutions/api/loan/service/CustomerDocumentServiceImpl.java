@@ -37,7 +37,6 @@ public class CustomerDocumentServiceImpl implements CustomerDocumentService {
 
     @Override
     public CustomerDocument save(CustomerDocument customerDocument) {
-        customerDocument.setDocumentPath(gson.toJson(customerDocument.getDocumentMap()));
         return customerDocumentRepository.save(customerDocument);
     }
 
