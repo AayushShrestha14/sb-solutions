@@ -198,6 +198,7 @@ public class CustomerLoanController {
         @RequestParam("citizenNumber") String citizenNumber,
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
+        @RequestParam("documentId") Long documentId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         String branchName = userService.getAuthenticated().getBranch().get(0).getName()
@@ -213,7 +214,7 @@ public class CustomerLoanController {
             .withCustomerName(name).withLoanType(type).build();
         logger.info("File Upload Path {}", uploadPath);
         return FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, documentName);
+            .uploadFile(multipartFile, uploadPath, documentName, documentId);
 
     }
 }
