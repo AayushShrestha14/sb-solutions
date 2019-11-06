@@ -1813,5 +1813,4 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
   <include file="loan_form/20191105_customer_document.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20191105_alter_customer_loan_document.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

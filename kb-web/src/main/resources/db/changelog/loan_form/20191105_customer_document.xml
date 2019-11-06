@@ -11,6 +11,11 @@
       <column name="documents_id" type="BIGINT">
         <constraints nullable="false"/>
       </column>
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_document"
+          referencedTableName="customer_loan"
+          referencedColumnNames="id"/>
+      </column>
     </createTable>
     <addForeignKeyConstraint baseTableName="customer_document"
       baseColumnNames="documents_id"
@@ -18,5 +23,20 @@
       referencedTableName="document"
       referencedColumnNames="id"/>
 
+  </changeSet>
+  <changeSet id="49-create-table-customer-doc-path-customer-loan" author="yunish">
+    <createTable tableName="customer_document_Path_customer_loan">
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_document_customer_loan_id"
+          referencedTableName="customer_loan"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="customer_document_path_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_document_path_id"
+          referencedTableName="customer_document"
+          referencedColumnNames="id"/>
+      </column>
+    </createTable>
   </changeSet>
 </databaseChangeLog>
