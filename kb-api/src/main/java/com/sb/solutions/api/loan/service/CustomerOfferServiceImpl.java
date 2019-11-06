@@ -148,11 +148,14 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             for (CustomerOfferLetter customerOfferLetter : customerOfferLetterPageContent) {
                 CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
                 if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
-                    BeanUtils.copyProperties(customerOfferLetter,customerOfferLetterDto);
+                    BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
                     customerOfferLetterDto.setId(customerOfferLetter.getId());
                     c.setCustomerOfferLetter(customerOfferLetterDto);
+                    c.setUploadedOfferLetterStat(
+                        customerOfferLetter.getCustomerOfferLetterPath().size());
                 }
             }
+            c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
             tempLoan.add(c);
         });
 
