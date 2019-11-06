@@ -63,7 +63,7 @@ public class FileUploadUtils {
      * File is uploaded  and renamed that of documenttype
      */
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String url,
-        String documentName, Long documentId) {
+        String documentName) {
 
         try {
             final byte[] bytes = multipartFile.getBytes();

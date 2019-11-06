@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
@@ -201,6 +202,8 @@ public class CustomerLoanController {
         @RequestParam("documentId") Long documentId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
+        CustomerDocument customerDocument = new CustomerDocument();
+        customerDocument.getDocument().setId(documentId);
         String branchName = userService.getAuthenticated().getBranch().get(0).getName()
             .replace(" ", "_");
         Preconditions.checkNotNull(citizenNumber.equals("null") ? null
@@ -213,8 +216,8 @@ public class CustomerLoanController {
             .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
             .withCustomerName(name).withLoanType(type).build();
         logger.info("File Upload Path {}", uploadPath);
-        return FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, documentName, documentId);
-
+        ResponseEntity<?> responseEntity = FileUploadUtils.uploadFile(multipartFile, uploadPath, documentName);
+        customerDocument.setDocumentPath(((RestResponseDto)responseEntity.getBody()).getDetail().toString());
+        return new RestResponseDto().successModel(customerDocument);
     }
 }
