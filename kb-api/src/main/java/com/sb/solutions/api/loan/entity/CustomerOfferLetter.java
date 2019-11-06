@@ -50,7 +50,7 @@ public class CustomerOfferLetter extends BaseEntity<Long> {
 
     private String offerLetterStageList;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name="offer_letter_Path_customer_loan")
     private List<CustomerOfferLetterPath> customerOfferLetterPath;
 
