@@ -8,20 +8,37 @@
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="document_path" type="VARCHAR(256)"/>
-      <column name="documents_id" type="BIGINT">
-        <constraints nullable="false"/>
+      <column name="document_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_document_id"
+          referencedTableName="document"
+          referencedColumnNames="id"/>
       </column>
       <column name="customer_loan_id" type="BIGINT">
         <constraints foreignKeyName="fk_customer_loan_document"
           referencedTableName="customer_loan"
           referencedColumnNames="id"/>
       </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_offer_letter_path_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer-offer_letter_path_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
-    <addForeignKeyConstraint baseTableName="customer_document"
-      baseColumnNames="documents_id"
-      constraintName="fk_customer_document_document_id"
-      referencedTableName="document"
-      referencedColumnNames="id"/>
 
   </changeSet>
   <changeSet id="49-create-table-customer-doc-path-customer-loan" author="yunish">
@@ -32,8 +49,8 @@
           referencedTableName="customer_loan"
           referencedColumnNames="id"/>
       </column>
-      <column name="customer_document_path_id" type="BIGINT">
-        <constraints foreignKeyName="fk_customer_document_path_id"
+      <column name="customer_document_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_document_id"
           referencedTableName="customer_document"
           referencedColumnNames="id"/>
       </column>
