@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
@@ -203,7 +204,9 @@ public class CustomerLoanController {
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         CustomerDocument customerDocument = new CustomerDocument();
-        customerDocument.getDocument().setId(documentId);
+        Document document = new Document();
+        document.setId(documentId);
+        customerDocument.setDocument(document);
         String branchName = userService.getAuthenticated().getBranch().get(0).getName()
             .replace(" ", "_");
         Preconditions.checkNotNull(citizenNumber.equals("null") ? null
@@ -216,10 +219,13 @@ public class CustomerLoanController {
             .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
             .withCustomerName(name).withLoanType(type).build();
         logger.info("File Upload Path {}", uploadPath);
-        ResponseEntity<?> responseEntity = FileUploadUtils.uploadFile(multipartFile, uploadPath, documentName);
-        customerDocument.setDocumentPath(((RestResponseDto)responseEntity.getBody()).getDetail().toString());
+        ResponseEntity<?> responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, uploadPath, documentName);
+        customerDocument
+            .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
         return new RestResponseDto().successModel(customerDocument);
     }
+
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "Results page you want to retrieve (0..N)"),

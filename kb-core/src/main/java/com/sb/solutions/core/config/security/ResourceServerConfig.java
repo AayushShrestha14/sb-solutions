@@ -50,7 +50,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             .antMatchers("/v1/loan-configs/*/questions").permitAll()
             .antMatchers("/v1/loan-configs/*/applicants/*/documents").permitAll()
             .antMatchers(HttpMethod.GET, "/v1/eligibility-criterias").permitAll()
-            .antMatchers("/swagger-ui.html").authenticated()
+            .antMatchers("/swagger-ui.html").permitAll()
             .antMatchers("/actuator/**").authenticated()
             .antMatchers("/swagger-ui.html").permitAll()
             .antMatchers("/v1/**")

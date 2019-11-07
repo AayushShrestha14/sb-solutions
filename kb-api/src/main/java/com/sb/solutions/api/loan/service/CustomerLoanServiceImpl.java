@@ -34,7 +34,6 @@ import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -88,8 +87,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired SecurityService securityservice,
         @Autowired ProposalService proposalService,
         @Autowired CustomerDocumentService customerDocumentService,
-        ProductModeService productModeService) {
-        ProductModeService productModeService,
+        @Autowired ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
