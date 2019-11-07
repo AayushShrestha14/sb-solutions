@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=cp_master
+    url: jdbc:sqlserver://localhost:1433;databaseName=cp_patch_test
     username: sa
-    password: root
+    password: helloworld

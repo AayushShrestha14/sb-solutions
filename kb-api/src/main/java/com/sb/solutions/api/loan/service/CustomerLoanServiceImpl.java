@@ -34,6 +34,7 @@ import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -75,6 +76,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private CustomerOfferService customerOfferService;
+    private final CustomerDocumentService customerDocumentService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -85,6 +87,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired FinancialService financialService,
         @Autowired SecurityService securityservice,
         @Autowired ProposalService proposalService,
+        @Autowired CustomerDocumentService customerDocumentService,
+        ProductModeService productModeService) {
         ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService) {
         this.customerLoanRepository = customerLoanRepository;
@@ -98,6 +102,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.securityService = securityservice;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
+        this.customerDocumentService = customerDocumentService;
     }
 
     @Override
