@@ -23,7 +23,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -40,6 +39,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
@@ -123,7 +123,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Security security;
 
     @Lob
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String previousStageList;
 
     private Boolean isValidated = false;
@@ -132,7 +131,16 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Boolean pulled = false;
 
     @Transient
-    private List<LoanStage> distinctPreviousList;
+    private CustomerOfferLetterDto customerOfferLetter;
+
+    @Transient
+    private List<LoanStageDto> distinctPreviousList;
+
+    @Transient
+    private int offerLetterStat = 0;
+
+    @Transient
+    private int uploadedOfferLetterStat = 0;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

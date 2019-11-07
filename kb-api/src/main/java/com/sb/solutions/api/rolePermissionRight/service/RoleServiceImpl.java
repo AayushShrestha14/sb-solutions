@@ -96,6 +96,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRoleCAD() {
+        return roleRepository.getRoleCAD();
+    }
+
+    @Override
     public List<Role> getApproval() {
         return roleRepository.getByRoleTypeAndStatus(RoleType.APPROVAL, Status.ACTIVE);
     }

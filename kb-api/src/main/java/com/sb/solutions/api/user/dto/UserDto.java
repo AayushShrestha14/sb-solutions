@@ -25,7 +25,6 @@ public class UserDto {
     private Status status;
 
     private String name;
-
     private List<BranchDto> branch;
     private String signatureImage;
 }

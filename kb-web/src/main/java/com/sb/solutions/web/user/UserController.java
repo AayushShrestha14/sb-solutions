@@ -196,4 +196,10 @@ public class UserController {
         return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
+    @GetMapping(path = "/user-cad")
+    public ResponseEntity<?> getUserCad() {
+
+        return new RestResponseDto()
+            .successModel(userService.getUserByRoleCad());
+    }
 }

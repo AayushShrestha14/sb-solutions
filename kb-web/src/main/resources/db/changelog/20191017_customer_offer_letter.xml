@@ -1,0 +1,212 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet id="2-offer_letter_stage" author="rujan">
+    <createTable tableName="offer_letter_stage">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="comment" type="LONGTEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="from_user_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_from_user_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="to_user_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_to_user_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+
+      <column name="from_role_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_from_role_id"
+          referencedTableName="role"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="to_role_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_to_role_id"
+          referencedTableName="role"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="doc_action" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+
+  <changeSet id="2-customer-offer-letter" author="rujan">
+    <createTable tableName="customer_offer_letter">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+
+
+      <column name="is_offer_letter_issued" type="BOOLEAN" defaultValue="false">
+
+      </column>
+
+      <column name="doc_status" type="BIGINT" defaultValueNumeric="0">
+
+      </column>
+
+      <column name="is_offer_letter_approved" type="BOOLEAN" defaultValue="false">
+
+      </column>
+
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_customer_offer_letter_id"
+          referencedTableName="customer_loan"
+          referencedColumnNames="id"/>
+      </column>
+
+
+      <column name="offer_letter_stage_list" type="LONGTEXT">
+
+      </column>
+
+      <column name="offer_letter_stage_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_offer_letter_stage_id"
+          referencedTableName="offer_letter_stage"
+          referencedColumnNames="id"/>
+      </column>
+
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_offer_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_offer_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+
+
+    </createTable>
+
+  </changeSet>
+
+  <changeSet id="2-customer-offer-letter-path" author="rujan">
+    <createTable tableName="customer_offer_letter_path">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+
+      <column name="path" type="VARCHAR(256)">
+
+      </column>
+
+      <column name="initial_information" type="LONGTEXT">
+
+      </column>
+      <column name="supported_information" type="LONGTEXT">
+
+      </column>
+
+
+      <column name="offer_letter_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_offer_letter_id"
+          referencedTableName="offer_letter"
+          referencedColumnNames="id"/>
+      </column>
+
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_offer_letter_path_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer-offer_letter_path_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+
+
+    </createTable>
+
+  </changeSet>
+
+  <changeSet id="2-offer_letter_Path_customer_loan" author="rujan">
+    <createTable tableName="offer_letter_Path_customer_loan">
+      <column name="customer_offer_letter_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_letter_customer_loan_id"
+          referencedTableName="customer_offer_letter"
+          referencedColumnNames="id"
+        />
+
+      </column>
+      <column name="customer_offer_letter_path_id" type="BIGINT">
+        <constraints
+          foreignKeyName="fk_letter_customer_loan_path_id"
+          referencedTableName="customer_offer_letter_path"
+          referencedColumnNames="id"/>
+      </column>
+
+    </createTable>
+  </changeSet>
+
+    <changeSet id="alter-customer-loan-add-column" author="rujan">
+      <addColumn tableName="customer_loan">
+        <column name="customer_offer_letter_id" type="BIGINT">
+          <constraints nullable="true"
+            foreignKeyName="fk_customer_offer_id"
+            referencedTableName="customer_offer_letter"
+            referencedColumnNames="id"/>
+        </column>
+      </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>

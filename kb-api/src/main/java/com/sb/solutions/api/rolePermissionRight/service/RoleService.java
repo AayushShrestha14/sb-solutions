@@ -17,6 +17,8 @@ public interface RoleService extends BaseService<Role> {
 
     boolean isMaker();
 
+    Role getRoleCAD();
+
     List<Role> getApproval();
 }
 

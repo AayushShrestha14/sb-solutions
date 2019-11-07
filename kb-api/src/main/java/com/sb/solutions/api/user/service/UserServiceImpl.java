@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -358,5 +359,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
         return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
+
+    @Override
+    public List<UserDto> getUserByRoleCad() {
+        List<User> userList = userRepository.findByRoleRoleNameAndStatus("CAD", Status.ACTIVE);
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User u : userList) {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(u, userDto);
+            userDto.setId(u.getId());
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+
     }
 }

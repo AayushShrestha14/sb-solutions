@@ -36,6 +36,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable);
 
+    Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable);
+
     CustomerLoan delCustomerLoan(Long id);
 
     List<StatisticDto> getStats(Long branchId, String startDate, String endDate)

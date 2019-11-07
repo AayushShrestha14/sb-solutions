@@ -21,13 +21,13 @@
       </column>
       <column name="created_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_customer_offer_letter_path_created_by_id"
+          foreignKeyName="fk_customer_document_created_by_id"
           referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
       <column name="modified_by_id" type="BIGINT">
         <constraints nullable="true"
-          foreignKeyName="fk_customer-offer_letter_path_modified_by_id"
+          foreignKeyName="fk_customer_document_modified_by_id"
           referencedTableName="users"
           referencedColumnNames="id"/>
       </column>

@@ -34,6 +34,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_TYPE = "loanNewRenew";
     private static final String FILTER_BY_NOTIFY = "notify";
     private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
+    private static final String FILTER_BY_CURRENT_OFFER_LETTER_STAGE = "currentOfferLetterStage";
 
     private final String property;
     private final String value;
@@ -102,6 +103,24 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .like(criteriaBuilder
                             .lower(root.join("customerInfo").get(FILTER_BY_CUSTOMER_NAME)),
                         value.toLowerCase() + "%");
+//
+//            case FILTER_BY_CURRENT_OFFER_LETTER_STAGE:
+//
+//                Predicate currentOfferLetterStage = criteriaBuilder
+//                    .equal(
+//                        root.join("customerOfferLetter", JoinType.LEFT)
+//                            .join("offerLetterStage", JoinType.LEFT)
+//                            .join("toUser", JoinType.LEFT).get("id"),
+//                        Long.valueOf(value));
+//                Predicate noCurrentOfferLetterStage = criteriaBuilder
+//                    .isNull(root.get("customerOfferLetter"));
+//                Predicate approvedOfferLetter = criteriaBuilder
+//                    .equal(
+//                        root.join("customerOfferLetter", JoinType.LEFT)
+//                            .get("docStatus"),
+//                        DocStatus.valueOf(DocStatus.APPROVED.name()));
+//                return criteriaBuilder
+//                    .or(noCurrentOfferLetterStage, currentOfferLetterStage,approvedOfferLetter);
 
             default:
                 return null;

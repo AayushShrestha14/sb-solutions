@@ -60,6 +60,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Autowired
     DataSource dataSource;
 
+
     @Value("${server.port}")
     private String port;
 
@@ -129,20 +130,27 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     populator.execute(dataSource);
                 }
 
-                if (productMode.getProduct().equals(Product.ACCOUNT)) {
-                    ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/loan_sql/patch_account_opening.sql");
-                    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                        dataResource);
-                    populator.execute(dataSource);
-                }
-
                 if (productMode.getProduct().equals(Product.MEMO)) {
                     ClassPathResource dataResource = new ClassPathResource(
                         baseServerFolder + "/loan_sql/patch_memo.sql");
                     ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                     populator.execute(dataSource);
+                }
+
+                if (productMode.getProduct().equals(Product.OFFER_LETTER)) {
+                    ClassPathResource dataResource = new ClassPathResource(
+                        baseServerFolder + "/general_patch/offer_letter.sql");
+                    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                        dataResource);
+                    populator.execute(dataSource);
+
+                    ClassPathResource cadResource = new ClassPathResource(
+                        baseServerFolder + "/general_patch/role_cad.sql");
+                    ResourceDatabasePopulator cadPopulator = new ResourceDatabasePopulator(
+                        cadResource);
+                    cadPopulator.execute(dataSource);
+
                 }
 
                 if (productMode.getProduct().equals(Product.LAS)) {
@@ -207,6 +215,8 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
             populator.execute(dataSource);
         }
+
+
     }
 
     @Bean

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +32,10 @@ import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.productMode.entity.ProductMode;
@@ -72,6 +74,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
+    private CustomerOfferService customerOfferService;
     private final CustomerDocumentService customerDocumentService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -84,7 +87,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired SecurityService securityservice,
         @Autowired ProposalService proposalService,
         @Autowired CustomerDocumentService customerDocumentService,
-        ProductModeService productModeService) {
+        @Autowired ProductModeService productModeService,
+        @Autowired CustomerOfferService customerOfferService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -95,6 +99,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.financialService = financialService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
+        this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
     }
 
@@ -107,6 +112,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
 
+        CustomerOfferLetter customerOfferLetter = customerOfferService
+            .findByCustomerLoanId(customerLoan.getId());
+        if (customerOfferLetter != null) {
+            CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
+            BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
+            customerOfferLetterDto.setId(customerOfferLetter.getId());
+            customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
+        }
         return customerLoan;
     }
 
@@ -321,6 +334,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             return customerLoanList;
         }
         return null;
+    }
+
+    @Override
+    public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        s.put("documentStatus", DocStatus.APPROVED.name());
+        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticated().getId()));
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification, pageable);
     }
 
     @Override
