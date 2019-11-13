@@ -32,6 +32,7 @@ import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -558,7 +559,24 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        final List customerLoanList = customerLoanRepository.findAll(specification);
+        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+        List csvDto = new ArrayList();
+        for (CustomerLoan c : customerLoanList) {
+            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
+            customerLoanCsvDto.setBranch(c.getBranch());
+            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
+            customerLoanCsvDto.setLoan(c.getLoan());
+            customerLoanCsvDto.setDmsLoanFile(c.getDmsLoanFile());
+            customerLoanCsvDto.setLoanType(c.getLoanType());
+            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
+            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
+            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
+            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
+//            System.out.println(customerLoanCsvDto.getLoanPossession(c.getCurrentStage().getLastModifiedAt()
+//            ,c.getCurrentStage().getCreatedAt()));
+            csvDto.add(customerLoanCsvDto);
+
+        }
         Map<String, String> header = new LinkedHashMap<>();
         header.put("branch,name", " Branch");
         header.put("customerInfo,customerName", "Name");
@@ -567,7 +585,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         header.put("loanType", "Type");
         header.put("loanCategory", "Loan Category");
         header.put("documentStatus", "Status");
-        return csvMaker.csv("customer_loan", header, customerLoanList, UploadDir.customerLoanCsv);
+        header.put("toUser,name", "Current Position");
+        header.put("loanPossion", "Possession");
+        header.put("currentStage,createdAt", "Created At");
+        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
 }
