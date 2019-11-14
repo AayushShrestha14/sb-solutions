@@ -6,9 +6,9 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.customer.entity.Customer;
-import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -37,12 +37,12 @@ public class CustomerLoanCsvDto {
 
     private User toUser;
 
-    private DmsLoanFile dmsLoanFile;
+    private Proposal proposal;
 
+    private long loanSpan;
 
-//    public double getLoanPossession(Date lastModified, Date createdAt) {
-//
-//    }
+    private long loanPendingSpan;
 
+    private long loanPossession;
 
 }

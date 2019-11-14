@@ -566,14 +566,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setBranch(c.getBranch());
             customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
             customerLoanCsvDto.setLoan(c.getLoan());
-            customerLoanCsvDto.setDmsLoanFile(c.getDmsLoanFile());
+            customerLoanCsvDto.setProposal(c.getProposal());
             customerLoanCsvDto.setLoanType(c.getLoanType());
             customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
             customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-//            System.out.println(customerLoanCsvDto.getLoanPossession(c.getCurrentStage().getLastModifiedAt()
-//            ,c.getCurrentStage().getCreatedAt()));
+            if (c.getDocumentStatus() == DocStatus.PENDING) {
+                customerLoanCsvDto.setLoanPendingSpan(
+                    this.calculatePendingLoanSpan(c.getCurrentStage().getCreatedAt()));
+            } else {
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getPreviousList().get(c.getPreviousList().size() - 1)
+                            .getLastModifiedAt()));
+            }
+            customerLoanCsvDto.setLoanSpan(
+                this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                    c.getCurrentStage().getCreatedAt()));
+
             csvDto.add(customerLoanCsvDto);
 
         }
@@ -581,15 +592,48 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         header.put("branch,name", " Branch");
         header.put("customerInfo,customerName", "Name");
         header.put("loan,name", "Loan Name");
-        header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
+        header.put("proposal,proposedLimit", "Proposed Amount");
         header.put("loanType", "Type");
         header.put("loanCategory", "Loan Category");
         header.put("documentStatus", "Status");
         header.put("toUser,name", "Current Position");
-        header.put("loanPossion", "Possession");
+        header.put("loanPossession", "Possession");
+        for (CustomerLoan c : customerLoanList) {
+            if (c.getDocumentStatus() == DocStatus.PENDING) {
+                header.put("loanPendingSpan", "Loan Lifespan");
+            } else {
+                header.put("loanSpan", "Loan Lifespan");
+            }
+        }
         header.put("currentStage,createdAt", "Created At");
         return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
+
+    public long calculateLoanSpanPossession(Date lastModifiedDate, Date createdLastDate) {
+        int daysdiff = 0;
+        Date lastModifiedAt = lastModifiedDate;
+        Date createdLastAt = createdLastDate;
+
+        long diff = lastModifiedAt.getTime() - createdLastAt.getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        daysdiff = (int) diffDays;
+
+        return daysdiff;
+
+    }
+
+    public long calculatePendingLoanSpan(Date createdDate) {
+        int daysDiff = 0;
+        Date createdAt = createdDate;
+        Date currentDate = new Date();
+
+        long diff = currentDate.getTime() - createdAt.getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        daysDiff = (int) diffDays;
+
+        return daysDiff;
+
+    }
 }
 
