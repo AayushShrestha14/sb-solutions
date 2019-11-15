@@ -1,22 +1,5 @@
 package com.sb.solutions.web.accountOpening.v1;
 
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.sb.solutions.api.openingForm.entity.OpeningCustomer;
 import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.service.OpeningFormService;
@@ -27,6 +10,19 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/v1/accountOpening")
@@ -41,8 +37,8 @@ public class AccountOpeningController {
     private String bankWebsite;
 
     public AccountOpeningController(
-        @Autowired OpeningFormService openingFormService,
-        @Autowired MailSenderService mailSenderService
+            @Autowired OpeningFormService openingFormService,
+            @Autowired MailSenderService mailSenderService
     ) {
         this.openingFormService = openingFormService;
         this.mailSenderService = mailSenderService;
@@ -76,7 +72,7 @@ public class AccountOpeningController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id,
-        @RequestBody OpeningForm openingForm) {
+                                            @RequestBody OpeningForm openingForm) {
         OpeningForm oldOpeningForm = openingFormService.findOne(id);
         AccountStatus previousStatus = oldOpeningForm.getStatus();
         OpeningForm newOpeningForm = openingFormService.save(openingForm);
@@ -90,7 +86,7 @@ public class AccountOpeningController {
                 email.setBankBranch(newOpeningForm.getBranch().getName());
                 email.setAccountType(newOpeningForm.getAccountType().getName());
                 for (OpeningCustomer customer : newOpeningForm.getOpeningAccount()
-                    .getOpeningCustomers()) {
+                        .getOpeningCustomers()) {
                     email.setTo(customer.getEmail());
                     email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
                     if (newOpeningForm.getStatus().equals(AccountStatus.APPROVAL)) {
@@ -114,17 +110,59 @@ public class AccountOpeningController {
 
     @PostMapping(value = "/list")
     public ResponseEntity<?> getPageable(@RequestBody Object searchObject,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            openingFormService.findAllPageable(searchObject, PaginationUtils.pageable(page, size)));
+                openingFormService.findAllPageable(searchObject, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping(value = "/uploadFile")
-    public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type, @RequestParam("name") String name,
-        @RequestParam("branch") String branch, @RequestParam("citizenship") String citizenship,
-        @RequestParam("customerName") String customerName) {
-        return FileUploadUtils
-            .uploadAccountOpeningFile(multipartFile, branch, type, name, citizenship, customerName);
+    public ResponseEntity<?> saveUserFile(@RequestBody UploadDto uploadDto
+    ) {
+        String originalFilename = uploadDto.getOriginalFilename();
+        byte[] bytes = uploadDto.getMultipartFile();
+
+        MultipartFile multipartFile = new MultipartFile() {
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public String getOriginalFilename() {
+                return originalFilename;
+            }
+
+            @Override
+            public String getContentType() {
+                return null;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public long getSize() {
+                return 0;
+            }
+
+            @Override
+            public byte[] getBytes() throws IOException {
+                return bytes;
+            }
+
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return null;
+            }
+
+            @Override
+            public void transferTo(File file) throws IOException, IllegalStateException {
+
+            }
+        };
+        return FileUploadUtils.uploadAccountOpeningFile(multipartFile,
+                        uploadDto.getBranch(), uploadDto.getType(), uploadDto.getName(), uploadDto.getCitizenship(), uploadDto.getCustomerName());
     }
 }
