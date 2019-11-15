@@ -75,8 +75,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
-    private final CustomerDocumentService customerDocumentService;
     private CustomerOfferService customerOfferService;
+    private final CustomerDocumentService customerDocumentService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -575,15 +575,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 customerLoanCsvDto.setLoanPendingSpan(
                     this.calculatePendingLoanSpan(c.getCurrentStage().getCreatedAt()));
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getCurrentStage().getCreatedAt()));
             } else {
                 customerLoanCsvDto.setLoanPossession(
                     this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
                         c.getPreviousList().get(c.getPreviousList().size() - 1)
                             .getLastModifiedAt()));
+                customerLoanCsvDto.setLoanSpan(
+                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getCurrentStage().getCreatedAt()));
             }
-            customerLoanCsvDto.setLoanSpan(
-                this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
-                    c.getCurrentStage().getCreatedAt()));
+
 
             csvDto.add(customerLoanCsvDto);
 
@@ -618,7 +622,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Date createdLastAt = null;
         try {
             createdLastAt = format.parse(dateString);
-            long diff = Math.abs(lastModifiedAt.getTime() - createdLastAt.getTime());
+            long diff =  Math.abs(lastModifiedAt.getTime() - createdLastAt.getTime());
             long diffDays = diff / (24 * 60 * 60 * 1000);
             daysdiff = (int) diffDays;
 
