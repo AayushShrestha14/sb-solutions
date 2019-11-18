@@ -15,6 +15,7 @@ import com.sb.solutions.core.dto.RestResponseDto;
 
 @RestController
 public class SocketController {
+
     private static final String API = "/socket-publisher/";
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final MessageService service;
@@ -31,8 +32,9 @@ public class SocketController {
         if (message == null) {
             return new RestResponseDto().failureModel("Error saving message");
         } else {
-            if (message.getToId() != null) {
-                simpMessagingTemplate.convertAndSend(SocketController.API + message.getToId(), message);
+            if (message.getToId() != null && message.getToRole() != null) {
+                simpMessagingTemplate.convertAndSend(
+                    SocketController.API + message.getToId() + "/" + message.getToRole(), message);
                 return new RestResponseDto().successModel(service.save(message));
             } else {
                 logger.error("Error saving message {}", message);

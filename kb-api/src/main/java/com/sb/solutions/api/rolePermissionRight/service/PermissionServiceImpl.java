@@ -45,6 +45,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public List<Permission> saveAll(List<Permission> list) {
+        return permissionRepository.saveAll(list);
+    }
+
+    @Override
     public List<UrlApi> permsRight(Long role) {
         return rolePermissionRightRepository.permsRight(role);
     }

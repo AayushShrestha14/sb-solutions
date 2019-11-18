@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,14 +56,14 @@ public class AdminApplicantController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @GetMapping
+    @PostMapping
     public final ResponseEntity<?> getApplicants(
-        @RequestParam(value = "search", required = false) String search,
+        @RequestBody Object searchDto,
         @RequestParam("page") int page,
         @RequestParam("size") int size) {
         logger.debug("Request to get all the applicants.");
         final Pageable pageable = PaginationUtils.pageable(page, size);
-        final Page<Applicant> applicants = applicantService.findAllPageable(search, pageable);
+        final Page<Applicant> applicants = applicantService.findAllPageable(searchDto, pageable);
         final Page<ApplicantDto> applicantDtos =
             new PageImpl<>(applicantMapper.mapEntitiesToDtos(applicants.getContent()), pageable,
                 applicants.getTotalElements());

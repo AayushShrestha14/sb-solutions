@@ -30,5 +30,10 @@ public interface BaseService<T> {
      */
     Page<T> findAllPageable(Object t, Pageable pageable);
 
+    /**
+     *
+     */
+    List<T> saveAll(List<T> list);
+
 
 }

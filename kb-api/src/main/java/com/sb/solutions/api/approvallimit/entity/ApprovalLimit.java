@@ -1,5 +1,6 @@
 package com.sb.solutions.api.approvallimit.entity;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -24,7 +25,7 @@ public class ApprovalLimit extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 1L;
 
-    private double amount;
+    private BigDecimal amount;
     @Column(nullable = true)
     private LoanApprovalType loanApprovalType;
     @OneToOne

@@ -40,7 +40,7 @@ public class EmailConfigController {
     private final MailThreadService mailThreadService;
 
     public EmailConfigController(@Autowired EmailConfigService emailConfigService,
-                                 @Autowired MailThreadService mailThreadService) {
+        @Autowired MailThreadService mailThreadService) {
         this.emailConfigService = emailConfigService;
         this.mailThreadService = mailThreadService;
     }
@@ -54,7 +54,7 @@ public class EmailConfigController {
         if (null == config) {
             logger.error("Error while saving Email config {}", emailConfig);
             return new RestResponseDto()
-                    .failureModel("Error occurred while saving  Email config " + emailConfig);
+                .failureModel("Error occurred while saving  Email config " + emailConfig);
         }
 
         return new RestResponseDto().successModel(config);
@@ -75,9 +75,9 @@ public class EmailConfigController {
             mailThreadService.testMail(EmailConstant.Template.TEST, email);
             logger.info(" sending Email config {}", emailConfig);
         } catch (Exception e) {
-            logger.error("Error while sending Email config {}", emailConfig);
+            logger.error("Error while sending Email config {}", e);
             return new RestResponseDto()
-                    .failureModel("Error occurred while Sending  Email config " + emailConfig);
+                .failureModel("Error occurred while Sending  Email config " + emailConfig);
         }
         return null;
     }

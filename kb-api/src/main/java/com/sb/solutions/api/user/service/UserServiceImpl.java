@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
@@ -41,9 +43,11 @@ import com.sb.solutions.api.user.repository.UserRepository;
 import com.sb.solutions.api.user.repository.specification.UserSpecBuilder;
 import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleAccess;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
@@ -53,12 +57,12 @@ import com.sb.solutions.core.utils.csv.CsvMaker;
 public class UserServiceImpl implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private final BaseHttpService baseHttpService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
+    private final CustomerLoanRepository customerLoanRepository;
     private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
@@ -66,14 +70,15 @@ public class UserServiceImpl implements UserService {
         @Autowired BranchRepository branchRepository,
         @Autowired RoleRepository roleRepository,
         @Autowired CustomJdbcTokenStore customJdbcTokenStore,
-        @Autowired BCryptPasswordEncoder passwordEncoder) {
+        @Autowired BCryptPasswordEncoder passwordEncoder,
+        @Autowired CustomerLoanRepository customerLoanRepository) {
         this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
         this.roleRepository = roleRepository;
         this.customJdbcTokenStore = customJdbcTokenStore;
-
+        this.customerLoanRepository = customerLoanRepository;
     }
 
     @Override
@@ -99,7 +104,6 @@ public class UserServiceImpl implements UserService {
                     .getClass() + "; Expected type User");
         }
     }
-
 
     @Override
     public User getByUsername(String username) {
@@ -160,15 +164,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
-        if (r.getRoleAccess().equals(RoleAccess.ALL)) {
+        if (r.getRoleAccess().equals(RoleAccess.ALL) && (!r.getRoleType()
+            .equals(RoleType.COMMITTEE))) {
             return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL,
                 roleRepository.getOne(Long.valueOf(1)), roleId);
+        }
+        if (r.getRoleType().equals(RoleType.COMMITTEE)) {
+            return userRepository.findByRoleIdAndIsDefaultCommittee(r.getId(), true);
         }
         return userRepository.findByRoleIdAndBranch(roleId, this.getRoleAccessFilterByBranch());
     }
 
     @Override
-    public String csv(SearchDto searchDto) {
+    public List<User> findByRoleIdAndIsDefaultCommittee(Long roleId, Boolean isTrue) {
+        return userRepository.findByRoleIdAndIsDefaultCommittee(roleId, true);
+    }
+
+    @Override
+    public List<User> findByRoleAndBranchId(Long roleId, Long branchId) {
+        return userRepository.findByRoleIdAndBranchId(roleId, branchId);
+    }
+
+    @Override
+    public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
         final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
@@ -193,6 +211,11 @@ public class UserServiceImpl implements UserService {
         final Specification<User> specification = userSpecBuilder.build();
         return userRepository.findAll(specification, pageable);
 
+    }
+
+    @Override
+    public List<User> saveAll(List<User> list) {
+        return userRepository.saveAll(list);
     }
 
     @Override
@@ -225,6 +248,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String dismissAllBranchAndRole(User user) {
+        Integer i = customerLoanRepository
+            .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
+                DocStatus.PENDING);
+        if (i > 0) {
+            throw new ServiceValidationException("This user have " + i
+                + " Customer Loan pending  Please transfer the loan before dismiss.");
+        }
         user.setBranch(new ArrayList<Branch>());
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
@@ -290,8 +320,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId,Long userId) {
-        List<User> users = userRepository.findAll();
+    public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
+        List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
 
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
         List<RoleDto> finalRoleDtoList = new ArrayList<>();
@@ -300,7 +330,8 @@ public class UserServiceImpl implements UserService {
             List<UserDto> userDtoList = new ArrayList<>();
             for (User u : users) {
                 UserDto userDto = new UserDto();
-                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L && u.getId() != userId) {
+                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L
+                    && u.getId() != userId) {
                     List<BranchDto> branchDto = new ArrayList<>();
 
                     userDto.setId(u.getId());
@@ -328,5 +359,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
         return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
+
+    @Override
+    public List<UserDto> getUserByRoleCad() {
+        List<User> userList = userRepository.findByRoleRoleNameAndStatus("CAD", Status.ACTIVE);
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User u : userList) {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(u, userDto);
+            userDto.setId(u.getId());
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+
     }
 }

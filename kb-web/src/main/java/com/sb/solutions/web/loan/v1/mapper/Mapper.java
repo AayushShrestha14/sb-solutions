@@ -1,5 +1,6 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +41,10 @@ import com.sb.solutions.web.user.dto.UserDto;
 @Component
 public class Mapper {
 
-    private final StageMapper stageMapper;
-
-    private final ApprovalLimitService approvalLimitService;
-
-    private final ProductModeService productModeService;
-
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
+    private final StageMapper stageMapper;
+    private final ApprovalLimitService approvalLimitService;
+    private final ProductModeService productModeService;
 
 
     public Mapper(@Autowired StageMapper stageMapper,
@@ -58,6 +57,13 @@ public class Mapper {
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
         User currentUser) {
+        if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) && (!loanActionDto
+            .getDocAction()
+            .equals(DocAction.TRANSFER))) {
+            Preconditions.checkArgument(
+                customerLoan.getCurrentStage().getToUser().getId() == currentUser.getId(),
+                "Sorry this document is not under you!!");
+        }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
             if (productMode == null) {
@@ -69,17 +75,22 @@ public class Mapper {
                     throw new RuntimeException("Authority Limit Error");
                 }
                 if (customerLoan.getDmsLoanFile() != null) {
-                    if (customerLoan.getDmsLoanFile().getProposedAmount() > approvalLimit
-                        .getAmount()) {
+                    if (customerLoan.getDmsLoanFile().getProposedAmount().compareTo(approvalLimit
+                        .getAmount()) == 1) {
+                        // proposed amount is greater than approval limit
                         throw new RuntimeException("Amount Exceed");
                     }
                 }
 
             }
+            if (loanActionDto.isNotify()) {
+                customerLoan.setNotify(true);
+            }
         }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         List previousList = customerLoan.getPreviousList();
         List previousListTemp = new ArrayList();
         LoanStage loanStage = new LoanStage();
@@ -94,13 +105,13 @@ public class Mapper {
 
                         previousListTemp.add(objectMapper.writeValueAsString(previous));
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Failed to handle JSON data");
                     }
                 });
                 String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Failed to Get Stage data");
             }
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());
@@ -109,21 +120,24 @@ public class Mapper {
         UserDto currentUserDto = objectMapper.convertValue(currentUser, UserDto.class);
         loanStage = this
             .loanStages(loanActionDto, previousList, customerLoan.getCreatedBy(), currentStage,
-                currentUserDto);
+                currentUserDto, customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
         return customerLoan;
     }
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
-        StageDto currentStage, UserDto currentUser) {
-        if (currentStage.getDocAction().equals(DocAction.CLOSED)
+        StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
+        if (stageDto.getDocAction().equals(DocAction.NOTED)) {
+            customerLoan.setNotedBy(currentUser.getId());
+        } else if (currentStage.getDocAction().equals(DocAction.CLOSED)
             || currentStage.getDocAction().equals(DocAction.APPROVED)
             || currentStage.getDocAction().equals(DocAction.REJECT)) {
 
             logger.error("Error while performing the action");
 
-            throw new RuntimeException("Cannot Perform the action");
+            throw new RuntimeException(
+                "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
@@ -132,7 +146,8 @@ public class Mapper {
             }
         }
         return stageMapper
-            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser);
+            .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,
+                customerLoan);
     }
 
     public List<BarChartDto> toBarchartDto(List<StatisticDto> statistics) {

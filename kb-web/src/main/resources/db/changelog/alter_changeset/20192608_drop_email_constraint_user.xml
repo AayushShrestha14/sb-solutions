@@ -1,0 +1,12 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="rujan" id="dropUniqueConstraint">
+    <dropUniqueConstraint
+      constraintName="udx_user_email"
+      tableName="users"
+      uniqueColumns="email"/>
+  </changeSet>
+
+</databaseChangeLog>

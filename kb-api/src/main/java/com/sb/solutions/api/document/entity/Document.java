@@ -23,6 +23,9 @@ import com.sb.solutions.core.enums.Status;
 public class Document extends BaseEntity<Long> {
 
     @Column(nullable = false, unique = true)
+    private String displayName;
+
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)

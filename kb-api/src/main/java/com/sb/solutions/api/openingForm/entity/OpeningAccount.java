@@ -13,8 +13,6 @@ import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
 @NoArgsConstructor
 public class OpeningAccount {
 
-    private boolean haveExistingAccountNo;
-    private String existingAccountNo;
     private AccountPurpose purposeOfAccount;
     private String currency;
     private boolean haveJoint;

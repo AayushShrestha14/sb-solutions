@@ -15,16 +15,16 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
     properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
+        hibernate:
+              enable_lazy_load_no_trans: true
+        org:
+          hibernate:
+            envers:
+              audit_table_suffix: _audit
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-  mail:
-    username: sbsolutionstest@gmail.com
-    password: testsbsolutions123
 
   jackson:
     serialization:
@@ -37,13 +37,13 @@ logging:
   level:
     org:
       hibernate:
-        SQL: debug
+        SQL: error
 
 management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
   endpoint:
     refresh:
       enabled: true
@@ -54,5 +54,18 @@ file:
   upload-directory: C:/
 
 bank:
-  name: Mahalaxmi Bank
-  website: http://www.mahalaxmibank.com/
+  name: United Finance Ltd
+  website: http://www.ufl.com.np/
+
+mailproperty:
+  additionalHeaders:
+    mail:
+      transport:
+        protocol: smtp
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+      debug: true

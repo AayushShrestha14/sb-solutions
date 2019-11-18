@@ -16,4 +16,6 @@ public class LoanConfigDto {
     private Double minimumProposedAmount;
 
     private long totalPoints;
+
+    private Double interestRate;
 }

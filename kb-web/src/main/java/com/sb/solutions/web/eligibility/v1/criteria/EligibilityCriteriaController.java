@@ -1,5 +1,7 @@
 package com.sb.solutions.web.eligibility.v1.criteria;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,8 +24,6 @@ import com.sb.solutions.api.eligibility.utility.EligibilityUtility;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.ArithmeticExpressionUtils;
 import com.sb.solutions.core.utils.PaginationUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 
 @RestController
 @RequestMapping(EligibilityCriteriaController.URL)
@@ -80,7 +80,8 @@ public class EligibilityCriteriaController {
                 return new RestResponseDto().successModel(savedEligibilityCriteria);
             }
         } catch (SpelParseException spelParseException) {
-            return new RestResponseDto().failureModel("Some wrong with expression you entered. Please verify.");
+            return new RestResponseDto()
+                .failureModel("Some wrong with expression you entered. Please verify.");
         }
 
     }

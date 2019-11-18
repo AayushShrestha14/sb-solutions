@@ -55,6 +55,11 @@ public class EligibilityCriteriaServiceImpl implements EligibilityCriteriaServic
     }
 
     @Override
+    public List<EligibilityCriteria> saveAll(List<EligibilityCriteria> list) {
+        return eligibilityCriteriaRepository.saveAll(list);
+    }
+
+    @Override
     public void delete(Long id) {
         logger.debug("Deleting the eligibility criteria.");
         final EligibilityCriteria eligibilityCriteria = eligibilityCriteriaRepository.getOne(id);

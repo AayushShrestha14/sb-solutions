@@ -1,10 +1,12 @@
 package com.sb.solutions.web.loan.v1.dto;
 
+import java.math.BigDecimal;
+
 public class SeriesDto {
 
     private String name;
 
-    private double value;
+    private BigDecimal value;
 
     public String getName() {
         return name;
@@ -14,11 +16,11 @@ public class SeriesDto {
         this.name = name;
     }
 
-    public double getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 }

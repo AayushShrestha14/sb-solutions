@@ -29,7 +29,7 @@ public class EligibilityCriteria extends BaseEntity<Long> {
     private double percentageOfAmount;
 
     @OneToMany(mappedBy = "eligibilityCriteria")
-    @Where(clause = "status != 'DELETED'")
+    @Where(clause = "status != 2")
     @Cascade({CascadeType.PERSIST, CascadeType.MERGE})
     private List<EligibilityQuestion> questions = new ArrayList<>();
 

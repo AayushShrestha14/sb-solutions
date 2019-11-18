@@ -1,0 +1,28 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="dipu" id="31_alter_entity_info">
+    <addColumn
+      tableName="entity_info">
+      <column name="company_name" type="varchar(256)"/>
+    </addColumn>
+    <addColumn
+      tableName="entity_info">
+      <column name="registration_number" type="varchar(256)"/>
+    </addColumn>
+    <dropNotNullConstraint columnDataType="BIGINT"
+      columnName="capital_id"
+      tableName="entity_info"/>
+    <dropNotNullConstraint columnDataType="BIGINT"
+      columnName="legal_status_id"
+      tableName="entity_info"/>
+    <dropNotNullConstraint columnDataType="BIGINT"
+      columnName="swot_id"
+      tableName="entity_info"/>
+    <addUniqueConstraint
+      columnNames="registration_number"
+      constraintName="entity_info_unique_registration_number"
+      tableName="entity_info"/>
+  </changeSet>
+</databaseChangeLog>

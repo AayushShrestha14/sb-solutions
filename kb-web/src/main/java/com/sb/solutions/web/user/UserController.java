@@ -4,15 +4,20 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
-import com.sb.solutions.web.user.dto.ChangePasswordDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
@@ -21,12 +26,12 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.web.user.dto.ChangePasswordDto;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -35,12 +40,11 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
 @RequestMapping("/v1/user")
 public class UserController {
 
-    @Value("${bank.name}")
-    private String bankName;
-
     private final UserService userService;
     private final RoleService roleService;
     private final MailSenderService mailSenderService;
+    @Value("${bank.name}")
+    private String bankName;
 
     @Autowired
     public UserController(
@@ -111,7 +115,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/csv")
-    public ResponseEntity<?> csv(@RequestBody SearchDto searchDto) {
+    public ResponseEntity<?> csv(@RequestBody Object searchDto) {
         return new RestResponseDto().successModel(userService.csv(searchDto));
     }
 
@@ -138,6 +142,7 @@ public class UserController {
             // mailing
             Email email = new Email();
             email.setTo(savedUser.getEmail());
+            email.setToName(savedUser.getName());
             email.setResetPasswordLink(
                 referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
@@ -148,9 +153,10 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/get-all-doc-transfer/{id}")
+    @GetMapping(path = "/get-all-doc-transfer/{id}")
     public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
-        return new RestResponseDto().successModel(userService.getRoleWiseBranchWiseUserList(null,null,id));
+        return new RestResponseDto()
+            .successModel(userService.getRoleWiseBranchWiseUserList(null, null, id));
     }
 
     @PostMapping(value = "/resetPassword")
@@ -183,11 +189,17 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto passwordDto) {
         User user = userService.getByUsername(passwordDto.getUsername());
 
-        if(!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())){
+        if (!userService.checkIfValidOldPassword(user, passwordDto.getOldPassword())) {
             return new RestResponseDto().failureModel("Invalid Old Password");
         }
         userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
-            return new RestResponseDto().successModel("Password Changed Successfully");
+        return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
+    @GetMapping(path = "/user-cad")
+    public ResponseEntity<?> getUserCad() {
+
+        return new RestResponseDto()
+            .successModel(userService.getUserByRoleCad());
+    }
 }

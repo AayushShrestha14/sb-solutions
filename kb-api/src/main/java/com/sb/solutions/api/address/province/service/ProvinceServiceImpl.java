@@ -39,4 +39,9 @@ public class ProvinceServiceImpl implements ProvinceService {
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
         return provinceRepository.provinceFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
+
+    @Override
+    public List<Province> saveAll(List<Province> list) {
+        return provinceRepository.saveAll(list);
+    }
 }

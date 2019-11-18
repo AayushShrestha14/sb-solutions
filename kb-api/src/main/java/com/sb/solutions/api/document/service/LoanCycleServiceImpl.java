@@ -47,5 +47,10 @@ public class LoanCycleServiceImpl implements LoanCycleService {
             .loanCycleFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
+    @Override
+    public List<LoanCycle> saveAll(List<LoanCycle> list) {
+        return loanCycleRepository.saveAll(list);
+    }
+
 
 }

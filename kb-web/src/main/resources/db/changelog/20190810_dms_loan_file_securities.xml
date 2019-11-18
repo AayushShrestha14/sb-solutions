@@ -1,0 +1,20 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="31dms-loan-file-securities" author="dipu">
+    <createTable tableName="dms_loan_file_securities">
+      <column name="dms_loan_file_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="securities" type="varchar(256)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="dms_loan_file_id"
+      baseTableName="dms_loan_file_securities"
+      constraintName="fk_dms_loan_file_securities_dms_loan_file_id"
+      referencedColumnNames="id"
+      referencedTableName="dms_loan_file"/>
+  </changeSet>
+</databaseChangeLog>

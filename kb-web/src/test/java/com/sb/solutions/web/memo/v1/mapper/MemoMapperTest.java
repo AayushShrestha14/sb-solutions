@@ -14,9 +14,9 @@ import com.sb.solutions.api.memo.entity.MemoStage;
 import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.web.memo.v1.dto.MemoDto;
-import com.sb.solutions.web.memo.v1.dto.StageDto;
 import com.sb.solutions.web.memo.v1.dto.MemoTypeDto;
 import com.sb.solutions.web.memo.v1.dto.MemoUserDto;
+import com.sb.solutions.web.memo.v1.dto.StageDto;
 
 public class MemoMapperTest {
 

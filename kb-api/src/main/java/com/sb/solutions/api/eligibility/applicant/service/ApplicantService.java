@@ -12,4 +12,5 @@ public interface ApplicantService extends BaseService<Applicant> {
 
     Applicant save(Applicant applicant, Long loanConfigId);
 
+    Applicant update(Applicant applicant);
 }

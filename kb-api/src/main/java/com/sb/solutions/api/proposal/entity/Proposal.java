@@ -1,5 +1,6 @@
 package com.sb.solutions.api.proposal.entity;
 
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -19,21 +20,22 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Proposal extends BaseEntity<Long> {
-
-    private double proposedLimit;
-    private double interestRate;
-    private double baseRate;
-    private double premiumRateOnBaseRate;
-    private ServiceChargeMethod serviceChargeMethod;
-    private double serviceCharge;
-    private double tenureDurationInMonths;
-    private double cibCharge;
-    private RepaymentMode repaymentMode;
-    private String purposeOfSubmission;
-    private String disbursementCriteria;
-    private String creditInformationReportStatus;
-    private String incomeFromTheAccount;
-    private String borrowerInformation;
+//    private String path;
+    private String data;
+    private BigDecimal proposedLimit;
+//    private double interestRate;
+//    private double baseRate;
+//    private double premiumRateOnBaseRate;
+//    private ServiceChargeMethod serviceChargeMethod;
+//    private double serviceCharge;
+//    private double tenureDurationInMonths;
+//    private double cibCharge;
+//    private RepaymentMode repaymentMode;
+//    private String purposeOfSubmission;
+//    private String disbursementCriteria;
+//    private String creditInformationReportStatus;
+//    private String incomeFromTheAccount;
+//    private String borrowerInformation;
     @Transient
     private String proposedAmountInWords;
 

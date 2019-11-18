@@ -251,12 +251,12 @@
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>
     </module>
-    <module name="CommentsIndentation"/>
+    <!--<module name="CommentsIndentation"/>-->
     <!--To configure the check so that it doesn't allow more than three return statements per
     method (ignoring the equals() method):
     -->
-    <module name="ReturnCount">
+    <!--<module name="ReturnCount">
       <property name="max" value="10"/>
-    </module>
+    </module>-->
   </module>
 </module>

@@ -1,5 +1,9 @@
 package com.sb.solutions.core.config.security;
 
+import java.util.TimeZone;
+
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -39,4 +43,11 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
+        return jacksonObjectMapperBuilder ->
+            jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Asia/Kathmandu"));
+    }
+
 }

@@ -22,7 +22,6 @@ public class Stage extends BaseEntity<Long> {
     @OneToOne
     private User fromUser;
 
-
     @OneToOne
     private Role fromRole;
 
@@ -35,6 +34,4 @@ public class Stage extends BaseEntity<Long> {
     private DocAction docAction;
 
     private String comment;
-
-
 }

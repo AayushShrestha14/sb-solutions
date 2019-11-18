@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.PieChartDto;
+import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 
 /**
@@ -36,7 +36,11 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds);
 
-    String csv(SearchDto searchDto);
+    List<User> findByRoleIdAndIsDefaultCommittee(Long roleId, Boolean isTrue);
+
+    List<User> findByRoleAndBranchId(Long roleId, Long branchId);
+
+    String csv(Object searchDto);
 
     List<Long> getRoleAccessFilterByBranch();
 
@@ -48,7 +52,9 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<PieChartDto> getStatisticsForRolesVsUsers();
 
-    List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId,Long branchId,Long userId);
+    List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId);
 
     boolean checkIfValidOldPassword(User user, String password);
+
+    List<UserDto>  getUserByRoleCad();
 }

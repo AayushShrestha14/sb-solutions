@@ -62,6 +62,11 @@ public class MemoServiceImpl implements MemoService {
     }
 
     @Override
+    public List<Memo> saveAll(List<Memo> list) {
+        return repository.saveAll(list);
+    }
+
+    @Override
     public void delete(Memo memo) {
         memo.setStatus(Status.DELETED);
         repository.save(memo);

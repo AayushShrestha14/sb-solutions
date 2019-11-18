@@ -38,6 +38,9 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     List<User> findByRoleId(Long roleId);
 
+    @Query("SELECT u FROM User u where u.role is not null and u.status = :status")
+    List<User> findUserNotDisMissAndActive(@Param("status") Status status);
+
 
     Page<User> findByRoleIn(Collection<Role> roles, Pageable pageable);
 
@@ -49,6 +52,8 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
     List<User> userCsvFilter(@Param("name") String name);
+
+    List<User> findByRoleIdAndBranchId(Long roleId, Long branchId);
 
     @Query(value =
         "  SELECT a.type FROM role r "
@@ -69,6 +74,11 @@ public interface UserRepository extends JpaRepository<User, Long>,
     @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(r.roleName, COUNT(u)) FROM User "
         + " u join u.role r GROUP BY r.id,r.roleName")
     List<PieChartDto> getStatisticsBasedOnRoles();
+
+    List<User>  findByRoleIdAndIsDefaultCommittee(Long id,Boolean isCommittee);
+
+
+    List<User>  findByRoleRoleNameAndStatus(String roleName,Status status);
 
 }
 

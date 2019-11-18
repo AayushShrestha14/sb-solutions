@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.service.BaseService;
 
 /**

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.address.district.entity.District;
@@ -42,14 +43,17 @@ public class Branch extends BaseEntity<Long> implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "province_id")
+    @NotAudited
     private Province province;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
+    @NotAudited
     private District district;
 
     @ManyToOne
     @JoinColumn(name = "municipality_vdc_id")
+    @NotAudited
     private MunicipalityVdc municipalityVdc;
 
     private String streetName;

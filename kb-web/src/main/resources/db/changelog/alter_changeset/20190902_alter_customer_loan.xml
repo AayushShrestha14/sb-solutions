@@ -1,0 +1,15 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="34-alter-customer-loan" author="elvin">
+    <addColumn
+      tableName="customer_loan">
+      <column name="notify" type="BOOLEAN" defaultValue="false"/>
+    </addColumn>
+    <addColumn
+      tableName="customer_loan">
+      <column name="noted_by" type="BIGINT" defaultValue="0"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

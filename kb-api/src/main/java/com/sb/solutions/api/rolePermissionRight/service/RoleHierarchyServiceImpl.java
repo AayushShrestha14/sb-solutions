@@ -40,6 +40,11 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
     }
 
     @Override
+    public List<RoleHierarchy> saveAll(List<RoleHierarchy> list) {
+        return roleHierarchyRepository.saveAll(list);
+    }
+
+    @Override
     public List<RoleHierarchy> saveList(List<RoleHierarchy> roleHierarchyList) {
         return roleHierarchyRepository.saveAll(roleHierarchyList);
     }

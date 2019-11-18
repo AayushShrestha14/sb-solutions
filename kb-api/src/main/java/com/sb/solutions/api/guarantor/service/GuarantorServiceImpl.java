@@ -37,4 +37,9 @@ public class GuarantorServiceImpl implements GuarantorService {
     public Page<Guarantor> findAllPageable(Object object, Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Guarantor> saveAll(List<Guarantor> list) {
+        return guarantorRepository.saveAll(list);
+    }
 }

@@ -53,4 +53,6 @@ public class LoanConfig extends BaseEntity<Long> {
     @ManyToMany
     private List<OfferLetter> offerLetters;
     private Double minimumProposedAmount;
+
+    private Double interestRate;
 }

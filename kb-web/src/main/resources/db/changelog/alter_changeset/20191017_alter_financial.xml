@@ -1,0 +1,24 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="41-alter-financial-changeset" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="financial" columnName="data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="financial">
+      <column name="data" type="LONGTEXT"/>
+    </addColumn>
+
+  </changeSet>
+  <changeSet id="41-alter-financial-dropColumn-changeset" author="yunish">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="financial" columnName="path"/>
+    </preConditions>
+    <dropColumn tableName="financial" columnName="path"/>
+  </changeSet>
+</databaseChangeLog>
+
+

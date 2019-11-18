@@ -42,6 +42,11 @@ public class DistrictServiceImpl implements DistrictService {
     }
 
     @Override
+    public List<District> saveAll(List<District> list) {
+        return districtRepository.saveAll(list);
+    }
+
+    @Override
     public List<District> findAllByProvince(Province province) {
         return districtRepository.findAllByProvince(province);
     }

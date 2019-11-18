@@ -47,4 +47,9 @@ public class EligibilityQuestionServiceImpl implements EligibilityQuestionServic
         logger.debug("Retrieving a page of eligibility question.");
         return eligibilityQuestionRepository.findAll(pageable);
     }
+
+    @Override
+    public List<EligibilityQuestion> saveAll(List<EligibilityQuestion> list) {
+        return eligibilityQuestionRepository.saveAll(list);
+    }
 }

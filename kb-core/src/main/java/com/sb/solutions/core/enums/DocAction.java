@@ -12,7 +12,10 @@ public enum DocAction {
     APPROVED("Approved"),
     REJECT("Reject"),
     CLOSED("Close"),
-    TRANSFER("Transfer");
+    TRANSFER("Transfer"),
+    NOTED("Noted"),
+    PULLED("Pulled"),
+    BACKWARD_TO_COMMITTEE("Backward To Committee");
 
     private final String value;
 

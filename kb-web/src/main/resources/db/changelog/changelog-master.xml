@@ -1738,10 +1738,80 @@
   <include file="20190716_closure_document.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20190724_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="20190724_customer_otp.xml" relativeToChangelogFile="true"/>
-  <include file="alter_changeset/20190728_alter_loan_config_new_field.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190728_alter_loan_config_new_field.xml"
+    relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_eligibility_criteria.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190731_alter_customer_loan.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190108_alter_dms.xml" relativeToChangelogFile="true"/>
   <include file="20190801_notificationMessage.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20190508_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_customer.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190804_alter_dms.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190809_alter_entity_info.xml" relativeToChangelogFile="true"/>
+  <include file="20190810_dms_loan_file_securities.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190816_alter_loan_config_new_entity.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190816_dms.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190818_applicant.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190821_document.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190709_financial.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190709_alter_customer_loan_financial.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20192608_drop_email_constraint_user.xml"
+    relativeToChangelogFile="true"/>
+  <include file="loan_form/20190710_sitevisit.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190826_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_proposal_data_type.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190829_change_dms_data_type.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190902_alter_customer_loan.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190904_alter_entity_date.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190912_alter_user.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190906_site_visit_entity_changes.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190909-entity-info-to-company-info.xml"
+    relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190911-dms-entity-changes.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20190920_alter_customer.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191017_alter_financial.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20190926_security.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20191021_alter_customer_loan_security.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191020_alter_security.xml" relativeToChangelogFile="true"/>
+
+  <include file="alter_changeset/20190909_alter_site_visit_table.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191020_json_alter_site_visit.xml" relativeToChangelogFile="true"/>
+
+  <include file="alter_changeset/20191001_alter_proposal.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191103_alter_legal_status.xml" relativeToChangelogFile="true"/>
+
+  <changeSet id="24-create-revinfo-table" author="msucil">
+    <createTable tableName="revinfo">
+      <column name="rev" type="INT" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="PK_revinfo_rev"/>
+      </column>
+      <column name="revtstmp" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="24-create-memo-type-audit" author="">
+    <createTable tableName="memo_type_audit">
+      <!--columns used to track revision and it's type-->
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <!-- column names tracked by @autdited -->
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="status" type="INT"/>
+    </createTable>
+    <addPrimaryKey tableName="memo_type_audit" columnNames="id,rev" constraintName="PK_memo_type_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="memo_type_audit" baseColumnNames="rev"
+      constraintName="FK_memo_type_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+  <include file="20191017_customer_offer_letter.xml" relativeToChangelogFile="true"/>
+  <include file="loan_form/20191105_customer_document.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

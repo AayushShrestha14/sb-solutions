@@ -1,0 +1,67 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="elvin" id="36-change-entity-info-to-company-info">
+    <renameTable oldTableName="entity_info" newTableName="company_info"/>
+    <renameTable oldTableName="entity_info_management_team_list" newTableName="company_info_management_team_list"/>
+    <renameTable oldTableName="entity_info_proprietors_list" newTableName="company_info_proprietors_list"/>
+
+    <renameColumn tableName="customer_loan" oldColumnName="entity_info_id"
+      newColumnName="company_info_id"/>
+    <renameColumn tableName="company_info_management_team_list" oldColumnName="entity_info_id"
+      newColumnName="company_info_id"/>
+    <renameColumn tableName="company_info_proprietors_list" oldColumnName="entity_info_id"
+      newColumnName="company_info_id"/>
+
+    <dropForeignKeyConstraint baseTableName="customer_loan"
+      constraintName="fk_customer_entity_customer_info_id"/>
+    <addForeignKeyConstraint baseTableName="customer_loan" baseColumnNames="company_info_id"
+      constraintName="fk_customer_company_customer_info_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedTableName="company_info"
+      referencedColumnNames="id"/>
+
+    <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+      constraintName="fk_entity_info_management_team_list_entity_info_id"/>
+    <addForeignKeyConstraint baseColumnNames="company_info_id"
+      baseTableName="company_info_management_team_list"
+      constraintName="fk_company_info_management_team_list_company_info_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="company_info"/>
+
+    <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+      constraintName="fk_entity_info_management_team_list_management_team_list_id"/>
+    <addForeignKeyConstraint baseColumnNames="management_team_list_id"
+      baseTableName="company_info_management_team_list"
+      constraintName="fk_company_info_management_team_list_management_team_list_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="management_team"/>
+
+    <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+      constraintName="fk_entity_info_proprietors_list_entity_info_id"/>
+    <addForeignKeyConstraint baseColumnNames="company_info_id"
+      baseTableName="company_info_proprietors_list"
+      constraintName="fk_company_info_proprietors_list_company_info_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="company_info"/>
+
+    <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+      constraintName="fk_entity_info_proprietors_list_proprietors_list_id"/>
+    <addForeignKeyConstraint baseColumnNames="proprietors_list_id"
+      baseTableName="company_info_proprietors_list"
+      constraintName="fk_company_info_proprietors_list_proprietors_list_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="proprietor"/>
+
+  </changeSet>
+</databaseChangeLog>

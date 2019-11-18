@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
 
@@ -25,19 +25,23 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status);
 
 
-    List<PieChartDto> proposedAmount();
+    List<PieChartDto> proposedAmount(String startDate, String endDate) throws ParseException;
 
-    List<PieChartDto> proposedAmountByBranch(Long branchId);
+    List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate, String endDate)
+        throws ParseException;
 
     List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber);
 
-    List<CustomerLoan> getByRegistrationNumber(String registrationNumber);
-
     Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable);
+
+    Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable);
+
+    Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable);
 
     CustomerLoan delCustomerLoan(Long id);
 
-    List<StatisticDto> getStats(Long branchId);
+    List<StatisticDto> getStats(Long branchId, String startDate, String endDate)
+        throws ParseException;
 
     Map<String, String> chkUserContainCustomerLoan(Long id);
 

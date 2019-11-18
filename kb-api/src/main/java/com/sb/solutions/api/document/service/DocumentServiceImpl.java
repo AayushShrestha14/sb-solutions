@@ -25,7 +25,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final LoanCycleRepository loanCycleRepository;
 
     public DocumentServiceImpl(@Autowired DocumentRepository documentRepository,
-                               @Autowired LoanCycleRepository loanCycleRepository) {
+        @Autowired LoanCycleRepository loanCycleRepository) {
         this.documentRepository = documentRepository;
         this.loanCycleRepository = loanCycleRepository;
     }
@@ -46,6 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document document) {
+        document.setName(document.getDisplayName().trim().replaceAll("\\s", "-"));
         document.setLastModifiedAt(new Date());
         if (document.getId() == null) {
             document.setStatus(Status.ACTIVE);
@@ -58,6 +59,11 @@ public class DocumentServiceImpl implements DocumentService {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(t, SearchDto.class);
         return documentRepository.documentFilter(s.getName() == null ? "" : s.getName(), pageable);
+    }
+
+    @Override
+    public List<Document> saveAll(List<Document> list) {
+        return documentRepository.saveAll(list);
     }
 
 
@@ -76,7 +82,8 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
         Status status = Status.valueOf("ACTIVE");
-        for (Document document : documentRepository.findByLoanCycleContainingAndStatus(loanCycle, status)) {
+        for (Document document : documentRepository
+            .findByLoanCycleContainingAndStatus(loanCycle, status)) {
             document.getLoanCycle().remove(loanCycle);
         }
         for (Long id : ids) {

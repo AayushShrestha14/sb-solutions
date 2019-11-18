@@ -88,4 +88,9 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.findAll(specification, pageable);
     }
 
+    @Override
+    public List<Message> saveAll(List<Message> list) {
+        return messageRepository.saveAll(list);
+    }
+
 }
