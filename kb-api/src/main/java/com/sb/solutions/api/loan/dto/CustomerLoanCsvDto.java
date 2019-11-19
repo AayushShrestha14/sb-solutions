@@ -1,7 +1,5 @@
 package com.sb.solutions.api.loan.dto;
 
-import java.time.LocalDate;
-
 import lombok.Data;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
@@ -49,7 +47,5 @@ public class CustomerLoanCsvDto {
     private long loanPendingSpan;
 
     private long loanPossession;
-
-    private LocalDate createdAt;
 
 }

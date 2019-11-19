@@ -573,7 +573,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
             customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
-//            customerLoanCsvDto.setCreatedAt(c.getCurrentStage().getCreatedAt().getTime());
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 customerLoanCsvDto.setLoanPendingSpan(
