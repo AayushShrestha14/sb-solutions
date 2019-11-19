@@ -624,7 +624,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         long differenceInDate = lastModifiedAt.getTime() - createdLastAt.getTime();
         long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
-//        long diffDays = diff / (1000 * 60 * 60 * 24);
         daysdiff = (int) diffInDays;
 
         return daysdiff;
@@ -638,7 +637,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         long differenceInDate = currentDate.getTime() - createdAt.getTime();
         long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
-//        long diffDays = diff / (24 * 60 * 60 * 1000);
         daysDiff = (int) diffInDays;
 
         return daysDiff;
