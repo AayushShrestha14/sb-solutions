@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -573,6 +574,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
             customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
+            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 customerLoanCsvDto.setLoanPendingSpan(
@@ -611,7 +613,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 header.put("loanSpan", "Loan Lifespan");
             }
         }
-        header.put("currentStage,createdAt", "Created At");
+        header.put("createdAt", "Created At");
         return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
@@ -640,6 +642,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         return daysDiff;
 
+    }
+
+    public String formatCsvDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(date);
     }
 }
 

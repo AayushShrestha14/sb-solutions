@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.dto;
 
+
 import lombok.Data;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
@@ -13,6 +14,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+
 
 /**
  * @author yunish on 11/12/2019
@@ -47,5 +49,7 @@ public class CustomerLoanCsvDto {
     private long loanPendingSpan;
 
     private long loanPossession;
+
+    private String createdAt;
 
 }
