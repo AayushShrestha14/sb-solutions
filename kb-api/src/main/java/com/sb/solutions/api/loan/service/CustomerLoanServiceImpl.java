@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -32,6 +34,7 @@ import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -74,8 +77,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
-    private CustomerOfferService customerOfferService;
     private final CustomerDocumentService customerDocumentService;
+    private CustomerOfferService customerOfferService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -558,17 +561,92 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        final List customerLoanList = customerLoanRepository.findAll(specification);
+        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+        List csvDto = new ArrayList();
+        for (CustomerLoan c : customerLoanList) {
+            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
+            customerLoanCsvDto.setBranch(c.getBranch());
+            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
+            customerLoanCsvDto.setLoan(c.getLoan());
+            customerLoanCsvDto.setProposal(c.getProposal());
+            customerLoanCsvDto.setLoanType(c.getLoanType());
+            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
+            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
+            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
+            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
+            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
+            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
+            if (c.getDocumentStatus() == DocStatus.PENDING) {
+                customerLoanCsvDto.setLoanPendingSpan(
+                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculatePendingLoanSpanAndPossession(
+                        c.getCurrentStage().getLastModifiedAt()));
+            } else {
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getPreviousList().get(c.getPreviousList().size() - 1)
+                            .getLastModifiedAt()));
+                customerLoanCsvDto.setLoanSpan(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getCurrentStage().getCreatedAt()));
+            }
+
+            csvDto.add(customerLoanCsvDto);
+
+        }
         Map<String, String> header = new LinkedHashMap<>();
         header.put("branch,name", " Branch");
         header.put("customerInfo,customerName", "Name");
         header.put("loan,name", "Loan Name");
-        header.put("dmsLoanFile,proposedAmount", "Proposed Amount");
+        header.put("proposal,proposedLimit", "Proposed Amount");
         header.put("loanType", "Type");
         header.put("loanCategory", "Loan Category");
         header.put("documentStatus", "Status");
-        return csvMaker.csv("customer_loan", header, customerLoanList, UploadDir.customerLoanCsv);
+        header.put("toUser,name", "Current Position");
+        header.put("toRole,roleName", "Designation");
+        header.put("loanPossession", "Possession Under Days");
+        for (CustomerLoan c : customerLoanList) {
+            if (c.getDocumentStatus() == DocStatus.PENDING) {
+                header.put("loanPendingSpan", "Loan Lifespan");
+            } else {
+                header.put("loanSpan", "Loan Lifespan");
+            }
+        }
+        header.put("createdAt", "Created At");
+        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
+
+    public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
+        int daysdiff = 0;
+        Date lastModifiedAt = lastModifiedDate;
+        Date createdLastAt = createdLastDate;
+
+        long differenceInDate = lastModifiedAt.getTime() - createdLastAt.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
+        daysdiff = (int) diffInDays;
+
+        return daysdiff;
+
+    }
+
+    public long calculatePendingLoanSpanAndPossession(Date createdDate) {
+        int daysDiff = 0;
+        Date createdAt = createdDate;
+        Date currentDate = new Date();
+
+        long differenceInDate = currentDate.getTime() - createdAt.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
+        daysDiff = (int) diffInDays;
+
+        return daysDiff;
+
+    }
+
+    public String formatCsvDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(date);
+    }
 }
 
