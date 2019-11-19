@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan.dto;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
@@ -9,6 +11,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -37,6 +40,8 @@ public class CustomerLoanCsvDto {
 
     private User toUser;
 
+    private Role toRole;
+
     private Proposal proposal;
 
     private long loanSpan;
@@ -44,5 +49,7 @@ public class CustomerLoanCsvDto {
     private long loanPendingSpan;
 
     private long loanPossession;
+
+    private LocalDate createdAt;
 
 }

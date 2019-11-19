@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -571,6 +572,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
             customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
+            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
+//            customerLoanCsvDto.setCreatedAt(c.getCurrentStage().getCreatedAt().getTime());
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 customerLoanCsvDto.setLoanPendingSpan(
@@ -600,7 +603,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         header.put("loanCategory", "Loan Category");
         header.put("documentStatus", "Status");
         header.put("toUser,name", "Current Position");
-        header.put("loanPossession", "Possession");
+        header.put("toRole,roleName", "Designation");
+        header.put("loanPossession", "Possession Under Days");
         for (CustomerLoan c : customerLoanList) {
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 header.put("loanPendingSpan", "Loan Lifespan");
@@ -618,9 +622,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Date lastModifiedAt = lastModifiedDate;
         Date createdLastAt = createdLastDate;
 
-        long diff = lastModifiedAt.getTime() - createdLastAt.getTime();
-        long diffDays = diff / (1000 * 60 * 60 * 24);
-        daysdiff = (int) diffDays;
+        long differenceInDate = lastModifiedAt.getTime() - createdLastAt.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
+//        long diffDays = diff / (1000 * 60 * 60 * 24);
+        daysdiff = (int) diffInDays;
 
         return daysdiff;
 
@@ -631,9 +636,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Date createdAt = createdDate;
         Date currentDate = new Date();
 
-        long diff = currentDate.getTime() - createdAt.getTime();
-        long diffDays = diff / (24 * 60 * 60 * 1000);
-        daysDiff = (int) diffDays;
+        long differenceInDate = currentDate.getTime() - createdAt.getTime();
+        long diffInDays = TimeUnit.DAYS.convert(differenceInDate, TimeUnit.MILLISECONDS);
+//        long diffDays = diff / (24 * 60 * 60 * 1000);
+        daysDiff = (int) diffInDays;
 
         return daysDiff;
 
