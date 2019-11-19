@@ -75,8 +75,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
-    private CustomerOfferService customerOfferService;
     private final CustomerDocumentService customerDocumentService;
+    private CustomerOfferService customerOfferService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -574,20 +574,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
             if (c.getDocumentStatus() == DocStatus.PENDING) {
                 customerLoanCsvDto.setLoanPendingSpan(
-                    this.calculatePendingLoanSpan(c.getCurrentStage().getCreatedAt()));
+                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
                 customerLoanCsvDto.setLoanPossession(
-                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getCurrentStage().getCreatedAt()));
+                    this.calculatePendingLoanSpanAndPossession(
+                        c.getCurrentStage().getLastModifiedAt()));
             } else {
                 customerLoanCsvDto.setLoanPossession(
-                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
                         c.getPreviousList().get(c.getPreviousList().size() - 1)
                             .getLastModifiedAt()));
                 customerLoanCsvDto.setLoanSpan(
-                    this.calculateLoanSpanPossession(c.getCurrentStage().getLastModifiedAt(),
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
                         c.getCurrentStage().getCreatedAt()));
             }
-
 
             csvDto.add(customerLoanCsvDto);
 
@@ -614,27 +613,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
 
-    public long calculateLoanSpanPossession(Date lastModifiedDate, Date createdLastDate) {
+    public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateString = format.format(createdLastDate);
         Date lastModifiedAt = lastModifiedDate;
-        Date createdLastAt = null;
-        try {
-            createdLastAt = format.parse(dateString);
-            long diff =  Math.abs(lastModifiedAt.getTime() - createdLastAt.getTime());
-            long diffDays = diff / (24 * 60 * 60 * 1000);
-            daysdiff = (int) diffDays;
+        Date createdLastAt = createdLastDate;
 
-        } catch (ParseException e) {
-            logger.error("error date parsing", e);
-        }
+        long diff = lastModifiedAt.getTime() - createdLastAt.getTime();
+        long diffDays = diff / (1000 * 60 * 60 * 24);
+        daysdiff = (int) diffDays;
 
         return daysdiff;
 
     }
 
-    public long calculatePendingLoanSpan(Date createdDate) {
+    public long calculatePendingLoanSpanAndPossession(Date createdDate) {
         int daysDiff = 0;
         Date createdAt = createdDate;
         Date currentDate = new Date();
