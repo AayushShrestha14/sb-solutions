@@ -6,6 +6,7 @@ import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.AccountStatus;
+import com.sb.solutions.core.utils.ByteToMultipartFile.ByteToMultipartFile;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
@@ -120,48 +121,8 @@ public class AccountOpeningController {
     ) {
         String originalFilename = uploadDto.getOriginalFilename();
         byte[] bytes = uploadDto.getMultipartFile();
+        ByteToMultipartFile multipartFile = new ByteToMultipartFile(bytes,originalFilename);
 
-        MultipartFile multipartFile = new MultipartFile() {
-            @Override
-            public String getName() {
-                return null;
-            }
-
-            @Override
-            public String getOriginalFilename() {
-                return originalFilename;
-            }
-
-            @Override
-            public String getContentType() {
-                return null;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public long getSize() {
-                return 0;
-            }
-
-            @Override
-            public byte[] getBytes() throws IOException {
-                return bytes;
-            }
-
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return null;
-            }
-
-            @Override
-            public void transferTo(File file) throws IOException, IllegalStateException {
-
-            }
-        };
         return FileUploadUtils.uploadAccountOpeningFile(multipartFile,
                         uploadDto.getBranch(), uploadDto.getType(), uploadDto.getName(), uploadDto.getCitizenship(), uploadDto.getCustomerName());
     }
