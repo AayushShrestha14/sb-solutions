@@ -1,12 +1,12 @@
-package com.sb.solutions.core.utils.ByteToMultipartFile;
-
-import org.springframework.web.multipart.MultipartFile;
+package com.sb.solutions.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ByteToMultipartFile implements MultipartFile{
+import org.springframework.web.multipart.MultipartFile;
+
+public class ByteToMultipartFile implements MultipartFile {
 
     private final byte[] bytes;
     private final String originalFileName;
@@ -15,6 +15,7 @@ public class ByteToMultipartFile implements MultipartFile{
         this.bytes = bytes;
         this.originalFileName = originalFileName;
     }
+
     @Override
     public String getName() {
         return null;

@@ -6,24 +6,19 @@ import com.sb.solutions.api.openingForm.service.OpeningFormService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.AccountStatus;
-import com.sb.solutions.core.utils.ByteToMultipartFile.ByteToMultipartFile;
+import com.sb.solutions.core.utils.file.ByteToMultipartFile;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 @RestController
 @RequestMapping("/v1/accountOpening")
