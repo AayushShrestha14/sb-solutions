@@ -75,8 +75,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
-    private CustomerOfferService customerOfferService;
     private final CustomerDocumentService customerDocumentService;
+    private CustomerOfferService customerOfferService;
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -612,12 +612,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     public long calculateLoanSpanPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = format.format(createdLastDate);
         Date lastModifiedAt = lastModifiedDate;
-        Date createdLastAt = createdLastDate;
+        Date createdLastAt = null;
+        try {
+            createdLastAt = format.parse(dateString);
+            long diff = Math.abs(lastModifiedAt.getTime() - createdLastAt.getTime());
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+            daysdiff = (int) diffDays;
 
-        long diff = lastModifiedAt.getTime() - createdLastAt.getTime();
-        long diffDays = diff / (24 * 60 * 60 * 1000);
-        daysdiff = (int) diffDays;
+        } catch (ParseException e) {
+            logger.error("error date parsing", e);
+        }
 
         return daysdiff;
 
