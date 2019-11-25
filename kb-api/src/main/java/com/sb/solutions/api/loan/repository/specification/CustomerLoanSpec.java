@@ -35,6 +35,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_NOTIFY = "notify";
     private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
     private static final String FILTER_BY_CURRENT_OFFER_LETTER_STAGE = "currentOfferLetterStage";
+    private static final String FILTER_BY_COMPANY_NAME = "companyName";
 
     private final String property;
     private final String value;
@@ -103,6 +104,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .like(criteriaBuilder
                             .lower(root.join("customerInfo").get(FILTER_BY_CUSTOMER_NAME)),
                         value.toLowerCase() + "%");
+
+            case FILTER_BY_COMPANY_NAME:
+                return criteriaBuilder
+                    .like(criteriaBuilder
+                            .lower(root.join("companyInfo").get(FILTER_BY_COMPANY_NAME)),
+                        "%" + value.toLowerCase() + "%");
+
 //
 //            case FILTER_BY_CURRENT_OFFER_LETTER_STAGE:
 //
