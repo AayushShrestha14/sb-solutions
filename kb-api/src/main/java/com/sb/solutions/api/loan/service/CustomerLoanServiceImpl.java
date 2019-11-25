@@ -531,6 +531,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         stage.setComment(DocAction.DRAFT.name());
         stage.setDocAction(DocAction.DRAFT);
         object.setCurrentStage(stage);
+        object.setPreviousList(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
         return customerLoan;
