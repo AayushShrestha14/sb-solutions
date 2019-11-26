@@ -28,7 +28,7 @@ public class Proposal extends BaseEntity<Long> {
 //    private double premiumRateOnBaseRate;
 //    private ServiceChargeMethod serviceChargeMethod;
 //    private double serviceCharge;
-//    private double tenureDurationInMonths;
+    private double tenureDurationInMonths;
 //    private double cibCharge;
 //    private RepaymentMode repaymentMode;
 //    private String purposeOfSubmission;
