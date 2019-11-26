@@ -70,7 +70,7 @@ public class Mapper {
 
                 ApprovalLimit approvalLimit = approvalLimitService
                     .getByRoleAndLoan(currentUser.getRole().getId(),
-                        customerLoan.getLoan().getId(), LoanApprovalType.PERSONAL_TYPE);
+                        customerLoan.getLoan().getId(), customerLoan.getLoanCategory());
                 if (approvalLimit == null) {
                     throw new RuntimeException("Authority Limit Error");
                 }
