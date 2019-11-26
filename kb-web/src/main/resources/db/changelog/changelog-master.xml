@@ -1814,4 +1814,5 @@
   </changeSet>
   <include file="20191017_customer_offer_letter.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20191105_customer_document.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191125_alter_proposal_tenure.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
