@@ -3,8 +3,11 @@ package com.sb.solutions.web.document.v1;
 import java.util.List;
 import javax.validation.Valid;
 
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loanDocument.entity.LoanDocument;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.http.protocol.ResponseDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,6 +107,11 @@ public class DocumentController {
     @GetMapping(value = "/status/{statusValue}")
     public ResponseEntity<?> getAllByStatus(@PathVariable String statusValue) {
         return new RestResponseDto().successModel(documentService.getByStatus(statusValue));
+    }
+
+    @GetMapping(value = "/downloadDoc")
+    public ResponseEntity<?> downloadDoc(@RequestBody String path){
+        return new RestResponseDto().successModel(documentService.downloadAllDoc(path));
     }
 
 }

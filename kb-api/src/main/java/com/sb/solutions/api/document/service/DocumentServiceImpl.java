@@ -1,9 +1,11 @@
 package com.sb.solutions.api.document.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -98,5 +100,15 @@ public class DocumentServiceImpl implements DocumentService {
     public List<Document> getByStatus(String statusName) {
         Status status = Status.valueOf(statusName);
         return documentRepository.findByStatus(status);
+    }
+
+    @Override
+    public Boolean downloadAllDoc(String sourcepath) {
+        try {
+            FileUploadUtils.createZip(sourcepath, "D:\\loanDocument.zip");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+return true;
     }
 }

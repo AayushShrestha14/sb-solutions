@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://192.168.1.119:1433;databaseName=srdbweb
-    username: srdbweb
-    password: Shine@123
+    url: jdbc:sqlserver://localhost:1433;database=icfc_prod
+    username: sa
+    password: root
 
 
