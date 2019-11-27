@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
+import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
@@ -79,6 +80,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ProposalService proposalService;
     private final CustomerDocumentService customerDocumentService;
     private CustomerOfferService customerOfferService;
+    private CreditRiskGradingService creditRiskGradingService;
+
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -91,7 +94,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired ProposalService proposalService,
         @Autowired CustomerDocumentService customerDocumentService,
         @Autowired ProductModeService productModeService,
-        @Autowired CustomerOfferService customerOfferService) {
+        @Autowired CustomerOfferService customerOfferService,
+        @Autowired CreditRiskGradingService creditRiskGradingService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -104,6 +108,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
+        this.creditRiskGradingService = creditRiskGradingService;
     }
 
     @Override
@@ -183,6 +188,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
             this.proposalService.save(customerLoan.getProposal());
 
+        }
+        if (customerLoan.getCreditRiskGrading() != null) {
+            customerLoan.setCreditRiskGrading(creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
         }
 
         customerLoan.setSiteVisit(siteVisitTemp);
@@ -531,6 +539,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         stage.setComment(DocAction.DRAFT.name());
         stage.setDocAction(DocAction.DRAFT);
         object.setCurrentStage(stage);
+        object.setPreviousList(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
         return customerLoan;

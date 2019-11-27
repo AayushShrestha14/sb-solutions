@@ -107,8 +107,8 @@ public class FileUploadUtils {
         String branch, String type, String name, String citizenship, String customerName) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
-        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("jpg")
-            && !FileUtils.getExtension(multipartFile.getOriginalFilename()).equals("png")) {
+        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("jpg")
+            && !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
