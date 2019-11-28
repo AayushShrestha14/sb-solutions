@@ -5,7 +5,7 @@ BEGIN
     SET @count = (Select count(*) from permission)
     SET @countPull = (Select count(*) from permission where id = 125)
 
-    if (@count < 8)
+    if (@count < 11)
         BEGIN
             SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)

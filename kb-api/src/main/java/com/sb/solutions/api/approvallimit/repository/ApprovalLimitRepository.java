@@ -15,6 +15,4 @@ public interface ApprovalLimitRepository extends JpaRepository<ApprovalLimit, Lo
 
     ApprovalLimit getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(Long id, Long loanConfigId,
         LoanApprovalType loanApprovalType);
-
-
 }
