@@ -190,7 +190,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         }
         if (customerLoan.getCreditRiskGrading() != null) {
-            customerLoan.setCreditRiskGrading(creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
+            customerLoan.setCreditRiskGrading(
+                creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
         }
 
         customerLoan.setSiteVisit(siteVisitTemp);
@@ -540,6 +541,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         stage.setDocAction(DocAction.DRAFT);
         object.setCurrentStage(stage);
         object.setPreviousList(null);
+        object.setPreviousStageList(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
         return customerLoan;
