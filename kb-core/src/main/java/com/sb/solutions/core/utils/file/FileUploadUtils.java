@@ -1,5 +1,15 @@
 package com.sb.solutions.core.utils.file;
 
+import com.sb.solutions.core.constant.FilePath;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PathBuilder;
+import org.apache.maven.shared.utils.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,17 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.maven.shared.utils.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.sb.solutions.core.constant.FilePath;
-import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.utils.PathBuilder;
 
 public class FileUploadUtils {
 
@@ -47,7 +46,7 @@ public class FileUploadUtils {
             }
 
             final String imagePath = url + System.currentTimeMillis() + "." + FileUtils
-                .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
 
             path = Paths.get(FilePath.getOSPath() + imagePath);
 
@@ -65,7 +64,7 @@ public class FileUploadUtils {
      * File is uploaded  and renamed that of documenttype
      */
     public static ResponseEntity<?> uploadFile(MultipartFile multipartFile, String url,
-        String documentName) {
+                                               String documentName) {
 
         try {
             final byte[] bytes = multipartFile.getBytes();
@@ -91,7 +90,7 @@ public class FileUploadUtils {
 
             }
             String fileExtension = FileUtils.getExtension(multipartFile.getOriginalFilename())
-                .toLowerCase();
+                    .toLowerCase();
             url = url + documentName.toLowerCase() + "." + fileExtension;
 
             path = Paths.get(FilePath.getOSPath() + url);
@@ -104,21 +103,21 @@ public class FileUploadUtils {
     }
 
     public static ResponseEntity<?> uploadAccountOpeningFile(MultipartFile multipartFile,
-        String branch, String type, String name, String citizenship, String customerName) {
+                                                             String branch, String type, String name, String citizenship, String customerName) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
         } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("jpg")
-            && !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("png")) {
+                && !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
             final byte[] bytes = multipartFile.getBytes();
             url = new PathBuilder(UploadDir.initialDocument)
-                .withBranch(branch)
-                .withCustomerName(customerName)
-                .withCitizenship(citizenship)
-                .isJsonPath(false)
-                .buildAccountOpening();
+                    .withBranch(branch)
+                    .withCustomerName(customerName)
+                    .withCitizenship(citizenship)
+                    .isJsonPath(false)
+                    .buildAccountOpening();
             Path path = Paths.get(FilePath.getOSPath() + url);
             if (!Files.exists(path)) {
                 new File(FilePath.getOSPath() + url).mkdirs();
@@ -127,32 +126,32 @@ public class FileUploadUtils {
             switch (type) {
                 case "citizen":
                     imagePath =
-                        url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
-                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            url + name + "_" + System.currentTimeMillis() + "_citizen." + FileUtils
+                                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 case "passport":
                     imagePath =
-                        url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
-                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            url + name + "_" + System.currentTimeMillis() + "_passport." + FileUtils
+                                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 case "voter":
                     imagePath =
-                        url + name + "_" + System.currentTimeMillis() + "_voter." + FileUtils
-                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            url + name + "_" + System.currentTimeMillis() + "_voter." + FileUtils
+                                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 case "license":
                     imagePath =
-                        url + name + "_" + System.currentTimeMillis() + "_license." + FileUtils
-                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            url + name + "_" + System.currentTimeMillis() + "_license." + FileUtils
+                                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 case "id":
                     imagePath = url + name + "_" + System.currentTimeMillis() + "_id." + FileUtils
-                        .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 case "photo":
                     imagePath =
-                        url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
-                            .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                            url + name + "_" + System.currentTimeMillis() + "_photo." + FileUtils
+                                    .getExtension(multipartFile.getOriginalFilename()).toLowerCase();
                     break;
                 default:
                     return new RestResponseDto().failureModel("wrong file type");
@@ -167,6 +166,7 @@ public class FileUploadUtils {
     }
 
     public static void createZip(String sourceDirPath, String zipFilePath) throws IOException {
+        deleteFile(zipFilePath);
         Path p = Files.createFile(Paths.get(zipFilePath));
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
@@ -184,6 +184,20 @@ public class FileUploadUtils {
                     });
         }
     }
+
+    public static void deleteFile(String location) {
+        File dir = new File(location);
+        try {
+            dir.delete();
+            logger.info("deleting file of path {}", location);
+
+        } catch (Exception e) {
+            logger.error("error deleting  of path {}", location, e);
+        }
+
+    }
+
+
 
 }
 

@@ -1,23 +1,24 @@
 package com.sb.solutions.api.document.service;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.entity.LoanCycle;
+import com.sb.solutions.api.document.repository.DocumentRepository;
+import com.sb.solutions.api.document.repository.LoanCycleRepository;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.document.entity.Document;
-import com.sb.solutions.api.document.entity.LoanCycle;
-import com.sb.solutions.api.document.repository.DocumentRepository;
-import com.sb.solutions.api.document.repository.LoanCycleRepository;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -103,12 +104,17 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Boolean downloadAllDoc(String sourcepath) {
+    public String downloadAllDoc(String sourcepath) {
+        String destinationPath = String.join("/",
+                (Arrays.asList(sourcepath.split("/"))
+                        .subList(0, Arrays.asList(sourcepath
+                                .split("/")).size() - 1)))
+                + "/loanDocument.zip";
         try {
-            FileUploadUtils.createZip(sourcepath, "D:\\loanDocument.zip");
+            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcepath, UploadDir.WINDOWS_PATH + destinationPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
-return true;
+        return destinationPath;
     }
 }
