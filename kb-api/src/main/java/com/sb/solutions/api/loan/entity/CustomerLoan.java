@@ -35,6 +35,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
@@ -110,16 +111,13 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private String offerLetterUrl;
 
-    @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne
     private Proposal proposal;
 
-    @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne
     private Financial financial;
 
-    @OneToOne(cascade = {
-        CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne
     private Security security;
 
     @Lob
@@ -141,6 +139,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @Transient
     private int uploadedOfferLetterStat = 0;
+
+    @OneToOne
+    private CreditRiskGrading creditRiskGrading;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
