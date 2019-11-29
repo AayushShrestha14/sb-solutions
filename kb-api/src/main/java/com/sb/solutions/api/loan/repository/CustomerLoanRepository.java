@@ -107,127 +107,127 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     List<CustomerLoan> getByCustomerInfoCitizenshipNumber(String citizenshipNumber1);
 
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-//            + "GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatisticsByBranchId(@Param("branchId") Long branchId);
-//
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-//            + "AND c.createdAt <= :endDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatisticsByBranchIdAndDateBefore(@Param("branchId") Long branchId,
-//        @Param("endDate") Date endDate);
-//
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-//            + "AND c.createdAt >= :startDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatisticsByBranchIdAndDateAfter(@Param("branchId") Long branchId,
-//        @Param("startDate") Date startDate);
-//
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-//            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id, c"
-//            + ".loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
-//        @Param("startDate") Date startDate, @Param("endDate") Date endDate);
-
-
-
-
-    @Query(value =
-        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
-            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
-            + "GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsByBranchId(@Param("branchId") Long branchId);
-
-    @Query(value =
+    @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId  "
+            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
+            + "GROUP BY c.loan.id, c.loan.name, c.documentStatus")
+    List<StatisticDto> getLasStatisticsByBranchId(@Param("branchId") Long branchId);
+
+    @Query(
+        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
             + "AND c.createdAt <= :endDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsByBranchIdAndDateBefore(@Param("branchId") Long branchId,
+    List<StatisticDto> getLasStatisticsByBranchIdAndDateBefore(@Param("branchId") Long branchId,
         @Param("endDate") Date endDate);
 
-    @Query(value =
+    @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
             + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
             + "AND c.createdAt >= :startDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsByBranchIdAndDateAfter(@Param("branchId") Long branchId,
+    List<StatisticDto> getLasStatisticsByBranchIdAndDateAfter(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate);
 
-    @Query(value =
+    @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId  "
-            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c .loan .id, c.loan"
-            + ".name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
+            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
+            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id, c"
+            + ".loan.name, c.documentStatus")
+    List<StatisticDto> getLasStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-//    @Query(
+
+
+
+//    @Query(value =
 //        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
-//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-//            + "(:branchIds) GROUP BY c.loan.id, c.loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatistics(@Param("branchIds") List<Long> branchIds);
+//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
+//            + "GROUP BY c.loan.id, c.loan.name, c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsByBranchId(@Param("branchId") Long branchId);
 //
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
-//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-//            + "(:branchIds) AND c.createdAt <= :endDate GROUP BY c.loan.id, c.loan.name, c"
-//            + ".documentStatus")
-//    List<StatisticDto> getLasStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds,
+//    @Query(value =
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId  "
+//            + "AND c.createdAt <= :endDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsByBranchIdAndDateBefore(@Param("branchId") Long branchId,
 //        @Param("endDate") Date endDate);
 //
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
-//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-//            + "(:branchIds) AND c.createdAt >= :startDate GROUP BY c.loan.id, c.loan.name, c"
-//            + ".documentStatus")
-//    List<StatisticDto> getLasStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds,
+//    @Query(value =
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId "
+//            + "AND c.createdAt >= :startDate GROUP BY c.loan.id, c.loan.name, c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsByBranchIdAndDateAfter(@Param("branchId") Long branchId,
 //        @Param("startDate") Date startDate);
 //
-//    @Query(
-//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
-//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-//            + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
-//            + " c.loan.name, c.documentStatus")
-//    List<StatisticDto> getLasStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
+//    @Query(value =
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id = :branchId  "
+//            + "AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c .loan .id, c.loan"
+//            + ".name, c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
 //        @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query(
         "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
             + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-            + "(:branchIds) GROUP BY c.loan.id,c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatistics(@Param("branchIds") List<Long> branchIds);
+            + "(:branchIds) GROUP BY c.loan.id, c.loan.name, c.documentStatus")
+    List<StatisticDto> getLasStatistics(@Param("branchIds") List<Long> branchIds);
 
     @Query(
-        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-            + "(:branchIds) AND (c.createdAt >= :startDate) GROUP BY c.loan.id, c.loan.name, "
-            + "c.documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds,
-        @Param(
-            "startDate") Date startDate);
-
-    @Query(
-        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
-            + "(:branchIds) AND (c.createdAt <= :endDate) GROUP BY c.loan.id,c.loan.name, c"
+        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
+            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+            + "(:branchIds) AND c.createdAt <= :endDate GROUP BY c.loan.id, c.loan.name, c"
             + ".documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds,
-        @Param(
-            "endDate") Date endDate);
+    List<StatisticDto> getLasStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds,
+        @Param("endDate") Date endDate);
 
     @Query(
-        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
-            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
+            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+            + "(:branchIds) AND c.createdAt >= :startDate GROUP BY c.loan.id, c.loan.name, c"
+            + ".documentStatus")
+    List<StatisticDto> getLasStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds,
+        @Param("startDate") Date startDate);
+
+    @Query(
+        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
+            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
             + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
-            + "c.loan.name, c.documentStatus")
-    List<StatisticDto> getDmsStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
-        @Param(
-            "startDate") Date startDate, @Param("endDate") Date endDate);
+            + " c.loan.name, c.documentStatus")
+    List<StatisticDto> getLasStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
+        @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+//
+//    @Query(
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"
+//            + ".documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+//            + "(:branchIds) GROUP BY c.loan.id,c.loan.name, c.documentStatus")
+//    List<StatisticDto> getDmsStatistics(@Param("branchIds") List<Long> branchIds);
+//
+//    @Query(
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+//            + "(:branchIds) AND (c.createdAt >= :startDate) GROUP BY c.loan.id, c.loan.name, "
+//            + "c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsAndDateAfter(@Param("branchIds") List<Long> branchIds,
+//        @Param(
+//            "startDate") Date startDate);
+//
+//    @Query(
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+//            + "(:branchIds) AND (c.createdAt <= :endDate) GROUP BY c.loan.id,c.loan.name, c"
+//            + ".documentStatus")
+//    List<StatisticDto> getDmsStatisticsAndDateBefore(@Param("branchIds") List<Long> branchIds,
+//        @Param(
+//            "endDate") Date endDate);
+//
+//    @Query(
+//        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), "
+//            + "c.documentStatus, c.loan.name) FROM CustomerLoan c WHERE c.branch.id IN "
+//            + "(:branchIds) AND (c.createdAt >= :startDate AND c.createdAt <= :endDate) GROUP BY c.loan.id,"
+//            + "c.loan.name, c.documentStatus")
+//    List<StatisticDto> getDmsStatisticsAndDateBetween(@Param("branchIds") List<Long> branchIds,
+//        @Param(
+//            "startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Modifying
     @Transactional

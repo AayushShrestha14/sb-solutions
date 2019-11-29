@@ -2,6 +2,7 @@ package com.sb.solutions.api.approvallimit.service;
 
 import java.util.List;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanCategory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     public Page<ApprovalLimit> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return approvalLimitRepository.approvalLimitFilter(pageable);
+        return approvalLimitRepository. approvalLimitFilter(pageable);
     }
 
     @Override
@@ -69,9 +70,9 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
 
     @Override
     public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId,
-        LoanApprovalType loanApprovalType) {
+                                          LoanApprovalType loanCategory) {
         return approvalLimitRepository
             .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(roleId, loanConfigId,
-                loanApprovalType);
+                    loanCategory);
     }
 }
