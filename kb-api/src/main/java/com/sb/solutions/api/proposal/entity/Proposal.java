@@ -1,6 +1,7 @@
 package com.sb.solutions.api.proposal.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -28,7 +29,7 @@ public class Proposal extends BaseEntity<Long> {
 //    private double premiumRateOnBaseRate;
 //    private ServiceChargeMethod serviceChargeMethod;
 //    private double serviceCharge;
-    private double tenureDurationInMonths;
+    private Double tenureDurationInMonths;
 //    private double cibCharge;
 //    private RepaymentMode repaymentMode;
 //    private String purposeOfSubmission;
@@ -47,4 +48,5 @@ public class Proposal extends BaseEntity<Long> {
             return null;
         }
     }
+
 }
