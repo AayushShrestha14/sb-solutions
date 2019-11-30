@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -45,6 +46,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     Map<String, String> chkUserContainCustomerLoan(Long id);
 
+    @Transactional
     CustomerLoan renewCloseEntity(CustomerLoan object);
 
     String csv(Object searchDto);

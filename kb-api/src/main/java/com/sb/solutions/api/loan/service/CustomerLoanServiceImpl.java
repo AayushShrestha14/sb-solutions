@@ -38,6 +38,7 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -515,7 +516,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        SiteVisit siteVisit = object.getSiteVisit();
         final Long tempParentId = object.getId();
         object.setParentId(tempParentId);
         object.setId(null);
@@ -525,11 +525,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getDmsLoanFile().setId(null);
             object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
         }
+        if (object.getSiteVisit() != null) {
+            object.getSiteVisit().setId(null);
+        }
+        if (object.getProposal() != null) {
+            object.getProposal().setId(null);
+            object.setProposal(proposalService.save(object.getProposal()));
+        }
         if (object.getFinancial() != null) {
             object.getFinancial().setId(null);
+            object.setFinancial(financialService.save(object.getFinancial()));
         }
-        if (object.getSiteVisit() != null) {
-            siteVisit.setId(null);
+        if (object.getSecurity() != null) {
+            object.getSecurity().setId(null);
+            object.setSecurity(securityService.save(object.getSecurity()));
+        }
+        if (object.getCreditRiskGrading() != null) {
+            object.getCreditRiskGrading().setId(null);
+            object
+                .setCreditRiskGrading(creditRiskGradingService.save(object.getCreditRiskGrading()));
         }
 
         LoanStage stage = new LoanStage();
@@ -542,8 +556,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         object.setCurrentStage(stage);
         object.setPreviousList(null);
         object.setPreviousStageList(null);
+        List<CustomerDocument> customerDocumentList = object.getCustomerDocument();
+        object.setCustomerDocument(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
+        customerLoan.setCustomerDocument(customerDocumentList);
+        customerLoan = customerLoanRepository.save(customerLoan);
         return customerLoan;
     }
 
