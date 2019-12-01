@@ -1,5 +1,6 @@
 package com.sb.solutions.api.approvallimit.repository;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,5 @@ public interface ApprovalLimitRepository extends JpaRepository<ApprovalLimit, Lo
     Page<ApprovalLimit> approvalLimitFilter(Pageable pageable);
 
     ApprovalLimit getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(Long id, Long loanConfigId,
-        LoanApprovalType loanApprovalType);
-
-
+                                                                         LoanApprovalType loanCategory);
 }

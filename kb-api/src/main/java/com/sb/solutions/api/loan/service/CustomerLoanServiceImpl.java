@@ -38,6 +38,7 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -398,10 +399,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ProductMode productMode = findActiveProductMode();
         switch (productMode.getProduct()) {
             case DMS:
-                statistics = getDmsStatistics(branchId, startDate, endDate);
+//                statistics = getDmsStatistics(branchId, startDate, endDate);
                 break;
             case LAS:
-//                statistics = getLasStatistics(branchId, startDate, endDate);
+                statistics = getLasStatistics(branchId, startDate, endDate);
                 break;
             default:
         }
@@ -428,94 +429,93 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return productMode;
     }
 
-    private List<StatisticDto> getDmsStatistics(Long branchId, String startDate, String endDate)
-        throws ParseException {
-        List<StatisticDto> data = new ArrayList<>();
-        if (branchId == 0) {
-            List<Long> branches = userService.getRoleAccessFilterByBranch();
-            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
-                .isEmpty())) {
-                data = customerLoanRepository.getDmsStatistics(branches);
-            } else if (startDate == null || startDate.isEmpty()) {
-                data = customerLoanRepository.getDmsStatisticsAndDateBefore(branches,
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
-            } else if (endDate == null || endDate.isEmpty()) {
-                data = customerLoanRepository
-                    .getDmsStatisticsAndDateAfter(branches, new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate));
-            } else {
-                data = customerLoanRepository
-                    .getDmsStatisticsAndDateBetween(branches, new SimpleDateFormat(
-                            "MM/dd/yyyy").parse(startDate),
-                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
-            }
-        } else {
-            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
-                .isEmpty())) {
-                data = customerLoanRepository.getDmsStatisticsByBranchId(branchId);
-            } else if (startDate == null || startDate.isEmpty()) {
-                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBefore(branchId,
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
-            } else if (endDate == null || endDate.isEmpty()) {
-                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateAfter(branchId,
-                    new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate));
-            } else {
-                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBetween(branchId,
-                    new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate),
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
-            }
-        }
-        return data;
-    }
-
-//    private List<StatisticDto> getLasStatistics(Long branchId, String startDate, String endDate)
+//    private List<StatisticDto> getDmsStatistics(Long branchId, String startDate, String endDate)
 //        throws ParseException {
 //        List<StatisticDto> data = new ArrayList<>();
 //        if (branchId == 0) {
 //            List<Long> branches = userService.getRoleAccessFilterByBranch();
 //            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
 //                .isEmpty())) {
-//                data = customerLoanRepository.getLasStatistics(branches);
+//                data = customerLoanRepository.getDmsStatistics(branches);
 //            } else if (startDate == null || startDate.isEmpty()) {
-//                data = customerLoanRepository.getLasStatisticsAndDateBefore(branches,
+//                data = customerLoanRepository.getDmsStatisticsAndDateBefore(branches,
 //                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
 //            } else if (endDate == null || endDate.isEmpty()) {
 //                data = customerLoanRepository
-//                    .getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
+//                    .getDmsStatisticsAndDateAfter(branches, new SimpleDateFormat(
 //                        "MM/dd/yyyy").parse(startDate));
 //            } else {
 //                data = customerLoanRepository
-//                    .getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
+//                    .getDmsStatisticsAndDateBetween(branches, new SimpleDateFormat(
 //                            "MM/dd/yyyy").parse(startDate),
 //                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
 //            }
 //        } else {
 //            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
 //                .isEmpty())) {
-//                data = customerLoanRepository.getLasStatisticsByBranchId(branchId);
+//                data = customerLoanRepository.getDmsStatisticsByBranchId(branchId);
 //            } else if (startDate == null || startDate.isEmpty()) {
-//                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBefore(branchId,
+//                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBefore(branchId,
 //                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
 //            } else if (endDate == null || endDate.isEmpty()) {
-//                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateAfter(branchId,
+//                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateAfter(branchId,
 //                    new SimpleDateFormat(
 //                        "MM/dd/yyyy").parse(startDate));
 //            } else {
-//                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBetween(branchId,
+//                data = customerLoanRepository.getDmsStatisticsByBranchIdAndDateBetween(branchId,
 //                    new SimpleDateFormat(
 //                        "MM/dd/yyyy").parse(startDate),
 //                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
 //            }
-//
 //        }
 //        return data;
 //    }
 
+    private List<StatisticDto> getLasStatistics(Long branchId, String startDate, String endDate)
+        throws ParseException {
+        List<StatisticDto> data = new ArrayList<>();
+        if (branchId == 0) {
+            List<Long> branches = userService.getRoleAccessFilterByBranch();
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getLasStatistics(branches);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsAndDateBefore(branches,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository
+                    .getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository
+                    .getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate),
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
+        } else {
+            if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
+                .isEmpty())) {
+                data = customerLoanRepository.getLasStatisticsByBranchId(branchId);
+            } else if (startDate == null || startDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBefore(branchId,
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            } else if (endDate == null || endDate.isEmpty()) {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateAfter(branchId,
+                    new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate));
+            } else {
+                data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBetween(branchId,
+                    new SimpleDateFormat(
+                        "MM/dd/yyyy").parse(startDate),
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+            }
+
+        }
+        return data;
+    }
+
     @Override
     public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        SiteVisit siteVisit = object.getSiteVisit();
         final Long tempParentId = object.getId();
         object.setParentId(tempParentId);
         object.setId(null);
@@ -525,11 +525,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getDmsLoanFile().setId(null);
             object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
         }
+        if (object.getSiteVisit() != null) {
+            object.getSiteVisit().setId(null);
+        }
+        if (object.getProposal() != null) {
+            object.getProposal().setId(null);
+            object.setProposal(proposalService.save(object.getProposal()));
+        }
         if (object.getFinancial() != null) {
             object.getFinancial().setId(null);
+            object.setFinancial(financialService.save(object.getFinancial()));
         }
-        if (object.getSiteVisit() != null) {
-            siteVisit.setId(null);
+        if (object.getSecurity() != null) {
+            object.getSecurity().setId(null);
+            object.setSecurity(securityService.save(object.getSecurity()));
+        }
+        if (object.getCreditRiskGrading() != null) {
+            object.getCreditRiskGrading().setId(null);
+            object
+                .setCreditRiskGrading(creditRiskGradingService.save(object.getCreditRiskGrading()));
         }
 
         LoanStage stage = new LoanStage();
@@ -542,8 +556,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         object.setCurrentStage(stage);
         object.setPreviousList(null);
         object.setPreviousStageList(null);
+        List<CustomerDocument> customerDocumentList = object.getCustomerDocument();
+        object.setCustomerDocument(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
+        customerLoan.setCustomerDocument(customerDocumentList);
+        customerLoan = customerLoanRepository.save(customerLoan);
         return customerLoan;
     }
 

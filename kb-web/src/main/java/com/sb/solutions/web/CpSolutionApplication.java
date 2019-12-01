@@ -92,6 +92,11 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             baseServerFolder + "/loan_sql/patch_product_mode.sql");
         ResourceDatabasePopulator populators = new ResourceDatabasePopulator(dataResourc);
         populators.execute(dataSource);
+        ClassPathResource dataResourceGeneral = new ClassPathResource(
+                baseServerFolder + "/loan_sql/patch_general_permission.sql");
+        ResourceDatabasePopulator populatorGeneral = new ResourceDatabasePopulator(
+                dataResourceGeneral);
+        populatorGeneral.execute(dataSource);
 
         ProductMode productModeDMS = productModeRepository
             .getByProductAndStatus(Product.DMS, Status.ACTIVE);
@@ -193,11 +198,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             this.permissionRemoveForDMSandLAS(productModeDMS, productModeLAS, baseServerFolder);
         }
 
-        ClassPathResource dataResourceGeneral = new ClassPathResource(
-            baseServerFolder + "/loan_sql/patch_general_permission.sql");
-        ResourceDatabasePopulator populatorGeneral = new ResourceDatabasePopulator(
-            dataResourceGeneral);
-        populatorGeneral.execute(dataSource);
+
 
     }
 

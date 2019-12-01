@@ -1,5 +1,6 @@
 package com.sb.solutions.web.approvallimit.v1;
 
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -53,11 +54,11 @@ public class ApprovalLimitController {
     }
 
 
-    @GetMapping(value = "/{id}/role")
-    public ResponseEntity<?> getByRoleAndLoan(@PathVariable Long id) {
+    @GetMapping(value = "/{id}/{loanCategory}/role")
+    public ResponseEntity<?> getByRoleAndLoan(@PathVariable Long id, @PathVariable LoanApprovalType loanCategory) {
         return new RestResponseDto().successModel(approvalLimitService
-            .getByRoleAndLoan(userService.getAuthenticated().getRole().getId(), id,
-                LoanApprovalType.PERSONAL_TYPE));
+            .getByRoleAndLoan(userService.getAuthenticated().getRole().getId(), id,loanCategory
+                    ));
     }
 
 }

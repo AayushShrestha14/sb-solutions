@@ -3,6 +3,10 @@ server:
   compression:
     enabled: true
 spring:
+  application:
+    name: las
+  jmx:
+    default-domain: las
   profiles:
     active: dev
   thymeleaf:
