@@ -17,4 +17,6 @@ public interface DocumentService extends BaseService<Document> {
     String saveList(List<Long> ids, LoanCycle loanCycle);
 
     List<Document> getByStatus(String statusName);
+
+    String downloadAllDoc(String path);
 }

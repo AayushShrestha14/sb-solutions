@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.maven.shared.utils.io.FileUtils;
 import org.slf4j.Logger;
@@ -164,6 +166,37 @@ public class FileUploadUtils {
         }
     }
 
+    public static void createZip(String sourceDirPath, String zipFilePath) throws IOException {
+        deleteFile(zipFilePath);
+        Path p = Files.createFile(Paths.get(zipFilePath));
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+            Path pp = Paths.get(sourceDirPath);
+            Files.walk(pp)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                        try {
+                            zs.putNextEntry(zipEntry);
+                            Files.copy(path, zs);
+                            zs.closeEntry();
+                        } catch (IOException e) {
+                            System.err.println(e);
+                        }
+                    });
+        }
+    }
+
+    public static void deleteFile(String location) {
+        File dir = new File(location);
+        try {
+            dir.delete();
+            logger.info("deleting file of path {}", location);
+
+        } catch (Exception e) {
+            logger.error("error deleting  of path {}", location, e);
+        }
+
+    }
 
 
 
