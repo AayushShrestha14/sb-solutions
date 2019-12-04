@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
 
@@ -36,6 +37,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
     private static final String FILTER_BY_CURRENT_OFFER_LETTER_STAGE = "currentOfferLetterStage";
     private static final String FILTER_BY_COMPANY_NAME = "companyName";
+    private static final String FILTER_BY_DOC_ACTION = "docAction";
 
     private final String property;
     private final String value;
@@ -110,6 +112,10 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .like(criteriaBuilder
                             .lower(root.join("companyInfo").get(FILTER_BY_COMPANY_NAME)),
                         "%" + value.toLowerCase() + "%");
+
+            case FILTER_BY_DOC_ACTION:
+                return criteriaBuilder
+                    .and(criteriaBuilder.equal(root.get("currentStage").get("docAction"), DocAction.valueOf(value)));
 
 //
 //            case FILTER_BY_CURRENT_OFFER_LETTER_STAGE:
