@@ -1,0 +1,117 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet id="53-valuator-drop-foreign-key-constraint-site-province-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyName="fk_valuator_site_province_id" foreignKeyTableName="valuator"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="valuator" constraintName="fk_valuator_site_province_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-column-site-province-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="valuator" columnName="site_province_id"/>
+    </preConditions>
+    <dropColumn tableName="valuator" columnName="site_province_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-foreign-key-constraint-site-district-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyName="fk_valuator_site_district_id" foreignKeyTableName="valuator"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="valuator" constraintName="fk_valuator_site_district_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-column-site-district-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="valuator" columnName="site_district_id"/>
+    </preConditions>
+    <dropColumn tableName="valuator" columnName="site_district_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-foreign-key-constraint-site-municipality-vdc-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyName="fk_valuator_site_municipality_vdc_id" foreignKeyTableName="valuator"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="valuator" constraintName="fk_valuator_site_municipality_vdc_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-column-site-municipality-vdc-id" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="valuator" columnName="site_municipality_vdc_id"/>
+    </preConditions>
+    <dropColumn tableName="valuator" columnName="site_municipality_vdc_id"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-column-site-street-name" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="valuator" columnName="site_street_name"/>
+    </preConditions>
+    <dropColumn tableName="valuator" columnName="site_street_name"/>
+  </changeSet>
+
+  <changeSet id="53-valuator-drop-column-site-ward-number" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="valuator" columnName="site_ward_number"/>
+    </preConditions>
+    <dropColumn tableName="valuator" columnName="site_ward_number"/>
+  </changeSet>
+
+  <changeSet id="53-alter-valuator-add-email" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="email"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="email" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="53-alter-valuator-add-valuating-field" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="valuating_field"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="valuating_field" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="53-alter-valuator-add-bank-associate-date" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="bank_associate_date"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="bank_associate_date" type="DATE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="53-alter-valuator-add-min-amount" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="min_amount"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="min_amount" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="53-alter-valuator-add-max-amount" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="max_amount"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="max_amount" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>
