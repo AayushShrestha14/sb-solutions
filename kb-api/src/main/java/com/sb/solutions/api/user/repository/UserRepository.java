@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.user.PieChartDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
@@ -66,19 +65,10 @@ public interface UserRepository extends JpaRepository<User, Long>,
             + " AND a.type is not null;", nativeQuery = true)
     List<Object> userApiAuthorities(@Param("id") Long id);
 
-    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(b.name, COUNT(u)) FROM User u JOIN"
-        + " u.branch b WHERE u.role.roleAccess = com.sb.solutions.core.enums.RoleAccess.OWN "
-        + "GROUP BY b.id,b.name")
-    List<PieChartDto> getStatisticsBasedOnBranch();
-
-    @Query("SELECT NEW com.sb.solutions.api.user.PieChartDto(r.roleName, COUNT(u)) FROM User "
-        + " u join u.role r GROUP BY r.id,r.roleName")
-    List<PieChartDto> getStatisticsBasedOnRoles();
-
-    List<User>  findByRoleIdAndIsDefaultCommittee(Long id,Boolean isCommittee);
+    List<User> findByRoleIdAndIsDefaultCommittee(Long id, Boolean isCommittee);
 
 
-    List<User>  findByRoleRoleNameAndStatus(String roleName,Status status);
+    List<User> findByRoleRoleNameAndStatus(String roleName, Status status);
 
 }
 

@@ -305,19 +305,6 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
-    @Override
-    public List<PieChartDto> getStatisticsForBranchVsUsers() {
-        logger.debug("Request to retrieve statistics of branch with respect to users.");
-        List<PieChartDto> pieChartDatas = userRepository.getStatisticsBasedOnBranch();
-        return pieChartDatas;
-    }
-
-    @Override
-    public List<PieChartDto> getStatisticsForRolesVsUsers() {
-        logger.debug("Request to retrieve statistics of roles with respect to users.");
-        List<PieChartDto> pieChartDatas = userRepository.getStatisticsBasedOnRoles();
-        return pieChartDatas;
-    }
 
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
