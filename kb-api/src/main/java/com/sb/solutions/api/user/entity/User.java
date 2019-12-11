@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
@@ -20,6 +21,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,32 +43,46 @@ import com.sb.solutions.core.enums.Status;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "users")
+@EntityListeners({AuditingEntityListener.class})
+@Audited
 public class User extends BaseEntity<Long> implements UserDetails, Serializable {
 
     private String name;
 
     @Column(name = "user_name", unique = true, nullable = false)
     private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
+
+    @NotAudited
     @Column(nullable = false)
     private String password;
+
+    @NotAudited
     private String resetPasswordToken;
 
+    @NotAudited
     @Temporal(TemporalType.TIMESTAMP)
     private Date resetPasswordTokenExpiry;
+
     private Status status;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    private String accountNo;
 
+    @NotAudited
     @ManyToMany
     private List<Branch> branch;
+
     private String signatureImage;
+
+    @NotAudited
     private String profilePicture;
 
+    @NotAudited
     private Boolean isDefaultCommittee = false;
 
     @Transient
