@@ -1,9 +1,14 @@
 BEGIN
 
-        DECLARE  @count smallint
-    DECLARE   @countPull smallint
+    DECLARE
+        @count smallint
+    DECLARE
+        @countPull smallint
+    DECLARE
+        @count_preference smallint
     SET @count = (Select count(*) from permission)
     SET @countPull = (Select count(*) from permission where id = 125)
+    SET @count_preference = (SELECT count(*) from permission where id = 142)
 
     if (@count < 11)
         BEGIN
@@ -144,13 +149,30 @@ BEGIN
         END
 
 
---     if (@countPull < 1)
+    --     if (@countPull < 1)
 --         BEGIN
 --             SET IDENTITY_INSERT permission ON
 --             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
 --             VALUES (125, 'Pull', 'fas fa-angle-double-down', '/home/loan/pull', 100, 1)
 --             SET IDENTITY_INSERT permission OFF
 --         END
+
+    if (@count_preference < 1)
+        BEGIN
+            DELETE FROM role_permission_rights where permission_id = 105
+            DELETE FROM permission where id = 105
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+            VALUES (142, 'Preference Master', 'settings-2-outline', '/home/admin/preference-master',
+                    0, 1)
+            UPDATE permission set front_url = '/home/dashboard' where id = 17
+            SET IDENTITY_INSERT permission OFF
+
+
+            SET IDENTITY_INSERT role_permission_rights ON
+            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+            VALUES (57, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 142, 1)
+            SET IDENTITY_INSERT role_permission_rights Off
+        end
 
 
 END;
