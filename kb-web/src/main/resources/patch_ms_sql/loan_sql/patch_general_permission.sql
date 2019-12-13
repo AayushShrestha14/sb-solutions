@@ -161,6 +161,7 @@ BEGIN
         BEGIN
             DELETE FROM role_permission_rights where permission_id = 105
             DELETE FROM permission where id = 105
+            SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (142, 'Preference Master', 'settings-2-outline', '/home/admin/preference-master',
                     0, 1)

@@ -201,6 +201,7 @@ SET IDENTITY_INSERT url_api off
 
 
 END
+DELETE FROM permission_api_list where permission_id = 17
 
 
 
