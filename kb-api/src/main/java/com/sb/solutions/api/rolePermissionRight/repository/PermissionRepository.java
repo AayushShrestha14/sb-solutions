@@ -17,7 +17,7 @@ import com.sb.solutions.api.rolePermissionRight.entity.Permission;
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
-    @Query(value = "select p from Permission p where p.id not in (2,3,6) ")
+    @Query(value = "select p from Permission p where p.id not in (2,3,6,142) ")
     List<Permission> getAllForRoleAndPermission();
 
     @Query(value = "select ua.type,p.permission_name from url_api ua"

@@ -1820,4 +1820,5 @@
   <include file="loan_form/20191125_credit_risk_grading.xml" relativeToChangelogFile="true"/>
   <include file="20191211_valuator_branch.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191211_alter_valuator.xml" relativeToChangelogFile="true"/>
+  <include file="20191211_users_audit.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
