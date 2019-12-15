@@ -114,4 +114,15 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="53-alter-valuator-add-inactive-comment" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="inactive_comment"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="inactive_comment" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
