@@ -1,0 +1,37 @@
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet author="elvin" id="57-audit-customer-loan">
+    <createTable tableName="customer_loan_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="customer_info_id" type="BIGINT"/>
+      <column name="loan_id" type="BIGINT"/>
+      <column name="company_info_id" type="BIGINT"/>
+      <column name="loan_type" type="INT"/>
+      <column name="document_status" type="INT"/>
+      <column name="loan_category" type="BIGINT"/>
+      <column name="site_visit_id" type="BIGINT"/>
+      <column name="current_stage_id" type="BIGINT"/>
+      <column name="branch_id" type="BIGINT"/>
+      <column name="offer_letter_url" type="VARCHAR(100)"/>
+      <column name="proposal_id" type="BIGINT"/>
+      <column name="financial_id" type="BIGINT"/>
+      <column name="security_id" type="BIGINT"/>
+      <column name="previous_stage_list" type="LONGTEXT"/>
+      <column name="credit_risk_grading_id" type="BIGINT"/>
+    </createTable>
+    <addPrimaryKey tableName="customer_loan_audit" columnNames="id,rev" constraintName="PK_customer_loan_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_loan_audit" baseColumnNames="rev"
+      constraintName="FK_customer_loan_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+</databaseChangeLog>
