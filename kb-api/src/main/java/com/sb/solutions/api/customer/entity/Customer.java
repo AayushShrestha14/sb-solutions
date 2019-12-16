@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,7 +17,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
@@ -31,26 +35,31 @@ import com.sb.solutions.core.enums.Status;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "customer")
+@EntityListeners({AuditingEntityListener.class})
+@Audited
 public class Customer extends BaseEntity<Long> {
 
     private String title;
     private String customerName;
+
+    @NotAudited
     private String customerId;
     @Temporal(TemporalType.DATE)
     private Date dob;
     private String accountNo;
 
     @ManyToOne
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Province province;
 
     @ManyToOne
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private District district;
 
     @ManyToOne
-    @NotAudited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private MunicipalityVdc municipalities;
+
     private String street;
     private String wardNumber;
     private String contactNumber;
@@ -63,6 +72,8 @@ public class Customer extends BaseEntity<Long> {
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
 
+    // TODO customerRelatives left to audit
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CustomerRelative> customerRelatives;
 }
