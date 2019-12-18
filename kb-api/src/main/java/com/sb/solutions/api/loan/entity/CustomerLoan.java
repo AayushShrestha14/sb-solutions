@@ -96,7 +96,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;

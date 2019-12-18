@@ -67,4 +67,22 @@
       constraintName="FK_customer_audit_rev_revinfo_rev"
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
+
+  <changeSet author="elvin" id="57-audit-site-visit">
+    <createTable tableName="site_visit_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+    <addPrimaryKey tableName="site_visit_audit" columnNames="id,rev" constraintName="PK_site_visit_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="site_visit_audit" baseColumnNames="rev"
+      constraintName="FK_site_visit_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
 </databaseChangeLog>
