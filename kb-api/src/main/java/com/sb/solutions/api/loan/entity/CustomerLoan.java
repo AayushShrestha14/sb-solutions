@@ -101,7 +101,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 

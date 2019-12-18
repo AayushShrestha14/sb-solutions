@@ -105,4 +105,26 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-loan-stage">
+    <createTable tableName="loan_stage_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="comment" type="LONGTEXT"/>
+      <column name="from_user_id" type="BIGINT"/>
+      <column name="to_user_id" type="BIGINT"/>
+      <column name="from_role_id" type="BIGINT"/>
+      <column name="to_role_id" type="BIGINT"/>
+      <column name="doc_action" type="INT"/>
+    </createTable>
+    <addPrimaryKey tableName="loan_stage_audit" columnNames="id,rev" constraintName="PK_loan_stage_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="loan_stage_audit" baseColumnNames="rev"
+      constraintName="FK_loan_stage_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
 </databaseChangeLog>

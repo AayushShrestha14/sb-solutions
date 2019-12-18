@@ -6,6 +6,8 @@ import javax.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import org.hibernate.envers.Audited;
+
 import com.sb.solutions.api.rolePermissionRight.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -17,6 +19,7 @@ import com.sb.solutions.core.enums.DocAction;
 @Data
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = true)
+@Audited
 public class Stage extends BaseEntity<Long> {
 
     @OneToOne
