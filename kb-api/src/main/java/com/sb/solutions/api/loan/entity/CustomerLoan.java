@@ -165,7 +165,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     private int uploadedOfferLetterStat = 0;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
 

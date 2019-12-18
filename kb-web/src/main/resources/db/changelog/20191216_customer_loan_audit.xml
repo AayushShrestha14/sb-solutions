@@ -180,4 +180,22 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-credit-risk-grading">
+    <createTable tableName="credit_risk_grading_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+    <addPrimaryKey tableName="credit_risk_grading_audit" columnNames="id,rev" constraintName="PK_credit_risk_grading_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="credit_risk_grading_audit" baseColumnNames="rev"
+      constraintName="FK_credit_risk_grading_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+
 </databaseChangeLog>
