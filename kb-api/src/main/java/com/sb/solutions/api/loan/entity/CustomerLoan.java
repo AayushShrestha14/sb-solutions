@@ -140,7 +140,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Financial financial;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne
     private Security security;
 

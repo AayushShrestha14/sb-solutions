@@ -163,5 +163,21 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-security">
+    <createTable tableName="security_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+    <addPrimaryKey tableName="security_audit" columnNames="id,rev" constraintName="PK_security_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="security_audit" baseColumnNames="rev"
+      constraintName="FK_security_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
 
 </databaseChangeLog>
