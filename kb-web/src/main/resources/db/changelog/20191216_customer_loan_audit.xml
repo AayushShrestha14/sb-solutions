@@ -127,4 +127,23 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-proposal">
+    <createTable tableName="proposal_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="proposed_limit" type="DECIMAL"/>
+      <column name="tenure_duration_in_months" type="DOUBLE"/>
+    </createTable>
+    <addPrimaryKey tableName="proposal_audit" columnNames="id,rev" constraintName="PK_proposal_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="proposal_audit" baseColumnNames="rev"
+      constraintName="FK_proposal_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
 </databaseChangeLog>

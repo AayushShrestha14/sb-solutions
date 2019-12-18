@@ -132,7 +132,7 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private String offerLetterUrl;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne
     private Proposal proposal;
 

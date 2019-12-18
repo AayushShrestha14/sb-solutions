@@ -3,12 +3,16 @@ package com.sb.solutions.api.proposal.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.RepaymentMode;
@@ -20,23 +24,13 @@ import com.sb.solutions.core.utils.NumberToWordsConverter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners({AuditingEntityListener.class})
+@Audited
 public class Proposal extends BaseEntity<Long> {
-//    private String path;
+
     private String data;
     private BigDecimal proposedLimit;
-//    private double interestRate;
-//    private double baseRate;
-//    private double premiumRateOnBaseRate;
-//    private ServiceChargeMethod serviceChargeMethod;
-//    private double serviceCharge;
     private Double tenureDurationInMonths;
-//    private double cibCharge;
-//    private RepaymentMode repaymentMode;
-//    private String purposeOfSubmission;
-//    private String disbursementCriteria;
-//    private String creditInformationReportStatus;
-//    private String incomeFromTheAccount;
-//    private String borrowerInformation;
     @Transient
     private String proposedAmountInWords;
 
