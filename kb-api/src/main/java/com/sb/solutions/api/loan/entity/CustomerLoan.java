@@ -32,6 +32,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -86,8 +87,7 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private LoanApprovalType loanCategory;
 
-    // TODO audit customerDocument
-    @NotAudited
+    @AuditJoinTable(name = "customer_document_Path_customer_Loan_audit")
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "customer_document_Path_customer_Loan")
     private List<CustomerDocument> customerDocument;

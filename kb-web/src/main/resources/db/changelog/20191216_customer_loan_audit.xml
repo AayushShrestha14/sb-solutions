@@ -197,5 +197,43 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-customer-document">
+    <createTable tableName="customer_document_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="document_path" type="VARCHAR(256)"/>
+      <column name="document_id" type="BIGINT"/>
+    </createTable>
+    <addPrimaryKey tableName="customer_document_audit" columnNames="id,rev" constraintName="PK_customer_document_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_document_audit" baseColumnNames="rev"
+      constraintName="FK_customer_document_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-customer-document-Path-customer-loan">
+    <createTable tableName="customer_document_Path_customer_loan_audit">
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="customer_document_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="customer_document_Path_customer_loan_audit" columnNames="customer_loan_id,customer_document_id,rev" constraintName="PK_customer_document_Path_customer_loan_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_document_Path_customer_loan_audit" baseColumnNames="rev"
+      constraintName="FK_customer_document_Path_customer_loan_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+
 
 </databaseChangeLog>
