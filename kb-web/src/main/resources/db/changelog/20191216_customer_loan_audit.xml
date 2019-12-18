@@ -146,4 +146,22 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-financial">
+    <createTable tableName="financial_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+    <addPrimaryKey tableName="financial_audit" columnNames="id,rev" constraintName="PK_financial_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="financial_audit" baseColumnNames="rev"
+      constraintName="FK_financial_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+
 </databaseChangeLog>
