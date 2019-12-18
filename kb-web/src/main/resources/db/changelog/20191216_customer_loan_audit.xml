@@ -85,4 +85,24 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-role">
+    <createTable tableName="role_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="role_name" type="VARCHAR(256)"/>
+      <column name="status" type="INT"/>
+      <column name="role_type" type="INT"/>
+      <column name="role_access" type="INT"/>
+    </createTable>
+    <addPrimaryKey tableName="role_audit" columnNames="id,rev" constraintName="PK_role_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="role_audit" baseColumnNames="rev"
+      constraintName="FK_role_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
 </databaseChangeLog>

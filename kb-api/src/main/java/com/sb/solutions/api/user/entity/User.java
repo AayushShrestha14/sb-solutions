@@ -68,7 +68,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
 
     private Status status;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @OneToOne
     @JoinColumn(name = "role_id")
     private Role role;
