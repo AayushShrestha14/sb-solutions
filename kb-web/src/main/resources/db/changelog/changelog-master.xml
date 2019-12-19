@@ -1818,6 +1818,8 @@
   <include file="alter_changeset/20191128_alter_proposal_tenure_data_type_change.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191128_alter_customer_loan_add_expiry_date.xml" relativeToChangelogFile="true"/>
   <include file="loan_form/20191125_credit_risk_grading.xml" relativeToChangelogFile="true"/>
+  <include file="20191211_valuator_branch.xml" relativeToChangelogFile="true"/>
+  <include file="alter_changeset/20191211_alter_valuator.xml" relativeToChangelogFile="true"/>
   <include file="20191211_users_audit.xml" relativeToChangelogFile="true"/>
   <include file="20191216_customer_loan_audit.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

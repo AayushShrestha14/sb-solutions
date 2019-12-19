@@ -1,10 +1,15 @@
 package com.sb.solutions.api.valuator.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,6 +31,7 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
     private String name;
     private String contactNo;
     private Status status;
+    private String email;
     @ManyToOne
     @JoinColumn(name = "province_id")
     private Province province;
@@ -37,15 +43,13 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
     private MunicipalityVdc municipalityVdc;
     private String streetName;
     private String wardNumber;
-    @ManyToOne
-    @JoinColumn(name = "site_province_id")
-    private Province siteProvince;
-    @ManyToOne
-    @JoinColumn(name = "site_district_id")
-    private District siteDistrict;
-    @ManyToOne
-    @JoinColumn(name = "site_municipality_vdc_id")
-    private MunicipalityVdc siteMunicipalityVdc;
-    private String siteStreetName;
-    private String siteWardNumber;
+
+    private String valuatingField;
+    private Date bankAssociateDate;
+    private BigDecimal minAmount;
+    private BigDecimal maxAmount;
+    private String inactiveComment;
+
+    @ManyToMany
+    private List<Branch> branch;
 }
