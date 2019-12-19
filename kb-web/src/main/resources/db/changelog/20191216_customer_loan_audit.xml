@@ -297,4 +297,168 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-legal-status">
+    <createTable tableName="legal_status_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="corporate_structure" type="VARCHAR(256)"/>
+      <column name="registered_office" type="VARCHAR(256)"/>
+      <column name="registered_under_act" type="VARCHAR(256)"/>
+      <column name="registration_date" type="DATE"/>
+      <column name="pan_registration_office" type="VARCHAR(256)"/>
+      <column name="pan_registration_date" type="DATE"/>
+    </createTable>
+    <addPrimaryKey tableName="legal_status_audit" columnNames="id,rev" constraintName="PK_legal_status_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="legal_status_audit" baseColumnNames="rev"
+      constraintName="FK_legal_status_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-capital">
+    <createTable tableName="capital_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="authorized_capital" type="DOUBLE"/>
+      <column name="paid_up_capital" type="DOUBLE"/>
+      <column name="issued_capital" type="DOUBLE"/>
+      <column name="total_capital" type="DOUBLE"/>
+      <column name="fixed_capital" type="DOUBLE"/>
+      <column name="working_capital" type="DOUBLE"/>
+      <column name="number_of_shareholder" type="INT"/>
+    </createTable>
+    <addPrimaryKey tableName="capital_audit" columnNames="id,rev" constraintName="PK_capital_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="capital_audit" baseColumnNames="rev"
+      constraintName="FK_capital_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-swot">
+    <createTable tableName="swot_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="strength" type="VARCHAR(256)"/>
+      <column name="weakness" type="VARCHAR(256)"/>
+      <column name="opportunity" type="VARCHAR(256)"/>
+      <column name="threats" type="VARCHAR(256)"/>
+    </createTable>
+    <addPrimaryKey tableName="swot_audit" columnNames="id,rev" constraintName="PK_swot_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="swot_audit" baseColumnNames="rev"
+      constraintName="FK_swot_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-management-team">
+    <createTable tableName="management_team_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="name" type="VARCHAR(256)"/>
+      <column name="description" type="LONGTEXT"/>
+      <column name="designation" type="VARCHAR(256)"/>
+    </createTable>
+    <addPrimaryKey tableName="management_team_audit" columnNames="id,rev" constraintName="PK_management_team_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="management_team_audit" baseColumnNames="rev"
+      constraintName="FK_management_team_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-proprietor">
+    <createTable tableName="proprietor_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="name" type="VARCHAR(256)"/>
+      <column name="contact_no" type="VARCHAR(256)"/>
+      <column name="province_id" type="BIGINT"/>
+      <column name="district_id" type="BIGINT"/>
+      <column name="municipality_vdc_id" type="BIGINT"/>
+      <column name="share" type="DOUBLE"/>
+    </createTable>
+    <addPrimaryKey tableName="proprietor_audit" columnNames="id,rev" constraintName="PK_proprietor_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="proprietor_audit" baseColumnNames="rev"
+      constraintName="FK_proprietor_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-company-info">
+    <createTable tableName="company_info_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="company_name" type="VARCHAR(256)"/>
+      <column name="registration_number" type="VARCHAR(256)"/>
+      <column name="establishment_date" type="DATE"/>
+      <column name="business_type" type="INT"/>
+      <column name="pan_number" type="VARCHAR(256)"/>
+      <column name="legal_status_id" type="INT"/>
+      <column name="capital_id" type="INT"/>
+      <column name="swot_id" type="INT"/>
+    </createTable>
+    <addPrimaryKey tableName="company_info_audit" columnNames="id,rev" constraintName="PK_company_info_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="company_info_audit" baseColumnNames="rev"
+      constraintName="FK_company_info_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+
+    <createTable tableName="company_info_management_team_list_audit">
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="company_info_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="management_team_list_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="company_info_management_team_list_audit" columnNames="company_info_id,management_team_list_id,rev" constraintName="PK_company_info_management_team_list_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="company_info_management_team_list_audit" baseColumnNames="rev"
+      constraintName="FK_company_info_management_team_list_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+
+    <createTable tableName="company_info_proprietors_list_audit">
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="company_info_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="proprietors_list_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="company_info_proprietors_list_audit" columnNames="company_info_id,proprietors_list_id,rev" constraintName="PK_company_info_proprietors_list_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="company_info_proprietors_list_audit" baseColumnNames="rev"
+      constraintName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
 </databaseChangeLog>
