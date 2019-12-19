@@ -77,7 +77,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private LoanConfig loan;
 
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited
     @ManyToOne
     private CompanyInfo companyInfo;
 
