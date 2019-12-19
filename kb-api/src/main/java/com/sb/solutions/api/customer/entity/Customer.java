@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -72,8 +73,7 @@ public class Customer extends BaseEntity<Long> {
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
 
-    // TODO customerRelatives left to audit
-    @NotAudited
+    @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CustomerRelative> customerRelatives;
 }

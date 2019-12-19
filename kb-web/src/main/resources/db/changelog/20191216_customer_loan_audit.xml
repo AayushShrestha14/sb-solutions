@@ -234,6 +234,67 @@
       referencedTableName="revinfo" referencedColumnNames="rev"/>
   </changeSet>
 
+  <changeSet author="elvin" id="57-audit-customer-relative">
+    <createTable tableName="customer_relative_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="title" type="VARCHAR(256)"/>
+      <column name="customer_relation" type="VARCHAR(256)"/>
+      <column name="customer_relative_name" type="VARCHAR(256)"/>
+      <column name="citizenship_number" type="VARCHAR(256)"/>
+      <column name="citizenship_issued_date" type="DATE"/>
+      <column name="citizenship_issued_place" type="VARCHAR(256)"/>
+    </createTable>
+    <addPrimaryKey tableName="customer_relative_audit" columnNames="id,rev" constraintName="PK_customer_relative_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_relative_audit" baseColumnNames="rev"
+      constraintName="FK_customer_relative_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
 
+  <changeSet author="elvin" id="57-audit-customer-relative">
+    <createTable tableName="customer_relative_audit">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="title" type="VARCHAR(256)"/>
+      <column name="customer_relation" type="VARCHAR(256)"/>
+      <column name="customer_relative_name" type="VARCHAR(256)"/>
+      <column name="citizenship_number" type="VARCHAR(256)"/>
+      <column name="citizenship_issued_date" type="DATE"/>
+      <column name="citizenship_issued_place" type="VARCHAR(256)"/>
+    </createTable>
+    <addPrimaryKey tableName="customer_relative_audit" columnNames="id,rev" constraintName="PK_customer_relative_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_relative_audit" baseColumnNames="rev"
+      constraintName="FK_customer_relative_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet author="elvin" id="57-audit-customer-customer-relatives">
+    <createTable tableName="customer_customer_relatives_audit">
+      <column name="rev" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="customer_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="customer_relatives_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="customer_customer_relatives_audit" columnNames="customer_id,customer_relatives_id,rev" constraintName="PK_customer_customer_relatives_audit_id_rev"/>
+    <addForeignKeyConstraint baseTableName="customer_customer_relatives_audit" baseColumnNames="rev"
+      constraintName="FK_customer_customer_relatives_audit_rev_revinfo_rev"
+      referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
 
 </databaseChangeLog>
