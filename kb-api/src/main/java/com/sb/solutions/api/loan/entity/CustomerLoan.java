@@ -70,6 +70,7 @@ import com.sb.solutions.core.enums.Priority;
 @Audited
 public class CustomerLoan extends BaseEntity<Long> {
 
+    @Audited
     @ManyToOne
     private Customer customerInfo;
 
