@@ -3,6 +3,7 @@ package com.sb.solutions.api.rolePermissionRight.entity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.RoleAccess;
@@ -24,6 +29,8 @@ import com.sb.solutions.core.enums.Status;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners({AuditingEntityListener.class})
+@Audited
 public class Role extends BaseEntity<Long> implements Serializable {
 
     @Transient
@@ -45,6 +52,7 @@ public class Role extends BaseEntity<Long> implements Serializable {
     @NotNull
     private RoleAccess roleAccess = RoleAccess.OWN;
 
+    @NotAudited
     @Transient
     private int version;
 }
