@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -309,6 +310,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
+        s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -331,6 +333,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
                     .getId()
                     .toString());
+            s.values().removeIf(Objects::isNull);
             logger.info("query for pull {}", s);
             final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
             final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -361,6 +364,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
         s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticated().getId()));
+        s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification, pageable);
@@ -605,7 +609,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-            if (c.getDocumentStatus() == DocStatus.PENDING) {
+            if (c.getDocumentStatus() == DocStatus.PENDING ||
+                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
+                c.getDocumentStatus() == DocStatus.VALUATION ||
+                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
+                c.getDocumentStatus() == DocStatus.DISCUSSION) {
                 customerLoanCsvDto.setLoanPendingSpan(
                     this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
                 customerLoanCsvDto.setLoanPossession(
