@@ -31,7 +31,7 @@ public class BulkConverter {
         try {
             workbook = new HSSFWorkbook(multipartFile.getInputStream());
         } catch (Exception e) {
-            logger.error("invalid file format {}" + e);
+            logger.error("invalid file format {}", e.getMessage());
             return null;
         }
         HSSFSheet workSheet = workbook.getSheetAt(0);
