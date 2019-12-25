@@ -10,6 +10,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +32,7 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
     private String name;
     private String contactNo;
     private Status status;
+    private State state;
     private String email;
     @ManyToOne
     @JoinColumn(name = "province_id")
