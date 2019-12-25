@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
+import com.sb.solutions.api.nepseCompany.entity.ShareValue;
 import com.sb.solutions.api.nepseCompany.service.NepseCompanyService;
+import com.sb.solutions.api.nepseCompany.service.ShareValueService;
 import com.sb.solutions.api.nepseCompany.util.BulkConverter;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
@@ -28,14 +30,17 @@ public class NepseCompanyController {
 
     private final NepseCompanyService nepseCompanyService;
     private final BulkConverter bulkConverter;
+    private final ShareValueService shareValueService;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody NepseCompany nepseCompany) {
         return new RestResponseDto().successModel(nepseCompanyService.save(nepseCompany));
     }
 
-    @PostMapping(value = "bulk")
-    public ResponseEntity<?> saveCompanyBulk(@RequestBody MultipartFile multipartFile) {
+    @PostMapping(value = "/uploadNepseFile")
+    public ResponseEntity<?> saveCompanyBulk(
+        @RequestParam("excelFile") MultipartFile multipartFile) {
+
         List<NepseCompany> nepseCompanyList = bulkConverter.parseNepseCompanyFile(multipartFile);
         if (nepseCompanyList == null) {
             return new RestResponseDto().failureModel("Invalid file format");
@@ -60,5 +65,17 @@ public class NepseCompanyController {
     @GetMapping("/statusCount")
     public ResponseEntity<?> getNepseCompanyStatusCount() {
         return new RestResponseDto().successModel(nepseCompanyService.nepseStatusCount());
+    }
+
+    @PostMapping(value = "/share")
+    public ResponseEntity<?> addShare(@RequestBody ShareValue shareValue) {
+        return new RestResponseDto().successModel(shareValueService.save(shareValue));
+    }
+
+    @GetMapping(value = "/share/list")
+    public ResponseEntity<?> getAllShare(@RequestParam("page") int page,
+        @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(
+            shareValueService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
     }
 }
