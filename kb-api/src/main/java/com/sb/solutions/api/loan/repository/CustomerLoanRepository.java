@@ -28,6 +28,10 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Query(value = "SELECT "
         + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status  in(4,5,6,7)  AND l.to_role_id IN (:id)"
+        + " AND cl.branch_id IN (:bid) AND l.to_user_id=:uid) initial,"
+
+        + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
         + " ON l.id=cl.current_stage_id WHERE cl.document_status=0 AND l.to_role_id IN (:id)"
         + " AND cl.branch_id IN (:bid) AND l.to_user_id=:uid) pending,"
 
@@ -134,9 +138,6 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + ".loan.name, c.documentStatus")
     List<StatisticDto> getLasStatisticsByBranchIdAndDateBetween(@Param("branchId") Long branchId,
         @Param("startDate") Date startDate, @Param("endDate") Date endDate);
-
-
-
 
 //    @Query(value =
 //        "SELECT NEW com.sb.solutions.api.loan.StatisticDto(SUM(c.proposal.proposedLimit), c"

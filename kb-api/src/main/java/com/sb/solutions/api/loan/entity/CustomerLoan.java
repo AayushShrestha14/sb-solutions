@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
@@ -31,6 +32,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.envers.AuditJoinTable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
@@ -60,69 +66,89 @@ import com.sb.solutions.core.enums.Priority;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners({AuditingEntityListener.class})
+@Audited
 public class CustomerLoan extends BaseEntity<Long> {
 
+    @Audited
     @ManyToOne
     private Customer customerInfo;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
     private LoanConfig loan;
 
+    @Audited
     @ManyToOne
     private CompanyInfo companyInfo;
 
     private LoanType loanType = LoanType.NEW_LOAN;
 
-    private DocStatus documentStatus = DocStatus.PENDING;
+    private DocStatus documentStatus = DocStatus.DISCUSSION;
 
     private LoanApprovalType loanCategory;
 
+    @AuditJoinTable(name = "customer_document_Path_customer_Loan_audit")
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "customer_document_Path_customer_Loan")
     private List<CustomerDocument> customerDocument;
 
+    @NotAudited
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
+    @Audited
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;
 
+    @Audited
     @OneToOne(cascade = CascadeType.ALL)
     private LoanStage currentStage;
 
+    @NotAudited
     private Priority priority;
 
+    @NotAudited
     private Long parentId;
 
+    @NotAudited
     private Long childId;
 
+    @NotAudited
     private Boolean isCloseRenew;
 
     @Transient
     private List previousList;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
     private Branch branch;
 
+    @NotAudited
     private Boolean notify;
 
+    @NotAudited
     private Long notedBy;
 
     private String offerLetterUrl;
 
+    @Audited
     @OneToOne
     private Proposal proposal;
 
+    @Audited
     @OneToOne
     private Financial financial;
 
+    @Audited
     @OneToOne
     private Security security;
 
     @Lob
     private String previousStageList;
 
+    @NotAudited
     private Boolean isValidated = false;
 
     @Transient
@@ -140,6 +166,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     private int uploadedOfferLetterStat = 0;
 
+    @Audited
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
 
