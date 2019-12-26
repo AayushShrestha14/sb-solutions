@@ -86,7 +86,7 @@ public class DocumentController {
     @PostMapping(value = "/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,
         @RequestParam("loanCycleId") long loanCycleId) {
-        LoanCycle loanCycle = loanCycleService.findOne(Long.valueOf(loanCycleId));
+        LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
 

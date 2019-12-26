@@ -1824,4 +1824,5 @@
   <include file="20191216_customer_loan_audit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191219_alter_branch_properties.xml" relativeToChangelogFile="true"/>
   <include file="20191220_share_value.xml" relativeToChangelogFile="true"/>
+  <include file="20191226_loan_cycle.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

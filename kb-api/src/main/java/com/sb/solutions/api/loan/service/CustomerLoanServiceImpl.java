@@ -560,12 +560,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         object.setCurrentStage(stage);
         object.setPreviousList(null);
         object.setPreviousStageList(null);
-        List<CustomerDocument> customerDocumentList = object.getCustomerDocument();
         object.setCustomerDocument(null);
         CustomerLoan customerLoan = customerLoanRepository.save(object);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
-        customerLoan.setCustomerDocument(customerDocumentList);
-        customerLoan = customerLoanRepository.save(customerLoan);
         return customerLoan;
     }
 
