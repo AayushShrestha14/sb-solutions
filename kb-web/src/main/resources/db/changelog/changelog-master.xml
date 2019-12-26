@@ -1822,4 +1822,5 @@
   <include file="alter_changeset/20191211_alter_valuator.xml" relativeToChangelogFile="true"/>
   <include file="20191211_users_audit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191219_alter_branch_properties.xml" relativeToChangelogFile="true"/>
+  <include file="20191226_loan_cycle.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
