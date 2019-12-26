@@ -1710,7 +1710,6 @@
     </createTable>
   </changeSet>
 
-  <include file="20191220_share_value.xml" relativeToChangelogFile="true"/>
   <include file="20190503_question.xml" relativeToChangelogFile="true"/>
   <include file="20190503_answer.xml" relativeToChangelogFile="true"/>
   <include file="20190503_applicant.xml" relativeToChangelogFile="true"/>
@@ -1822,5 +1821,7 @@
   <include file="alter_changeset/20191211_alter_valuator.xml" relativeToChangelogFile="true"/>
   <include file="20191211_users_audit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191211_alter_nepse_share_loan.xml" relativeToChangelogFile="true"/>
+  <include file="20191216_customer_loan_audit.xml" relativeToChangelogFile="true"/>
   <include file="alter_changeset/20191219_alter_branch_properties.xml" relativeToChangelogFile="true"/>
+  <include file="20191220_share_value.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
