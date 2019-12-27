@@ -1918,4 +1918,5 @@
       referencedColumnNames="id"
       referencedTableName="document"/>
   </changeSet>
+  <!-- Full Settlement change set end-->
 </databaseChangeLog>
