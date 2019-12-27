@@ -14,7 +14,8 @@ import com.sb.solutions.core.enums.Status;
 
 public interface NepseCompanyRepository extends JpaRepository<NepseCompany, Long> {
 
-    @Query(value = "select n from NepseCompany n where n.companyName like  concat(:companyName,'%')")
+    @Query(value = "select n from NepseCompany n where n.companyName like  concat(:companyName,'%')"
+        + " order by n.status desc ")
     Page<NepseCompany> nepseCompanyFilter(@Param("companyName") String companyName,
         Pageable pageable);
 

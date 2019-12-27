@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +15,14 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 
 @Service
-@AllArgsConstructor
 public class NepseCompanyServiceImpl implements NepseCompanyService {
 
     private final NepseCompanyRepository nepseCompanyRepository;
+
+    public NepseCompanyServiceImpl(
+        NepseCompanyRepository nepseCompanyRepository) {
+        this.nepseCompanyRepository = nepseCompanyRepository;
+    }
 
     @Override
     public List<NepseCompany> findAll() {
