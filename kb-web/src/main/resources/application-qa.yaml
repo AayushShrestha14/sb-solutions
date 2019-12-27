@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://loandb.ccrnyaxr5jd0.us-east-2.rds.amazonaws.com\loandb:1433;database=las_prod
+    url: jdbc:sqlserver://loandb.ccrnyaxr5jd0.us-east-2.rds.amazonaws.com\loandb:1433;database=qa
     username: admin
     password: sbsolutions
