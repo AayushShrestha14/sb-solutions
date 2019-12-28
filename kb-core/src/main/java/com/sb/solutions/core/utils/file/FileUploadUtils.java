@@ -2,6 +2,7 @@ package com.sb.solutions.core.utils.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +32,7 @@ public class FileUploadUtils {
         }
 
         try {
+            InputStream stream = multipartFile.getInputStream();
             final byte[] bytes = multipartFile.getBytes();
 
             if (type.equals("profile")) {

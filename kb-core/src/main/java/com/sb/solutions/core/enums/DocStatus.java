@@ -7,7 +7,11 @@ public enum DocStatus {
     PENDING("Pending"),
     APPROVED("Approved"),
     REJECTED("Rejected"),
-    CLOSED("Closed");
+    CLOSED("Closed"),
+    DISCUSSION("Discussion"),
+    DOCUMENTATION("Documentation"),
+    VALUATION("Valuation"),
+    UNDER_REVIEW("Under Review");
 
     private final String value;
 

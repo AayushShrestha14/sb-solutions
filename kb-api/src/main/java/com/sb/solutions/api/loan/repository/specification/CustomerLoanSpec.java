@@ -2,6 +2,7 @@ package com.sb.solutions.api.loan.repository.specification;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -53,7 +54,18 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
         switch (property) {
             case FILTER_BY_DOC_STATUS:
-                return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
+                if (value.equalsIgnoreCase("initial")) {
+                    List<DocStatus> list = new ArrayList<>();
+                    list.add(DocStatus.DISCUSSION);
+                    list.add(DocStatus.DOCUMENTATION);
+                    list.add(DocStatus.UNDER_REVIEW);
+                    list.add(DocStatus.VALUATION);
+                    Expression<String> exp = root.get(property);
+                    Predicate predicate = exp.in(list);
+                    return criteriaBuilder.and(predicate);
+                } else {
+                    return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
+                }
 
             case FILTER_BY_LOAN:
                 return criteriaBuilder
@@ -115,7 +127,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_DOC_ACTION:
                 return criteriaBuilder
-                    .and(criteriaBuilder.equal(root.get("currentStage").get("docAction"), DocAction.valueOf(value)));
+                    .and(criteriaBuilder.equal(root.get("currentStage").get("docAction"),
+                        DocAction.valueOf(value)));
 
 //
 //            case FILTER_BY_CURRENT_OFFER_LETTER_STAGE:

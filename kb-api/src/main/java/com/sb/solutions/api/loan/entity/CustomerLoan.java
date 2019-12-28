@@ -84,7 +84,7 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private LoanType loanType = LoanType.NEW_LOAN;
 
-    private DocStatus documentStatus = DocStatus.PENDING;
+    private DocStatus documentStatus = DocStatus.DISCUSSION;
 
     private LoanApprovalType loanCategory;
 
