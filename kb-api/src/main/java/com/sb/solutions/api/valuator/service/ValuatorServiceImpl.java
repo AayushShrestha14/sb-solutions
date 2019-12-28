@@ -1,5 +1,6 @@
 package com.sb.solutions.api.valuator.service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.repository.ValuatorRepository;
 import com.sb.solutions.core.dto.SearchDto;
@@ -55,5 +57,10 @@ public class ValuatorServiceImpl implements ValuatorService {
     @Override
     public Map<Object, Object> valuatorStatusCount() {
         return valuatorRepository.valuatorStatusCount();
+    }
+
+    @Override
+    public Collection<Valuator> findByBranchIn(Collection<Branch> branches) {
+        return valuatorRepository.findByBranchIn(branches);
     }
 }

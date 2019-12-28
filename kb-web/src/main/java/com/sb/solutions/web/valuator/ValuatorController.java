@@ -1,8 +1,10 @@
 package com.sb.solutions.web.valuator;
 
+import java.util.Collection;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,18 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.service.ValuatorService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/v1/valuator")
 public class ValuatorController {
 
     private final ValuatorService valuatorService;
+    private final UserService userService;
+
+    @Autowired
+    public ValuatorController(ValuatorService valuatorService,
+        UserService userService) {
+        this.valuatorService = valuatorService;
+        this.userService = userService;
+    }
 
     @PostMapping
     public ResponseEntity<?> saveValuator(@RequestBody Valuator valuator) {
@@ -46,4 +58,24 @@ public class ValuatorController {
     public ResponseEntity<?> getValuatorStatusCount() {
         return new RestResponseDto().successModel(valuatorService.valuatorStatusCount());
     }
+
+//   @GetMapping()
+//    public ResponseEntity<?> getValuatorList() {
+//       return new RestResponseDto().successModel("this is sucesssssss" );
+
+//   }
+//    (@RequestBody branch
+//    @RequestParam("page") int page, @RequestParam("size") int size)
+
+    @PostMapping("/valuatorList")
+    public ResponseEntity<?> getValuatorByBranch(
+        @RequestBody(required = false) Collection<Branch> branches) {
+        User authenticatedUser = userService.getAuthenticated();
+        return new RestResponseDto().successModel(
+            valuatorService.findByBranchIn(branches != null && !branches.isEmpty() ? branches
+                    : authenticatedUser.getBranch()));
+    }
+//    (branch, PaginationUtils.pageable(page, size))
+
+
 }

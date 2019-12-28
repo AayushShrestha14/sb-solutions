@@ -1,13 +1,12 @@
 package com.sb.solutions.core.service;
-
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
  */
+
 public interface BaseService<T> {
 
     /**
@@ -34,6 +33,4 @@ public interface BaseService<T> {
      *
      */
     List<T> saveAll(List<T> list);
-
-
 }

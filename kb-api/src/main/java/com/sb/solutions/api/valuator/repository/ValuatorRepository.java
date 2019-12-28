@@ -1,5 +1,6 @@
 package com.sb.solutions.api.valuator.repository;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 
 public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
@@ -20,4 +22,9 @@ public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
 
     @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")
     Page<Valuator> valuatorFilter(@Param("name") String name, Pageable pageable);
+
+    Collection<Valuator> findByBranchIn(Collection<Branch> branches);
+
+
+
 }
