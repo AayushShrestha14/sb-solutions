@@ -4,12 +4,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-  <!--
-  UPDATE DATABASECHANGELOG
-  SET FILENAME = 'classpath:/db/changelog/version/v0.2.0-release.xml'
-  WHERE ID IN ('24-create-revinfo-table', '24-create-memo-type-audit');
-  -->
-
   <changeSet id="udpate-changeset-filepath-v0.2.0" author="msucil" runOnChange="true">
     <sql>
       <![CDATA[
