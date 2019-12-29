@@ -14,15 +14,13 @@
       '2-customer-offer-letter',
       '2-customer-offer-letter-path',
       '2-offer_letter_Path_customer_loan',
-      '2-customer-offer-letter',
-      '2-customer-offer-letter-path',
-      '2-offer_letter_Path_customer_loan',
       'alter-customer-loan-add-column',
       '47-create-table-customer-document',
       '49-create-table-customer-doc-path-customer-loan',
       '50-add-proposal-tenure-duration',
       '50-alter-customer-loan-add-expiry-date',
       '50-alter-proposal-tenure-data-type-change',
+      '50-alter-customer-loan-add-expiry-date',
       '51-create-credit-risk-grading-table',
       '51-add-credit-risk-id-customer-loan',
       '53-create-valuator-branch-join-table',
@@ -40,10 +38,6 @@
       '53-alter-valuator-add-min-amount',
       '53-alter-valuator-add-max-amount',
       '53-alter-valuator-add-inactive-comment',
-      '54-remove-user-account-number',
-      '52-audit-users-table',
-      '58-alter-branch-add-email',
-      '58-alter-branch-add-landline-number',
       '54-remove-user-account-number',
       '52-audit-users-table',
       '57-audit-customer-loan',
@@ -66,9 +60,8 @@
       '57-audit-management-team',
       '57-audit-proprietor',
       '57-audit-company-info',
-      'company_info_management_team_list_audit',
-      'company_info_proprietors_list_audit'
-      )
+      '58-alter-branch-add-email',
+      '58-alter-branch-add-landline-number')
       ]]>
     </sql>
   </changeSet>
@@ -338,6 +331,13 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="50-alter-proposal-tenure-data-type-change" author="Aabishkar">
+    <modifyDataType
+      columnName="tenure_duration_in_months"
+      newDataType="DOUBLE"
+      tableName="proposal"/>
+  </changeSet>
+
   <changeSet id="50-alter-customer-loan-add-expiry-date" author="Aabishkar">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -347,13 +347,6 @@
     <addColumn tableName="customer_loan">
       <column name="expiry_date" type="DATE"/>
     </addColumn>
-  </changeSet>
-
-  <changeSet id="50-alter-proposal-tenure-data-type-change" author="Aabishkar">
-    <modifyDataType
-      columnName="tenure_duration_in_months"
-      newDataType="DOUBLE"
-      tableName="proposal"/>
   </changeSet>
 
   <changeSet id="51-create-credit-risk-grading-table" author="yunish">
@@ -540,58 +533,6 @@
     </preConditions>
     <addColumn tableName="valuator">
       <column name="inactive_comment" type="LONGTEXT"/>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="54-remove-user-account-number" author="elvin">
-    <preConditions onFail="MARK_RAN">
-      <columnExists tableName="users" columnName="account_no"/>
-    </preConditions>
-    <dropColumn tableName="users" columnName="account_no"/>
-  </changeSet>
-
-  <changeSet author="elvin" id="52-audit-users-table">
-    <createTable tableName="users_audit">
-      <column name="id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="rev" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="revtype" type="SMALLINT"/>
-      <column name="name" type="VARCHAR(256)"/>
-      <column name="user_name" type="VARCHAR(256)"/>
-      <column name="email" type="VARCHAR(256)"/>
-      <column name="status" type="INT"/>
-      <column name="role_id" type="BIGINT"/>
-      <column name="signature_image" type="VARCHAR(256)"/>
-    </createTable>
-    <addPrimaryKey tableName="users_audit" columnNames="id,rev"
-      constraintName="PK_users_audit_id_rev"/>
-    <addForeignKeyConstraint baseTableName="users_audit" baseColumnNames="rev"
-      constraintName="FK_users_audit_rev_revinfo_rev"
-      referencedTableName="revinfo" referencedColumnNames="rev"/>
-  </changeSet>
-
-  <changeSet id="58-alter-branch-add-email" author="sujan">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="branch" columnName="email"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="branch">
-      <column name="email" type="VARCHAR(256)"/>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="58-alter-branch-add-landline-number" author="sujan">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="branch" columnName="landline_number"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="branch">
-      <column name="landline_number" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
 
@@ -1110,5 +1051,27 @@
       baseColumnNames="rev"
       constraintName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"
       referencedTableName="revinfo" referencedColumnNames="rev"/>
+  </changeSet>
+
+  <changeSet id="58-alter-branch-add-email" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="branch" columnName="email"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="branch">
+      <column name="email" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="58-alter-branch-add-landline-number" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="branch" columnName="landline_number"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="branch">
+      <column name="landline_number" type="VARCHAR(256)"/>
+    </addColumn>
   </changeSet>
 </databaseChangeLog>
