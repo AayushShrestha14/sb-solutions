@@ -51,5 +51,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     String csv(Object searchDto);
 
+    List<CustomerLoan>  getLoanByCustomerId(Long id);
+
 
 }

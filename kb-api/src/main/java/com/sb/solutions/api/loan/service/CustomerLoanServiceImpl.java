@@ -39,7 +39,6 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -649,6 +648,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         header.put("createdAt", "Created At");
         return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
+    }
+
+    @Override
+    public List<CustomerLoan> getLoanByCustomerId(Long id) {
+        return customerLoanRepository.getCustomerLoanByCustomerInfoId(id);
     }
 
 

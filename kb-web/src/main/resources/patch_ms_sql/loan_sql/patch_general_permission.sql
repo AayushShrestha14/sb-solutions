@@ -6,9 +6,12 @@ BEGIN
         @countPull smallint
     DECLARE
         @count_preference smallint
+    DECLARE
+        @count_customer smallint
     SET @count = (Select count(*) from permission)
     SET @countPull = (Select count(*) from permission where id = 125)
     SET @count_preference = (SELECT count(*) from permission where id = 142)
+    SET @count_customer = (SELECT count(*) from permission where id = 143)
 
     if (@count < 11)
         BEGIN
@@ -172,6 +175,23 @@ BEGIN
             SET IDENTITY_INSERT role_permission_rights ON
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (57, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 142, 1)
+            SET IDENTITY_INSERT role_permission_rights Off
+        end
+
+    if (@count_customer < 1)
+        BEGIN
+
+            SET IDENTITY_INSERT permission ON
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+            VALUES (143, 'Customer', 'people-outline', '/home/customer',
+                    120, 1)
+
+            SET IDENTITY_INSERT permission OFF
+
+
+            SET IDENTITY_INSERT role_permission_rights ON
+            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+            VALUES (60, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 143, 1)
             SET IDENTITY_INSERT role_permission_rights Off
         end
 
