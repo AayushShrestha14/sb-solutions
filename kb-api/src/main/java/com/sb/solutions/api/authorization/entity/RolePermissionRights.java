@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.entity;
+package com.sb.solutions.api.authorization.entity;
 
 import java.util.List;
 import javax.persistence.Entity;

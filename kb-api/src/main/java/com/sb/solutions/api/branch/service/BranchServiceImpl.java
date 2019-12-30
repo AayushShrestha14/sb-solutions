@@ -117,10 +117,10 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<Branch> getAccessBranchByCurrentUser() {
-        if (userService.getAuthenticated().getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+        if (userService.getAuthenticatedUser().getRole().getRoleAccess().equals(RoleAccess.ALL)) {
             return branchRepository.findAll();
         }
-        return userService.getAuthenticated().getBranch();
+        return userService.getAuthenticatedUser().getBranch();
     }
 
     @Override

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import org.hibernate.envers.Audited;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocAction;

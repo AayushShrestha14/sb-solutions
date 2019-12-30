@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
@@ -58,7 +58,7 @@ public class UserController {
 
     @GetMapping(path = "/authenticated")
     public ResponseEntity<?> getAuthenticated() {
-        return new RestResponseDto().successModel(userService.getAuthenticated());
+        return new RestResponseDto().successModel(userService.getAuthenticatedUser());
     }
 
     @PostMapping

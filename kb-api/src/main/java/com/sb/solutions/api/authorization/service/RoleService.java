@@ -1,9 +1,9 @@
-package com.sb.solutions.api.rolePermissionRight.service;
+package com.sb.solutions.api.authorization.service;
 
 import java.util.List;
 import java.util.Map;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.core.service.BaseService;
 
 /**

@@ -1,8 +1,8 @@
-package com.sb.solutions.api.rolePermissionRight.service;
+package com.sb.solutions.api.authorization.service;
 
 import java.util.List;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Rights;
+import com.sb.solutions.api.authorization.entity.Rights;
 
 /**
  * @author Rujan Maharjan on 3/31/2019

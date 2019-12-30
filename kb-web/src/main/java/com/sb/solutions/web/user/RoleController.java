@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
-import com.sb.solutions.api.rolePermissionRight.service.RoleHierarchyService;
-import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.entity.RoleHierarchy;
+import com.sb.solutions.api.authorization.service.RoleHierarchyService;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
 
 /**

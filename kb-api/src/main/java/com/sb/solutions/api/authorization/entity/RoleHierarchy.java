@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.entity;
+package com.sb.solutions.api.authorization.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

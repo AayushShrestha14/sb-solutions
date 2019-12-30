@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.repository;
+package com.sb.solutions.api.authorization.repository;
 
 import java.util.List;
 import javax.transaction.Transactional;
@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
-import com.sb.solutions.api.rolePermissionRight.entity.UrlApi;
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.entity.UrlApi;
 
 /**
  * Created by Rujan Maharjan on 3/25/2019.

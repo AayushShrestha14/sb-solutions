@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.service;
+package com.sb.solutions.api.authorization.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.RoleType;

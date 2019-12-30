@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 import com.sb.solutions.api.loan.OfferLetterStage;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.stage.entity.Stage;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;

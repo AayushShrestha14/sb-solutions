@@ -132,7 +132,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
         Page customerLoanPage = customerRepository.findAll(loanSpecification, pageable);
 
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticated().getId()));
+        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
         final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
             s);
         final Specification<CustomerOfferLetter> specification = customerLoanOfferSpecBuilder
@@ -240,7 +240,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
 
     private OfferLetterStage initStage() {
-        User user = userService.getAuthenticated();
+        User user = userService.getAuthenticatedUser();
         final OfferLetterStage offerLetterStage = new OfferLetterStage();
         offerLetterStage.setFromRole(user.getRole());
         offerLetterStage.setToRole(user.getRole());

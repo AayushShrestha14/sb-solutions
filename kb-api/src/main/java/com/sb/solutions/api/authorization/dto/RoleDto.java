@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.dto;
+package com.sb.solutions.api.authorization.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.repository;
+package com.sb.solutions.api.authorization.repository;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 
@@ -30,7 +30,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     List<Map<Object, Object>> activeRole();
 
     @Query("select"
-        + " new com.sb.solutions.api.rolePermissionRight.entity.Role(r.id,r.roleName,r.status,"
+        + " new com.sb.solutions.api.authorization.entity.Role(r.id,r.roleName,r.status,"
         + " (SELECT u.username from User u where r.createdBy=u.id),"
         + " (SELECT u.username from User u where r.modifiedBy=u.id),"
         + " r.roleType,r.roleAccess,r.version) from Role r")
@@ -42,7 +42,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     List<Role> getByRoleTypeAndStatus(RoleType roleType, Status status);
 
-    @Query("select new com.sb.solutions.api.rolePermissionRight.dto.RoleDto(r.id,r.roleName)  from Role r")
+    @Query("select new com.sb.solutions.api.authorization.dto.RoleDto(r.id,r.roleName)  from Role r")
     List<RoleDto> getRoleDto();
 
     @Query("SELECT r FROM Role r WHERE r.roleName = 'CAD'")

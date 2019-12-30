@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.entity;
+package com.sb.solutions.api.authorization.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -45,7 +45,6 @@ public class Role extends BaseEntity<Long> implements Serializable {
 
     @Transient
     private String modifiedByName;
-
 
     private RoleType roleType = RoleType.APPROVAL;
 

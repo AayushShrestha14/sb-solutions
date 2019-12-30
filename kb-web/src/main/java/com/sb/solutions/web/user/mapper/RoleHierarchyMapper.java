@@ -3,7 +3,7 @@ package com.sb.solutions.web.user.mapper;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
+import com.sb.solutions.api.authorization.entity.RoleHierarchy;
 import com.sb.solutions.core.dto.BaseMapper;
 import com.sb.solutions.web.user.dto.RoleHierarchyDto;
 

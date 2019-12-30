@@ -1,4 +1,4 @@
-package com.sb.solutions.api.rolePermissionRight.service;
+package com.sb.solutions.api.authorization.service;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RoleHierarchy;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleHierarchyRepository;
+import com.sb.solutions.api.authorization.entity.RoleHierarchy;
+import com.sb.solutions.api.authorization.repository.RoleHierarchyRepository;
 
 /**
  * @author Rujan Maharjan on 5/13/2019
