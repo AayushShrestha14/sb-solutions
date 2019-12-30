@@ -1924,5 +1924,16 @@
       referencedColumnNames="id"
       referencedTableName="document"/>
   </changeSet>
+
+  <changeSet id="13-alter-valuator-add-state" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="state"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="state" type="INT"/>
+    </addColumn>
+  </changeSet>
   <!-- Full Settlement change set end-->
 </databaseChangeLog>
