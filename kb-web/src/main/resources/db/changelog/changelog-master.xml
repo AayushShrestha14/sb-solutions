@@ -1741,6 +1741,11 @@
   </changeSet>
 
   <changeSet id="59-create-shareValue-table" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="share_value"/>
+      </not>
+    </preConditions>
     <createTable tableName="share_value">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
