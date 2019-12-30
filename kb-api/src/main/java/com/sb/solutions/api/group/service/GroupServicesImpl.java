@@ -11,7 +11,7 @@ import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.group.repository.GroupRepository;
 
 
-
+@Service("groupService")
 public class GroupServicesImpl implements GroupServices {
 
     final GroupRepository groupRepository;
@@ -20,6 +20,7 @@ public class GroupServicesImpl implements GroupServices {
     public GroupServicesImpl(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
+
     @Override
     public List<Group> findAll() {
         return null;

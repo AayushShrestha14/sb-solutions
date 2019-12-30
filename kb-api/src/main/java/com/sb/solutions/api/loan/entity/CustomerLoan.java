@@ -144,6 +144,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Security security;
 
+    @NotAudited
     @OneToOne
     private Group group;
 

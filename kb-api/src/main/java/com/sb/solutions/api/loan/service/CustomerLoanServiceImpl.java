@@ -43,12 +43,12 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
-import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -100,7 +100,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService,
         @Autowired CreditRiskGradingService creditRiskGradingService,
-        @Autowired GroupServices groupServices) {
+        @Autowired GroupServices groupService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -114,7 +114,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
         this.creditRiskGradingService = creditRiskGradingService;
-        this.groupServices = groupServices;
+        this.groupServices = groupService;
     }
 
     @Override
