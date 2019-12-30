@@ -10,6 +10,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,17 +21,20 @@ import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Where(clause = "status != 2")
 public class Valuator extends BaseEntity<Long> implements Serializable {
 
     private String name;
     private String contactNo;
     private Status status;
+    private State state;
     private String email;
     @ManyToOne
     @JoinColumn(name = "province_id")

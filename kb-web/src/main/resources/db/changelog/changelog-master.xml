@@ -1741,6 +1741,11 @@
   </changeSet>
 
   <changeSet id="59-create-shareValue-table" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="share_value"/>
+      </not>
+    </preConditions>
     <createTable tableName="share_value">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
@@ -1771,6 +1776,7 @@
     </createTable>
   </changeSet>
 
+  <!-- Enhance change set start-->
   <changeSet id="61-create-loan-config-enhance" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -1917,6 +1923,17 @@
       onUpdate="CASCADE"
       referencedColumnNames="id"
       referencedTableName="document"/>
+  </changeSet>
+
+  <changeSet id="13-alter-valuator-add-state" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="state"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="state" type="INT"/>
+    </addColumn>
   </changeSet>
   <!-- Full Settlement change set end-->
 </databaseChangeLog>
