@@ -1,5 +1,7 @@
 package com.sb.solutions.web.customer.v1;
 
+import com.google.common.base.Preconditions;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 
 @RestController
 @RequestMapping("/v1/customer")
@@ -24,11 +30,14 @@ public class CustomerController {
 
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
     private final CustomerService customerService;
+    private final UserService userService;
 
     @Autowired
     public CustomerController(
-        CustomerService customerService) {
+        CustomerService customerService,
+        UserService userService) {
         this.customerService = customerService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -79,5 +88,35 @@ public class CustomerController {
     public ResponseEntity<?> getByCustomerId(@RequestBody String customerId) {
         return new RestResponseDto()
             .successModel(customerService.findCustomerByCustomerId(customerId));
+    }
+
+
+    @PostMapping("/upload-photo")
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("citizenNumber") String citizenNumber,
+        @RequestParam("customerName") String name
+
+    ) {
+
+        Preconditions.checkNotNull(citizenNumber.equals("null") ? null
+                : (StringUtils.isEmpty(citizenNumber) ? null : citizenNumber),
+            "Citizenship Number is required to upload file.");
+        Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
+            : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
+            + "is required to upload file.");
+        String uploadPath = new StringBuilder(UploadDir.initialDocument)
+
+            .append("customers")
+            .append("/")
+            .append(name)
+            .append("/")
+            .append(citizenNumber)
+            .append("/")
+            .toString();
+
+        logger.info("File Upload Path {}", uploadPath);
+        return FileUploadUtils
+            .uploadFile(multipartFile, uploadPath, "Profile-Pic");
+
     }
 }

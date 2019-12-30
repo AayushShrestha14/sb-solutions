@@ -1936,4 +1936,15 @@
     </addColumn>
   </changeSet>
   <!-- Full Settlement change set end-->
+
+  <changeSet id="13-alter-customer-add-profile_pic" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="profile_pic"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="profile_pic" type="varchar(100)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
