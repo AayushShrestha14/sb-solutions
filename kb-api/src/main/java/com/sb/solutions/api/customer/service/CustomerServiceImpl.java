@@ -2,6 +2,7 @@ package com.sb.solutions.api.customer.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,7 +40,9 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<Customer> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
+        s.values().removeIf(Objects::isNull);
         final CustomerSpecBuilder customerSpecBuilder = new CustomerSpecBuilder(s);
+
         Specification<Customer> specification = customerSpecBuilder.build();
         return customerRepository.findAll(specification, pageable);
     }

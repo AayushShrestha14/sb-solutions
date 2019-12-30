@@ -239,4 +239,11 @@ public class CustomerLoanController {
                 service.getIssuedOfferLetter(searchDto, PaginationUtils.pageable(page, size)));
     }
 
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<?> getLoanByCustomerId(@PathVariable("id") Long id) {
+        logger.info("getting Customer Loan {}", id);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerId(id));
+    }
+
 }

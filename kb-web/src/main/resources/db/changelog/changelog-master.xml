@@ -1741,6 +1741,11 @@
   </changeSet>
 
   <changeSet id="59-create-shareValue-table" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="share_value"/>
+      </not>
+    </preConditions>
     <createTable tableName="share_value">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
@@ -1919,5 +1924,27 @@
       referencedColumnNames="id"
       referencedTableName="document"/>
   </changeSet>
+
+  <changeSet id="13-alter-valuator-add-state" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="valuator" columnName="state"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="valuator">
+      <column name="state" type="INT"/>
+    </addColumn>
+  </changeSet>
   <!-- Full Settlement change set end-->
+
+  <changeSet id="13-alter-customer-add-profile_pic" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="profile_pic"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="profile_pic" type="varchar(100)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

@@ -12,6 +12,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 public class CustomerSpec implements Specification<Customer> {
 
     private static final String FILTER_BY_CITIZENSHIP_NUMBER = "citizenshipNumber";
+    private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
 
     private final String property;
     private final String value;
@@ -28,6 +29,12 @@ public class CustomerSpec implements Specification<Customer> {
         switch (property) {
             case FILTER_BY_CITIZENSHIP_NUMBER:
                 return criteriaBuilder.equal(root.get(property), value);
+
+            case FILTER_BY_CUSTOMER_NAME:
+                return criteriaBuilder
+                    .like(criteriaBuilder
+                            .lower(root.get(property)),
+                        value.toLowerCase() + "%");
             default:
                 return null;
         }
