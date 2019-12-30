@@ -1776,6 +1776,7 @@
     </createTable>
   </changeSet>
 
+  <!-- Enhance change set start-->
   <changeSet id="61-create-loan-config-enhance" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
