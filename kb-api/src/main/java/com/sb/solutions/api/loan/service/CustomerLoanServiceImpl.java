@@ -39,7 +39,6 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
@@ -49,6 +48,7 @@ import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -61,6 +61,7 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -83,6 +84,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerDocumentService customerDocumentService;
     private CustomerOfferService customerOfferService;
     private CreditRiskGradingService creditRiskGradingService;
+    private final GroupServices groupServices;
 
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -97,7 +99,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired CustomerDocumentService customerDocumentService,
         @Autowired ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService,
-        @Autowired CreditRiskGradingService creditRiskGradingService) {
+        @Autowired CreditRiskGradingService creditRiskGradingService,
+        @Autowired GroupServices groupServices) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -111,6 +114,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
         this.creditRiskGradingService = creditRiskGradingService;
+        this.groupServices = groupServices;
     }
 
     @Override
@@ -175,6 +179,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
+        }
+        if (customerLoan.getGroup() != null) {
+            this.groupServices.save(customerLoan.getGroup());
         }
         SiteVisit siteVisit = customerLoan.getSiteVisit();
         SiteVisit siteVisitTemp = null;
@@ -544,6 +551,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getSecurity().setId(null);
             object.setSecurity(securityService.save(object.getSecurity()));
         }
+//        if(object.getGroup() != null){
+//            object.getGroup().se
+//        }
         if (object.getCreditRiskGrading() != null) {
             object.getCreditRiskGrading().setId(null);
             object

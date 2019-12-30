@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,6 +44,7 @@ import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
@@ -62,7 +62,6 @@ import com.sb.solutions.core.enums.Priority;
  */
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -145,6 +144,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Security security;
 
+    @OneToOne
+    private Group group;
+
     @Lob
     private String previousStageList;
 
@@ -203,5 +205,266 @@ public class CustomerLoan extends BaseEntity<Long> {
                 p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
             .filter(p -> !p.getToUser().getIsDefaultCommittee())
             .collect(Collectors.toList());
+    }
+
+    public Customer getCustomerInfo() {
+        return this.customerInfo;
+    }
+
+    public LoanConfig getLoan() {
+        return this.loan;
+    }
+
+    public CompanyInfo getCompanyInfo() {
+        return this.companyInfo;
+    }
+
+    public LoanType getLoanType() {
+        return this.loanType;
+    }
+
+    public DocStatus getDocumentStatus() {
+        return this.documentStatus;
+    }
+
+    public LoanApprovalType getLoanCategory() {
+        return this.loanCategory;
+    }
+
+    public List<CustomerDocument> getCustomerDocument() {
+        return this.customerDocument;
+    }
+
+    public DmsLoanFile getDmsLoanFile() {
+        return this.dmsLoanFile;
+    }
+
+    public SiteVisit getSiteVisit() {
+        return this.siteVisit;
+    }
+
+    public LoanStage getCurrentStage() {
+        return this.currentStage;
+    }
+
+    public Priority getPriority() {
+        return this.priority;
+    }
+
+    public Long getParentId() {
+        return this.parentId;
+    }
+
+    public Long getChildId() {
+        return this.childId;
+    }
+
+    public Boolean getIsCloseRenew() {
+        return this.isCloseRenew;
+    }
+
+    public Branch getBranch() {
+        return this.branch;
+    }
+
+    public Boolean getNotify() {
+        return this.notify;
+    }
+
+    public Long getNotedBy() {
+        return this.notedBy;
+    }
+
+    public String getOfferLetterUrl() {
+        return this.offerLetterUrl;
+    }
+
+    public Proposal getProposal() {
+        return this.proposal;
+    }
+
+    public Financial getFinancial() {
+        return this.financial;
+    }
+
+    public Security getSecurity() {
+        return this.security;
+    }
+
+    public Group getGroup() {
+        return this.group;
+    }
+
+    public String getPreviousStageList() {
+        return this.previousStageList;
+    }
+
+    public Boolean getIsValidated() {
+        return this.isValidated;
+    }
+
+    public Boolean getPulled() {
+        return this.pulled;
+    }
+
+    public CustomerOfferLetterDto getCustomerOfferLetter() {
+        return this.customerOfferLetter;
+    }
+
+    public int getOfferLetterStat() {
+        return this.offerLetterStat;
+    }
+
+    public int getUploadedOfferLetterStat() {
+        return this.uploadedOfferLetterStat;
+    }
+
+    public CreditRiskGrading getCreditRiskGrading() {
+        return this.creditRiskGrading;
+    }
+
+    public void setCustomerInfo(Customer customerInfo) {
+        this.customerInfo = customerInfo;
+    }
+
+    public void setLoan(LoanConfig loan) {
+        this.loan = loan;
+    }
+
+    public void setCompanyInfo(CompanyInfo companyInfo) {
+        this.companyInfo = companyInfo;
+    }
+
+    public void setLoanType(LoanType loanType) {
+        this.loanType = loanType;
+    }
+
+    public void setDocumentStatus(DocStatus documentStatus) {
+        this.documentStatus = documentStatus;
+    }
+
+    public void setLoanCategory(LoanApprovalType loanCategory) {
+        this.loanCategory = loanCategory;
+    }
+
+    public void setCustomerDocument(List<CustomerDocument> customerDocument) {
+        this.customerDocument = customerDocument;
+    }
+
+    public void setDmsLoanFile(DmsLoanFile dmsLoanFile) {
+        this.dmsLoanFile = dmsLoanFile;
+    }
+
+    public void setSiteVisit(SiteVisit siteVisit) {
+        this.siteVisit = siteVisit;
+    }
+
+    public void setCurrentStage(LoanStage currentStage) {
+        this.currentStage = currentStage;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setChildId(Long childId) {
+        this.childId = childId;
+    }
+
+    public void setIsCloseRenew(Boolean isCloseRenew) {
+        this.isCloseRenew = isCloseRenew;
+    }
+
+    public void setPreviousList(List previousList) {
+        this.previousList = previousList;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public void setNotify(Boolean notify) {
+        this.notify = notify;
+    }
+
+    public void setNotedBy(Long notedBy) {
+        this.notedBy = notedBy;
+    }
+
+    public void setOfferLetterUrl(String offerLetterUrl) {
+        this.offerLetterUrl = offerLetterUrl;
+    }
+
+    public void setProposal(Proposal proposal) {
+        this.proposal = proposal;
+    }
+
+    public void setFinancial(Financial financial) {
+        this.financial = financial;
+    }
+
+    public void setSecurity(Security security) {
+        this.security = security;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public void setPreviousStageList(String previousStageList) {
+        this.previousStageList = previousStageList;
+    }
+
+    public void setIsValidated(Boolean isValidated) {
+        this.isValidated = isValidated;
+    }
+
+    public void setPulled(Boolean pulled) {
+        this.pulled = pulled;
+    }
+
+    public void setCustomerOfferLetter(CustomerOfferLetterDto customerOfferLetter) {
+        this.customerOfferLetter = customerOfferLetter;
+    }
+
+    public void setDistinctPreviousList(List<LoanStageDto> distinctPreviousList) {
+        this.distinctPreviousList = distinctPreviousList;
+    }
+
+    public void setOfferLetterStat(int offerLetterStat) {
+        this.offerLetterStat = offerLetterStat;
+    }
+
+    public void setUploadedOfferLetterStat(int uploadedOfferLetterStat) {
+        this.uploadedOfferLetterStat = uploadedOfferLetterStat;
+    }
+
+    public void setCreditRiskGrading(CreditRiskGrading creditRiskGrading) {
+        this.creditRiskGrading = creditRiskGrading;
+    }
+
+    public String toString() {
+        return "CustomerLoan(customerInfo=" + this.getCustomerInfo() + ", loan=" + this.getLoan()
+            + ", companyInfo=" + this.getCompanyInfo() + ", loanType=" + this.getLoanType()
+            + ", documentStatus=" + this.getDocumentStatus() + ", loanCategory=" + this
+            .getLoanCategory() + ", customerDocument=" + this.getCustomerDocument()
+            + ", dmsLoanFile=" + this.getDmsLoanFile() + ", siteVisit=" + this.getSiteVisit()
+            + ", currentStage=" + this.getCurrentStage() + ", priority=" + this.getPriority()
+            + ", parentId=" + this.getParentId() + ", childId=" + this.getChildId()
+            + ", isCloseRenew=" + this.getIsCloseRenew() + ", previousList=" + this
+            .getPreviousList() + ", branch=" + this.getBranch() + ", notify=" + this.getNotify()
+            + ", notedBy=" + this.getNotedBy() + ", offerLetterUrl=" + this.getOfferLetterUrl()
+            + ", proposal=" + this.getProposal() + ", financial=" + this.getFinancial()
+            + ", security=" + this.getSecurity() + ", group=" + this.getGroup()
+            + ", previousStageList=" + this.getPreviousStageList() + ", isValidated=" + this
+            .getIsValidated() + ", pulled=" + this.getPulled() + ", customerOfferLetter=" + this
+            .getCustomerOfferLetter() + ", distinctPreviousList=" + this.getDistinctPreviousList()
+            + ", offerLetterStat=" + this.getOfferLetterStat() + ", uploadedOfferLetterStat=" + this
+            .getUploadedOfferLetterStat() + ", creditRiskGrading=" + this.getCreditRiskGrading()
+            + ")";
     }
 }
