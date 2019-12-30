@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.nepseCompany.entity.ShareValue;
@@ -28,7 +27,7 @@ public class ShareValueServiceImpl implements ShareValueService {
 
     @Override
     public ShareValue findOne(Long id) {
-        return null;
+        return shareValueRepository.getOne(id);
     }
 
     @Override
@@ -42,16 +41,11 @@ public class ShareValueServiceImpl implements ShareValueService {
 
     @Override
     public Page<ShareValue> findAllPageable(Object t, Pageable pageable) {
-        return shareValueRepository.getALlPageable(pageable);
+        return shareValueRepository.findAllByOrderByIdDesc(pageable);
     }
 
     @Override
-    public List<ShareValue> saveAll(List<ShareValue> list) {
-        return null;
-    }
-
-    @Override
-    public List<ShareValue> findTopList() {
-        return shareValueRepository.findAllByOrderByIdDesc();
+    public List<ShareValue> saveAll(List<ShareValue> shareValueList) {
+        return shareValueRepository.saveAll(shareValueList);
     }
 }

@@ -18,7 +18,7 @@ import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.nepseCompany.entity.ShareValue;
 import com.sb.solutions.api.nepseCompany.service.NepseCompanyService;
 import com.sb.solutions.api.nepseCompany.service.ShareValueService;
-import com.sb.solutions.api.nepseCompany.util.BulkConverter;
+import com.sb.solutions.api.nepseCompany.util.ExcelReader;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -29,7 +29,7 @@ import com.sb.solutions.core.utils.PaginationUtils;
 public class NepseCompanyController {
 
     private final NepseCompanyService nepseCompanyService;
-    private final BulkConverter bulkConverter;
+    private final ExcelReader excelReader;
     private final ShareValueService shareValueService;
 
     @PostMapping
@@ -38,10 +38,10 @@ public class NepseCompanyController {
     }
 
     @PostMapping(value = "/uploadNepseFile")
-    public ResponseEntity<?> saveCompanyBulk(
+    public ResponseEntity<?> saveNepseExcel(
         @RequestParam("excelFile") MultipartFile multipartFile) {
 
-        List<NepseCompany> nepseCompanyList = bulkConverter.parseNepseCompanyFile(multipartFile);
+        List<NepseCompany> nepseCompanyList = excelReader.parseNepseCompanyFile(multipartFile);
         if (nepseCompanyList == null) {
             return new RestResponseDto().failureModel("Invalid file format");
         } else {

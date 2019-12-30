@@ -3,6 +3,7 @@ package com.sb.solutions.api.nepseCompany.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -18,16 +19,14 @@ import com.sb.solutions.core.utils.csv.ExcelHeaderChecker;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
 @Component
-public class BulkConverter {
+public class ExcelReader {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
-    ExcelHeaderChecker excelHeaderChecker = new ExcelHeaderChecker();
+    private ExcelHeaderChecker excelHeaderChecker = new ExcelHeaderChecker();
 
-    @SuppressWarnings("resource")
     public List<NepseCompany> parseNepseCompanyFile(MultipartFile multipartFile) {
-        List<NepseCompany> nepseCompanyList = new ArrayList<NepseCompany>();
-        //  File file = new File("D:\\Book1.xls");
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        List<NepseCompany> nepseCompanyList = new ArrayList<>();
+        HSSFWorkbook workbook;
         try {
             workbook = new HSSFWorkbook(multipartFile.getInputStream());
         } catch (Exception e) {
@@ -63,32 +62,32 @@ public class BulkConverter {
             }
         }
 
-        return nepseCompanyValidator(nepseCompanyList);
+        return nepseDataValidator(nepseCompanyList);
     }
 
-    public List<NepseCompany> nepseCompanyValidator(List<NepseCompany> nepseCompanies) {
-        List<NepseCompany> promoterList = new ArrayList<>();
-        List<NepseCompany> ordinaryList = new ArrayList<>();
+    private List<NepseCompany> nepseDataValidator(List<NepseCompany> nepseCompanies) {
+        Map<String, NepseCompany> nepseList = new HashMap<>();
+        List<NepseCompany> filteredList = new ArrayList<>();
         nepseCompanies.forEach(nepseCompany -> {
-            if (nepseCompany.getShareType().equals(ShareType.ORDINARY) ? promoterList
-                .add(nepseCompany) : ordinaryList.add(nepseCompany)) {
-                ;
+            if (nepseCompany.getShareType().equals(ShareType.ORDINARY)) {
+                if (nepseList.get(nepseCompany.getCompanyName()) != null
+                    && nepseList.get(nepseCompany.getCompanyName()).getShareType()
+                    .equals(ShareType.ORDINARY)) {
+                    return;
+                }
+                nepseList
+                    .put(nepseCompany.getCompanyName(), nepseCompany);
+            } else {
+                if (nepseList.get(nepseCompany.getCompanyName()) != null
+                    && nepseList.get(nepseCompany.getCompanyName()).getShareType()
+                    .equals(ShareType.PROMOTER)) {
+                    return;
+                }
+                nepseList.put(nepseCompany.getCompanyName(), nepseCompany);
             }
         });
-        List<NepseCompany> nList = new ArrayList<>();
-        nList.addAll(filtorTopList(promoterList));
-        nList.addAll(filtorTopList(ordinaryList));
-        return nList;
-    }
-
-    public List<NepseCompany> filtorTopList(List<NepseCompany> nepseCompanyList) {
-        HashMap<String, NepseCompany> map = new HashMap<>();
-        nepseCompanyList.forEach(v -> {
-            map.put(v.getCompanyName(), v);
-        });
-        List<NepseCompany> filteredList = new ArrayList<>();
-        for (String key : map.keySet()) {
-            filteredList.add(map.get(key));
+        for (String key : nepseList.keySet()) {
+            filteredList.add(nepseList.get(key));
         }
         return filteredList;
     }
