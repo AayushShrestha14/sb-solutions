@@ -11,12 +11,22 @@ import org.springframework.data.jpa.domain.Specification;
 import com.sb.solutions.core.repository.BaseRepository;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 
-public abstract class BaseServiceImpl<T, ID> implements Service<T, ID> {
+/**
+ * Base implementation of generic service
+ * All the sub-classes can override the available methods where generic operation does
+ * not satisfy
+ *
+ * @param <T> Entity
+ * @param <I> type of Entity ID
+ *
+ * example: MemoServiceImpl
+ */
+public abstract class BaseServiceImpl<T, I> implements Service<T, I> {
 
-    private final BaseRepository<T, ID> repository;
+    private final BaseRepository<T, I> repository;
 
     protected BaseServiceImpl(
-        BaseRepository<T, ID> repository) {
+        BaseRepository<T, I> repository) {
         this.repository = repository;
     }
 
@@ -31,8 +41,8 @@ public abstract class BaseServiceImpl<T, ID> implements Service<T, ID> {
     }
 
     @Override
-    public void deleteById(ID id) {
-        repository.deleteById(id);
+    public void deleteById(I i) {
+        repository.deleteById(i);
     }
 
     @Override
@@ -60,8 +70,8 @@ public abstract class BaseServiceImpl<T, ID> implements Service<T, ID> {
     }
 
     @Override
-    public Optional<T> findOne(ID id) {
-        return repository.findById(id);
+    public Optional<T> findOne(I i) {
+        return repository.findById(i);
     }
 
     @Override

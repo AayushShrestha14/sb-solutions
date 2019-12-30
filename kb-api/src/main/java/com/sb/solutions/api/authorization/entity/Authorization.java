@@ -16,6 +16,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Table(name = "authorization")
 public class Authorization extends BaseEntity<Long> implements Serializable {
 
     private String name;

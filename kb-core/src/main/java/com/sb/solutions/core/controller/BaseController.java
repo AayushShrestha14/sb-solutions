@@ -24,21 +24,23 @@ import com.sb.solutions.core.service.Service;
 import com.sb.solutions.core.utils.PaginationUtils;
 
 /**
- * Base Controller which expose CRUD api
+ * Base Controller which expose CRUD APIs
  *
  * @param <E> Entity
  * @param <D> DTO
- * @param <ID> ID type
+ * @param <I> ID type of Entity
+ *
+ * example: MemoController
  */
-public abstract class BaseController<E, D, ID> {
+public abstract class BaseController<E, D, I> {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    private final Service<E, ID> service;
+    private final Service<E, I> service;
 
     private final BaseMapper<E, D> mapper;
 
-    public BaseController(Service<E, ID> service, BaseMapper<E, D> mapper) {
+    public BaseController(Service<E, I> service, BaseMapper<E, D> mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -75,9 +77,9 @@ public abstract class BaseController<E, D, ID> {
         return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable ID id) {
-        return new RestResponseDto().successModel(mapper.mapEntityToDto(service.findOne(id).get()));
+    @GetMapping("/{i}")
+    public ResponseEntity<?> getById(@PathVariable I i) {
+        return new RestResponseDto().successModel(mapper.mapEntityToDto(service.findOne(i).get()));
     }
 
     @PutMapping("/{id}")
@@ -93,9 +95,9 @@ public abstract class BaseController<E, D, ID> {
         return new RestResponseDto().successModel(mapper.mapEntityToDto(saved));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable ID id) {
-        service.deleteById(id);
+    @DeleteMapping("/{i}")
+    public ResponseEntity<?> update(@PathVariable I i) {
+        service.deleteById(i);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
