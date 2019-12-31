@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.core.enums.ShareType;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.ExcelHeaderChecker;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
@@ -31,7 +32,7 @@ public class ExcelReader {
             workbook = new HSSFWorkbook(multipartFile.getInputStream());
         } catch (Exception e) {
             logger.error("invalid file format {}", e.getMessage());
-            return null;
+            throw new ServiceValidationException("File format is not valid");
         }
         HSSFSheet workSheet = workbook.getSheetAt(0);
         System.out.println(workSheet.getLastRowNum());
@@ -39,24 +40,26 @@ public class ExcelReader {
         while (i <= workSheet.getLastRowNum()) {
             HSSFRow row = workSheet.getRow(i++);
             if (i == 1) {
-                if (!excelHeaderChecker.checkNepseHeader(row)) {
-                    logger.error("invalid value format");
-                    return null;
-                }
+                excelHeaderChecker.checkNepseHeader(row);
             } else if (i > 1) {
                 NepseCompany nepseCompany = new NepseCompany();
                 if (row.getCell(0).toString() != null) {
-                    nepseCompany.setCompanyName(row.getCell(0).toString());
+                    nepseCompany.setCompanyName(row.getCell(0).getStringCellValue());
                 }
                 if (row.getCell(1).toString() != null) {
-                    nepseCompany.setAmountPerUnit(Double.parseDouble(row.getCell(1).toString()));
+                    nepseCompany.setAmountPerUnit(row.getCell(1).getNumericCellValue());
                 }
                 if (row.getCell(2).toString() != null) {
-                    nepseCompany.setCompanyCode(row.getCell(2).toString());
+                    nepseCompany.setCompanyCode(row.getCell(2).getStringCellValue());
                 }
                 if (row.getCell(3).toString() != null) {
-                    nepseCompany
-                        .setShareType(ShareType.valueOf(row.getCell(3).toString().toUpperCase()));
+                    if (!(row.getCell(3).toString().equalsIgnoreCase(ShareType.ORDINARY.toString())
+                        || row.getCell(3).toString().equalsIgnoreCase(ShareType.PROMOTER.toString()))) {
+                        throw new ServiceValidationException(row.getCell(3).toString()
+                            + "is  not valid ShareType on row" + "" + (i - 1));
+                    }
+                    nepseCompany.setShareType(
+                        ShareType.valueOf(row.getCell(3).getStringCellValue().toUpperCase()));
                 }
                 nepseCompanyList.add(nepseCompany);
             }
