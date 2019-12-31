@@ -1981,7 +1981,7 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="13-alter-customer-loan-add-groups" author="buddha">
+  <changeSet id="112-alter-customer-loan-add-groups" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_loan" columnName="group_id"/>
