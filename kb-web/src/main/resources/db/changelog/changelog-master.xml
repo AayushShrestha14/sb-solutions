@@ -1947,4 +1947,55 @@
       <column name="profile_pic" type="varchar(100)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="62-create-groups" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="groups" columnName="data"/>
+      </not>
+    </preConditions>
+    <createTable tableName="groups">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+       <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_group_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_group_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="13-alter-customer-loan-add-groups" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="group_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_group_id"
+          referencedTableName="groups"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
+

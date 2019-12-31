@@ -11,7 +11,7 @@ import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.group.repository.GroupRepository;
 
 
-@Service("groupService")
+@Service()
 public class GroupServicesImpl implements GroupServices {
 
     final GroupRepository groupRepository;
@@ -35,6 +35,7 @@ public class GroupServicesImpl implements GroupServices {
     public Group save(Group group) {
         return groupRepository.save(group);
     }
+
 
     @Override
     public Page<Group> findAllPageable(Object t, Pageable pageable) {

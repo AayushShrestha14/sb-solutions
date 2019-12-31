@@ -33,6 +33,8 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
+import com.sb.solutions.api.group.entity.Group;
+import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -43,7 +45,6 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
-import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
@@ -180,8 +181,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
         }
+        Group group = null;
         if (customerLoan.getGroup() != null) {
-            this.groupServices.save(customerLoan.getGroup());
+            group = this.groupServices.save(customerLoan.getGroup());
+            customerLoan.setGroup(group);
         }
         SiteVisit siteVisit = customerLoan.getSiteVisit();
         SiteVisit siteVisitTemp = null;
