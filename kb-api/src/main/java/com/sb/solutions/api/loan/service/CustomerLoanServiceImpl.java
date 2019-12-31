@@ -661,6 +661,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
+    @Override
+    public List<CustomerLoan> getLoanByCustomerId(Long id) {
+        return customerLoanRepository.getCustomerLoanByCustomerInfoId(id);
+    }
+
 
     public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;

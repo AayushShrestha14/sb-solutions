@@ -2,7 +2,6 @@ package com.sb.solutions.api.customer.entity;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -40,6 +39,8 @@ import com.sb.solutions.core.enums.Status;
 @Audited
 public class Customer extends BaseEntity<Long> {
 
+    @NotAudited
+    private String profilePic;
     private String title;
     private String customerName;
 
