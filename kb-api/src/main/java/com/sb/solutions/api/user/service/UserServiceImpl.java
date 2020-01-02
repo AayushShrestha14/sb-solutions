@@ -92,11 +92,10 @@ public class UserServiceImpl implements UserService {
     public User getAuthenticatedUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
-            return (User) authentication.getPrincipal();
-//            user = this.getByUsername(user.getUsername());
-//            return user;
+            User user = (User) authentication.getPrincipal();
+            return this.getByUsername(user.getUsername());
         } else {
-            logger.error("User not authenticated or invalid", authentication);
+            logger.error("User not authenticated or invalid {}", authentication);
             throw new UsernameNotFoundException(
                 "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
                     .getClass() + "; Expected type User");
