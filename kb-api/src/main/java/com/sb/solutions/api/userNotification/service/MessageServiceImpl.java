@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.service.RoleService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.userNotification.entity.Message;

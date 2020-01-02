@@ -72,7 +72,7 @@ public class CustomerOfferController {
         final CustomerOfferLetter customerOfferLetter = offerLetterStageMapper
             .actionMapper(stageDto,
                 customerOfferService.findByCustomerLoanId(stageDto.getCustomerLoanId()),
-                userService.getAuthenticated(), customerLoan.getBranch().getId());
+                userService.getAuthenticatedUser(), customerLoan.getBranch().getId());
         return new RestResponseDto().successModel(customerOfferService.action(customerOfferLetter));
     }
 

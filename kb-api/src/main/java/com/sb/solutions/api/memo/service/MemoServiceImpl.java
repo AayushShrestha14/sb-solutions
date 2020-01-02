@@ -1,13 +1,9 @@
 package com.sb.solutions.api.memo.service;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.memo.entity.Memo;
@@ -16,24 +12,18 @@ import com.sb.solutions.api.memo.enums.Stage;
 import com.sb.solutions.api.memo.repository.MemoRepository;
 import com.sb.solutions.api.memo.repository.specification.MemoSpecBuilder;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.repository.BaseSpecBuilder;
+import com.sb.solutions.core.service.BaseServiceImpl;
 
 @Service
-public class MemoServiceImpl implements MemoService {
+public class MemoServiceImpl extends BaseServiceImpl<Memo, Long> implements MemoService {
 
     private final MemoRepository repository;
 
     public MemoServiceImpl(@Autowired MemoRepository repository) {
+        super(repository);
+
         this.repository = repository;
-    }
-
-    @Override
-    public List<Memo> findAll() {
-        return repository.findAll();
-    }
-
-    @Override
-    public Memo findOne(Long id) {
-        return repository.getOne(id);
     }
 
     @Override
@@ -57,13 +47,8 @@ public class MemoServiceImpl implements MemoService {
     }
 
     @Override
-    public Page<Memo> findAllPageable(Object t, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<Memo> saveAll(List<Memo> list) {
-        return repository.saveAll(list);
+    protected BaseSpecBuilder<Memo> getSpec(Map<String, String> filterParams) {
+        return new MemoSpecBuilder(filterParams);
     }
 
     @Override
@@ -73,18 +58,10 @@ public class MemoServiceImpl implements MemoService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
         final Memo memo = repository.getOne(id);
         memo.setStatus(Status.DELETED);
 
         repository.save(memo);
-    }
-
-    @Override
-    public Page<Memo> findPageable(Map<String, String> filterParams, Pageable pageable) {
-        final MemoSpecBuilder builder = new MemoSpecBuilder(filterParams);
-        final Specification<Memo> spec = builder.build();
-
-        return repository.findAll(spec, pageable);
     }
 }

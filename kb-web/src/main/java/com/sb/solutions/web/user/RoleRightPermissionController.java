@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
-import com.sb.solutions.api.rolePermissionRight.service.RightService;
-import com.sb.solutions.api.rolePermissionRight.service.RolePermissionRightService;
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.service.RightService;
+import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.core.dto.RestResponseDto;
 
 /**

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Permission;
-import com.sb.solutions.api.rolePermissionRight.service.PermissionService;
+import com.sb.solutions.api.authorization.entity.Permission;
+import com.sb.solutions.api.authorization.service.PermissionService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -54,7 +54,7 @@ public class PermissionController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/chkPerm")
     public ResponseEntity<?> getPermChk() {
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         return new RestResponseDto()
             .successModel(permissionService.permsRight(u.getRole().getId()));
     }

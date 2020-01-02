@@ -14,7 +14,6 @@ import com.sb.solutions.api.memo.entity.MemoType;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
 
-
 public class MemoRepositoryTest extends BaseJpaTest {
 
     @Autowired

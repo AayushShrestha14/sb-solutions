@@ -154,12 +154,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             companyInfo = this.companyInfoService.save(customerLoan.getCompanyInfo());
         }
         if (customerLoan.getId() == null) {
-            customerLoan.setBranch(userService.getAuthenticated().getBranch().get(0));
+            customerLoan.setBranch(userService.getAuthenticatedUser().getBranch().get(0));
             LoanStage stage = new LoanStage();
-            stage.setToRole(userService.getAuthenticated().getRole());
-            stage.setFromRole(userService.getAuthenticated().getRole());
-            stage.setFromUser(userService.getAuthenticated());
-            stage.setToUser(userService.getAuthenticated());
+            stage.setToRole(userService.getAuthenticatedUser().getRole());
+            stage.setFromRole(userService.getAuthenticatedUser().getRole());
+            stage.setFromUser(userService.getAuthenticatedUser());
+            stage.setToUser(userService.getAuthenticatedUser());
             stage.setComment(DocAction.DRAFT.name());
             stage.setDocAction(DocAction.DRAFT);
             customerLoan.setCurrentStage(stage);
@@ -206,7 +206,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
@@ -238,14 +238,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Map<String, Integer> statusCount() {
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
         return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
 
     @Override
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         return customerLoanRepository
             .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
                 u.getRole().getId(), u.getBranch().get(0).getId());
@@ -318,7 +318,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
             Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
             String branchAccess = userService.getRoleAccessFilterByBranch().stream()
@@ -362,7 +362,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticated().getId()));
+        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
         s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -380,7 +380,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.info("Loan can not be deleted it is in stage", id);
             throw new ServiceValidationException("Loan can not be deleted it is in stage");
         }
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
             customerLoanRepository
                 .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
@@ -550,10 +550,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         LoanStage stage = new LoanStage();
-        stage.setToRole(userService.getAuthenticated().getRole());
-        stage.setFromRole(userService.getAuthenticated().getRole());
-        stage.setFromUser(userService.getAuthenticated());
-        stage.setToUser(userService.getAuthenticated());
+        stage.setToRole(userService.getAuthenticatedUser().getRole());
+        stage.setFromRole(userService.getAuthenticatedUser().getRole());
+        stage.setFromUser(userService.getAuthenticatedUser());
+        stage.setToUser(userService.getAuthenticatedUser());
         stage.setComment(DocAction.DRAFT.name());
         stage.setDocAction(DocAction.DRAFT);
         object.setCurrentStage(stage);
@@ -569,7 +569,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();
-        final User u = userService.getAuthenticated();
+        final User u = userService.getAuthenticatedUser();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));

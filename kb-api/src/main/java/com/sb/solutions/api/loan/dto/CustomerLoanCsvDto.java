@@ -10,7 +10,7 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;

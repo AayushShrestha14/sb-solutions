@@ -28,15 +28,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
-import com.sb.solutions.api.rolePermissionRight.repository.RoleRepository;
-import com.sb.solutions.api.user.PieChartDto;
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
@@ -56,8 +54,8 @@ import com.sb.solutions.core.utils.csv.CsvMaker;
 @Service("userDetailService")
 public class UserServiceImpl implements UserService {
 
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
-    private final BaseHttpService baseHttpService;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
@@ -65,14 +63,13 @@ public class UserServiceImpl implements UserService {
     private final CustomerLoanRepository customerLoanRepository;
     private final CustomJdbcTokenStore customJdbcTokenStore;
 
-    public UserServiceImpl(@Autowired BaseHttpService baseHttpService,
+    public UserServiceImpl(
         @Autowired UserRepository userRepository,
         @Autowired BranchRepository branchRepository,
         @Autowired RoleRepository roleRepository,
         @Autowired CustomJdbcTokenStore customJdbcTokenStore,
         @Autowired BCryptPasswordEncoder passwordEncoder,
         @Autowired CustomerLoanRepository customerLoanRepository) {
-        this.baseHttpService = baseHttpService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
@@ -92,13 +89,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public User getAuthenticatedUser() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
-            User user = (User) authentication.getPrincipal();
-            user = this.getByUsername(user.getUsername());
-            return user;
+            return (User) authentication.getPrincipal();
+//            user = this.getByUsername(user.getUsername());
+//            return user;
         } else {
+            logger.error("User not authenticated or invalid", authentication);
             throw new UsernameNotFoundException(
                 "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
                     .getClass() + "; Expected type User");
@@ -108,7 +106,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByUsername(String username) {
         return userRepository.getUsersByUsername(username);
-
     }
 
     @Override
@@ -220,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Long> getRoleAccessFilterByBranch() {
-        User u = this.getAuthenticated();
+        User u = this.getAuthenticatedUser();
         List<Long> branchIdList = new ArrayList<>();
         String branchIdListTOString = null;
         if (u.getRole().getRoleAccess() != null) {
