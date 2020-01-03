@@ -65,6 +65,6 @@ public class ValuatorController {
         User authenticatedUser = userService.getAuthenticatedUser();
         return new RestResponseDto().successModel(
             valuatorService.findByBranchIn(branches != null && !branches.isEmpty() ? branches
-                : authenticatedUser.getBranch()));
+                    : authenticatedUser.getBranch()));
     }
 }

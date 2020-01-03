@@ -31,13 +31,16 @@ import org.springframework.web.filter.CorsFilter;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityServer extends AuthorizationServerConfigurerAdapter {
 
+
     @Autowired
     private DataSource dataSource;
+
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
+
     UserDetailsService userDetailsService;
 
     @Autowired
@@ -45,6 +48,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     public TokenStore tokenStore() {
+
         return new CustomJdbcTokenStore(dataSource);
     }
 
