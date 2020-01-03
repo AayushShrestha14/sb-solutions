@@ -60,7 +60,7 @@ public class ValuatorServiceImpl implements ValuatorService {
     }
 
     @Override
-    public Collection<Valuator> findByBranchIn(Collection<Branch> branches) {
+    public Collection<Valuator> findByBranchIn(List<Branch> branches) {
         return valuatorRepository.findByBranchIn(branches);
     }
 }
