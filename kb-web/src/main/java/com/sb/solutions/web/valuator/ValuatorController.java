@@ -62,7 +62,7 @@ public class ValuatorController {
     @PostMapping("/valuator-branch")
     public ResponseEntity<?> getValuatorByBranch(
         @RequestBody(required = false) List<Branch> branches) {
-        User authenticatedUser = userService.getAuthenticated();
+        User authenticatedUser = userService.getAuthenticatedUser();
         return new RestResponseDto().successModel(
             valuatorService.findByBranchIn(branches != null && !branches.isEmpty() ? branches
                 : authenticatedUser.getBranch()));
