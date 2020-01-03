@@ -67,7 +67,7 @@ public class CustomerLoanController {
     public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto) {
         final CustomerLoan c = mapper
             .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
-                userService.getAuthenticated());
+                userService.getAuthenticatedUser());
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
@@ -207,7 +207,7 @@ public class CustomerLoanController {
         Document document = new Document();
         document.setId(documentId);
         customerDocument.setDocument(document);
-        String branchName = userService.getAuthenticated().getBranch().get(0).getName()
+        String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName()
             .replace(" ", "_");
         Preconditions.checkNotNull(citizenNumber.equals("null") ? null
                 : (StringUtils.isEmpty(citizenNumber) ? null : citizenNumber),

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
-import com.sb.solutions.api.rolePermissionRight.service.RolePermissionRightService;
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -38,14 +38,14 @@ public class NavigationController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/nav")
     public ResponseEntity<?> getNav() {
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         return new RestResponseDto()
             .successModel(rolePermissionRightService.getByRoleId(u.getRole().getId()));
     }
 
     @GetMapping("/menu")
     public ResponseEntity<?> getMenu() {
-        User u = userService.getAuthenticated();
+        User u = userService.getAuthenticatedUser();
         List<RolePermissionRights> rolePermissionRights = rolePermissionRightService
             .getByRoleId(u.getRole().getId());
         return new RestResponseDto().successModel(menuMapper.menuDtoList(rolePermissionRights));

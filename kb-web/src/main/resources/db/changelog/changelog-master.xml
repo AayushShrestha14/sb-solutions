@@ -1797,7 +1797,8 @@
   <changeSet id="61-create-loan-config-enhance-loan-config-id-constraint" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_enhance" foreignKeyName="fk_loan_config_enhance_loan_config_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_enhance"
+          foreignKeyName="fk_loan_config_enhance_loan_config_id"/>
       </not>
     </preConditions>
 
@@ -1813,7 +1814,8 @@
   <changeSet id="61-create-loan-config-enhance-enhance-id-constraint" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_enhance" foreignKeyName="fk_loan_config_enhance_enhance_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_enhance"
+          foreignKeyName="fk_loan_config_enhance_enhance_id"/>
       </not>
     </preConditions>
     <addForeignKeyConstraint baseColumnNames="enhance_id"
@@ -1847,7 +1849,8 @@
   <changeSet id="61-create-loan-config-partial-settlement-loan-config-id-constraint" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_partial_settlement" foreignKeyName="fk_loan_config_partial_settlement_loan_config_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_partial_settlement"
+          foreignKeyName="fk_loan_config_partial_settlement_loan_config_id"/>
       </not>
     </preConditions>
 
@@ -1860,10 +1863,12 @@
       referencedTableName="loan_config"/>
   </changeSet>
 
-  <changeSet id="61-create-loan-config-partial-settlement-partial-settlement-id-constraint" author="elvin">
+  <changeSet id="61-create-loan-config-partial-settlement-partial-settlement-id-constraint"
+    author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_partial_settlement" foreignKeyName="fk_loan_config_partial_settlement_partial_settlement_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_partial_settlement"
+          foreignKeyName="fk_loan_config_partial_settlement_partial_settlement_id"/>
       </not>
     </preConditions>
     <addForeignKeyConstraint baseColumnNames="partial_settlement_id"
@@ -1897,7 +1902,8 @@
   <changeSet id="61-create-loan-config-full-settlement-loan-config-id-constraint" author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_full_settlement" foreignKeyName="fk_loan_config_full_settlement_loan_config_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_full_settlement"
+          foreignKeyName="fk_loan_config_full_settlement_loan_config_id"/>
       </not>
     </preConditions>
 
@@ -1910,10 +1916,12 @@
       referencedTableName="loan_config"/>
   </changeSet>
 
-  <changeSet id="61-create-loan-config-full-settlement-full-settlement-id-constraint" author="elvin">
+  <changeSet id="61-create-loan-config-full-settlement-full-settlement-id-constraint"
+    author="elvin">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyTableName="loan_config_full_settlement" foreignKeyName="fk_loan_config_full_settlement_full_settlement_id"/>
+        <foreignKeyConstraintExists foreignKeyTableName="loan_config_full_settlement"
+          foreignKeyName="fk_loan_config_full_settlement_full_settlement_id"/>
       </not>
     </preConditions>
     <addForeignKeyConstraint baseColumnNames="full_settlement_id"
@@ -1948,54 +1956,59 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="62-create-groups" author="buddha">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="groups" columnName="data"/>
-      </not>
-    </preConditions>
-    <createTable tableName="groups">
+  <changeSet id="44-add-authorization-table" author="msucil">
+    <createTable tableName="authorization">
       <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
+        <constraints primaryKey="true"/>
       </column>
-       <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_group_created_by_id"
-          referencedTableName="users"
-          referencedColumnNames="id"/>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false" unique="true"/>
       </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_group_modified_by_id"
-          referencedTableName="users"
-          referencedColumnNames="id"/>
+      <column name="value" type="VARCHAR(255)">
+        <constraints nullable="false" unique="true"/>
       </column>
-      <column name="created_at" type="DATE">
+      <column name="key" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-      <column name="data" type="LONGTEXT"/>
     </createTable>
   </changeSet>
 
-  <changeSet id="112-alter-customer-loan-add-groups" author="buddha">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="customer_loan" columnName="group_id"/>
-      </not>
+  <changeSet id="44-add-seed-data" author="msucil">
+    <sql>
+      <![CDATA[
+        INSERT INTO [authorization] (name, value, [key]) VALUES
+          ('Create Questions', 'CREATE_QUESTION', 'eligibility-question'),
+          ('View Questions', 'VIEW_QUESTION', 'eligibility-question'),
+          ('Update Questions', 'UPDATE_QUESTION', 'eligibility-question'),
+          ('Delete Questions', 'DELETE', 'eligibility-question'),
+
+          ('Create Branch', 'CREATE_BRANCH', 'branch'),
+          ('View Branch', 'VIEW_BRANCH', 'branch'),
+          ('Update Branch', 'UPDATE_BRANCH', 'branch'),
+          ('Delete Branch', 'DELETE_BRANCH', 'branch')
+      ]]>
+    </sql>
+  </changeSet>
+  
+  <changeSet id="63-rename-customer-document-Path-customer-loan" author="elvin">
+    <preConditions>
+      <tableExists tableName="customer_document_Path_customer_loan"/>
     </preConditions>
-    <addColumn tableName="customer_loan">
-      <column name="group_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_group_id"
-          referencedTableName="groups"
-          referencedColumnNames="id"/>
-      </column>
-    </addColumn>
+    <renameTable oldTableName="customer_document_Path_customer_loan" newTableName="customer_document_path_customer_loan"/>
+  </changeSet>
+
+  <changeSet id="63-rename-customer-document-Path-customer-loan-audit" author="elvin">
+    <preConditions>
+      <tableExists tableName="customer_document_Path_customer_loan_audit"/>
+    </preConditions>
+    <renameTable oldTableName="customer_document_Path_customer_loan_audit" newTableName="customer_document_path_customer_loan_audit"/>
+  </changeSet>
+
+  <changeSet id="63-offer-letter-Path-customer-loan" author="elvin">
+    <preConditions>
+      <tableExists tableName="offer_letter_Path_customer_loan"/>
+    </preConditions>
+    <renameTable oldTableName="offer_letter_Path_customer_loan" newTableName="offer_letter_path_customer_loan"/>
   </changeSet>
 
 </databaseChangeLog>
-

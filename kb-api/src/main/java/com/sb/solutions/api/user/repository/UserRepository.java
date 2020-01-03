@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;

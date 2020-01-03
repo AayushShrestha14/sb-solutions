@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import com.sb.solutions.api.rolePermissionRight.entity.RolePermissionRights;
-import com.sb.solutions.api.rolePermissionRight.entity.SubNav;
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.entity.SubNav;
 import com.sb.solutions.web.navigation.dto.MenuDto;
 
 /**

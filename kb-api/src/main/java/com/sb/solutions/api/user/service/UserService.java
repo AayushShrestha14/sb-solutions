@@ -8,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
-import com.sb.solutions.api.rolePermissionRight.entity.Role;
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.service.BaseService;
@@ -21,7 +21,7 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface UserService extends BaseService<User>, UserDetailsService {
 
-    User getAuthenticated();
+    User getAuthenticatedUser();
 
     User getByUsername(String username);
 

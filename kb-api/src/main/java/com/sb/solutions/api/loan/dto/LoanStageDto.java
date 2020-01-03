@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.rolePermissionRight.dto.RoleDto;
+import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.core.enums.DocAction;

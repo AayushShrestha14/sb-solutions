@@ -89,9 +89,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     private LoanApprovalType loanCategory;
 
-    @AuditJoinTable(name = "customer_document_Path_customer_Loan_audit")
+    @AuditJoinTable(name = "customer_document_path_customer_loan_audit")
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "customer_document_Path_customer_Loan")
+    @JoinTable(name = "customer_document_path_customer_loan")
     private List<CustomerDocument> customerDocument;
 
     @NotAudited
