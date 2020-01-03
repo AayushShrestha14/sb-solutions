@@ -1,8 +1,6 @@
 package com.sb.solutions.api.security.entity;
-
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

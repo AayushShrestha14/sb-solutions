@@ -83,9 +83,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private final CustomerDocumentService customerDocumentService;
-    private final GroupServices groupServices;
     private CustomerOfferService customerOfferService;
     private CreditRiskGradingService creditRiskGradingService;
+    private final GroupServices groupServices;
 
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
