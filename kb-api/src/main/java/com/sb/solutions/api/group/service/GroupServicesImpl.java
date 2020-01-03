@@ -23,12 +23,12 @@ public class GroupServicesImpl implements GroupServices {
 
     @Override
     public List<Group> findAll() {
-        return null;
+        return groupRepository.findAll();
     }
 
     @Override
     public Group findOne(Long id) {
-        return null;
+        return groupRepository.getOne(id);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GroupServicesImpl implements GroupServices {
 
     @Override
     public List<Group> saveAll(List<Group> list) {
-        return null;
+        return groupRepository.saveAll(list);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.sb.solutions.web.valuator;
 
-import java.util.Collection;
+import java.util.List;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -59,23 +59,12 @@ public class ValuatorController {
         return new RestResponseDto().successModel(valuatorService.valuatorStatusCount());
     }
 
-//   @GetMapping()
-//    public ResponseEntity<?> getValuatorList() {
-//       return new RestResponseDto().successModel("this is sucesssssss" );
-
-//   }
-//    (@RequestBody branch
-//    @RequestParam("page") int page, @RequestParam("size") int size)
-
-    @PostMapping("/valuatorList")
+    @PostMapping("/valuator-branch")
     public ResponseEntity<?> getValuatorByBranch(
-        @RequestBody(required = false) Collection<Branch> branches) {
+        @RequestBody(required = false) List<Branch> branches) {
         User authenticatedUser = userService.getAuthenticated();
         return new RestResponseDto().successModel(
             valuatorService.findByBranchIn(branches != null && !branches.isEmpty() ? branches
-                    : authenticatedUser.getBranch()));
+                : authenticatedUser.getBranch()));
     }
-//    (branch, PaginationUtils.pageable(page, size))
-
-
 }
