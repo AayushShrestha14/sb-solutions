@@ -1,5 +1,6 @@
 package com.sb.solutions.api.valuator.repository.spec;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -12,7 +13,6 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.valuator.entity.Valuator;
-import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
 
 /**
@@ -24,6 +24,8 @@ public class ValuatorSpec implements Specification<Valuator> {
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_STATUS = "status";
     private static final String FILTER_BY_VALUATING_FIELD = "valuatingField";
+    private static final String FILTER_BY_MINIMUM_AMOUNT = "minAmount";
+    private static final String FILTER_BY_MAXIMUM_AMOUNT = "maxAmount";
 
     private final String property;
     private final String value;
@@ -53,6 +55,12 @@ public class ValuatorSpec implements Specification<Valuator> {
                 return criteriaBuilder.equal(root.get(FILTER_BY_STATUS), Status.valueOf(value));
             case FILTER_BY_VALUATING_FIELD:
                 return criteriaBuilder.equal(root.get(FILTER_BY_VALUATING_FIELD), value);
+            case FILTER_BY_MINIMUM_AMOUNT:
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(FILTER_BY_MINIMUM_AMOUNT),
+                    BigDecimal.valueOf(Double.parseDouble(value)));
+            case FILTER_BY_MAXIMUM_AMOUNT:
+                return criteriaBuilder.lessThanOrEqualTo(root.get(FILTER_BY_MAXIMUM_AMOUNT),
+                    BigDecimal.valueOf(Double.parseDouble(value)));
             default:
                 return null;
         }
