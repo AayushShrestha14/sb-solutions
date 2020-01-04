@@ -16,7 +16,6 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.repository.ValuatorRepository;
 import com.sb.solutions.api.valuator.repository.spec.ValuatorSpecBuilder;
-import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 
 @Service
