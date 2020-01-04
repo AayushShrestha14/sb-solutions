@@ -25,7 +25,7 @@ public class ValuatorController {
     private final ValuatorService valuatorService;
 
     @PostMapping
-    public ResponseEntity<?> saveValuator(@RequestBody Valuator valuator) {
+    public ResponseEntity<?> save(@RequestBody Valuator valuator) {
         return new RestResponseDto().successModel(valuatorService.save(valuator));
     }
 
@@ -35,10 +35,10 @@ public class ValuatorController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
+    public ResponseEntity<?> getPageable(@RequestBody Object searchObject,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(valuatorService.findAllPageable(searchDto, PaginationUtils
+            .successModel(valuatorService.findAllPageable(searchObject, PaginationUtils
                 .pageable(page, size)));
     }
 
