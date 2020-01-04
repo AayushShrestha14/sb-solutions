@@ -9,11 +9,13 @@ import lombok.AllArgsConstructor;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.repository.ValuatorRepository;
+import com.sb.solutions.api.valuator.repository.spec.ValuatorSpecBuilder;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 
@@ -44,9 +46,11 @@ public class ValuatorServiceImpl implements ValuatorService {
 
     @Override
     public Page<Valuator> findAllPageable(Object object, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return valuatorRepository.valuatorFilter(s.getName() == null ? "" : s.getName(), pageable);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(object, Map.class);
+        final ValuatorSpecBuilder builder = new ValuatorSpecBuilder(s);
+        final Specification<Valuator> specification = builder.build();
+        return valuatorRepository.findAll(specification, pageable);
     }
 
     @Override

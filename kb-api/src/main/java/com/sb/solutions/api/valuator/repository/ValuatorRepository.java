@@ -1,18 +1,21 @@
 package com.sb.solutions.api.valuator.repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 
-public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
+public interface ValuatorRepository extends JpaRepository<Valuator, Long>,
+    JpaSpecificationExecutor<Valuator> {
 
     @Query(value = "select "
         + "  (select  count(id) from valuator where status=1) active,"
@@ -23,7 +26,7 @@ public interface ValuatorRepository extends JpaRepository<Valuator, Long> {
     @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")
     Page<Valuator> valuatorFilter(@Param("name") String name, Pageable pageable);
 
-    Collection<Valuator> findByBranchIn(Collection<Branch> branches);
+    Collection<Valuator> findByBranchIn(List<Branch> branches);
 
 
 
