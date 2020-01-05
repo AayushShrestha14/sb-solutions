@@ -2012,6 +2012,12 @@
   </changeSet>
 
   <changeSet author="rabin" id="60-base-interest">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="base_interest_rate"/>
+      </not>
+    </preConditions>
+
     <createTable tableName="base_interest_rate">
       <column name="id" autoIncrement="true" type="BIGINT">
         <constraints primaryKey="true" nullable="false"/>
