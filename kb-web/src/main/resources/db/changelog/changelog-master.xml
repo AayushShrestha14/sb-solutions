@@ -2010,5 +2010,16 @@
     </preConditions>
     <renameTable oldTableName="offer_letter_Path_customer_loan" newTableName="offer_letter_path_customer_loan"/>
   </changeSet>
+  
+  <changeSet id="64-alter-branch-add-column-branch" author="elvin">
+    <preConditions>
+      <not>
+        <columnExists tableName="branch" columnName="location_preview"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="branch">
+      <column name="location_preview" type="VARCHAR(500)"/>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>
