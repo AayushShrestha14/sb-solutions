@@ -2026,7 +2026,7 @@
   <changeSet id="62-create-groups" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists tableName="groups" columnName="data"/>
+        <tableExists tableName="groups"/>
       </not>
     </preConditions>
     <createTable tableName="groups">

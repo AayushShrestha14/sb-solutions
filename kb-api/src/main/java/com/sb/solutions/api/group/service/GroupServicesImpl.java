@@ -11,7 +11,7 @@ import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.group.repository.GroupRepository;
 
 
-@Service()
+@Service
 public class GroupServicesImpl implements GroupServices {
 
     final GroupRepository groupRepository;

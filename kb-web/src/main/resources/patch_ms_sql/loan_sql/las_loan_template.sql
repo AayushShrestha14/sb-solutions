@@ -154,7 +154,7 @@ BEGIN
             SET IDENTITY_INSERT loan_template off
 
         END
-END
+END;
 
 BEGIN
     DECLARE @count_group smallint
