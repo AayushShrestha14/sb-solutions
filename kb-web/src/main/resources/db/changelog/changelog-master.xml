@@ -2072,4 +2072,35 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="rabin" id="60-base-interest">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="base_interest_rate"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="base_interest_rate">
+      <column name="id" autoIncrement="true" type="BIGINT">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="rate" type="FLOAT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="INT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
 </databaseChangeLog>
