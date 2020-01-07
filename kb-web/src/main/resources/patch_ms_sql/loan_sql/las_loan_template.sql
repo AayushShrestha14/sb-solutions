@@ -156,6 +156,22 @@ BEGIN
         END
 END;
 
+BEGIN
+    DECLARE @count_group smallint
+    SET @count_group = (Select count(*) from loan_template where id = 11)
+    if(@count_group = 0)
+        BEGIN
+
+            SET IDENTITY_INSERT loan_template on
+
+            INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+            (11, 'Group', '#group',11, 1, NULL, NULL, NULL,'2019-08-23', '2019-08-23', 0)
+
+            SET IDENTITY_INSERT loan_template off
+
+        END
+END;
+
 
 
 
