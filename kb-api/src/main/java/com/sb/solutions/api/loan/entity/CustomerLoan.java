@@ -45,6 +45,7 @@ import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
@@ -144,6 +145,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Audited
     @OneToOne
     private Security security;
+
+    @NotAudited
+    @OneToOne
+    private Group group;
 
     @Lob
     private String previousStageList;

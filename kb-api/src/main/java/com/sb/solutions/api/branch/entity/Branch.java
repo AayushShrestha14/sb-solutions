@@ -60,6 +60,7 @@ public class Branch extends BaseEntity<Long> implements Serializable {
     private String wardNumber;
     private String email;
     private String landlineNumber;
+    private String locationPreview;
 
 
 }
