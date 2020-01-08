@@ -31,6 +31,7 @@ import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.entity.Group;
@@ -373,7 +374,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
+        s.put("currentOfferLetterStage",
+            String.valueOf(userService.getAuthenticatedUser().getId()));
         s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -667,6 +669,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getLoanByCustomerId(Long id) {
         return customerLoanRepository.getCustomerLoanByCustomerInfoId(id);
+    }
+
+    @Override
+    public List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative) {
+        String date = new SimpleDateFormat("yyyy-MM-dd")
+            .format(customerRelative.getCitizenshipIssuedDate());
+        Map<String, String> map = new HashMap<>();
+        map.put("customerRelativeName", customerRelative.getCustomerRelativeName());
+        map.put("citizenshipNumber", customerRelative.getCitizenshipNumber());
+        map.put("citizenshipIssuedDate", date);
+        map.values().removeIf(Objects::isNull);
+        logger.info("get loan by kyc search parm{}", map);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            map);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
+
     }
 
 
