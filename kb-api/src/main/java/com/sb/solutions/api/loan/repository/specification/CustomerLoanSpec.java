@@ -158,6 +158,24 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .and(criteriaBuilder
                         .equal(root.join("customerInfo").join("customerRelatives").get(property),
                             value));
+
+            case FILTER_BY_CUSTOMER_CITIZENSHIP:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("customerInfo").join("customerRelatives").get(property),
+                            value));
+
+            case FILTER_BY_CUSTOMER_CITIZEN_ISSUE_DATE:
+                try {
+                    return criteriaBuilder
+                        .and(criteriaBuilder
+                            .equal(
+                                root.join("customerInfo").join("customerRelatives").get(property),
+                                new SimpleDateFormat("yyyy-MM-dd").parse(value)));
+                } catch (ParseException e) {
+                    return null;
+                }
+
             default:
                 return null;
         }

@@ -1,7 +1,6 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
-import java.util.Map;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -249,7 +249,7 @@ public class CustomerLoanController {
 
     @PostMapping("/customer-kyc")
     public ResponseEntity<?> getLoanByCustomerKyc(
-        @RequestBody Map<String, String> customerRelative) {
+        @RequestBody CustomerRelative customerRelative) {
         logger.info("getting Customer Loan {}", customerRelative);
         return new RestResponseDto()
             .successModel(service.getLoanByCustomerKycGroup(customerRelative));
