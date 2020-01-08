@@ -33,6 +33,8 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
+import com.sb.solutions.api.group.entity.Group;
+import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -61,6 +63,7 @@ import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 
+
 /**
  * @author Rujan Maharjan on 6/4/2019
  */
@@ -80,6 +83,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private final CustomerDocumentService customerDocumentService;
+    private final GroupServices groupServices;
     private CustomerOfferService customerOfferService;
     private CreditRiskGradingService creditRiskGradingService;
 
@@ -96,7 +100,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired CustomerDocumentService customerDocumentService,
         @Autowired ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService,
-        @Autowired CreditRiskGradingService creditRiskGradingService) {
+        @Autowired CreditRiskGradingService creditRiskGradingService,
+        @Autowired GroupServices groupService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -110,6 +115,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
         this.creditRiskGradingService = creditRiskGradingService;
+        this.groupServices = groupService;
     }
 
     @Override
@@ -174,6 +180,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
+        }
+        Group group = null;
+        if (customerLoan.getGroup() != null) {
+            group = this.groupServices.save(customerLoan.getGroup());
+            customerLoan.setGroup(group);
         }
         SiteVisit siteVisit = customerLoan.getSiteVisit();
         SiteVisit siteVisitTemp = null;
@@ -543,6 +554,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             object.getSecurity().setId(null);
             object.setSecurity(securityService.save(object.getSecurity()));
         }
+//        if(object.getGroup() != null){
+//            object.getGroup().se
+//        }
         if (object.getCreditRiskGrading() != null) {
             object.getCreditRiskGrading().setId(null);
             object

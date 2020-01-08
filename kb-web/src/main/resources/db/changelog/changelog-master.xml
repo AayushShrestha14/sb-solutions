@@ -1956,24 +1956,25 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="44-add-authorization-table" author="msucil">
-    <createTable tableName="authorization">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints primaryKey="true"/>
-      </column>
-      <column name="name" type="VARCHAR(255)">
-        <constraints nullable="false" unique="true"/>
-      </column>
-      <column name="value" type="VARCHAR(255)">
-        <constraints nullable="false" unique="true"/>
-      </column>
-      <column name="key" type="VARCHAR(255)">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
+    <changeSet id="44-add-authorization-table" author="msucil">
+      <createTable tableName="authorization">
+        <column name="id" type="BIGINT" autoIncrement="true">
+          <constraints primaryKey="true"/>
+        </column>
+        <column name="name" type="VARCHAR(255)">
+          <constraints nullable="false" unique="true"/>
+        </column>
+        <column name="value" type="VARCHAR(255)">
+          <constraints nullable="false" unique="true"/>
+        </column>
+        <column name="key" type="VARCHAR(255)">
+          <constraints nullable="false"/>
+        </column>
+      </createTable>
+    </changeSet>
 
-  <changeSet id="44-add-seed-data" author="msucil">
+
+    <changeSet id="44-add-seed-data" author="msucil">
     <sql>
       <![CDATA[
         INSERT INTO [authorization] (name, value, [key]) VALUES
@@ -1988,8 +1989,8 @@
           ('Delete Branch', 'DELETE_BRANCH', 'branch')
       ]]>
     </sql>
-  </changeSet>
-  
+   </changeSet>
+
   <changeSet id="63-rename-customer-document-Path-customer-loan" author="elvin">
     <preConditions>
       <tableExists tableName="customer_document_Path_customer_loan"/>
@@ -2009,6 +2010,97 @@
       <tableExists tableName="offer_letter_Path_customer_loan"/>
     </preConditions>
     <renameTable oldTableName="offer_letter_Path_customer_loan" newTableName="offer_letter_path_customer_loan"/>
+  </changeSet>
+  
+  <changeSet id="64-alter-branch-add-column-location-preview" author="elvin">
+    <preConditions>
+      <not>
+        <columnExists tableName="branch" columnName="location_preview"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="branch">
+      <column name="location_preview" type="VARCHAR(500)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="62-create-groups" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="groups"/>
+      </not>
+    </preConditions>
+    <createTable tableName="groups">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_group_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_group_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="112-alter-customer-loan-add-groups" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="group_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_loan_groups_id"
+          referencedTableName="groups"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="rabin" id="60-base-interest">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="base_interest_rate"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="base_interest_rate">
+      <column name="id" autoIncrement="true" type="BIGINT">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="rate" type="FLOAT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="INT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
   </changeSet>
 
 </databaseChangeLog>
