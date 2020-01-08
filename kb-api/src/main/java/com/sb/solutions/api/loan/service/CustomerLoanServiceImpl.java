@@ -373,7 +373,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
+        s.put("currentOfferLetterStage",
+            String.valueOf(userService.getAuthenticatedUser().getId()));
         s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -667,6 +668,18 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getLoanByCustomerId(Long id) {
         return customerLoanRepository.getCustomerLoanByCustomerInfoId(id);
+    }
+
+    @Override
+    public List<CustomerLoan> getLoanByCustomerKycGroup(Map<String, String> customerRelative) {
+
+        customerRelative.values().removeIf(Objects::isNull);
+        logger.info("get loan by kyc search parm{}", customerRelative);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            customerRelative);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
+import java.util.Map;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -244,6 +245,14 @@ public class CustomerLoanController {
         logger.info("getting Customer Loan {}", id);
         return new RestResponseDto()
             .successModel(service.getLoanByCustomerId(id));
+    }
+
+    @PostMapping("/customer-kyc")
+    public ResponseEntity<?> getLoanByCustomerKyc(
+        @RequestBody Map<String, String> customerRelative) {
+        logger.info("getting Customer Loan {}", customerRelative);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerKycGroup(customerRelative));
     }
 
 }

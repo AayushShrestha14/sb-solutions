@@ -53,5 +53,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     List<CustomerLoan>  getLoanByCustomerId(Long id);
 
+    List<CustomerLoan> getLoanByCustomerKycGroup(Map<String, String> customerRelative);
+
 
 }

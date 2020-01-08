@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -119,4 +120,15 @@ public class CustomerController {
             .uploadFile(multipartFile, uploadPath, "Profile-Pic");
 
     }
+
+    @PostMapping("check")
+    public ResponseEntity<?> searchByNameCitizenNoAndIssueDate(
+        @RequestBody CustomerRelative customer) {
+        logger.info("check kyc relative is customer or not{}", customer);
+        return new RestResponseDto().successModel(customerService
+            .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
+                customer.getCustomerRelativeName(), customer.getCitizenshipNumber(),
+                customer.getCitizenshipIssuedDate()));
+    }
+
 }
