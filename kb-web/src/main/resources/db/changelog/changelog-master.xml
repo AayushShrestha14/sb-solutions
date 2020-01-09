@@ -2103,4 +2103,11 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="112-alter-customer-remove-account-no" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="customer" columnName="account_no"/>
+    </preConditions>
+    <dropColumn tableName="customer" columnName="account_no"/>
+  </changeSet>
+
 </databaseChangeLog>
