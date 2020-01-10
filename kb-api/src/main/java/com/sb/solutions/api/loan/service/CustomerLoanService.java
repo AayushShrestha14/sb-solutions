@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -52,9 +53,11 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     String csv(Object searchDto);
 
-    List<CustomerLoan>  getLoanByCustomerId(Long id);
+    List<CustomerLoan> getLoanByCustomerId(Long id);
 
     List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative);
+
+    Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable);
 
 
 }

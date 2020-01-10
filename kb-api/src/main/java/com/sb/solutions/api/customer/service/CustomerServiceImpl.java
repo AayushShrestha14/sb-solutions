@@ -47,7 +47,6 @@ public class CustomerServiceImpl implements CustomerService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         s.values().removeIf(Objects::isNull);
-        System.out.println(s);
         final CustomerSpecBuilder customerSpecBuilder = new CustomerSpecBuilder(s);
 
         Specification<Customer> specification = customerSpecBuilder.build();
