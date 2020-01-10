@@ -48,7 +48,7 @@ public class Customer extends BaseEntity<Long> {
     private String customerId;
     @Temporal(TemporalType.DATE)
     private Date dob;
-    private String accountNo;
+
 
     @ManyToOne
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

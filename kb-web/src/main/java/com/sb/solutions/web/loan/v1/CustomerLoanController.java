@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -244,6 +245,24 @@ public class CustomerLoanController {
         logger.info("getting Customer Loan {}", id);
         return new RestResponseDto()
             .successModel(service.getLoanByCustomerId(id));
+    }
+
+    @PostMapping("/customer-kyc")
+    public ResponseEntity<?> getLoanByCustomerKyc(
+        @RequestBody CustomerRelative customerRelative) {
+        logger.info("getting Customer Loan {}", customerRelative);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerKycGroup(customerRelative));
+    }
+
+    @PostMapping("/customer-list")
+    public ResponseEntity<?> getCustomerFromCustomerLoan(
+        @RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        logger.info("getting Customer  from Loan /customer-kyc {}", searchDto);
+        return new RestResponseDto()
+            .successModel(service
+                .getCustomerFromCustomerLoan(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 }

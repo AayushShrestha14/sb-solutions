@@ -1992,28 +1992,28 @@
    </changeSet>
 
   <changeSet id="63-rename-customer-document-Path-customer-loan" author="elvin">
-    <preConditions>
+    <preConditions onFail="MARK_RAN">
       <tableExists tableName="customer_document_Path_customer_loan"/>
     </preConditions>
     <renameTable oldTableName="customer_document_Path_customer_loan" newTableName="customer_document_path_customer_loan"/>
   </changeSet>
 
   <changeSet id="63-rename-customer-document-Path-customer-loan-audit" author="elvin">
-    <preConditions>
+    <preConditions onFail="MARK_RAN">
       <tableExists tableName="customer_document_Path_customer_loan_audit"/>
     </preConditions>
     <renameTable oldTableName="customer_document_Path_customer_loan_audit" newTableName="customer_document_path_customer_loan_audit"/>
   </changeSet>
 
   <changeSet id="63-offer-letter-Path-customer-loan" author="elvin">
-    <preConditions>
+    <preConditions onFail="MARK_RAN">
       <tableExists tableName="offer_letter_Path_customer_loan"/>
     </preConditions>
     <renameTable oldTableName="offer_letter_Path_customer_loan" newTableName="offer_letter_path_customer_loan"/>
   </changeSet>
   
   <changeSet id="64-alter-branch-add-column-location-preview" author="elvin">
-    <preConditions>
+    <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="branch" columnName="location_preview"/>
       </not>
@@ -2102,7 +2102,14 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
-  
+
+  <changeSet id="112-alter-customer-remove-account-no" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="customer" columnName="account_no"/>
+    </preConditions>
+    <dropColumn tableName="customer" columnName="account_no"/>
+  </changeSet>
+
   <changeSet id="65-add-table-share_security" author="bibas">
     <preConditions onFail="MARK_RAN">
       <not>

@@ -1,5 +1,7 @@
 package com.sb.solutions.api.customer.repository;
 
+import java.util.Date;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -11,5 +13,9 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>,
     Customer findCustomerByCitizenshipNumber(String citizenshipNumber);
 
     Customer findCustomerByCustomerId(String citizenshipNumber);
+
+    Customer findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(String name,
+        String citizenship,
+        Date citizenIssueDate);
 
 }
