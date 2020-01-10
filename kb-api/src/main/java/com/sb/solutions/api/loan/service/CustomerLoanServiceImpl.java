@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -21,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -688,6 +693,32 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     }
 
+    @Override
+    public Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable) {
+        List<Customer> customerList = new ArrayList<>();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        s.put("distinctByCustomer", "true");
+        s.values().removeIf(Objects::isNull);
+        logger.info("search param for customer in customerLoan {}", s);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        Page<CustomerLoan> customerLoanPage = customerLoanRepository
+            .findAll(specification, pageable);
+        customerLoanPage.getContent().forEach(customerLoan -> {
+            if (!customerList.contains(customerLoan)) {
+                customerList.add(customerLoan.getCustomerInfo());
+            }
+        });
+        List<Customer> finalList = customerList.stream().filter(distinctByKey(Customer::getId))
+            .collect(
+                Collectors.toList());
+
+        Page<Customer> pages = new PageImpl<Customer>(finalList, pageable,
+            customerLoanPage.getTotalElements());
+        return pages;
+    }
+
 
     public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;
@@ -719,5 +750,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
 }
 
