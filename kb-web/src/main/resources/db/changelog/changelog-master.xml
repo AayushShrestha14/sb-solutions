@@ -2102,5 +2102,53 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
+  
+  <changeSet id="65-add-table-share_security" author="bibas">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="share_security"/>
+      </not>
+    </preConditions>
+      <createTable tableName="share_security">
+        <column name="id" type="BIGINT" autoIncrement="true">
+          <constraints primaryKey="true"/>
+        </column>
+        <column name="data" type="LONGTEXT">
+        </column>
+        <column name="created_at" type="DATE">
+          <constraints nullable="false"/>
+        </column>
+        <column name="last_modified_at" type="DATE">
+        </column>
+        <column name="version" type="INT" defaultValueNumeric="0"/>
 
+        <column name="created_by_id" type="BIGINT">
+          <constraints nullable="false"
+            foreignKeyName="fk_share_security_created_by_id"
+            referencedTableName="users"
+            referencedColumnNames="id"/>
+        </column>
+        <column name="modified_by_id" type="BIGINT">
+          <constraints
+            foreignKeyName="fk_share_security_modified_by_id"
+            referencedTableName="users"
+            referencedColumnNames="id"/>
+        </column>
+      </createTable>
+  </changeSet>
+
+  <changeSet id="share-security-alter-66" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="share_security_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="share_security_id"  type="BIGINT">
+        <constraints foreignKeyName="fk_customer_share_security_id"
+        referencedTableName="share_security"
+        referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

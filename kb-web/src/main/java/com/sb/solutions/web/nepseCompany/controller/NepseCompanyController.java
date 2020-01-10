@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,12 @@ public class NepseCompanyController {
             .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
+    @PostMapping(value = "/nepse-list")
+    public ResponseEntity<?> getNepseList(@RequestBody Object object) {
+        return new RestResponseDto()
+            .successModel(nepseCompanyService.getAllNepseBySearchDto(object));
+    }
+
     @GetMapping("/statusCount")
     public ResponseEntity<?> getNepseCompanyStatusCount() {
         return new RestResponseDto().successModel(nepseCompanyService.nepseStatusCount());
@@ -77,5 +84,10 @@ public class NepseCompanyController {
         @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
             shareValueService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<?> getShare(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(nepseCompanyService.findOne(id));
     }
 }

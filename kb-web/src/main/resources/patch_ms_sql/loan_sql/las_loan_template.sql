@@ -173,13 +173,13 @@ END;
 
 BEGIN
     DECLARE @count_document smallint
-    SET @count_document = (Select count(*) from loan_template where id = 11)
+    SET @count_document = (Select count(*) from loan_template where id = 12)
     if(@count_document = 0)
         BEGIN
             SET IDENTITY_INSERT loan_template on
 
             INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
-            (11, 'Share Security', '#shareSecurity',11, 1, NULL, NULL, NULL,'2020-01-05', '2020-01-05', 0)
+            (12, 'Share Security', '#shareSecurity',12, 1, NULL, NULL, NULL,'2020-01-05', '2020-01-05', 0)
 
             SET IDENTITY_INSERT loan_template off
 

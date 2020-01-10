@@ -50,6 +50,7 @@ import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -86,6 +87,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final GroupServices groupServices;
     private CustomerOfferService customerOfferService;
     private CreditRiskGradingService creditRiskGradingService;
+    private ShareSecurityService shareSecurityService;
 
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
@@ -101,7 +103,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired ProductModeService productModeService,
         @Autowired CustomerOfferService customerOfferService,
         @Autowired CreditRiskGradingService creditRiskGradingService,
-        @Autowired GroupServices groupService) {
+        @Autowired GroupServices groupService,
+        @Autowired ShareSecurityService shareSecurityService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -116,6 +119,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerDocumentService = customerDocumentService;
         this.creditRiskGradingService = creditRiskGradingService;
         this.groupServices = groupService;
+        this.shareSecurityService = shareSecurityService;
     }
 
     @Override
@@ -180,6 +184,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
+        }
+        if (customerLoan.getShareSecurity() != null) {
+            this.shareSecurityService.save(customerLoan.getShareSecurity());
         }
         Group group = null;
         if (customerLoan.getGroup() != null) {

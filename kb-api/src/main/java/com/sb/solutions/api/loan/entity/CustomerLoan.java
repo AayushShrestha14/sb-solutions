@@ -52,6 +52,7 @@ import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.security.entity.Security;
+import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
@@ -102,6 +103,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;
+
+    @NotAudited
+    @OneToOne
+    private ShareSecurity shareSecurity;
 
     @Audited
     @OneToOne(cascade = CascadeType.ALL)
