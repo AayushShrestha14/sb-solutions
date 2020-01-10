@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;database=icfc_prod2
+    url: jdbc:sqlserver://localhost:1433;database=cp_master
     username: sa
     password: root
