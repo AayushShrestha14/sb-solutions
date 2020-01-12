@@ -54,7 +54,6 @@ import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
-import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
@@ -92,6 +91,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CreditRiskGradingService creditRiskGradingService;
     private final VehicleSecurityService vehicleSecurityService;
     private ShareSecurityService shareSecurityService;
+
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
         UserService userService,
@@ -107,8 +107,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CreditRiskGradingService creditRiskGradingService,
         GroupServices groupService,
         VehicleSecurityService vehicleSecurityService,
-          ShareSecurityService shareSecurityService){
-        this.customerLoanRepository = customerLoanRepository;
+          ShareSecurityService shareSecurityService
+    ) {
+         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
         this.customerService = customerService;
@@ -122,8 +123,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.creditRiskGradingService = creditRiskGradingService;
         this.groupService = groupService;
         this.vehicleSecurityService = vehicleSecurityService;
-            this.shareSecurityService = shareSecurityService;
-        }
+        this.shareSecurityService = shareSecurityService;
+       }
 
     @Override
     public List<CustomerLoan> findAll() {
@@ -203,11 +204,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan
                 .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
         }
-            ShareSecurity shareSecurity = null;
-            if (customerLoan.getShareSecurity() != null) {
+            ShareSecurity shareSecurity;
+        if (customerLoan.getShareSecurity() != null){
                 shareSecurity = this.shareSecurityService.save(customerLoan.getShareSecurity());
                 customerLoan.setShareSecurity(shareSecurity);
-            }
+        }
 
         return customerLoanRepository.save(customerLoan);
     }

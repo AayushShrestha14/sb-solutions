@@ -13,12 +13,11 @@ import com.sb.solutions.core.enums.Status;
 public class NepseSpec implements Specification<NepseCompany> {
 
     private static final String FILTER_BY_STATUS = "status";
-    private static final String FILTER_BY_COMPANY_NAME= "companyName";
 
     private final String property;
     private final String value;
 
-    public NepseSpec(String property, String value) {
+    NepseSpec(String property, String value) {
         this.property = property;
         this.value = value;
     }
