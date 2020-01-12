@@ -36,7 +36,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
 
     @Override
     public Page<ShareSecurity> findAllPageable(Object t, Pageable pageable) {
-        return null;
+        return shareSecurityRepo.findAll(pageable);
     }
 
     @Override

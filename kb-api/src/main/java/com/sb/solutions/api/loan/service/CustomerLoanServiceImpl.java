@@ -56,6 +56,7 @@ import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
@@ -191,8 +192,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
         }
+        ShareSecurity shareSecurity = null;
         if (customerLoan.getShareSecurity() != null) {
-            this.shareSecurityService.save(customerLoan.getShareSecurity());
+            shareSecurity = this.shareSecurityService.save(customerLoan.getShareSecurity());
+            customerLoan.setShareSecurity(shareSecurity);
         }
         Group group = null;
         if (customerLoan.getGroup() != null) {
