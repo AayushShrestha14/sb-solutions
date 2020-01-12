@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -21,6 +23,8 @@ import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.ValuatingField;
+
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -48,7 +52,8 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
     private String streetName;
     private String wardNumber;
 
-    private String valuatingField;
+    @Enumerated(EnumType.STRING)
+    private ValuatingField valuatingField;
     private Date bankAssociateDate;
     private BigDecimal minAmount;
     private BigDecimal maxAmount;
