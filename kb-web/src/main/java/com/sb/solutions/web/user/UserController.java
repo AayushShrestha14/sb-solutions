@@ -3,6 +3,7 @@ package com.sb.solutions.web.user;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -201,5 +202,12 @@ public class UserController {
 
         return new RestResponseDto()
             .successModel(userService.getUserByRoleCad());
+    }
+
+    @GetMapping("/branch/all")
+    public ResponseEntity<?> getAuthenticatedUserBranches() {
+        return new RestResponseDto().successModel(
+            userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
+                Collectors.joining(",")));
     }
 }

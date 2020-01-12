@@ -5,14 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.repository.ValuatorRepository;
 import com.sb.solutions.api.valuator.repository.spec.ValuatorSpecBuilder;
@@ -58,12 +57,16 @@ public class ValuatorServiceImpl implements ValuatorService {
     }
 
     @Override
-    public Map<Object, Object> valuatorStatusCount() {
-        return valuatorRepository.valuatorStatusCount();
+    public Collection<Valuator> getValuatorFilterBySearch(Object search) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(search, Map.class);
+        final ValuatorSpecBuilder builder = new ValuatorSpecBuilder(s);
+        final Specification<Valuator> specification = builder.build();
+        return valuatorRepository.findAll(specification);
     }
 
     @Override
-    public Collection<Valuator> findByBranchIn(List<Branch> branches) {
-        return valuatorRepository.findByBranchIn(branches);
+    public Map<Object, Object> valuatorStatusCount() {
+        return valuatorRepository.valuatorStatusCount();
     }
 }
