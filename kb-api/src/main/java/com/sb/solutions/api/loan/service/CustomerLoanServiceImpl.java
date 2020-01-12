@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.customer.entity.Customer;
@@ -39,7 +37,6 @@ import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
-import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
@@ -53,7 +50,6 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.productMode.entity.ProductMode;
 import com.sb.solutions.api.productMode.service.ProductModeService;
-import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -62,6 +58,7 @@ import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -90,28 +87,27 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
-    private final CustomerDocumentService customerDocumentService;
-    private final GroupServices groupServices;
-    private CustomerOfferService customerOfferService;
-    private CreditRiskGradingService creditRiskGradingService;
+    private final GroupServices groupService;
+    private final CustomerOfferService customerOfferService;
+    private final CreditRiskGradingService creditRiskGradingService;
+    private final VehicleSecurityService vehicleSecurityService;
     private ShareSecurityService shareSecurityService;
-
-
-    public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
-        @Autowired UserService userService,
-        @Autowired CustomerService customerService,
-        @Autowired CompanyInfoService companyInfoService,
-        @Autowired DmsLoanFileService dmsLoanFileService,
-        @Autowired SiteVisitService siteVisitService,
-        @Autowired FinancialService financialService,
-        @Autowired SecurityService securityservice,
-        @Autowired ProposalService proposalService,
-        @Autowired CustomerDocumentService customerDocumentService,
-        @Autowired ProductModeService productModeService,
-        @Autowired CustomerOfferService customerOfferService,
-        @Autowired CreditRiskGradingService creditRiskGradingService,
-        @Autowired GroupServices groupService,
-        @Autowired ShareSecurityService shareSecurityService) {
+    public CustomerLoanServiceImpl(
+        CustomerLoanRepository customerLoanRepository,
+        UserService userService,
+        CustomerService customerService,
+        CompanyInfoService companyInfoService,
+        DmsLoanFileService dmsLoanFileService,
+        SiteVisitService siteVisitService,
+        FinancialService financialService,
+        SecurityService securityservice,
+        ProposalService proposalService,
+        ProductModeService productModeService,
+        CustomerOfferService customerOfferService,
+        CreditRiskGradingService creditRiskGradingService,
+        GroupServices groupService,
+        VehicleSecurityService vehicleSecurityService,
+          ShareSecurityService shareSecurityService){
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.productModeService = productModeService;
@@ -123,11 +119,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.securityService = securityservice;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
-        this.customerDocumentService = customerDocumentService;
         this.creditRiskGradingService = creditRiskGradingService;
-        this.groupServices = groupService;
-        this.shareSecurityService = shareSecurityService;
-    }
+        this.groupService = groupService;
+        this.vehicleSecurityService = vehicleSecurityService;
+            this.shareSecurityService = shareSecurityService;
+        }
 
     @Override
     public List<CustomerLoan> findAll() {
@@ -155,21 +151,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Loan can not be null");
         }
 
-        if (customerLoan.getDmsLoanFile() != null) {
-            customerLoan.getDmsLoanFile()
-                .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
-            customerLoan.getDmsLoanFile().setCreatedAt(new Date());
-        }
-
-        Customer customer = null;
-        CompanyInfo companyInfo = null;
-        if (customerLoan.getCustomerInfo() != null) {
-            customer = this.customerService.save(customerLoan.getCustomerInfo());
-        }
-        if (customerLoan.getCompanyInfo() != null
-            && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
-            companyInfo = this.companyInfoService.save(customerLoan.getCompanyInfo());
-        }
         if (customerLoan.getId() == null) {
             customerLoan.setBranch(userService.getAuthenticatedUser().getBranch().get(0));
             LoanStage stage = new LoanStage();
@@ -180,52 +161,54 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             stage.setComment(DocAction.DRAFT.name());
             stage.setDocAction(DocAction.DRAFT);
             customerLoan.setCurrentStage(stage);
-
         }
 
         if (customerLoan.getDmsLoanFile() != null) {
+            customerLoan.getDmsLoanFile()
+                .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
+            customerLoan.getDmsLoanFile().setCreatedAt(new Date());
+        }
+        if (customerLoan.getDmsLoanFile() != null) {
             customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
         }
+
+        if (customerLoan.getCustomerInfo() != null) {
+            customerLoan.setCustomerInfo(this.customerService.save(customerLoan.getCustomerInfo()));
+        }
+        if (customerLoan.getCompanyInfo() != null
+            && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
+            customerLoan
+                .setCompanyInfo(this.companyInfoService.save(customerLoan.getCompanyInfo()));
+        }
         if (customerLoan.getFinancial() != null) {
-            this.financialService.save(customerLoan.getFinancial());
+            customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
         }
         if (customerLoan.getSecurity() != null) {
-            this.securityService.save(customerLoan.getSecurity());
+            customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
         }
-        ShareSecurity shareSecurity = null;
-        if (customerLoan.getShareSecurity() != null) {
-            shareSecurity = this.shareSecurityService.save(customerLoan.getShareSecurity());
-            customerLoan.setShareSecurity(shareSecurity);
+        if (customerLoan.getSiteVisit() != null) {
+            customerLoan.setSiteVisit(this.siteVisitService.save(customerLoan.getSiteVisit()));
         }
-        Group group = null;
-        if (customerLoan.getGroup() != null) {
-            group = this.groupServices.save(customerLoan.getGroup());
-            customerLoan.setGroup(group);
-        }
-        SiteVisit siteVisit = customerLoan.getSiteVisit();
-        SiteVisit siteVisitTemp = null;
-
-        if (siteVisit != null) {
-            siteVisitTemp = siteVisit;
-            siteVisitTemp = this.siteVisitService.save(siteVisit);
-        }
-        //Proposal
-        Proposal proposal = customerLoan.getProposal();
-        Proposal proposalTemp = null;
         if (customerLoan.getProposal() != null) {
-
-            this.proposalService.save(customerLoan.getProposal());
-
+            customerLoan.setProposal(this.proposalService.save(customerLoan.getProposal()));
         }
         if (customerLoan.getCreditRiskGrading() != null) {
             customerLoan.setCreditRiskGrading(
                 creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
         }
+        if (customerLoan.getGroup() != null) {
+            customerLoan.setGroup(this.groupService.save(customerLoan.getGroup()));
+        }
+        if (customerLoan.getVehicleSecurity() != null) {
+            customerLoan
+                .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
+        }
+            ShareSecurity shareSecurity = null;
+            if (customerLoan.getShareSecurity() != null) {
+                shareSecurity = this.shareSecurityService.save(customerLoan.getShareSecurity());
+                customerLoan.setShareSecurity(shareSecurity);
+            }
 
-        customerLoan.setSiteVisit(siteVisitTemp);
-        customerLoan.setCustomerInfo(customer);
-        customerLoan.setCompanyInfo(companyInfo);
-        customerLoan.setProposal(proposal);
         return customerLoanRepository.save(customerLoan);
     }
 
@@ -546,38 +529,45 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public CustomerLoan renewCloseEntity(CustomerLoan object) {
-        final Long tempParentId = object.getId();
-        object.setParentId(tempParentId);
-        object.setId(null);
-        object.setDocumentStatus(DocStatus.PENDING);
+    public CustomerLoan renewCloseEntity(CustomerLoan previousLoan) {
+        final Long tempParentId = previousLoan.getId();
+        previousLoan.setParentId(tempParentId);
+        previousLoan.setId(null);
+        previousLoan.setDocumentStatus(DocStatus.PENDING);
 
-        if (object.getDmsLoanFile() != null) {
-            object.getDmsLoanFile().setId(null);
-            object.setDmsLoanFile(dmsLoanFileService.save(object.getDmsLoanFile()));
+        if (previousLoan.getDmsLoanFile() != null) {
+            previousLoan.getDmsLoanFile().setId(null);
+            previousLoan.setDmsLoanFile(dmsLoanFileService.save(previousLoan.getDmsLoanFile()));
         }
-        if (object.getSiteVisit() != null) {
-            object.getSiteVisit().setId(null);
+        if (previousLoan.getFinancial() != null) {
+            previousLoan.getFinancial().setId(null);
+            previousLoan.setFinancial(financialService.save(previousLoan.getFinancial()));
         }
-        if (object.getProposal() != null) {
-            object.getProposal().setId(null);
-            object.setProposal(proposalService.save(object.getProposal()));
+        if (previousLoan.getSecurity() != null) {
+            previousLoan.getSecurity().setId(null);
+            previousLoan.setSecurity(securityService.save(previousLoan.getSecurity()));
         }
-        if (object.getFinancial() != null) {
-            object.getFinancial().setId(null);
-            object.setFinancial(financialService.save(object.getFinancial()));
+        if (previousLoan.getSiteVisit() != null) {
+            previousLoan.getSiteVisit().setId(null);
         }
-        if (object.getSecurity() != null) {
-            object.getSecurity().setId(null);
-            object.setSecurity(securityService.save(object.getSecurity()));
+        if (previousLoan.getProposal() != null) {
+            previousLoan.getProposal().setId(null);
+            previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
         }
-//        if(object.getGroup() != null){
-//            object.getGroup().se
-//        }
-        if (object.getCreditRiskGrading() != null) {
-            object.getCreditRiskGrading().setId(null);
-            object
-                .setCreditRiskGrading(creditRiskGradingService.save(object.getCreditRiskGrading()));
+        if (previousLoan.getCreditRiskGrading() != null) {
+            previousLoan.getCreditRiskGrading().setId(null);
+            previousLoan
+                .setCreditRiskGrading(
+                    creditRiskGradingService.save(previousLoan.getCreditRiskGrading()));
+        }
+        if (previousLoan.getGroup() != null) {
+            previousLoan.getGroup().setId(null);
+            previousLoan.setGroup(groupService.save(previousLoan.getGroup()));
+        }
+        if (previousLoan.getVehicleSecurity() != null) {
+            previousLoan.getVehicleSecurity().setId(null);
+            previousLoan
+                .setVehicleSecurity(vehicleSecurityService.save(previousLoan.getVehicleSecurity()));
         }
 
         LoanStage stage = new LoanStage();
@@ -587,11 +577,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         stage.setToUser(userService.getAuthenticatedUser());
         stage.setComment(DocAction.DRAFT.name());
         stage.setDocAction(DocAction.DRAFT);
-        object.setCurrentStage(stage);
-        object.setPreviousList(null);
-        object.setPreviousStageList(null);
-        object.setCustomerDocument(null);
-        CustomerLoan customerLoan = customerLoanRepository.save(object);
+        previousLoan.setCurrentStage(stage);
+        previousLoan.setPreviousList(null);
+        previousLoan.setPreviousStageList(null);
+        previousLoan.setCustomerDocument(null);
+        CustomerLoan customerLoan = customerLoanRepository.save(previousLoan);
         customerLoanRepository.updateCloseRenewChildId(customerLoan.getId(), tempParentId);
         return customerLoan;
     }

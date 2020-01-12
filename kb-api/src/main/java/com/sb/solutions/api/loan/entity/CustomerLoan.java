@@ -54,6 +54,7 @@ import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
+import com.sb.solutions.api.vehiclesecurity.entity.VehicleSecurity;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
@@ -154,6 +155,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToOne
     private Group group;
+
+    @NotAudited
+    @OneToOne
+    private VehicleSecurity vehicleSecurity;
 
     @Lob
     private String previousStageList;

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.ValuatingField;
 
 /**
  * @author Elvin Shrestha on 1/2/20
@@ -54,7 +55,7 @@ public class ValuatorSpec implements Specification<Valuator> {
             case FILTER_BY_STATUS:
                 return criteriaBuilder.equal(root.get(FILTER_BY_STATUS), Status.valueOf(value));
             case FILTER_BY_VALUATING_FIELD:
-                return criteriaBuilder.equal(root.get(FILTER_BY_VALUATING_FIELD), value);
+                return criteriaBuilder.equal(root.get(FILTER_BY_VALUATING_FIELD), ValuatingField.valueOf(value));
             case FILTER_BY_MINIMUM_AMOUNT:
                 return criteriaBuilder.greaterThanOrEqualTo(root.get(FILTER_BY_MINIMUM_AMOUNT),
                     BigDecimal.valueOf(Double.parseDouble(value)));

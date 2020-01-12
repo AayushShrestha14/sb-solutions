@@ -172,6 +172,12 @@ BEGIN
 END;
 
 BEGIN
+    DECLARE @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 12)
+    if(@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_template ON
+BEGIN
     DECLARE @count_document smallint
     SET @count_document = (Select count(*) from loan_template where id = 12)
     if(@count_document = 0)
@@ -189,5 +195,9 @@ END;
 
 
 
+            INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+            (12, 'Vehicle Security', '#vehicleSecurity', 12, 1, NULL, NULL, NULL, '2019-01-11', '2019-01-11', 0)
 
-
+            SET IDENTITY_INSERT loan_template OFF
+        END
+END;

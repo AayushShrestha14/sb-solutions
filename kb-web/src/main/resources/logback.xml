@@ -12,7 +12,7 @@
 
   <appender class="ch.qos.logback.core.rolling.RollingFileAppender"
     name="ROOT_LOGGER">
-    <file>${log.dir}/sbsolutions.log</file>
+    <file>${log.dir}/sbsolutions-las.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <fileNamePattern>
         ${log.dir}/sbsolutions.%i.log.zip
