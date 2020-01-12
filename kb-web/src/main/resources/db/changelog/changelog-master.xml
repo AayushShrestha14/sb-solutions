@@ -2132,10 +2132,10 @@
           referencedTableName="users"
           referencedColumnNames="id"/>
       </column>
-      <column name="created_at" type="DATE">
+      <column name="created_at" type="DATETIME">
         <constraints nullable="false"/>
       </column>
-      <column name="last_modified_at" type="DATE">
+      <column name="last_modified_at" type="DATETIME">
         <constraints nullable="false"/>
       </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
