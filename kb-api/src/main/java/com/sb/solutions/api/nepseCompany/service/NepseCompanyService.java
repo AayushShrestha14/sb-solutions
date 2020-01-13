@@ -12,4 +12,6 @@ public interface NepseCompanyService extends BaseService<NepseCompany> {
 
     void saveList(List<NepseCompany> nepseCompanyList);
 
+    List<NepseCompany> getAllNepseBySearchDto(Object searchDto);
+
 }

@@ -255,4 +255,14 @@ public class CustomerLoanController {
             .successModel(service.getLoanByCustomerKycGroup(customerRelative));
     }
 
+    @PostMapping("/customer-list")
+    public ResponseEntity<?> getCustomerFromCustomerLoan(
+        @RequestBody Object searchDto,
+        @RequestParam("page") int page, @RequestParam("size") int size) {
+        logger.info("getting Customer  from Loan /customer-kyc {}", searchDto);
+        return new RestResponseDto()
+            .successModel(service
+                .getCustomerFromCustomerLoan(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
 }

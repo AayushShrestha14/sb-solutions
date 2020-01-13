@@ -1,7 +1,5 @@
 package com.sb.solutions.web.valuator;
 
-import java.util.List;
-
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.valuator.entity.Valuator;
 import com.sb.solutions.api.valuator.service.ValuatorService;
@@ -58,12 +54,9 @@ public class ValuatorController {
         return new RestResponseDto().successModel(valuatorService.valuatorStatusCount());
     }
 
-    @PostMapping("/valuator-branch")
-    public ResponseEntity<?> getValuatorByBranch(
-        @RequestBody(required = false) List<Branch> branches) {
-        User authenticatedUser = userService.getAuthenticatedUser();
-        return new RestResponseDto().successModel(
-            valuatorService.findByBranchIn(branches != null && !branches.isEmpty() ? branches
-                : authenticatedUser.getBranch()));
+    @PostMapping("/list/filtered")
+    public ResponseEntity<?> getValuatorListBySearch(@RequestBody Object search) {
+        return new RestResponseDto()
+            .successModel(valuatorService.getValuatorFilterBySearch(search));
     }
 }
