@@ -2110,4 +2110,99 @@
     <dropColumn tableName="customer" columnName="account_no"/>
   </changeSet>
 
+  <changeSet id="68-alter-guarantor-remove-column" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="guarantor" columnName="fatherName"/>
+    </preConditions>
+    <dropColumn tableName="guarantor" columnName="citizenIssuedPlace"/>
+    <dropColumn tableName="guarantor" columnName="citizenIssuedYear"/>
+    <dropColumn tableName="guarantor" columnName="contactNumber"/>
+    <dropColumn tableName="guarantor" columnName="grandFatherName"/>
+    <dropColumn tableName="guarantor" columnName="citizenNumber"/>
+    <dropColumn tableName="guarantor" columnName="address"/>
+    <dropColumn tableName="guarantor" columnName="fatherName"/>
+  </changeSet>
+
+  <changeSet id="69-alter-guarantor-add-column" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+      <columnExists tableName="guarantor" columnName="municipalities_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="citizen_number" type="BIGINT"/>
+    </addColumn>
+    <addColumn tableName="guarantor">
+      <column name="issued_place" type="varchar(256)"/>
+    </addColumn>
+    <addColumn tableName="guarantor">
+      <column name="issued_year" type="Date"/>
+    </addColumn>
+    <addColumn tableName="guarantor">
+      <column name="father_name" type="varchar(256)"/>
+    </addColumn>
+  <addColumn tableName="guarantor">
+    <column name="grand_father_name" type="varchar(256)"/>
+  </addColumn>
+    <addColumn tableName="guarantor">
+      <column name="contact_number" type="BIGINT"/>
+    </addColumn>
+  <addColumn tableName="guarantor">
+      <column name="province_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_guarantor_province_id"
+          referencedTableName="province"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="guarantor">
+        <column name="district_id" type="BIGINT">
+          <constraints nullable="true"
+            foreignKeyName="fk_guarantor_district_id"
+            referencedTableName="district"
+            referencedColumnNames="id"/>
+        </column>
+    </addColumn>
+    <addColumn tableName="guarantor">
+      <column name="municipalities_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_guarantor_municipality_vdc_id"
+          referencedTableName="municipality_vdc"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+
+  <changeSet id="70-add-third-table-security-guarantor" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="security_guarantor"/>
+      </not>
+    </preConditions>
+    <createTable tableName="security_guarantor">
+      <column name="security_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="guarantor_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="security_id"
+      baseTableName="security_guarantor"
+      constraintName="fk_security_guarantor_security"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="security"/>
+    <addForeignKeyConstraint baseColumnNames="guarantor_id"
+      baseTableName="security_guarantor"
+      constraintName="fk_security_guarantor_guarantor"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="guarantor"/>
+  </changeSet>
 </databaseChangeLog>
+
+

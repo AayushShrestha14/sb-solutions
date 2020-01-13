@@ -2,12 +2,18 @@ package com.sb.solutions.api.guarantor.entity;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
@@ -15,15 +21,25 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners({AuditingEntityListener.class})
 public class Guarantor extends BaseEntity<Long> {
 
     private String name;
-    private String address;
-    private String citizenNumber;
-    private Date citizenIssuedYear;
-    private String citizenIssuedPlace;
-    private String contactNumber;
+    private int citizenNumber;
+    private Date issuedYear;
+
+    private String issuedPlace;
+    private int contactNumber;
     private String fatherName;
     private String grandFatherName;
     private String relationship;
+
+    @ManyToOne
+    private Province province;
+
+    @ManyToOne
+    private District district;
+
+    @ManyToOne
+    private MunicipalityVdc municipalities;
 }

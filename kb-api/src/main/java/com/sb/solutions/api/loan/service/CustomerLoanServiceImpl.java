@@ -36,6 +36,7 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.entity.Group;
 import com.sb.solutions.api.group.service.GroupServices;
+import com.sb.solutions.api.guarantor.service.GuarantorService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -82,12 +83,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final SecurityService securityService;
+    private final GuarantorService guarantorService;
     private final ProposalService proposalService;
     private final CustomerDocumentService customerDocumentService;
     private final GroupServices groupServices;
     private CustomerOfferService customerOfferService;
     private CreditRiskGradingService creditRiskGradingService;
-
 
     public CustomerLoanServiceImpl(@Autowired CustomerLoanRepository customerLoanRepository,
         @Autowired UserService userService,
@@ -97,6 +98,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         @Autowired SiteVisitService siteVisitService,
         @Autowired FinancialService financialService,
         @Autowired SecurityService securityservice,
+        @Autowired GuarantorService guarantorService,
         @Autowired ProposalService proposalService,
         @Autowired CustomerDocumentService customerDocumentService,
         @Autowired ProductModeService productModeService,
@@ -112,6 +114,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.securityService = securityservice;
+        this.guarantorService = guarantorService;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
         this.customerDocumentService = customerDocumentService;
@@ -179,8 +182,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             this.financialService.save(customerLoan.getFinancial());
         }
+
         if (customerLoan.getSecurity() != null) {
             this.securityService.save(customerLoan.getSecurity());
+
         }
         Group group = null;
         if (customerLoan.getGroup() != null) {
