@@ -38,7 +38,6 @@ import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
-import com.sb.solutions.api.guarantor.service.GuarantorService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -86,7 +85,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final SecurityService securityService;
-    private final GuarantorService guarantorService;
     private final ProposalService proposalService;
     private final GroupServices groupService;
     private final CustomerOfferService customerOfferService;
@@ -120,7 +118,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.securityService = securityservice;
-        this.guarantorService = guarantorService;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
         this.creditRiskGradingService = creditRiskGradingService;
@@ -189,8 +186,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (customerLoan.getSecurity() != null) {
-            this.securityService.save(customerLoan.getSecurity());
-
             customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
         }
         if (customerLoan.getSiteVisit() != null) {
