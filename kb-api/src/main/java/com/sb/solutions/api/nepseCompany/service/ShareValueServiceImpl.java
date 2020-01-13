@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.nepseCompany.entity.ShareValue;
 import com.sb.solutions.api.nepseCompany.repository.ShareValueRepository;
@@ -33,9 +34,11 @@ public class ShareValueServiceImpl implements ShareValueService {
     @Override
     public ShareValue save(ShareValue shareValue) {
         ShareValue previousShareValue = shareValueRepository.findFirstByOrderByIdDesc();
-        previousShareValue.setStatus(Status.INACTIVE);
+        if (!ObjectUtils.isEmpty(previousShareValue)) {
+            previousShareValue.setStatus(Status.INACTIVE);
+            shareValueRepository.save(previousShareValue);
+        }
         shareValue.setStatus(Status.ACTIVE);
-        shareValueRepository.save(previousShareValue);
         return shareValueRepository.save(shareValue);
     }
 

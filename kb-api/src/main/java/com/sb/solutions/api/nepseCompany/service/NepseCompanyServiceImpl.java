@@ -7,16 +7,19 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.nepseCompany.repository.NepseCompanyRepository;
+import com.sb.solutions.api.nepseCompany.repository.specification.NepseSpecBuilder;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 
 @Service
 public class NepseCompanyServiceImpl implements NepseCompanyService {
 
+    private ObjectMapper objectMapper = new ObjectMapper();
     private final NepseCompanyRepository nepseCompanyRepository;
 
     public NepseCompanyServiceImpl(
@@ -68,6 +71,15 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
             nepseCompany.setStatus(Status.ACTIVE);
             nepseCompanyRepository.save(nepseCompany);
         }
+
+    }
+
+    @Override
+    public List<NepseCompany> getAllNepseBySearchDto(Object searchDto) {
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        final NepseSpecBuilder nepseSpecBuilder = new NepseSpecBuilder(s);
+        final Specification<NepseCompany> specification = nepseSpecBuilder.build();
+        return nepseCompanyRepository.findAll(specification);
 
     }
 

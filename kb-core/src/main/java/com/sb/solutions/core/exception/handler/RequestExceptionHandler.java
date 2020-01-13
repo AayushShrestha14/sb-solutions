@@ -21,10 +21,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.sb.solutions.core.dto.RestResponseDto;
+
 @ControllerAdvice
 public class RequestExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<?> nullPointerHandler(MethodArgumentNotValidException error) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        return restResponseDto.failureModel("There is null value in some of the field. Please Verify");
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> formErrorHandler(MethodArgumentNotValidException error) {

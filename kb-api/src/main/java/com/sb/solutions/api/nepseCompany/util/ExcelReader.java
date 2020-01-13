@@ -55,8 +55,8 @@ public class ExcelReader {
                 if (row.getCell(3).toString() != null) {
                     if (!(row.getCell(3).toString().equalsIgnoreCase(ShareType.ORDINARY.toString())
                         || row.getCell(3).toString().equalsIgnoreCase(ShareType.PROMOTER.toString()))) {
-                        throw new ServiceValidationException(row.getCell(3).toString()
-                            + "is  not valid ShareType on row" + "" + (i - 1));
+                        throw new ServiceValidationException(row.getCell(3).toString() + " "
+                            + "is  not valid ShareType on row" + " " + (i - 1));
                     }
                     nepseCompany.setShareType(
                         ShareType.valueOf(row.getCell(3).getStringCellValue().toUpperCase()));

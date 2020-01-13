@@ -185,3 +185,19 @@ BEGIN
             SET IDENTITY_INSERT loan_template OFF
         END
 END;
+
+BEGIN
+    DECLARE @count_shareSecurity smallint
+    SET @count_shareSecurity = (Select count(*) from loan_template where id = 13)
+    if(@count_shareSecurity = 0)
+        BEGIN
+
+            SET IDENTITY_INSERT loan_template on
+
+            INSERT  INTO loan_template (id, name, template_url, order_url, status, template_view, created_by_id, modified_by_id, created_at, last_modified_at, version) VALUES
+            (13, 'Share Security', '#shareSecurity',13, 1, NULL, NULL, NULL,'2020-01-05', '2020-01-05', 0)
+
+            SET IDENTITY_INSERT loan_template off
+
+        END
+END;

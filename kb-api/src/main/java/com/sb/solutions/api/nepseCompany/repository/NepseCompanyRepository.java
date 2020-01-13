@@ -11,8 +11,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.repository.BaseRepository;
 
-public interface NepseCompanyRepository extends JpaRepository<NepseCompany, Long> {
+public interface NepseCompanyRepository extends BaseRepository<NepseCompany, Long> {
 
     @Query(value = "select n from NepseCompany n where n.companyName like  concat(:companyName,'%')"
         + " order by n.status desc ")
