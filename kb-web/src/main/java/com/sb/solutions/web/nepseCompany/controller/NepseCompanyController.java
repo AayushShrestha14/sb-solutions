@@ -2,6 +2,7 @@ package com.sb.solutions.web.nepseCompany.controller;
 
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
@@ -76,6 +77,7 @@ public class NepseCompanyController {
 
     @PostMapping(value = "/share")
     public ResponseEntity<?> addShare(@RequestBody ShareValue shareValue) {
+        Preconditions.checkNotNull(shareValue.getShareData());
         return new RestResponseDto().successModel(shareValueService.save(shareValue));
     }
 
