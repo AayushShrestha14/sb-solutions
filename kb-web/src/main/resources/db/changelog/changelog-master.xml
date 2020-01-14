@@ -2227,7 +2227,7 @@
       </not>
     </preConditions>
     <addColumn tableName="guarantor">
-      <column name="citizen_number" type="BIGINT"/>
+      <column name="citizen_number" type="varchar(256)"/>
     </addColumn>
     <addColumn tableName="guarantor">
       <column name="issued_place" type="varchar(256)"/>
@@ -2242,7 +2242,7 @@
     <column name="grand_father_name" type="varchar(256)"/>
   </addColumn>
     <addColumn tableName="guarantor">
-      <column name="contact_number" type="BIGINT"/>
+      <column name="contact_number" type="varchar(256)"/>
     </addColumn>
   <addColumn tableName="guarantor">
       <column name="province_id" type="BIGINT">

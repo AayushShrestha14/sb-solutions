@@ -25,11 +25,11 @@ import com.sb.solutions.core.enitity.BaseEntity;
 public class Guarantor extends BaseEntity<Long> {
 
     private String name;
-    private int citizenNumber;
+    private String citizenNumber;
     private Date issuedYear;
 
     private String issuedPlace;
-    private int contactNumber;
+    private String contactNumber;
     private String fatherName;
     private String grandFatherName;
     private String relationship;
