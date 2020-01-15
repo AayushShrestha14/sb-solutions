@@ -19,7 +19,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="share_security")
+@Table(name = "share_security")
 public class ShareSecurity extends BaseEntity<Long> {
 
     private String data;
