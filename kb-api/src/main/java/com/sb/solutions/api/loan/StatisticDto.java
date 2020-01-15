@@ -16,4 +16,6 @@ public class StatisticDto {
     DocStatus status;
 
     String loanType;
+
+    Long files;
 }
