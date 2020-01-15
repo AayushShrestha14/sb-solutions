@@ -50,7 +50,7 @@ public class ExcelReader {
                     nepseCompany.setAmountPerUnit(row.getCell(1).getNumericCellValue());
                 }
                 if (row.getCell(2).toString() != null) {
-                    nepseCompany.setCompanyCode(row.getCell(2).getStringCellValue());
+                    nepseCompany.setCompanyCode(row.getCell(2).toString());
                 }
                 if (row.getCell(3).toString() != null) {
                     if (!(row.getCell(3).toString().equalsIgnoreCase(ShareType.ORDINARY.toString())
