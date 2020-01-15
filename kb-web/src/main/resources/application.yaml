@@ -41,7 +41,7 @@ logging:
   level:
     org:
       hibernate:
-        SQL: error
+        SQL: debug
 
 management:
   endpoints:

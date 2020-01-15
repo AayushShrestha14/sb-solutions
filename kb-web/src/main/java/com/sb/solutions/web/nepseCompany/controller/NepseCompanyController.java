@@ -81,6 +81,11 @@ public class NepseCompanyController {
         return new RestResponseDto().successModel(shareValueService.save(shareValue));
     }
 
+    @GetMapping(value = "/share")
+    public ResponseEntity<?> getActiveShare() {
+        return new RestResponseDto().successModel(shareValueService.findActiveShare());
+    }
+
     @GetMapping(value = "/share/list")
     public ResponseEntity<?> getAllShare(@RequestParam("page") int page,
         @RequestParam("size") int size) {
