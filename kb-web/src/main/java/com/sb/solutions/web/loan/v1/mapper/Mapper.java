@@ -170,6 +170,7 @@ public class Mapper {
                 final SeriesDto series = new SeriesDto();
                 series.setName(statisticDto.getStatus().toString());
                 series.setValue(statisticDto.getTotalAmount());
+                series.setFileCount(statisticDto.getFiles());
                 barChart.getSeries().add(series);
             });
             charts.add(barChart);
