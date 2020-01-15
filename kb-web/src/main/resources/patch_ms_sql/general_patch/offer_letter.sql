@@ -31,7 +31,7 @@ BEGIN
                            (6, 'Kararnama', 'home/loan/offer-letter/kararnama'),
                            (7, 'Karjatamsuk', 'home/loan/offer-letter/karjatamsuk'),
                            (8, 'Manjurinama', 'home/loan/offer-letter/manjurinama'),
-                           (8, 'Pratigya Patra', 'home/loan/offer-letter/pratigya-patra')
+                           (9, 'Pratigya Patra', 'home/loan/offer-letter/pratigya-patra')
                     SET IDENTITY_INSERT offer_letter OFF
                 END
             ---------------- CAD DOCUMENT FOR MAW -----------
