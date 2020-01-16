@@ -5,10 +5,11 @@ import com.sb.solutions.core.enums.ShareType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.ExcelHeaderChecker;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,17 +30,20 @@ public class ExcelReader {
     private static final int SHARE_AMOUNT_COLUMN_POS = 1;
     private static final int COMPANY_CODE_COLUMN_POS = 2;
     private static final int SHARE_TYPE_COLUMN_POS = 3;
-    private ExcelHeaderChecker excelHeaderChecker = new ExcelHeaderChecker();
 
     public List<NepseCompany> parseNepseCompanyFile(MultipartFile multipartFile) {
         List<NepseCompany> nepseCompanyList = new ArrayList<>();
         Workbook wb = null;
+        String excelFileName = multipartFile.getOriginalFilename();
 
         try {
-            wb = WorkbookFactory.create(multipartFile.getInputStream());
+            if (excelFileName.contains(".xlsx")) {
+                wb = new XSSFWorkbook(multipartFile.getInputStream());
+            } else {
+                wb = new HSSFWorkbook(multipartFile.getInputStream());
+            }
 
             Sheet workSheet = wb.getSheetAt(0);
-            int i = 0;
             IntStream.rangeClosed(1, workSheet.getLastRowNum()).forEach(value -> {
                 Row row = workSheet.getRow(value);
                 NepseCompany nepseCompany = new NepseCompany();
