@@ -2267,4 +2267,59 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="75-create-vehicle-security-valuator" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="vehicle_security_valuator"/>
+      </not>
+    </preConditions>
+    <createTable tableName="vehicle_security_valuator">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_vehicle_security_valuator_created_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_vehicle_security_valuator_modified_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="valuator_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_valuator_id_valuator_id"
+          referencedTableName="valuator" referencedColumnNames="id"/>
+      </column>
+      <column name="valuated_date" type="DATE"/>
+      <column name="valuator_representative_name" type="VARCHAR(255)"/>
+      <column name="staff_representative_name" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="75-create-vehicle-security-valuator-list" author="elvin">
+    <preConditions>
+      <not>
+        <tableExists tableName="vehicle_security_valuator_list"/>
+      </not>
+    </preConditions>
+    <createTable tableName="vehicle_security_valuator_list">
+      <column name="vehicle_security_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_list_vehicle_security_id_vehicle_security_id"
+          referencedTableName="vehicle_security" referencedColumnNames="id"/>
+      </column>
+      <column name="valuator_list_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_list_valuator_list_id_vehicle_security_valuator_id"
+          referencedTableName="vehicle_security_valuator" referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
