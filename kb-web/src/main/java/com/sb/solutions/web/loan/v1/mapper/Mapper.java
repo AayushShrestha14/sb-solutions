@@ -21,13 +21,10 @@ import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.api.productMode.entity.ProductMode;
-import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.Product;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
 import com.sb.solutions.web.loan.v1.dto.BarChartDto;
@@ -44,15 +41,12 @@ public class Mapper {
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
     private final StageMapper stageMapper;
     private final ApprovalLimitService approvalLimitService;
-    private final ProductModeService productModeService;
 
 
     public Mapper(@Autowired StageMapper stageMapper,
-        @Autowired ApprovalLimitService approvalLimitService,
-        @Autowired ProductModeService productModeService) {
+        @Autowired ApprovalLimitService approvalLimitService) {
         this.stageMapper = stageMapper;
         this.approvalLimitService = approvalLimitService;
-        this.productModeService = productModeService;
     }
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
@@ -65,9 +59,7 @@ public class Mapper {
                 "Sorry this document is not under you!!");
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
-            ProductMode productMode = productModeService.getByProduct(Product.DMS, Status.ACTIVE);
-            if (productMode == null) {
-
+            if (ProductUtils.LAS) {
                 ApprovalLimit approvalLimit = approvalLimitService
                     .getByRoleAndLoan(currentUser.getRole().getId(),
                         customerLoan.getLoan().getId(), customerLoan.getLoanCategory());
