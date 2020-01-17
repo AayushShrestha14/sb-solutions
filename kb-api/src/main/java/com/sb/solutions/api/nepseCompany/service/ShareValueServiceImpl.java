@@ -51,4 +51,9 @@ public class ShareValueServiceImpl implements ShareValueService {
     public List<ShareValue> saveAll(List<ShareValue> shareValueList) {
         return shareValueRepository.saveAll(shareValueList);
     }
+
+    @Override
+    public List<ShareValue> findActiveShare() {
+        return shareValueRepository.findAllByStatus(Status.ACTIVE);
+    }
 }
