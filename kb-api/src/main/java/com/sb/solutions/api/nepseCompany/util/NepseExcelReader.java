@@ -3,7 +3,6 @@ package com.sb.solutions.api.nepseCompany.util;
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.core.enums.ShareType;
 import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.csv.ExcelHeaderChecker;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,26 +11,28 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
-@Component
-public class ExcelReader {
-
+/**
+ * @author Sunil Babu Shrestha on 1/17/2020
+ * this is utility to read excel load for nepse company
+ */
+public class NepseExcelReader {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
     private static final int COMPANY_NAME_COLUMN_POS = 0;
     private static final int SHARE_AMOUNT_COLUMN_POS = 1;
     private static final int COMPANY_CODE_COLUMN_POS = 2;
     private static final int SHARE_TYPE_COLUMN_POS = 3;
 
-    public List<NepseCompany> parseNepseCompanyFile(MultipartFile multipartFile) {
+    private NepseExcelReader() {
+    }
+
+    public static List<NepseCompany> parseNepseCompanyFile(MultipartFile multipartFile) {
         List<NepseCompany> nepseCompanyList = new ArrayList<>();
         Workbook wb = null;
         String excelFileName = multipartFile.getOriginalFilename();
@@ -80,34 +81,7 @@ public class ExcelReader {
                 }
             }
         }
-        return nepseDataValidator(nepseCompanyList);
-    }
-
-    private List<NepseCompany> nepseDataValidator(List<NepseCompany> nepseCompanies) {
-        Map<String, NepseCompany> nepseList = new HashMap<>();
-        List<NepseCompany> filteredList = new ArrayList<>();
-        nepseCompanies.forEach(nepseCompany -> {
-            if (nepseCompany.getShareType().equals(ShareType.ORDINARY)) {
-                if (nepseList.get(nepseCompany.getCompanyName()) != null
-                        && nepseList.get(nepseCompany.getCompanyName()).getShareType()
-                        .equals(ShareType.ORDINARY)) {
-                    return;
-                }
-                nepseList
-                        .put(nepseCompany.getCompanyName(), nepseCompany);
-            } else {
-                if (nepseList.get(nepseCompany.getCompanyName()) != null
-                        && nepseList.get(nepseCompany.getCompanyName()).getShareType()
-                        .equals(ShareType.PROMOTER)) {
-                    return;
-                }
-                nepseList.put(nepseCompany.getCompanyName(), nepseCompany);
-            }
-        });
-        for (String key : nepseList.keySet()) {
-            filteredList.add(nepseList.get(key));
-        }
-        return filteredList;
+        return nepseCompanyList;
     }
 }
 
