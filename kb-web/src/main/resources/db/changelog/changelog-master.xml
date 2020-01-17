@@ -2354,7 +2354,7 @@
       <column name="color" type="VARCHAR(255)"/>
       <column name="purpose" type="VARCHAR(255)"/>
       <column name="supplier" type="VARCHAR(255)"/>
-      <column name="downPayment" type="DOUBLE"/>
+      <column name="down_payment" type="DOUBLE"/>
       <column name="loan_exposure" type="FLOAT"/>
       <column name="showroom_commission" type="DOUBLE"/>
     </addColumn>
