@@ -2322,6 +2322,50 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="75-alter-vehicle-security-valuator" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="vehicle_security_valuator" columnName="vehicle_name"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="model"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="manufacture_year"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="registration_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="valuation_amount"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="engine_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="chassis_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="registration_date"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="color"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="purpose"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="supplier"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="down_payment"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="loan_exposure"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="showroom_commission"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="vehicle_security_valuator">
+      <column name="vehicle_name" type="VARCHAR(255)"/>
+      <column name="model" type="VARCHAR(255)"/>
+      <column name="manufacture_year" type="DATE"/>
+      <column name="registration_number" type="VARCHAR(255)"/>
+      <column name="valuation_amount" type="DOUBLE"/>
+      <column name="engine_number" type="VARCHAR(255)"/>
+      <column name="chassis_number" type="VARCHAR(255)"/>
+      <column name="registration_date" type="DATE"/>
+      <column name="color" type="VARCHAR(255)"/>
+      <column name="purpose" type="VARCHAR(255)"/>
+      <column name="supplier" type="VARCHAR(255)"/>
+      <column name="down_payment" type="DOUBLE"/>
+      <column name="loan_exposure" type="FLOAT"/>
+      <column name="showroom_commission" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="75-alter-vehicle-security-valuator-remove-data" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="vehicle_security" columnName="data"/>
+    </preConditions>
+    <dropColumn tableName="vehicle_security" columnName="data"/>
+  </changeSet>
   <changeSet id="68-alter-guarantor-remove-column" author="buddha">
     <preConditions onFail="MARK_RAN">
       <columnExists tableName="guarantor" columnName="fatherName"/>

@@ -25,6 +25,4 @@ public class VehicleSecurity extends BaseEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VehicleSecurityValuator> valuatorList;
 
-    private String data;
-
 }
