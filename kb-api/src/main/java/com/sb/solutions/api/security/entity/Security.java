@@ -28,6 +28,10 @@ public class Security extends BaseEntity<Long> {
 
     private String data;
 
+
+    @NotAudited
+    private Integer valuatorId;
+
     @NotAudited
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Guarantor> guarantor;

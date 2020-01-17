@@ -2300,6 +2300,23 @@
       referencedColumnNames="id"
       referencedTableName="guarantor"/>
   </changeSet>
+
+  <changeSet id="73-alter-security-add-valuator-id" author="buddha">
+    <preConditions>
+      <not>
+        <columnExists tableName="security" columnName="valuator_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="security">
+      <column name="valuator_id" type="BIGINT">
+      <constraints nullable="true"
+        foreignKeyName="fk_security_valuator_id"
+        referencedTableName="valuator"
+        referencedColumnNames="id"/>
+    </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.address.district.entity.District;
@@ -25,6 +26,19 @@ import com.sb.solutions.core.enitity.BaseEntity;
 public class Guarantor extends BaseEntity<Long> {
 
     private String name;
+
+    @NotAudited
+    @ManyToOne
+    private Province province;
+
+    @NotAudited
+    @ManyToOne
+    private District district;
+
+    @NotAudited
+    @ManyToOne
+    private MunicipalityVdc municipalities;
+
     private String citizenNumber;
     private Date issuedYear;
 
@@ -34,12 +48,5 @@ public class Guarantor extends BaseEntity<Long> {
     private String grandFatherName;
     private String relationship;
 
-    @ManyToOne
-    private Province province;
 
-    @ManyToOne
-    private District district;
-
-    @ManyToOne
-    private MunicipalityVdc municipalities;
 }
