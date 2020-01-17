@@ -13,7 +13,7 @@ BEGIN
     SET @count_preference = (SELECT count(*) from permission where id = 142)
     SET @count_customer = (SELECT count(*) from permission where id = 143)
 
-    if (@count < 11)
+    if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)

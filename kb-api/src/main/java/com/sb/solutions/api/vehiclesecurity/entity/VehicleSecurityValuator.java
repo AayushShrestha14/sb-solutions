@@ -22,6 +22,20 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class VehicleSecurityValuator extends BaseEntity<Long> {
 
+    private String vehicleName;
+    private String model;
+    private Date manufactureYear;
+    private String registrationNumber;
+    private Double valuationAmount;
+    private String engineNumber;
+    private String chassisNumber;
+    private Date registrationDate;
+    private String color;
+    private String purpose;
+    private String supplier;
+    private Double downPayment;
+    private Float loanExposure;
+    private Double showroomCommission;
     @OneToOne
     private Valuator valuator;
     private Date valuatedDate;
