@@ -1,15 +1,14 @@
 package com.sb.solutions.api.nepseCompany.entity;
 
-import javax.persistence.Entity;
-
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.ShareType;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.ShareType;
-import com.sb.solutions.core.enums.Status;
+import javax.persistence.Entity;
 
 @Entity
 @Data
@@ -22,7 +21,7 @@ public class NepseCompany extends BaseEntity<Long> {
 
     private Double amountPerUnit;
 
-    private Status status;
+    private Status status = Status.ACTIVE;
 
     private String companyCode;
 
