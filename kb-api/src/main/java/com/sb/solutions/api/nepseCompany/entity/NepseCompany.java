@@ -16,14 +16,9 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class NepseCompany extends BaseEntity<Long> {
-
-    private String companyName;
-
-    private Double amountPerUnit;
-
     private Status status = Status.ACTIVE;
-
+    private String companyName;
+    private Double amountPerUnit;
     private String companyCode;
-
     private ShareType shareType;
 }

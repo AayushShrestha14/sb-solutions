@@ -2,9 +2,9 @@ package com.sb.solutions.web.nepseCompany.controller;
 
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
-import com.sb.solutions.api.nepseCompany.entity.ShareValue;
+import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.service.NepseCompanyService;
-import com.sb.solutions.api.nepseCompany.service.ShareValueService;
+import com.sb.solutions.api.nepseCompany.service.NepseMasterService;
 import com.sb.solutions.api.nepseCompany.util.NepseExcelReader;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
@@ -24,7 +24,7 @@ import java.util.List;
 public class NepseCompanyController {
 
     private final NepseCompanyService nepseCompanyService;
-    private final ShareValueService shareValueService;
+    private final NepseMasterService nepseMasterService;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody NepseCompany nepseCompany) {
@@ -68,21 +68,22 @@ public class NepseCompanyController {
     }
 
     @PostMapping(value = "/share")
-    public ResponseEntity<?> addShare(@RequestBody ShareValue shareValue) {
-        Preconditions.checkNotNull(shareValue.getShareData());
-        return new RestResponseDto().successModel(shareValueService.save(shareValue));
+    public ResponseEntity<?> addShare(@RequestBody NepseMaster nepseMaster) {
+        Preconditions.checkNotNull(nepseMaster.getOrdinary());
+        Preconditions.checkNotNull(nepseMaster.getPromotor());
+        return new RestResponseDto().successModel(nepseMasterService.save(nepseMaster));
     }
 
     @GetMapping(value = "/share")
     public ResponseEntity<?> getActiveShare() {
-        return new RestResponseDto().successModel(shareValueService.findActiveShare());
+        return new RestResponseDto().successModel(nepseMasterService.findActiveMasterRecord());
     }
 
     @GetMapping(value = "/share/list")
     public ResponseEntity<?> getAllShare(@RequestParam("page") int page,
                                          @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-                shareValueService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
+                nepseMasterService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "/{id}")
