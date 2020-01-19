@@ -2369,6 +2369,12 @@
   <changeSet id="68-alter-guarantor-remove-column" author="buddha">
     <preConditions onFail="MARK_RAN">
       <columnExists tableName="guarantor" columnName="fatherName"/>
+      <columnExists tableName="guarantor" columnName="address"/>
+      <columnExists tableName="guarantor" columnName="citizenNumber"/>
+      <columnExists tableName="guarantor" columnName="grandFatherName"/>
+      <columnExists tableName="guarantor" columnName="contactNumber"/>
+      <columnExists tableName="guarantor" columnName="citizenIssuedYear"/>
+      <columnExists tableName="guarantor" columnName="citizenIssuedPlace"/>
     </preConditions>
     <dropColumn tableName="guarantor" columnName="citizenIssuedPlace"/>
     <dropColumn tableName="guarantor" columnName="citizenIssuedYear"/>
