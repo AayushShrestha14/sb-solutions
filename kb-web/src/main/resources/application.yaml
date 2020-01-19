@@ -73,3 +73,14 @@ mailproperty:
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
       debug: true
+
+product:
+  las: true
+  offerletter: true
+  memo: false
+  account: true
+  eligibility: true
+  dms: false
+
+
+
