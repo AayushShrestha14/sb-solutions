@@ -186,6 +186,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
         }
+
         if (customerLoan.getSecurity() != null) {
             customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
         }
