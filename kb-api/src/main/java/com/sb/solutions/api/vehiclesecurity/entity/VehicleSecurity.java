@@ -1,6 +1,9 @@
 package com.sb.solutions.api.vehiclesecurity.entity;
 
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +22,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class VehicleSecurity extends BaseEntity<Long> {
 
-    private String data;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VehicleSecurityValuator> valuatorList;
 
 }

@@ -2267,4 +2267,103 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="75-create-vehicle-security-valuator" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="vehicle_security_valuator"/>
+      </not>
+    </preConditions>
+    <createTable tableName="vehicle_security_valuator">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_vehicle_security_valuator_created_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_vehicle_security_valuator_modified_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="valuator_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_valuator_id_valuator_id"
+          referencedTableName="valuator" referencedColumnNames="id"/>
+      </column>
+      <column name="valuated_date" type="DATE"/>
+      <column name="valuator_representative_name" type="VARCHAR(255)"/>
+      <column name="staff_representative_name" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="75-create-vehicle-security-valuator-list" author="elvin">
+    <preConditions>
+      <not>
+        <tableExists tableName="vehicle_security_valuator_list"/>
+      </not>
+    </preConditions>
+    <createTable tableName="vehicle_security_valuator_list">
+      <column name="vehicle_security_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_list_vehicle_security_id_vehicle_security_id"
+          referencedTableName="vehicle_security" referencedColumnNames="id"/>
+      </column>
+      <column name="valuator_list_id" type="BIGINT">
+        <constraints foreignKeyName="fk_vehicle_security_valuator_list_valuator_list_id_vehicle_security_valuator_id"
+          referencedTableName="vehicle_security_valuator" referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="75-alter-vehicle-security-valuator" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="vehicle_security_valuator" columnName="vehicle_name"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="model"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="manufacture_year"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="registration_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="valuation_amount"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="engine_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="chassis_number"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="registration_date"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="color"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="purpose"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="supplier"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="down_payment"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="loan_exposure"/>
+        <columnExists tableName="vehicle_security_valuator" columnName="showroom_commission"/>
+      </not>
+    </preConditions>
+    
+    <addColumn tableName="vehicle_security_valuator">
+      <column name="vehicle_name" type="VARCHAR(255)"/>
+      <column name="model" type="VARCHAR(255)"/>
+      <column name="manufacture_year" type="DATE"/>
+      <column name="registration_number" type="VARCHAR(255)"/>
+      <column name="valuation_amount" type="DOUBLE"/>
+      <column name="engine_number" type="VARCHAR(255)"/>
+      <column name="chassis_number" type="VARCHAR(255)"/>
+      <column name="registration_date" type="DATE"/>
+      <column name="color" type="VARCHAR(255)"/>
+      <column name="purpose" type="VARCHAR(255)"/>
+      <column name="supplier" type="VARCHAR(255)"/>
+      <column name="down_payment" type="DOUBLE"/>
+      <column name="loan_exposure" type="FLOAT"/>
+      <column name="showroom_commission" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="75-alter-vehicle-security-valuator-remove-data" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="vehicle_security" columnName="data"/>
+    </preConditions>
+    <dropColumn tableName="vehicle_security" columnName="data"/>
+  </changeSet>
 </databaseChangeLog>
