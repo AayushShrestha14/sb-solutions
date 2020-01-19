@@ -76,7 +76,7 @@ mailproperty:
 
 product:
   las: true
-  offerletter: false
+  offerletter: true
   memo: false
   account: true
   eligibility: true

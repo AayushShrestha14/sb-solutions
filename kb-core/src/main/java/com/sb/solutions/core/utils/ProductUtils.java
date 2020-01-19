@@ -1,14 +1,11 @@
 package com.sb.solutions.core.utils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * @author : Rujan Maharjan on  1/17/2020
  **/
 
-
-@Component
 public class ProductUtils {
 
 

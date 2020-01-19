@@ -29,8 +29,6 @@ BEGIN
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (105, 'Email Configuration', 'inbox-outline', '/home/admin/email-config', 55, 1)
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 60, 1)
             SET IDENTITY_INSERT permission OFF
 
