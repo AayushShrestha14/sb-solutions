@@ -2366,18 +2366,6 @@
     </preConditions>
     <dropColumn tableName="vehicle_security" columnName="data"/>
   </changeSet>
- <!-- <changeSet id="76-alter-remove-share-customer-data-third-table" author="bibash">
-    <preConditions onFail="MARK_RAN">
-        <tableExists tableName="share_security_customer_share_data"/>
-    </preConditions>
-    <dropTable tableName="share_security_customer_share_data"/>
-  </changeSet>
-  <changeSet id="77-alter-remove-customer-share-data-table" author="bibash">
-    <preConditions onFail="MARK_RAN">
-      <tableExists tableName="customer_share_data"/>
-    </preConditions>
-    <dropTable tableName="customer_share_data"/>
-  </changeSet>-->
   <changeSet id="78-alter-remove-share-value-table" author="bibash">
     <preConditions onFail="MARK_RAN">
       <tableExists tableName="share_value"/>
