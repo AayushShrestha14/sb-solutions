@@ -18,7 +18,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class NepseMaster extends BaseEntity<Long> {
-    private double promotor;
+    private double promoter;
     private double ordinary;
     private Status status = Status.ACTIVE;
 }

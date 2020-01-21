@@ -70,7 +70,7 @@ public class NepseCompanyController {
     @PostMapping(value = "/share")
     public ResponseEntity<?> addShare(@RequestBody NepseMaster nepseMaster) {
         Preconditions.checkNotNull(nepseMaster.getOrdinary());
-        Preconditions.checkNotNull(nepseMaster.getPromotor());
+        Preconditions.checkNotNull(nepseMaster.getPromoter());
         return new RestResponseDto().successModel(nepseMasterService.save(nepseMaster));
     }
 
@@ -83,7 +83,7 @@ public class NepseCompanyController {
     public ResponseEntity<?> getAllShare(@RequestParam("page") int page,
                                          @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-                nepseMasterService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
+                nepseMasterService.findNepseListOrderById(new Object(), PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "/{id}")

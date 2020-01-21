@@ -53,6 +53,11 @@ public class NepseMasterServiceImpl implements NepseMasterService {
     public NepseMaster findActiveMasterRecord() {
         return nepseMasterRepository.findByStatus(Status.ACTIVE);
     }
+
+    @Override
+    public Page<NepseMaster> findNepseListOrderById(Object searchDto , Pageable pageable) {
+        return nepseMasterRepository.findAllByOrderByIdDesc(pageable);
+    }
 }
 
 
