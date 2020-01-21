@@ -2433,7 +2433,7 @@
       </not>
     </preConditions>
     <addColumn tableName="customer_share_data">
-      <column name="company_code" type="varchar"/>
+      <column name="company_code" type="varchar(256)"/>
     </addColumn>
   </changeSet>
   <changeSet id="80-alter-rename-column-share-rate" author="bibash">
