@@ -38,6 +38,7 @@ import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -661,6 +662,24 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Page<Customer> pages = new PageImpl<Customer>(finalList, pageable,
             customerLoanPage.getTotalElements());
         return pages;
+    }
+
+    @Override
+    public List<CustomerLoan> getLoanByCustomerGuarantor(Guarantor guarantor) {
+        String date = new SimpleDateFormat("yyyy-MM-dd")
+            .format(guarantor.getIssuedYear());
+        Map<String, String> map = new HashMap<>();
+        map.put("guarantorName", guarantor.getName());
+        map.put("guarantorCitizenshipNumber", guarantor.getCitizenNumber());
+        map.put("guarantorCitizenshipIssuedDate", date);
+        map.put("guarantorDistrictId", String.valueOf(guarantor.getDistrict().getId()));
+        map.put("guarantorProvinceId", String.valueOf(guarantor.getProvince().getId()));
+        map.values().removeIf(Objects::isNull);
+        logger.info("get loan by guarantor search parm{}", map);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            map);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
     }
 
     public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
