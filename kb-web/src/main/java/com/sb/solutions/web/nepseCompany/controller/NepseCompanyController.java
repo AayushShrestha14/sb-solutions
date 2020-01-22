@@ -2,16 +2,16 @@ package com.sb.solutions.web.nepseCompany.controller;
 
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
-import com.sb.solutions.api.nepseCompany.entity.ShareValue;
+import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.service.NepseCompanyService;
-import com.sb.solutions.api.nepseCompany.service.ShareValueService;
+import com.sb.solutions.api.nepseCompany.service.NepseMasterService;
 import com.sb.solutions.api.nepseCompany.util.NepseExcelReader;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,12 +19,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/v1/nepse-company")
 public class NepseCompanyController {
 
     private final NepseCompanyService nepseCompanyService;
-    private final ShareValueService shareValueService;
+    private final NepseMasterService nepseMasterService;
+
+    public NepseCompanyController(
+        @Autowired NepseCompanyService nepseCompanyService,
+        @Autowired NepseMasterService nepseMasterService) {
+        this.nepseCompanyService = nepseCompanyService;
+        this.nepseMasterService = nepseMasterService;
+    }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody NepseCompany nepseCompany) {
@@ -68,21 +74,22 @@ public class NepseCompanyController {
     }
 
     @PostMapping(value = "/share")
-    public ResponseEntity<?> addShare(@RequestBody ShareValue shareValue) {
-        Preconditions.checkNotNull(shareValue.getShareData());
-        return new RestResponseDto().successModel(shareValueService.save(shareValue));
+    public ResponseEntity<?> addShare(@RequestBody NepseMaster nepseMaster) {
+        Preconditions.checkNotNull(nepseMaster.getOrdinary());
+        Preconditions.checkNotNull(nepseMaster.getPromoter());
+        return new RestResponseDto().successModel(nepseMasterService.save(nepseMaster));
     }
 
     @GetMapping(value = "/share")
     public ResponseEntity<?> getActiveShare() {
-        return new RestResponseDto().successModel(shareValueService.findActiveShare());
+        return new RestResponseDto().successModel(nepseMasterService.findActiveMasterRecord());
     }
 
     @GetMapping(value = "/share/list")
     public ResponseEntity<?> getAllShare(@RequestParam("page") int page,
                                          @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-                shareValueService.findAllPageable(new Object(), PaginationUtils.pageable(page, size)));
+                nepseMasterService.findNepseListOrderById(new Object(), PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "/{id}")
