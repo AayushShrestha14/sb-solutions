@@ -77,4 +77,6 @@ public class Customer extends BaseEntity<Long> {
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CustomerRelative> customerRelatives;
+
+    private String nepaliDetail;
 }
