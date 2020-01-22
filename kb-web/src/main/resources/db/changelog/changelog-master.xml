@@ -2482,6 +2482,35 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="81-create-groups-valuator" author="buddha">
+    <preConditions>
+      <not>
+        <tableExists tableName="groups_valuator"></tableExists>
+      </not>
+    </preConditions>
+    <createTable tableName="groups_valuator">
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="valuator_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="group_id"
+      baseTableName="groups_valuator"
+      constraintName="fk_groups_valuator_group_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="groups"/>
+    <addForeignKeyConstraint baseColumnNames="valuator_id"
+      baseTableName="groups_valuator"
+      constraintName="fk_groups_valuator_valuator_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="valuator"/>
+  </changeSet>
 </databaseChangeLog>
 
 
