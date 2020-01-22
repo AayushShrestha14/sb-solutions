@@ -16,9 +16,8 @@ import com.sb.solutions.core.enums.ShareType;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 public class CustomerShareData extends BaseEntity<Long> {
-
     private String companyName;
+    private Double amountPerUnit;
+    private String companyCode;
     private ShareType shareType;
-    private Double totalShareUnit;
-    private String shareRate;
 }

@@ -2562,6 +2562,100 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="81-create-groups-valuator" author="buddha">
+    <preConditions>
+      <not>
+        <tableExists tableName="groups_valuator"></tableExists>
+      </not>
+    </preConditions>
+    <createTable tableName="groups_valuator">
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="valuator_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="group_id"
+      baseTableName="groups_valuator"
+      constraintName="fk_groups_valuator_group_id"
+      onDelete="CASCADE"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="groups"/>
+    <addForeignKeyConstraint baseColumnNames="valuator_id"
+      baseTableName="groups_valuator"
+      constraintName="fk_groups_valuator_valuator_id"
+      onDelete="RESTRICT"
+      onUpdate="CASCADE"
+      referencedColumnNames="id"
+      referencedTableName="valuator"/>
+  </changeSet>
+  <changeSet id="78-alter-remove-share-value-table" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="share_value"/>
+    </preConditions>
+    <dropTable tableName="share_value"/>
+  </changeSet>
+  <changeSet id="79-create-table-nepse-master" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="nepse_master"/>
+      </not>
+    </preConditions>
+    <createTable tableName="nepse_master">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_nepse_master_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints foreignKeyName="fk_nepse_master_modified_by_id"
+          nullable="true"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="true"/>
+      </column>
+      <column name="promoter" type="double">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ordinary" type="double">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="INT">
+      <constraints nullable="false"/>
+    </column>
+      <column name="version" type="INT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="80-add-column-company-code" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_share_data" columnName="company_code"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_share_data">
+      <column name="company_code" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="80-alter-rename-column-share-rate" author="bibash">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="customer_share_data" columnName="share_rate"/>
+    </preConditions>
+    <renameColumn tableName="customer_share_data" oldColumnName="share_rate" newColumnName="amount_per_unit"/>
+  </changeSet>
+
 </databaseChangeLog>
 
 
