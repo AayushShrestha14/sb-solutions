@@ -11,7 +11,6 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,12 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/v1/nepse-company")
 public class NepseCompanyController {
 
     private final NepseCompanyService nepseCompanyService;
     private final NepseMasterService nepseMasterService;
+
+    public NepseCompanyController(
+        NepseCompanyService nepseCompanyService,
+        NepseMasterService nepseMasterService) {
+        this.nepseCompanyService = nepseCompanyService;
+        this.nepseMasterService = nepseMasterService;
+    }
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody NepseCompany nepseCompany) {
