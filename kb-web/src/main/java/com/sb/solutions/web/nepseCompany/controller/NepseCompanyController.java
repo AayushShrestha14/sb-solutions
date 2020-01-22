@@ -11,6 +11,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +26,8 @@ public class NepseCompanyController {
     private final NepseMasterService nepseMasterService;
 
     public NepseCompanyController(
-        NepseCompanyService nepseCompanyService,
-        NepseMasterService nepseMasterService) {
+        @Autowired NepseCompanyService nepseCompanyService,
+        @Autowired NepseMasterService nepseMasterService) {
         this.nepseCompanyService = nepseCompanyService;
         this.nepseMasterService = nepseMasterService;
     }
