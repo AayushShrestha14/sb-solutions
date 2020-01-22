@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
@@ -248,9 +249,9 @@ public class CustomerLoanController {
     }
 
     @PostMapping("/customer-kyc")
-    public ResponseEntity<?> getLoanByCustomerKyc(
+    public ResponseEntity<?> getLoanByCustomerAsKyc(
         @RequestBody CustomerRelative customerRelative) {
-        logger.info("getting Customer Loan {}", customerRelative);
+        logger.info("getting Customer Loan by Kyc {}", customerRelative);
         return new RestResponseDto()
             .successModel(service.getLoanByCustomerKycGroup(customerRelative));
     }
@@ -263,6 +264,14 @@ public class CustomerLoanController {
         return new RestResponseDto()
             .successModel(service
                 .getCustomerFromCustomerLoan(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
+    @PostMapping("/customer-guaranter")
+    public ResponseEntity<?> getLoanByCustomerAsGuaranter(
+        @RequestBody Guarantor guarantor) {
+        logger.info("getting Customer Loan by guarantor {}", guarantor);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerGuarantor(guarantor));
     }
 
 }

@@ -43,6 +43,12 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_CUSTOMER_CITIZENSHIP = "citizenshipNumber";
     private static final String FILTER_BY_CUSTOMER_CITIZEN_ISSUE_DATE = "citizenshipIssuedDate";
 
+    private static final String FILTER_BY_GUARANTOR_NAME = "guarantorName";
+    private static final String FILTER_BY_GUARANTOR_CITIZENSHIP = "guarantorCitizenshipNumber";
+    private static final String FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE = "guarantorCitizenshipIssuedDate";
+    private static final String FILTER_BY_GUARANTOR_DISTRICT_ID = "guarantorDistrictId";
+    private static final String FILTER_BY_GUARANTOR_PROVINCE_ID = "guarantorProvinceId";
+
 
     private final String property;
     private final String value;
@@ -175,6 +181,41 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 } catch (ParseException e) {
                     return null;
                 }
+
+            case FILTER_BY_GUARANTOR_NAME:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("security").join("guarantor").get("name"),
+                            value));
+
+            case FILTER_BY_GUARANTOR_CITIZENSHIP:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("security").join("guarantor").get("citizenNumber"),
+                            value));
+
+            case FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE:
+                try {
+                    return criteriaBuilder
+                        .and(criteriaBuilder
+                            .equal(
+                                root.join("security").join("guarantor").get("issuedYear"),
+                                new SimpleDateFormat("yyyy-MM-dd").parse(value)));
+                } catch (ParseException e) {
+                    return null;
+                }
+
+            case FILTER_BY_GUARANTOR_DISTRICT_ID:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("security").join("guarantor").join("district").get("id"),
+                            value));
+
+            case FILTER_BY_GUARANTOR_PROVINCE_ID:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("security").join("guarantor").join("province").get("id"),
+                            value));
 
             default:
                 return null;
