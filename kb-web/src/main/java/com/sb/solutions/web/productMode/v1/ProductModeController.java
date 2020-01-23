@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.ProductUtils;
 
 /**
  * @author : Rujan Maharjan on  12/15/2019
@@ -30,7 +31,13 @@ public class ProductModeController {
 
     @GetMapping(value = "/all")
     public ResponseEntity<?> getProductMode() {
-        logger.info("get product mode {}",URL);
+        logger.info("get product mode {}", URL);
         return new RestResponseDto().successModel(productModeService.findAll());
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getProductUtils() {
+        logger.info("get product mode utils{}", URL);
+        return new RestResponseDto().successModel(ProductUtils.getProductUtilsMap());
     }
 }
