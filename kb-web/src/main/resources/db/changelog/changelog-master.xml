@@ -2576,6 +2576,86 @@
     <renameColumn tableName="customer_share_data" oldColumnName="share_rate" newColumnName="amount_per_unit"/>
   </changeSet>
 
+  <changeSet id="82-create-nepali-template" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="nepali_template"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="nepali_template">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_nepali_template_created_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_nepali_template_modified_by_id_users_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="type" type="VARCHAR(256)"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="82-create-customer-loan-nepali-templates" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_loan_nepali_templates"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="customer_loan_nepali_templates">
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_nepali_templates_customer_loan_id_customer_loan_id"
+          referencedTableName="customer_loan"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="nepali_templates_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_nepali_templates_nepali_templates_id_nepali_template_id"
+          referencedTableName="nepali_template"
+          referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="82-alter-customer-add-nepali-detail" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="nepali_detail"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer">
+      <column name="nepali_detail" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="82-alter-customer-audit-add-nepali-detail" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_audit" columnName="nepali_detail"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_audit">
+      <column name="nepali_detail" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
