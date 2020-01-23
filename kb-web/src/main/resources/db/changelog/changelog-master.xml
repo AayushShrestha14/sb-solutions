@@ -2656,6 +2656,29 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="82-drop-customer_loan_nepali_templates" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="customer_loan_nepali_templates"/>
+    </preConditions>
+
+    <dropTable tableName="customer_loan_nepali_templates"/>
+  </changeSet>
+
+  <changeSet id="82-alter-nepali_template" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="nepali_template" columnName="customer_loan_id"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="nepali_template">
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints foreignKeyName="fk_nepali_template_customer_loan_id_customer_loan_id"
+          referencedTableName="customer_loan" referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 

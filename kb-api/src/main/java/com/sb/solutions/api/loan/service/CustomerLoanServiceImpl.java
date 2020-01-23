@@ -47,11 +47,13 @@ import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
+import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
+import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
-import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -87,7 +89,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerOfferService customerOfferService;
     private final CreditRiskGradingService creditRiskGradingService;
     private final VehicleSecurityService vehicleSecurityService;
-    private ShareSecurityService shareSecurityService;
+    private final ShareSecurityService shareSecurityService;
+    private final NepaliTemplateService nepaliTemplateService;
+    private final NepaliTemplateMapper nepaliTemplateMapper;
 
 
     public CustomerLoanServiceImpl(
@@ -104,7 +108,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CreditRiskGradingService creditRiskGradingService,
         GroupServices groupService,
         VehicleSecurityService vehicleSecurityService,
-        ShareSecurityService shareSecurityService
+        ShareSecurityService shareSecurityService,
+        NepaliTemplateService nepaliTemplateService,
+        NepaliTemplateMapper nepaliTemplateMapper
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -120,7 +126,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.groupService = groupService;
         this.vehicleSecurityService = vehicleSecurityService;
         this.shareSecurityService = shareSecurityService;
-
+        this.nepaliTemplateService = nepaliTemplateService;
+        this.nepaliTemplateMapper = nepaliTemplateMapper;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -144,6 +151,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
                 customerOfferLetterDto.setId(customerOfferLetter.getId());
                 customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
+            }
+        }
+        if (ProductUtils.NEP_TEMPLATE) {
+            Map<String, String> filterParams = new HashMap<String, String>() {{
+                put("customerLoan.id", String.valueOf(id));
+            }};
+            List<NepaliTemplate> nepaliTemplates = nepaliTemplateService
+                .findAllBySpec(filterParams);
+            if (!nepaliTemplates.isEmpty()) {
+                customerLoan
+                    .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
             }
         }
         return customerLoan;
@@ -208,13 +226,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan
                 .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
         }
-        ShareSecurity shareSecurity;
         if (customerLoan.getShareSecurity() != null) {
-            shareSecurity = this.shareSecurityService.save(customerLoan.getShareSecurity());
-            customerLoan.setShareSecurity(shareSecurity);
+            customerLoan
+                .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
         }
 
-        return customerLoanRepository.save(customerLoan);
+        CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
+
+        if (!customerLoan.getNepaliTemplates().isEmpty()) {
+            List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper.mapDtosToEntities(customerLoan.getNepaliTemplates());
+            nepaliTemplates.forEach(v -> v.setCustomerLoan(savedCustomerLoan));
+            nepaliTemplateService.saveAll(nepaliTemplates);
+        }
+
+        return savedCustomerLoan;
     }
 
     @Override
