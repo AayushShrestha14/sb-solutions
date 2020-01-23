@@ -20,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -50,6 +51,7 @@ import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -184,6 +186,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Audited
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
+
+    @NotAudited
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NepaliTemplate> nepaliTemplates;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
