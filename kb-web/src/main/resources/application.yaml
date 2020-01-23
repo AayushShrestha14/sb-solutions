@@ -81,6 +81,7 @@ product:
   account: true
   eligibility: true
   dms: false
+  nepTemplate: true
 
 
 
