@@ -1,5 +1,8 @@
 package com.sb.solutions.core.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -20,6 +23,10 @@ public class ProductUtils {
     public static Boolean ELIGIBILITY;
 
     public static Boolean DMS;
+
+    public static Boolean NEP_TEMPLATE;
+
+    private Map<String, Boolean> productUtilsMap;
 
 
     @Value("${product.las}")
@@ -50,5 +57,21 @@ public class ProductUtils {
     @Value("${product.dms}")
     public void setDms(Boolean dms) {
         DMS = dms;
+    }
+
+    @Value("${product.nepTemplate}")
+    public void setNepTemplate(Boolean nepTemplate) {
+        NEP_TEMPLATE = nepTemplate;
+    }
+
+    public static Map<String, Boolean> getProductUtilsMap() {
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("LAS", LAS);
+        map.put("MEMO", MEMO);
+        map.put("ELIGIBILITY", ELIGIBILITY);
+        map.put("ACCOUNT", ACCOUNT);
+        map.put("NEP_TEMPLATE", NEP_TEMPLATE);
+        map.put("OFFER_LETTER", OFFER_LETTER);
+        return map;
     }
 }
