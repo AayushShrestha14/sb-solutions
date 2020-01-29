@@ -3,5 +3,3 @@ spring:
     url: jdbc:sqlserver://loandb.ccrnyaxr5jd0.us-east-2.rds.amazonaws.com\loandb:1433;database=prod
     username: admin
     password: sbsolutions
-
-
