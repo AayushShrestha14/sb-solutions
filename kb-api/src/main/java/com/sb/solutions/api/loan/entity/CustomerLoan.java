@@ -187,7 +187,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private CreditRiskGrading creditRiskGrading;
 
     @Transient
-    private List<NepaliTemplateDto> nepaliTemplates;
+    private List<NepaliTemplateDto> nepaliTemplates = new ArrayList<>();
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
