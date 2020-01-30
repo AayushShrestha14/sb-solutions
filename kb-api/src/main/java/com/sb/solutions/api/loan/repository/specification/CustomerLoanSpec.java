@@ -217,7 +217,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                                         value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
-                return criteriaBuilder.isMember(AppConstant.TEMPLATE_SHARE_SECURITY, root.join("loan").get("templateList"));
+                Predicate predicateForLimitExceed = criteriaBuilder
+                        .and(criteriaBuilder
+                                .equal(root.get("limitExceed"),
+                                        1));
+                Predicate predicateForShareTemplate = criteriaBuilder.
+                        isMember(AppConstant.TEMPLATE_SHARE_SECURITY, root.join("loan").get("templateList"));
+                return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 
             default:
                 return null;
