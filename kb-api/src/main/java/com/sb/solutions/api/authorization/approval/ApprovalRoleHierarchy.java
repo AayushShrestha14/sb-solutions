@@ -20,7 +20,6 @@ import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
 @Table(name = "approval_role_hierarchy")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
