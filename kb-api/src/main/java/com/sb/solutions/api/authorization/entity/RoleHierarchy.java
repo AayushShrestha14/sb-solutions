@@ -15,7 +15,6 @@ import com.sb.solutions.core.enitity.BaseEntity;
  * @author Rujan Maharjan on 5/13/2019
  */
 
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -43,6 +42,5 @@ public class RoleHierarchy extends BaseEntity<Long> {
         this.roleOrder = roleOrder;
         this.roleName = roleName;
         this.id = id;
-
     }
 }

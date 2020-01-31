@@ -19,12 +19,12 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: false
     properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+      org:
         hibernate:
-              enable_lazy_load_no_trans: true
-        org:
-          hibernate:
-            envers:
-              audit_table_suffix: _audit
+          envers:
+            audit_table_suffix: _audit
   servlet:
     multipart:
       max-file-size: 10MB
@@ -82,6 +82,4 @@ product:
   eligibility: true
   dms: false
   nepTemplate: true
-
-
-
+  loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
