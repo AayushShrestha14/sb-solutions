@@ -2749,13 +2749,13 @@
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_group_created_by_id"
+                             foreignKeyName="fk_maw_credit_risk_grading_created_by_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_group_modified_by_id"
+                             foreignKeyName="fk_maw_credit_risk_grading_modified_by_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
@@ -2779,7 +2779,7 @@
         <addColumn tableName="customer_loan">
             <column name="maw_credit_risk_grading_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_customer_loan_groups_id"
+                             foreignKeyName="fk_customer_loan_maw_credit_risk_grading_id"
                              referencedTableName="maw_credit_risk_grading"
                              referencedColumnNames="id"/>
             </column>
