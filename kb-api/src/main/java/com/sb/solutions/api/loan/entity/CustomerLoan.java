@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -160,6 +161,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToOne
     private VehicleSecurity vehicleSecurity;
+
+    @NotAudited
+    @OneToOne
+    private MawCreditRiskGrading mawCreditRiskGrading;
 
     @Lob
     private String previousStageList;
