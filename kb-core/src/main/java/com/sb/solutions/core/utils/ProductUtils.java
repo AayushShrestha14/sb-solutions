@@ -71,9 +71,9 @@ public class ProductUtils {
         productUtilsMap.put("NEP_TEMPLATE", nepTemplate);
     }
 
-    @Value("${product.approvalHierarchyForLoan}")
+    @Value("${product.loanApprovalHierarchyLevel}")
     public void setApprovalHierarchyForLoan(ApprovalType approvalType) {
-        productUtilsMap.put("APPROVAL_HIERARCHY_LOAN", approvalType);
+        productUtilsMap.put("LOAN_APPROVAL_HIERARCHY_LEVEL", approvalType);
     }
 
     public static Map<String, Object> getProductUtilsMap() {
