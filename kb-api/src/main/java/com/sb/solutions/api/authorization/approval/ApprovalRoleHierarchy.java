@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -17,6 +15,7 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.utils.ApprovalType;
 
 @Entity
 @Table(name = "approval_role_hierarchy")

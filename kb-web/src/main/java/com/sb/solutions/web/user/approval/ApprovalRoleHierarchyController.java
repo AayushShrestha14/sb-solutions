@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyServiceImpl;
-import com.sb.solutions.api.authorization.approval.ApprovalType;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.ApprovalType;
 
 @RestController
 @RequestMapping("/v1/approval/role-hierarchies")
@@ -78,6 +78,17 @@ public class ApprovalRoleHierarchyController {
             .successModel(dtos);
     }
 
+    @GetMapping("/forward-roles/{roleId}/{type}/{refId}")
+    public ResponseEntity<?> getForwardRolesForRoleWithType(
+        @PathVariable("roleId") long roleId,
+        @PathVariable("type") ApprovalType type,
+        @PathVariable("refId") long refId) {
+        final List<ApprovalRoleHierarchyDto> dtos = mapper.mapEntitiesToDtos(service
+            .getForwardRolesForRoleWithType(roleId, type, refId));
+
+        return new RestResponseDto().successModel(dtos);
+    }
+
     @GetMapping("/forward-roles/{roleId}/{type}/{typeId}/{ref}/{refId}")
     public ResponseEntity<?> getForwardRolesForRole(
         @PathVariable("roleId") long roleId,
@@ -102,5 +113,16 @@ public class ApprovalRoleHierarchyController {
             .successModel(
                 mapper.mapEntitiesToDtos(
                     service.getBackwardRolesForRole(roleId, type, typeId, ref, refId)));
+    }
+
+    @GetMapping("/backward-roles/{roleId}/{type}/{refId}")
+    public ResponseEntity<?> getBackwardRolesForRoleWithType(
+        @PathVariable("roleId") Long roleId,
+        @PathVariable("type") ApprovalType type,
+        @PathVariable("refId") long refId) {
+        return new RestResponseDto()
+            .successModel(
+                mapper.mapEntitiesToDtos(
+                    service.getBackwardRolesForRoleWithType(roleId, type, refId)));
     }
 }

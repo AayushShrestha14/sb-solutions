@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.authorization.approval.ApprovalType;
+import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.core.dto.BaseDto;
 
