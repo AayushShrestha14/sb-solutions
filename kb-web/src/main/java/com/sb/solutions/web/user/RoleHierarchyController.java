@@ -28,7 +28,6 @@ import com.sb.solutions.web.user.mapper.RoleHierarchyMapper;
 @RequestMapping("/v1/role-hierarchy")
 public class RoleHierarchyController {
 
-
     private final Logger logger = LoggerFactory.getLogger(RoleHierarchyController.class);
 
     private final RoleHierarchyMapper roleHierarchyMapper;
