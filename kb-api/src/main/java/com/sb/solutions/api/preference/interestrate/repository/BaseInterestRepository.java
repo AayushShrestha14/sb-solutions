@@ -11,5 +11,5 @@ public interface BaseInterestRepository extends JpaRepository<BaseInterestRate, 
 
     Page<BaseInterestRate> findAllByOrderByIdDesc(Pageable pageable);
 
-    BaseInterestRate findAllByStatus(Status staus);
+    BaseInterestRate findAllByStatus(Status status);
 }
