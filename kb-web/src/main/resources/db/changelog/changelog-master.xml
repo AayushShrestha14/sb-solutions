@@ -2737,6 +2737,55 @@
     </createTable>
   </changeSet>
 
+    <changeSet id="84-create-maw-credit-risk-grading" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="maw_credit_risk_grading"/>
+            </not>
+        </preConditions>
+        <createTable tableName="maw_credit_risk_grading">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_maw_credit_risk_grading_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_maw_credit_risk_grading_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="84-alter-customer-loan-add-maw-credit-risk-grading" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="maw_credit_risk_grading_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="maw_credit_risk_grading_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_maw_credit_risk_grading_id"
+                             referencedTableName="maw_credit_risk_grading"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
