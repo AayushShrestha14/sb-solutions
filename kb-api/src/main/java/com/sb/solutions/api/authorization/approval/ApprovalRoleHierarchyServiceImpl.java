@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleHierarchyService;
 import com.sb.solutions.core.utils.ApprovalType;
 
@@ -63,6 +64,9 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                 hierarchy.setApprovalType(ApprovalType.DEFAULT);
                 hierarchy.setRefId(0L);
                 hierarchy.setRoleOrder(r.getRoleOrder());
+                Role role = new Role();
+                role.setId(r.getId());
+                role.setRoleName(r.getRoleName());
                 hierarchy.setRole(r.getRole());
 
                 return hierarchy;
@@ -91,7 +95,10 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                 hierarchy.setApprovalType(ApprovalType.DEFAULT);
                 hierarchy.setRefId(0L);
                 hierarchy.setRoleOrder(r.getRoleOrder());
-                hierarchy.setRole(r.getRole());
+                Role role = new Role();
+                role.setId(r.getId());
+                role.setRoleName(r.getRoleName());
+                hierarchy.setRole(role);
 
                 return hierarchy;
             }).collect(toList());
@@ -132,6 +139,9 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                 hierarchy.setApprovalType(ApprovalType.DEFAULT);
                 hierarchy.setRefId(0L);
                 hierarchy.setRoleOrder(r.getRoleOrder());
+                Role role = new Role();
+                role.setId(r.getId());
+                role.setRoleName(r.getRoleName());
                 hierarchy.setRole(r.getRole());
 
                 return hierarchy;
@@ -159,6 +169,9 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                 hierarchy.setApprovalType(ApprovalType.DEFAULT);
                 hierarchy.setRefId(0L);
                 hierarchy.setRoleOrder(r.getRoleOrder());
+                Role role = new Role();
+                role.setId(r.getId());
+                role.setRoleName(r.getRoleName());
                 hierarchy.setRole(r.getRole());
 
                 return hierarchy;
