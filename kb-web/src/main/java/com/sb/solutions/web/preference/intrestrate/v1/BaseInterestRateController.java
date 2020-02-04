@@ -70,4 +70,9 @@ public class BaseInterestRateController {
         return new RestResponseDto().successModel(baseInterestService.save(base));
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<?> getActiveBaseRate() {
+        return new RestResponseDto().successModel(baseInterestService.getActiveRate());
+    }
+
 }
