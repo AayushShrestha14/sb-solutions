@@ -51,4 +51,8 @@ public class BaseInterestServiceImpl implements BaseInterestService {
     }
 
 
+    @Override
+    public BaseInterestRate getActiveRate() {
+        return baseInterestRepository.findAllByStatus(Status.ACTIVE);
+    }
 }
