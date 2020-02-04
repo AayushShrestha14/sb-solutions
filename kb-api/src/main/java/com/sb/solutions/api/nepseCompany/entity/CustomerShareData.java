@@ -20,4 +20,5 @@ public class CustomerShareData extends BaseEntity<Long> {
     private Double amountPerUnit;
     private String companyCode;
     private ShareType shareType;
+    private int totalShareUnit;
 }

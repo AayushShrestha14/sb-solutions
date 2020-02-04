@@ -19,6 +19,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CompanyInfoService companyInfoService;
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
+    private final MawCreditRiskGradingService mawCreditRiskGradingService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private final GroupServices groupService;
@@ -102,6 +104,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         DmsLoanFileService dmsLoanFileService,
         SiteVisitService siteVisitService,
         FinancialService financialService,
+        MawCreditRiskGradingService mawCreditRiskGradingService,
         SecurityService securityservice,
         ProposalService proposalService,
         CustomerOfferService customerOfferService,
@@ -119,6 +122,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
+        this.mawCreditRiskGradingService = mawCreditRiskGradingService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
@@ -205,7 +209,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
         }
-
+        if (customerLoan.getMawCreditRiskGrading() != null) {
+            customerLoan.setMawCreditRiskGrading(this.mawCreditRiskGradingService.save(customerLoan.getMawCreditRiskGrading()));
+        }
         if (customerLoan.getSecurity() != null) {
             customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
         }
@@ -538,6 +544,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.getVehicleSecurity().setId(null);
             previousLoan
                 .setVehicleSecurity(vehicleSecurityService.save(previousLoan.getVehicleSecurity()));
+        }
+        if (previousLoan.getMawCreditRiskGrading() != null) {
+            previousLoan.getMawCreditRiskGrading().setId(null);
+            previousLoan.setMawCreditRiskGrading(mawCreditRiskGradingService.save(previousLoan.getMawCreditRiskGrading()));
         }
 
         LoanStage stage = new LoanStage();
