@@ -1,8 +1,13 @@
 package com.sb.solutions.web;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
+import com.sb.solutions.api.basehttp.BaseHttp;
+import com.sb.solutions.api.basehttp.BaseHttpRepo;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
+import com.sb.solutions.core.config.security.property.FileStorageProperties;
+import com.sb.solutions.core.config.security.property.MailProperties;
+import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
+import com.sb.solutions.core.utils.ProductUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -14,20 +19,16 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.sb.solutions.api.basehttp.BaseHttp;
-import com.sb.solutions.api.basehttp.BaseHttpRepo;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
-import com.sb.solutions.core.config.security.property.FileStorageProperties;
-import com.sb.solutions.core.config.security.property.MailProperties;
-import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
-import com.sb.solutions.core.utils.ProductUtils;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -64,6 +65,17 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         SpringApplication.run(CpSolutionApplication.class, args);
     }
 
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
+        t.setCorePoolSize(10);
+        t.setMaxPoolSize(100);
+        t.setQueueCapacity(50);
+        t.setAllowCoreThreadTimeOut(true);
+        t.setKeepAliveSeconds(120);
+        return t;
+    }
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CpSolutionApplication.class);
@@ -82,83 +94,83 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                 baseHttpRepo.save(baseHttp);
             }
             ClassPathResource dataResourc = new ClassPathResource(
-                baseServerFolder + "/loan_sql/patch_product_mode.sql");
+                    baseServerFolder + "/loan_sql/patch_product_mode.sql");
             ResourceDatabasePopulator populators = new ResourceDatabasePopulator(dataResourc);
             populators.execute(dataSource);
             ClassPathResource dataResourceGeneral = new ClassPathResource(
-                baseServerFolder + "/loan_sql/patch_general_permission.sql");
+                    baseServerFolder + "/loan_sql/patch_general_permission.sql");
             ResourceDatabasePopulator populatorGeneral = new ResourceDatabasePopulator(
-                dataResourceGeneral);
+                    dataResourceGeneral);
             populatorGeneral.execute(dataSource);
 
             if (ProductUtils.ACCOUNT) {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_account_opening.sql");
+                        baseServerFolder + "/loan_sql/patch_account_opening.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             } else {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_remove_account_opening.sql");
+                        baseServerFolder + "/loan_sql/patch_remove_account_opening.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             }
 
             if (ProductUtils.ELIGIBILITY) {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_eligibility_permission.sql");
+                        baseServerFolder + "/loan_sql/patch_eligibility_permission.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             } else {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_remove_eligibility.sql");
+                        baseServerFolder + "/loan_sql/patch_remove_eligibility.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             }
 
             if (ProductUtils.MEMO) {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_memo.sql");
+                        baseServerFolder + "/loan_sql/patch_memo.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             } else {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_remove_memo.sql");
+                        baseServerFolder + "/loan_sql/patch_remove_memo.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
             }
 
             if (ProductUtils.OFFER_LETTER) {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/general_patch/offer_letter.sql");
+                        baseServerFolder + "/general_patch/offer_letter.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource);
+                        dataResource);
                 populator.execute(dataSource);
 
                 ClassPathResource cadResource = new ClassPathResource(
-                    baseServerFolder + "/general_patch/role_cad.sql");
+                        baseServerFolder + "/general_patch/role_cad.sql");
                 ResourceDatabasePopulator cadPopulator = new ResourceDatabasePopulator(
-                    cadResource);
+                        cadResource);
                 cadPopulator.execute(dataSource);
             }
 
             if (ProductUtils.LAS) {
                 ClassPathResource dataResource = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/patch_las_permission.sql");
+                        baseServerFolder + "/loan_sql/patch_las_permission.sql");
                 ClassPathResource dataResourceTemplate = new ClassPathResource(
-                    baseServerFolder + "/loan_sql/las_loan_template.sql");
+                        baseServerFolder + "/loan_sql/las_loan_template.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                    dataResource, dataResourceTemplate);
+                        dataResource, dataResourceTemplate);
                 populator.execute(dataSource);
             }
 
             this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
-                baseServerFolder);
+                    baseServerFolder);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("cannot load patch file");
@@ -168,16 +180,16 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
 
     private void permissionRemoveForDMSandLAS(Boolean dms, Boolean las,
-        String baseServerFolder) {
+                                              String baseServerFolder) {
         if (dms && !las) {
             ClassPathResource dataResource = new ClassPathResource(
-                baseServerFolder + "/loan_sql/patch_remove_only_las.sql");
+                    baseServerFolder + "/loan_sql/patch_remove_only_las.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
             populator.execute(dataSource);
         }
         if (!dms && !las) {
             ClassPathResource dataResource = new ClassPathResource(
-                baseServerFolder + "/loan_sql/patch_remove_dms_las_permission.sql");
+                    baseServerFolder + "/loan_sql/patch_remove_dms_las_permission.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(dataResource);
             populator.execute(dataSource);
         }

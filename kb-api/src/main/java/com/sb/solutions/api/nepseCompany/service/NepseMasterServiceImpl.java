@@ -1,9 +1,11 @@
 package com.sb.solutions.api.nepseCompany.service;
 
+import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
 import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class NepseMasterServiceImpl implements NepseMasterService {
     private final NepseMasterRepository nepseMasterRepository;
+    private final CustomerShareLoanThreadService customerShareLoanThreadService;
+    private final TaskExecutor executor;
 
     @Override
     public List<NepseMaster> findAll() {
@@ -36,7 +40,9 @@ public class NepseMasterServiceImpl implements NepseMasterService {
             existingActive.setStatus(Status.INACTIVE);
             nepseMasterRepository.save(existingActive);
         }
-        return nepseMasterRepository.save(nepseMaster);
+        nepseMasterRepository.save(nepseMaster);
+        executor.execute(customerShareLoanThreadService);
+        return nepseMaster;
     }
 
     @Override
@@ -55,7 +61,7 @@ public class NepseMasterServiceImpl implements NepseMasterService {
     }
 
     @Override
-    public Page<NepseMaster> findNepseListOrderById(Object searchDto , Pageable pageable) {
+    public Page<NepseMaster> findNepseListOrderById(Object searchDto, Pageable pageable) {
         return nepseMasterRepository.findAllByOrderByIdDesc(pageable);
     }
 }

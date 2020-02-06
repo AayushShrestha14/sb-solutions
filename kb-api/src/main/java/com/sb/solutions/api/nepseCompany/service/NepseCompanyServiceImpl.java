@@ -1,11 +1,13 @@
 package com.sb.solutions.api.nepseCompany.service;
 
+import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.nepseCompany.repository.NepseCompanyRepository;
 import com.sb.solutions.api.nepseCompany.repository.specification.NepseSpecBuilder;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,11 +22,15 @@ import java.util.stream.Collectors;
 public class NepseCompanyServiceImpl implements NepseCompanyService {
 
     private final NepseCompanyRepository nepseCompanyRepository;
+    private final CustomerShareLoanThreadService customerShareLoanThreadService;
     private ObjectMapper objectMapper = new ObjectMapper();
+    private TaskExecutor executor;
 
     public NepseCompanyServiceImpl(
-            NepseCompanyRepository nepseCompanyRepository) {
+            NepseCompanyRepository nepseCompanyRepository, TaskExecutor taskExecutor, CustomerShareLoanThreadService customerShareLoanThreadService) {
         this.nepseCompanyRepository = nepseCompanyRepository;
+        this.executor = taskExecutor;
+        this.customerShareLoanThreadService = customerShareLoanThreadService;
     }
 
     @Override
@@ -78,6 +84,7 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
 
         nepseCompanyRepository.deleteAll(existingNepseList);
         nepseCompanyRepository.saveAll(newNepseList);
+        executor.execute(customerShareLoanThreadService);
     }
 
     @Override
