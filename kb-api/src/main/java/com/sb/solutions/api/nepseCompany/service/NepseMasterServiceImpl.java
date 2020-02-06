@@ -4,7 +4,6 @@ import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
 import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
 import com.sb.solutions.core.enums.Status;
-import lombok.AllArgsConstructor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +15,16 @@ import java.util.List;
  * @author Sunil Babu Shrestha on 1/17/2020
  */
 @Service
-@AllArgsConstructor
 public class NepseMasterServiceImpl implements NepseMasterService {
     private final NepseMasterRepository nepseMasterRepository;
     private final CustomerShareLoanThreadService customerShareLoanThreadService;
-    private final TaskExecutor executor;
+    private TaskExecutor executor;
+
+    public NepseMasterServiceImpl(NepseMasterRepository nepseMasterRepository, TaskExecutor taskExecutor, CustomerShareLoanThreadService customerShareLoanThreadService) {
+        this.nepseMasterRepository = nepseMasterRepository;
+        this.executor = taskExecutor;
+        this.customerShareLoanThreadService = customerShareLoanThreadService;
+    }
 
     @Override
     public List<NepseMaster> findAll() {
@@ -41,7 +45,7 @@ public class NepseMasterServiceImpl implements NepseMasterService {
             nepseMasterRepository.save(existingActive);
         }
         nepseMasterRepository.save(nepseMaster);
-        executor.execute(customerShareLoanThreadService);
+//        executor.execute(customerShareLoanThreadService);
         return nepseMaster;
     }
 
