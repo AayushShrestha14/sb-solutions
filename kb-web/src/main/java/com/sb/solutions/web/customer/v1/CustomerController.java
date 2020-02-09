@@ -85,10 +85,10 @@ public class CustomerController {
         return new RestResponseDto().successModel(customerService.findAll());
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<?> getByCustomerId(@RequestBody String customerId) {
+    @GetMapping("/citizenship-no")
+    public ResponseEntity<?> getByCustomerCitizenShip(@RequestParam String citizenshipNumber) {
         return new RestResponseDto()
-            .successModel(customerService.findCustomerByCustomerId(customerId));
+            .successModel(customerService.findCustomerByCitizenshipNumber(citizenshipNumber));
     }
 
 
