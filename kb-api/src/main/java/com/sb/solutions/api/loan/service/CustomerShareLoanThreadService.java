@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import com.sb.solutions.api.loan.dto.LoanRemarkDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.nepseCompany.entity.CustomerShareData;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
 
 /**
  * @author Sunil Babu Shrestha on 1/29/2020
@@ -81,12 +84,20 @@ public class CustomerShareLoanThreadService implements Runnable {
                         });
                         logger.info(" Recalculate amount {} ===  {} proposal limt", reCalculateAmount.get(), customerLoan.getProposal().getProposedLimit());
                         byte limitExccedFlag = LIMIT_EXCEED_NO;
-                        if (customerLoan.getProposal().getProposedLimit().compareTo(reCalculateAmount.get()) > 1) {
+                        if (customerLoan.getProposal().getProposedLimit().compareTo(reCalculateAmount.get()) >= 1) {
                             limitExccedFlag = LIMIT_EXCEED_YES;
                         }
                         if (customerLoan.getLimitExceed() != limitExccedFlag) {
-                            customerLoan.setLimitExceed(limitExccedFlag);
-                            customerLoanRepository.save(customerLoan);
+                            Gson gson = new Gson();
+                            LoanRemarkDto loanRemarkDto = customerLoan.getLoanRemarks() == null
+                                ? new LoanRemarkDto()
+                                : gson.fromJson(customerLoan.getLoanRemarks(), LoanRemarkDto.class);
+                            loanRemarkDto.setLimitExceed(limitExccedFlag == LIMIT_EXCEED_YES
+                                ? "Loan cannot be forwarded due to insufficient collateral or security considered value"
+                                : null);
+                            String remark = gson.toJson(loanRemarkDto);
+                            customerLoanRepository
+                                .updateLimitExceed(limitExccedFlag, remark, customerLoan.getId());
                         }
 
                     }
