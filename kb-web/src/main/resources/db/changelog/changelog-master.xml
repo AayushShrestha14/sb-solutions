@@ -2786,6 +2786,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="85-alter-customer-loan-add-remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="loan_remarks"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="loan_remarks" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
