@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.LoanRemarkDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
@@ -144,6 +146,13 @@ public class Mapper {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
                 throw new RuntimeException("No user present of selected To:");
+            }
+            if (customerLoan.getLimitExceed() == 1) {
+                Gson gson = new Gson();
+                LoanRemarkDto loanRemarkDto = gson
+                    .fromJson(customerLoan.getLoanRemarks(), LoanRemarkDto.class);
+                logger.info(loanRemarkDto.getLimitExceed());
+                throw new RuntimeException(loanRemarkDto.getLimitExceed());
             }
         }
         return stageMapper
