@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.service;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,12 +15,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,16 +46,22 @@ import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
+import com.sb.solutions.api.loan.dto.LoanRemarkDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
+import com.sb.solutions.api.nepseCompany.entity.CustomerShareData;
+import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
+import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
@@ -64,6 +71,8 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.ShareType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -94,6 +103,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ShareSecurityService shareSecurityService;
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
+    private final NepseMasterRepository nepseMasterRepository;
 
 
     public CustomerLoanServiceImpl(
@@ -113,7 +123,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         VehicleSecurityService vehicleSecurityService,
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
-        NepaliTemplateMapper nepaliTemplateMapper
+        NepaliTemplateMapper nepaliTemplateMapper,
+        NepseMasterRepository nepseMasterRepository
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -132,6 +143,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.shareSecurityService = shareSecurityService;
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
+        this.nepseMasterRepository = nepseMasterRepository;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -237,6 +249,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
         }
 
+        verifyExceedingLoanLimits(customerLoan);
+
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
@@ -279,6 +293,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
+        verifyExceedingLoanLimits(customerLoan);
         customerLoanRepository.save(customerLoan);
     }
 
@@ -746,6 +761,60 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String formatCsvDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
+    }
+
+    /**
+     * Checks `proposed limit`, `share considered value` before saving loan.
+     *
+     * @param loan An instance of Customer Loan.
+     */
+    private void verifyExceedingLoanLimits(CustomerLoan loan) {
+        Gson gson = new Gson();
+
+        LoanRemarkDto loanRemarkDto = loan.getLoanRemarks() == null
+            ? new LoanRemarkDto()
+            : gson.fromJson(loan.getLoanRemarks(), LoanRemarkDto.class);
+
+        // check if proposed amount is equal to ZERO
+        if (loan.getProposal() != null) {
+            boolean lowProposedAmount =
+                loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+            loan.setLowProposedLimit(lowProposedAmount);
+            loanRemarkDto.setProposedLimit(lowProposedAmount
+                ? "Cannot forward loan as proposed amount is zero."
+                : null);
+        }
+        // check proposed limit VS considered amount
+        ShareSecurity shareSecurity = loan.getShareSecurity();
+        if (shareSecurity != null) {
+            NepseMaster master = nepseMasterRepository.findByStatus(Status.ACTIVE);
+            Map<ShareType, Double> masterMap = new HashMap<ShareType, Double>() {{
+                put(ShareType.ORDINARY, master.getOrdinary() / 100);
+                put(ShareType.PROMOTER, master.getPromoter() / 100);
+            }};
+
+            List<CustomerShareData> shareDataList = shareSecurity.getCustomerShareData();
+            AtomicReference<BigDecimal> totalConsideredValue = new AtomicReference<>(
+                BigDecimal.ZERO);
+            shareDataList.forEach(customerShareData -> {
+                BigDecimal newValue = totalConsideredValue.get().add(
+                    BigDecimal.valueOf(customerShareData.getAmountPerUnit())
+                        .multiply(BigDecimal.valueOf(customerShareData.getTotalShareUnit()))
+                        .multiply(
+                            BigDecimal.valueOf(masterMap.get(customerShareData.getShareType())))
+
+                );
+                totalConsideredValue.set(newValue);
+            });
+
+            boolean higherProposedAmount =
+                loan.getProposal().getProposedLimit().compareTo(totalConsideredValue.get()) >= 1;
+            loan.setLimitExceed((byte) (higherProposedAmount ? 1 : 0));
+            loanRemarkDto.setLimitExceed(higherProposedAmount
+                ? "Loan cannot be forwarded due to insufficient collateral or security considered value"
+                : null);
+            loan.setLoanRemarks(gson.toJson(loanRemarkDto));
+        }
     }
 
 }
