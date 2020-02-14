@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class LoanRemarkDto {
 
     private String limitExceed; // exceed share considered value
+    private String proposedLimit;
 }

@@ -75,8 +75,7 @@ public class CustomerLoanController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan,
-        BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 
         logger.debug("saving Customer Loan {}", customerLoan);
 

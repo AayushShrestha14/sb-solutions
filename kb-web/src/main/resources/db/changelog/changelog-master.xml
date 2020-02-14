@@ -2798,6 +2798,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="86-alter-customer-loan-add-low-proposed-limit" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="low_proposed_limit"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="low_proposed_limit" type="BIT" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
