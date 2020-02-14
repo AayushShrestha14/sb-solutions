@@ -813,8 +813,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             loanRemarkDto.setLimitExceed(higherProposedAmount
                 ? "Loan cannot be forwarded due to insufficient collateral or security considered value"
                 : null);
-            loan.setLoanRemarks(gson.toJson(loanRemarkDto));
         }
+        loan.setLoanRemarks(gson.toJson(loanRemarkDto));
     }
 
 }
