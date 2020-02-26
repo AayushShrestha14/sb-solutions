@@ -2810,6 +2810,31 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="87-remove-customer-customerId" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer" columnName="customer_id"/>
+        </preConditions>
+
+        <dropColumn tableName="customer" columnName="customer_id"/>
+    </changeSet>
+
+    <changeSet id="87-remove-customer-title" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer" columnName="title"/>
+        </preConditions>
+
+        <dropColumn tableName="customer" columnName="title"/>
+    </changeSet>
+
+    <changeSet id="88-alter-customer-loan-drop-low-proposed-limit" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="low_proposed_limit"/>
+        </preConditions>
+
+        <dropDefaultValue tableName="customer_loan" columnName="low_proposed_limit"/>
+        <dropColumn tableName="customer_loan" columnName="low_proposed_limit"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

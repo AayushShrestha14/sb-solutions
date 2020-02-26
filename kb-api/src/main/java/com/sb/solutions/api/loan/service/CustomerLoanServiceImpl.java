@@ -46,7 +46,6 @@ import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
-import com.sb.solutions.api.loan.dto.LoanRemarkDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
@@ -56,8 +55,6 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
-import com.sb.solutions.api.nepseCompany.entity.CustomerShareData;
-import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
@@ -249,9 +246,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
         }
 
-        verifyExceedingLoanLimits(customerLoan);
-
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
+        postLoanConditionCheck(customerLoan);
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper.mapDtosToEntities(customerLoan.getNepaliTemplates());
@@ -293,7 +289,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
-        verifyExceedingLoanLimits(customerLoan);
+        postLoanConditionCheck(customerLoan);
         customerLoanRepository.save(customerLoan);
     }
 
@@ -768,53 +764,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
      *
      * @param loan An instance of Customer Loan.
      */
-    private void verifyExceedingLoanLimits(CustomerLoan loan) {
-        Gson gson = new Gson();
-
-        LoanRemarkDto loanRemarkDto = loan.getLoanRemarks() == null
-            ? new LoanRemarkDto()
-            : gson.fromJson(loan.getLoanRemarks(), LoanRemarkDto.class);
-
+    private void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
             boolean lowProposedAmount =
                 loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
-            loan.setLowProposedLimit(lowProposedAmount);
-            loanRemarkDto.setProposedLimit(lowProposedAmount
+            String remark = lowProposedAmount
                 ? "Cannot forward loan as proposed amount is zero."
-                : null);
+                : null;
+            customerLoanRepository
+                .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
+            if (lowProposedAmount) {
+                return;
+            }
         }
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
-            NepseMaster master = nepseMasterRepository.findByStatus(Status.ACTIVE);
-            Map<ShareType, Double> masterMap = new HashMap<ShareType, Double>() {{
-                put(ShareType.ORDINARY, master.getOrdinary() / 100);
-                put(ShareType.PROMOTER, master.getPromoter() / 100);
-            }};
-
-            List<CustomerShareData> shareDataList = shareSecurity.getCustomerShareData();
-            AtomicReference<BigDecimal> totalConsideredValue = new AtomicReference<>(
-                BigDecimal.ZERO);
-            shareDataList.forEach(customerShareData -> {
-                BigDecimal newValue = totalConsideredValue.get().add(
-                    BigDecimal.valueOf(customerShareData.getAmountPerUnit())
-                        .multiply(BigDecimal.valueOf(customerShareData.getTotalShareUnit()))
-                        .multiply(
-                            BigDecimal.valueOf(masterMap.get(customerShareData.getShareType())))
-
-                );
-                totalConsideredValue.set(newValue);
-            });
-
-            boolean higherProposedAmount =
-                loan.getProposal().getProposedLimit().compareTo(totalConsideredValue.get()) >= 1;
-            loan.setLimitExceed((byte) (higherProposedAmount ? 1 : 0));
-            loanRemarkDto.setLimitExceed(higherProposedAmount
-                ? "Loan cannot be forwarded due to insufficient collateral or security considered value"
-                : null);
+            shareSecurityService.execute(Optional.ofNullable(loan.getId()));
         }
-        loan.setLoanRemarks(gson.toJson(loanRemarkDto));
     }
 
 }
