@@ -12,8 +12,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>,
 
     Customer findCustomerByCitizenshipNumber(String citizenshipNumber);
 
-    Customer findCustomerByCustomerId(String citizenshipNumber);
-
     Customer findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(String name,
         String citizenship,
         Date citizenIssueDate);

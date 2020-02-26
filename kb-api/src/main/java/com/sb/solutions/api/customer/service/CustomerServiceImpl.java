@@ -64,12 +64,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findCustomerByCustomerId(String customerId) {
-
-        return customerRepository.findCustomerByCustomerId(customerId);
-    }
-
-    @Override
     public Customer findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
         String name, String citizenship, Date citizenIssueDate) {
         Customer customer = customerRepository

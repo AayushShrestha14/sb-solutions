@@ -41,11 +41,8 @@ public class Customer extends BaseEntity<Long> {
 
     @NotAudited
     private String profilePic;
-    private String title;
     private String customerName;
 
-    @NotAudited
-    private String customerId;
     @Temporal(TemporalType.DATE)
     private Date dob;
 
