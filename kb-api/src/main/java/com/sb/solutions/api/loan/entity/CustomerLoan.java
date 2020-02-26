@@ -200,9 +200,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     private String loanRemarks;
 
-    @NotAudited
-    private Boolean lowProposedLimit;
-
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

@@ -2826,6 +2826,15 @@
         <dropColumn tableName="customer" columnName="title"/>
     </changeSet>
 
+    <changeSet id="88-alter-customer-loan-drop-low-proposed-limit" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="low_proposed_limit"/>
+        </preConditions>
+
+        <dropDefaultValue tableName="customer_loan" columnName="low_proposed_limit"/>
+        <dropColumn tableName="customer_loan" columnName="low_proposed_limit"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 
