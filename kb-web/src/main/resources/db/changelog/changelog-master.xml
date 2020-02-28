@@ -2835,6 +2835,39 @@
         <dropColumn tableName="customer_loan" columnName="low_proposed_limit"/>
     </changeSet>
 
+    <changeSet id="89-create-blacklist" author="Aashish">
+        <createTable tableName="black_list">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="ref" type="VARCHAR(255)"/>
+            <column name="doc_type" type="CHAR(1)"/>
+            <column name="status" type="VARCHAR(10)"/>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_black_list_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_black_list_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+
     <changeSet id="91-remove-security-guarantor" author="elvin">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="security_guarantor"/>
