@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -165,6 +166,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToOne
     private MawCreditRiskGrading mawCreditRiskGrading;
+
+    @NotAudited
+    @OneToOne(cascade = CascadeType.ALL)
+    private GuarantorDetail guarantor;
 
     @Lob
     private String previousStageList;
