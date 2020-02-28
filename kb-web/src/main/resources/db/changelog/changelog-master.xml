@@ -2868,6 +2868,88 @@
     </changeSet>
 
 
+    <changeSet id="91-remove-security-guarantor" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="security_guarantor"/>
+        </preConditions>
+
+        <dropTable tableName="security_guarantor"/>
+    </changeSet>
+
+    <changeSet id="93-create-guarantor-detail" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="guarantor_detail"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="guarantor_detail">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_guarantor_detail_created_by_id_users_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_guarantor_detail_modified_by_id_users_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="93-alter-customer-loan-add-guarantor-id" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="guarantor_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="guarantor_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_guarantor_id_guarantor_detail_id"
+                             referencedTableName="guarantor_detail"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="93-create-guarantor_detail_guarantor_list" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="guarantor_detail_guarantor_list"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="guarantor_detail_guarantor_list">
+            <column name="guarantor_detail_id" type="BIGINT">
+                <constraints foreignKeyName="fk_guarantor_detail_guarantor_list_guarantor_detail_id_guarantor_detail_id"
+                             referencedTableName="guarantor_detail"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="guarantor_list_id" type="BIGINT">
+                <constraints foreignKeyName="fk_guarantor_detail_guarantor_list_guarantor_list_id_guarantor_id"
+                             referencedTableName="guarantor"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+
 </databaseChangeLog>
 
 
