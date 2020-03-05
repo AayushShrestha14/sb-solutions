@@ -1,10 +1,7 @@
 package com.sb.solutions.api.security.entity;
 
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.ManyToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +11,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.core.enitity.BaseEntity;
 
 @Data
@@ -31,9 +27,5 @@ public class Security extends BaseEntity<Long> {
 
     @NotAudited
     private Integer valuatorId;
-
-    @NotAudited
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Guarantor> guarantor;
 
 }
