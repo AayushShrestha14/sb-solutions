@@ -17,19 +17,19 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (1, 'Branch', 'camera-outline', '/home/admin/branch', 10, 1)
+            VALUES (1, 'Branch', 'camera-outline', '/home/admin/branch', 4, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (3, 'Role and Permission', 'lock-outline', '/home/admin/role', 19, 1)
+            VALUES (3, 'Role and Permission', 'lock-outline', '/home/admin/role', 7, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (6, 'Users', 'person-add-outline', '/home/admin/user', 2, 1)
+            VALUES (6, 'Users', 'person-add-outline', '/home/admin/user', 5, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (13, 'Document', 'book-outline', '/home/admin/document', 55, 1)
+            VALUES (13, 'Document', 'book-outline', '/home/admin/document', 13, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 20, 1)
+            VALUES (100, 'Role Hierarchy', 'shield-outline', '/home/admin/roleHierarchy', 8, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 60, 1)
+            VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 14, 1)
             SET IDENTITY_INSERT permission OFF
 
 
@@ -181,8 +181,7 @@ BEGIN
 
             SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (143, 'Customer', 'people-outline', '/home/customer',
-                    120, 1)
+            VALUES (143, 'Customer', 'people-outline', '/home/customer', 3, 1)
 
             SET IDENTITY_INSERT permission OFF
 
