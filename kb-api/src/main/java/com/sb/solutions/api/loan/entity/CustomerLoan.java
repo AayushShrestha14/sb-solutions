@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -204,6 +205,10 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @NotAudited
     private String loanRemarks;
+
+    @NotAudited
+    @OneToOne(cascade = CascadeType.ALL)
+    private Insurance insurance;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

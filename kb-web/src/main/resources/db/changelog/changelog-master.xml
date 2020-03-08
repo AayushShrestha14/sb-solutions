@@ -2947,8 +2947,61 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="94-create-insurance" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="insurance"/>
+            </not>
+        </preConditions>
 
+        <createTable tableName="insurance">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="company" type="VARCHAR(256)"/>
+            <column name="insured_amount" type="DOUBLE"/>
+            <column name="premium_amount" type="VARCHAR(256)"/>
+            <column name="issued_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="policy_type" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_insurance_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_insurance_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="94-alter-customer-loan-add-insurance-id" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="insurance_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="insurance_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_insurance_id"
+                             referencedTableName="insurance"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 
