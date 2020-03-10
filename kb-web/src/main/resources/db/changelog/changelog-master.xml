@@ -3003,6 +3003,41 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="95-create-notification-master" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notification_master"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="notification_master">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="notif_key" type="VARCHAR(256)"/>
+            <column name="value" type="INT"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_notification_master_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_notification_master_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
 
 
