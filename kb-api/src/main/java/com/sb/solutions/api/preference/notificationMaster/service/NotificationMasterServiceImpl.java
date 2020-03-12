@@ -2,6 +2,7 @@ package com.sb.solutions.api.preference.notificationMaster.service;
 
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.repository.NotificationMasterRepository;
+import com.sb.solutions.core.enums.NotificationMasterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class NotificationMasterServiceImpl implements NotificationMasterService 
 
     @Override
     public List<NotificationMaster> findAll() {
-        return null;
+        return notificationMasterRepository.findAll();
     }
 
     @Override
@@ -48,6 +49,11 @@ public class NotificationMasterServiceImpl implements NotificationMasterService 
 
     @Override
     public List<NotificationMaster> saveAll(List<NotificationMaster> list) {
-        return null;
+        return notificationMasterRepository.saveAll(list);
+    }
+
+    @Override
+    public int getValue(String notifyKey) {
+        return notificationMasterRepository.getByNotifKey(notifyKey).getValue();
     }
 }

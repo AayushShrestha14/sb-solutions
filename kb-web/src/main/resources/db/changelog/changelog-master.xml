@@ -2696,46 +2696,46 @@
         </addColumn>
     </changeSet>
 
-  <changeSet id="approval-role-hierarchy" author="msucil">
-    <createTable tableName="approval_role_hierarchy">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="role_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval_role_hierarchy_role_id"
-          referencedTableName="role"
-          referencedColumnNames="id"
-        />
-      </column>
-      <column name="role_order" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval_role_hierarchy_created_by_id"
-          referencedTableName="users"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"
-          foreignKeyName="fk_approval_role_hierarchy_modified_by_id"
-          referencedTableName="users"
-          referencedColumnNames="id"/>
-      </column>
-      <column name="created_at" type="DATE" >
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-      <column name="approval_type" type="VARCHAR(50)" defaultValue="DEFAULT"/>
-      <column name="ref_id" type="BIGINT" defaultValue="0">
-        <constraints nullable="true"/>
-      </column>
-    </createTable>
-  </changeSet>
+    <changeSet id="approval-role-hierarchy" author="msucil">
+        <createTable tableName="approval_role_hierarchy">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval_role_hierarchy_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="role_order" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval_role_hierarchy_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_approval_role_hierarchy_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="approval_type" type="VARCHAR(50)" defaultValue="DEFAULT"/>
+            <column name="ref_id" type="BIGINT" defaultValue="0">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
 
     <changeSet id="84-create-maw-credit-risk-grading" author="Amulya">
         <preConditions onFail="MARK_RAN">
@@ -3036,6 +3036,17 @@
             </column>
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="96-alter-customer_loan-add-is_insurance_expired" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="has_insurance_expired"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="has_insurance_expired" type="BIT" defaultValue="0"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

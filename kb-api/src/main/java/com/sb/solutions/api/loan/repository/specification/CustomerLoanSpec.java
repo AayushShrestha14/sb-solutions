@@ -6,14 +6,13 @@ import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import org.apache.velocity.runtime.directive.Parse;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -45,7 +44,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_GUARANTOR_PROVINCE_ID = "guarantorProvinceId";
 
     private static final String FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT = "showShareLoanExcessingLimit";
-
+    private static final String FILTER_BY_INSURANCE_EXPIRY = "showExpiringInsurance";
 
     private final String property;
     private final String value;
@@ -224,6 +223,20 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Predicate predicateForShareTemplate = criteriaBuilder.
                         isMember(AppConstant.TEMPLATE_SHARE_SECURITY, root.join("loan").get("templateList"));
                 return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
+
+            case FILTER_BY_INSURANCE_EXPIRY:
+
+                /* fetch expiry date from customer-loan/ insurance*/
+        /*        Calendar c = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date expiryDate = (Date) root.join("insurance").get("expiryDate");
+                c.setTime(expiryDate);
+                c.add(Calendar.DAY_OF_MONTH, root.join(""))
+                Predicate predicateForExpiringInsurance = criteriaBuilder.lessThanOrEqualTo(
+                        root.join("insurance").get("expiryDate")
+                )*/
+                    return criteriaBuilder.equal(root.get("hasInsuranceExpired"), true);
+
 
             default:
                 return null;

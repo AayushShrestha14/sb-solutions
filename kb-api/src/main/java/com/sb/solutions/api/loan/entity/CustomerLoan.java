@@ -210,6 +210,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private Insurance insurance;
 
+    @NotAudited
+    private Boolean hasInsuranceExpired;
+
+
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

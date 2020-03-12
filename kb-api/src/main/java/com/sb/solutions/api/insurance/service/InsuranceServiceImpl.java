@@ -1,7 +1,8 @@
-package com.sb.solutions.api.insurance;
+package com.sb.solutions.api.insurance.service;
 
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.repository.InsuranceRepository;
+import com.sb.solutions.api.insurance.service.InsuranceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

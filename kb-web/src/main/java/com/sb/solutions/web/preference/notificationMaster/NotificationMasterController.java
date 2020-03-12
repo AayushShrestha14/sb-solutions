@@ -3,6 +3,7 @@ package com.sb.solutions.web.preference.notificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.NotificationMasterType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,8 @@ public class NotificationMasterController {
     @GetMapping(value = "/upload")
     public ResponseEntity<?> upload(@RequestParam(value = "numOfDays") Integer numberOfDays) {
 
-        final String EXPIRY_NOTIFY = "INSURANCE_EXPRIY_NOTIFY";
-
-        NotificationMaster obj = new NotificationMaster(EXPIRY_NOTIFY, numberOfDays);
+        NotificationMaster obj = new NotificationMaster(
+                (NotificationMasterType.INSURANCE_EXPRIY_NOTIFY).toString(), numberOfDays);
 
         return new RestResponseDto().successModel(notificationMasterService.save(obj));
     }

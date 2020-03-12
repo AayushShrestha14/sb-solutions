@@ -8,4 +8,6 @@ public interface NotificationMasterRepository extends JpaRepository<Notification
     Boolean existsByNotifKey(String notifKey);
 
     void removeByNotifKey(String notifKey);
+
+    NotificationMaster getByNotifKey(String notifKey);
 }

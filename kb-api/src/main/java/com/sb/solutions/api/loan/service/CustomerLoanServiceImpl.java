@@ -4,23 +4,16 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
+import com.sb.solutions.core.enums.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,14 +58,11 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.ShareType;
-import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+
+import javax.transaction.Transactional;
 
 
 /**
@@ -101,27 +91,29 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
     private final NepseMasterRepository nepseMasterRepository;
+    private final NotificationMasterService notificationMasterService;
 
 
     public CustomerLoanServiceImpl(
-        CustomerLoanRepository customerLoanRepository,
-        UserService userService,
-        CustomerService customerService,
-        CompanyInfoService companyInfoService,
-        DmsLoanFileService dmsLoanFileService,
-        SiteVisitService siteVisitService,
-        FinancialService financialService,
-        MawCreditRiskGradingService mawCreditRiskGradingService,
-        SecurityService securityservice,
-        ProposalService proposalService,
-        CustomerOfferService customerOfferService,
-        CreditRiskGradingService creditRiskGradingService,
-        GroupServices groupService,
-        VehicleSecurityService vehicleSecurityService,
-        ShareSecurityService shareSecurityService,
-        NepaliTemplateService nepaliTemplateService,
-        NepaliTemplateMapper nepaliTemplateMapper,
-        NepseMasterRepository nepseMasterRepository
+            CustomerLoanRepository customerLoanRepository,
+            UserService userService,
+            CustomerService customerService,
+            CompanyInfoService companyInfoService,
+            DmsLoanFileService dmsLoanFileService,
+            SiteVisitService siteVisitService,
+            FinancialService financialService,
+            MawCreditRiskGradingService mawCreditRiskGradingService,
+            SecurityService securityservice,
+            ProposalService proposalService,
+            CustomerOfferService customerOfferService,
+            CreditRiskGradingService creditRiskGradingService,
+            GroupServices groupService,
+            VehicleSecurityService vehicleSecurityService,
+            ShareSecurityService shareSecurityService,
+            NepaliTemplateService nepaliTemplateService,
+            NepaliTemplateMapper nepaliTemplateMapper,
+            NepseMasterRepository nepseMasterRepository,
+            NotificationMasterService notificationMasterService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -141,6 +133,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
         this.nepseMasterRepository = nepseMasterRepository;
+        this.notificationMasterService = notificationMasterService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -158,7 +151,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
         if (ProductUtils.OFFER_LETTER) {
             CustomerOfferLetter customerOfferLetter = customerOfferService
-                .findByCustomerLoanId(customerLoan.getId());
+                    .findByCustomerLoanId(customerLoan.getId());
             if (customerOfferLetter != null) {
                 CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
                 BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
@@ -171,10 +164,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 put("customerLoan.id", String.valueOf(id));
             }};
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateService
-                .findAllBySpec(filterParams);
+                    .findAllBySpec(filterParams);
             if (!nepaliTemplates.isEmpty()) {
                 customerLoan
-                    .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
+                        .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
             }
         }
         return customerLoan;
@@ -200,7 +193,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         if (customerLoan.getDmsLoanFile() != null) {
             customerLoan.getDmsLoanFile()
-                .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
+                    .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
             customerLoan.getDmsLoanFile().setCreatedAt(new Date());
         }
         if (customerLoan.getDmsLoanFile() != null) {
@@ -211,9 +204,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCustomerInfo(this.customerService.save(customerLoan.getCustomerInfo()));
         }
         if (customerLoan.getCompanyInfo() != null
-            && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
+                && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
             customerLoan
-                .setCompanyInfo(this.companyInfoService.save(customerLoan.getCompanyInfo()));
+                    .setCompanyInfo(this.companyInfoService.save(customerLoan.getCompanyInfo()));
         }
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
@@ -232,18 +225,18 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getCreditRiskGrading() != null) {
             customerLoan.setCreditRiskGrading(
-                creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
+                    creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
         }
         if (customerLoan.getGroup() != null) {
             customerLoan.setGroup(this.groupService.save(customerLoan.getGroup()));
         }
         if (customerLoan.getVehicleSecurity() != null) {
             customerLoan
-                .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
+                    .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
-                .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
+                    .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
@@ -264,7 +257,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticatedUser();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -284,8 +277,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public void sendForwardBackwardLoan(CustomerLoan customerLoan) {
         if (customerLoan.getCurrentStage() == null
-            || customerLoan.getCurrentStage().getToRole() == null
-            || customerLoan.getCurrentStage().getToUser() == null) {
+                || customerLoan.getCurrentStage().getToRole() == null
+                || customerLoan.getCurrentStage().getToUser() == null) {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
@@ -303,48 +296,48 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status) {
         User u = userService.getAuthenticatedUser();
         return customerLoanRepository
-            .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
-                u.getRole().getId(), u.getBranch().get(0).getId());
+                .findFirst5ByDocumentStatusAndCurrentStageToRoleIdAndBranchIdOrderByIdDesc(status,
+                        u.getRole().getId(), u.getBranch().get(0).getId());
     }
 
     @Override
     public List<PieChartDto> proposedAmount(String startDate, String endDate)
-        throws ParseException {
+            throws ParseException {
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
         List<PieChartDto> data = new ArrayList<>();
         if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty())) {
             data = customerLoanRepository.proposedAmount(branchAccess);
         } else if (startDate == null || startDate.isEmpty()) {
             data = customerLoanRepository.proposedAmountBefore(branchAccess,
-                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
         } else if (endDate == null || endDate.isEmpty()) {
             data = customerLoanRepository.proposedAmountAfter(branchAccess, new SimpleDateFormat(
-                "MM/dd/yyyy").parse(startDate));
+                    "MM/dd/yyyy").parse(startDate));
         } else {
             data = customerLoanRepository.proposedAmountBetween(branchAccess, new SimpleDateFormat(
-                "MM/dd/yyyy").parse(startDate), new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                    "MM/dd/yyyy").parse(startDate), new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
         }
         return data;
     }
 
     @Override
     public List<PieChartDto> proposedAmountByBranch(Long branchId, String startDate,
-        String endDate) throws ParseException {
+                                                    String endDate) throws ParseException {
         List<PieChartDto> data = new ArrayList<>();
         if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty())) {
             data = customerLoanRepository.proposedAmountByBranchId(branchId);
         } else if (startDate == null || startDate.isEmpty()) {
             data = customerLoanRepository.proposedAmountByBranchIdAndDateBefore(branchId,
-                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
         } else if (endDate == null || endDate.isEmpty()) {
             data = customerLoanRepository.proposedAmountByBranchIdAndDateAfter(branchId,
-                new SimpleDateFormat(
-                    "MM/dd/yyyy").parse(startDate));
+                    new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate));
         } else {
             data = customerLoanRepository.proposedAmountByBranchIdAndDateBetween(branchId,
-                new SimpleDateFormat(
-                    "MM/dd/yyyy").parse(startDate),
-                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                    new SimpleDateFormat(
+                            "MM/dd/yyyy").parse(startDate),
+                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
         }
         return data;
     }
@@ -352,7 +345,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getByCitizenshipNumber(String citizenshipNumber) {
         return customerLoanRepository
-            .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
+                .getByCustomerInfoCitizenshipNumber(citizenshipNumber);
     }
 
     @Override
@@ -360,7 +353,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -378,22 +371,22 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
             Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
             String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+                    .map(Object::toString).collect(Collectors.joining(","));
             if (s.containsKey("branchIds")) {
                 branchAccess = s.get("branchIds");
             }
             s.put("branchIds", branchAccess);
             s.put("currentUserRole", u.getRole().getId().toString());
             s.put("toUser",
-                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
-                    .getId()
-                    .toString());
+                    userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                            .getId()
+                            .toString());
             s.values().removeIf(Objects::isNull);
             logger.info("query for pull {}", s);
             final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
             final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
             Page<CustomerLoan> customerLoanList = customerLoanRepository
-                .findAll(specification, pageable);
+                    .findAll(specification, pageable);
             for (CustomerLoan c : customerLoanList.getContent()) {
                 for (LoanStageDto l : c.getPreviousList()) {
                     if (l.getToUser().getId() == (u.getId())) {
@@ -412,14 +405,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
         s.put("branchIds", branchAccess);
         s.put("documentStatus", DocStatus.APPROVED.name());
         s.put("currentOfferLetterStage",
-            String.valueOf(userService.getAuthenticatedUser().getId()));
+                String.valueOf(userService.getAuthenticatedUser().getId()));
         s.values().removeIf(Objects::isNull);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -440,7 +433,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         User u = userService.getAuthenticatedUser();
         if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
             customerLoanRepository
-                .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
+                    .deleteByIdAndCurrentStageDocAction(id, DocAction.DRAFT);
             if (!customerLoanRepository.findById(id).isPresent()) {
                 return new CustomerLoan();
             } else {
@@ -453,7 +446,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<StatisticDto> getStats(Long branchId, String startDate, String endDate)
-        throws ParseException {
+            throws ParseException {
         List<StatisticDto> statistics = new ArrayList<>();
         logger.debug("Request to get the statistics about the existing loans.");
         return getLasStatistics(branchId, startDate, endDate);
@@ -463,7 +456,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, String> chkUserContainCustomerLoan(Long id) {
         User u = userService.findOne(id);
         Integer count = customerLoanRepository
-            .chkUserContainCustomerLoan(id, u.getRole().getId(), DocStatus.PENDING);
+                .chkUserContainCustomerLoan(id, u.getRole().getId(), DocStatus.PENDING);
         Map<String, String> map = new HashMap<>();
         map.put("count", String.valueOf(count));
         map.put("status", count == 0 ? "false" : "true");
@@ -472,42 +465,42 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
 
     private List<StatisticDto> getLasStatistics(Long branchId, String startDate, String endDate)
-        throws ParseException {
+            throws ParseException {
         List<StatisticDto> data = new ArrayList<>();
         if (branchId == 0) {
             List<Long> branches = userService.getRoleAccessFilterByBranch();
             if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
-                .isEmpty())) {
+                    .isEmpty())) {
                 data = customerLoanRepository.getLasStatistics(branches);
             } else if (startDate == null || startDate.isEmpty()) {
                 data = customerLoanRepository.getLasStatisticsAndDateBefore(branches,
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             } else if (endDate == null || endDate.isEmpty()) {
                 data = customerLoanRepository
-                    .getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate));
+                        .getLasStatisticsAndDateAfter(branches, new SimpleDateFormat(
+                                "MM/dd/yyyy").parse(startDate));
             } else {
                 data = customerLoanRepository
-                    .getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
-                            "MM/dd/yyyy").parse(startDate),
-                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                        .getLasStatisticsAndDateBetween(branches, new SimpleDateFormat(
+                                        "MM/dd/yyyy").parse(startDate),
+                                new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             }
         } else {
             if ((startDate == null || startDate.isEmpty()) && (endDate == null || endDate
-                .isEmpty())) {
+                    .isEmpty())) {
                 data = customerLoanRepository.getLasStatisticsByBranchId(branchId);
             } else if (startDate == null || startDate.isEmpty()) {
                 data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBefore(branchId,
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             } else if (endDate == null || endDate.isEmpty()) {
                 data = customerLoanRepository.getLasStatisticsByBranchIdAndDateAfter(branchId,
-                    new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate));
+                        new SimpleDateFormat(
+                                "MM/dd/yyyy").parse(startDate));
             } else {
                 data = customerLoanRepository.getLasStatisticsByBranchIdAndDateBetween(branchId,
-                    new SimpleDateFormat(
-                        "MM/dd/yyyy").parse(startDate),
-                    new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
+                        new SimpleDateFormat(
+                                "MM/dd/yyyy").parse(startDate),
+                        new SimpleDateFormat("MM/dd/yyyy").parse(endDate));
             }
 
         }
@@ -543,8 +536,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getCreditRiskGrading() != null) {
             previousLoan.getCreditRiskGrading().setId(null);
             previousLoan
-                .setCreditRiskGrading(
-                    creditRiskGradingService.save(previousLoan.getCreditRiskGrading()));
+                    .setCreditRiskGrading(
+                            creditRiskGradingService.save(previousLoan.getCreditRiskGrading()));
         }
         if (previousLoan.getGroup() != null) {
             previousLoan.getGroup().setId(null);
@@ -553,7 +546,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getVehicleSecurity() != null) {
             previousLoan.getVehicleSecurity().setId(null);
             previousLoan
-                .setVehicleSecurity(vehicleSecurityService.save(previousLoan.getVehicleSecurity()));
+                    .setVehicleSecurity(vehicleSecurityService.save(previousLoan.getVehicleSecurity()));
         }
         if (previousLoan.getMawCreditRiskGrading() != null) {
             previousLoan.getMawCreditRiskGrading().setId(null);
@@ -583,7 +576,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final User u = userService.getAuthenticatedUser();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -595,9 +588,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
             s.put("currentUserRole", u.getRole().getId().toString());
             s.put("toUser",
-                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
-                    .getId()
-                    .toString());
+                    userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                            .getId()
+                            .toString());
         }
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -617,23 +610,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
             if (c.getDocumentStatus() == DocStatus.PENDING ||
-                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
-                c.getDocumentStatus() == DocStatus.VALUATION ||
-                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
-                c.getDocumentStatus() == DocStatus.DISCUSSION) {
+                    c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
+                    c.getDocumentStatus() == DocStatus.VALUATION ||
+                    c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
+                    c.getDocumentStatus() == DocStatus.DISCUSSION) {
                 customerLoanCsvDto.setLoanPendingSpan(
-                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
+                        this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
                 customerLoanCsvDto.setLoanPossession(
-                    this.calculatePendingLoanSpanAndPossession(
-                        c.getCurrentStage().getLastModifiedAt()));
+                        this.calculatePendingLoanSpanAndPossession(
+                                c.getCurrentStage().getLastModifiedAt()));
             } else {
                 customerLoanCsvDto.setLoanPossession(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getPreviousList().get(c.getPreviousList().size() - 1)
-                            .getLastModifiedAt()));
+                        this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                                c.getPreviousList().get(c.getPreviousList().size() - 1)
+                                        .getLastModifiedAt()));
                 customerLoanCsvDto.setLoanSpan(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getCurrentStage().getCreatedAt()));
+                        this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                                c.getCurrentStage().getCreatedAt()));
             }
 
             csvDto.add(customerLoanCsvDto);
@@ -669,7 +662,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative) {
         String date = new SimpleDateFormat("yyyy-MM-dd")
-            .format(customerRelative.getCitizenshipIssuedDate());
+                .format(customerRelative.getCitizenshipIssuedDate());
         Map<String, String> map = new HashMap<>();
         map.put("customerRelativeName", customerRelative.getCustomerRelativeName());
         map.put("citizenshipNumber", customerRelative.getCitizenshipNumber());
@@ -677,7 +670,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         map.values().removeIf(Objects::isNull);
         logger.info("get loan by kyc search parm{}", map);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
-            map);
+                map);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification);
 
@@ -694,25 +687,25 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         Page<CustomerLoan> customerLoanPage = customerLoanRepository
-            .findAll(specification, pageable);
+                .findAll(specification, pageable);
         customerLoanPage.getContent().forEach(customerLoan -> {
             if (!customerList.contains(customerLoan)) {
                 customerList.add(customerLoan.getCustomerInfo());
             }
         });
         List<Customer> finalList = customerList.stream().filter(distinctByKey(Customer::getId))
-            .collect(
-                Collectors.toList());
+                .collect(
+                        Collectors.toList());
 
         Page<Customer> pages = new PageImpl<Customer>(finalList, pageable,
-            customerLoanPage.getTotalElements());
+                customerLoanPage.getTotalElements());
         return pages;
     }
 
     @Override
     public List<CustomerLoan> getLoanByCustomerGuarantor(Guarantor guarantor) {
         String date = new SimpleDateFormat("yyyy-MM-dd")
-            .format(guarantor.getIssuedYear());
+                .format(guarantor.getIssuedYear());
         Map<String, String> map = new HashMap<>();
         map.put("guarantorName", guarantor.getName());
         map.put("guarantorCitizenshipNumber", guarantor.getCitizenNumber());
@@ -722,7 +715,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         map.values().removeIf(Objects::isNull);
         logger.info("get loan by guarantor search parm{}", map);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
-            map);
+                map);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification);
     }
@@ -767,12 +760,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
             boolean lowProposedAmount =
-                loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+                    loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
             String remark = lowProposedAmount
-                ? "Cannot forward loan as proposed amount is zero."
-                : null;
+                    ? "Cannot forward loan as proposed amount is zero."
+                    : null;
             customerLoanRepository
-                .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
+                    .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
             if (lowProposedAmount) {
                 return;
             }
@@ -782,6 +775,50 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (shareSecurity != null) {
             shareSecurityService.execute(Optional.ofNullable(loan.getId()));
         }
+    }
+
+    @Override
+    public void runScheduler() {
+
+        Calendar c = Calendar.getInstance();
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        c.setTime(new Date());
+
+        int daysToExpire = notificationMasterService.getValue(NotificationMasterType.INSURANCE_EXPRIY_NOTIFY.toString());
+        c.add(Calendar.DAY_OF_MONTH, daysToExpire);
+
+        for (CustomerLoan loan : customerLoanRepository.findAll()) {
+
+            boolean flag = false;
+            try {
+                if (loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0) {
+                    /* expired insurance, set expiry flag */
+                    flag = true;
+                } else {
+                    flag = false;
+                    loan.setHasInsuranceExpired(false);
+                }
+                customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
+            } catch (NullPointerException e) {
+
+            }
+        }
+      /*  List<CustomerLoan> loans = customerLoanRepository.findAll();
+        for (CustomerLoan loan : loans) {
+
+            try {
+                if (loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0) {
+                    *//* expired insurance, set expiry flag *//*
+                    loan.setHasInsuranceExpired(true);
+                } else {
+                    loan.setHasInsuranceExpired(false);
+                }
+
+                customerLoanRepository.saveAndFlush(loan);
+            } catch (NullPointerException e) {
+
+            }
+        }*/
     }
 
 }
