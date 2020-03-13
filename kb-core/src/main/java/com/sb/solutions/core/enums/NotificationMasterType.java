@@ -7,7 +7,7 @@ package com.sb.solutions.core.enums;
 
 public enum NotificationMasterType {
 
-    INSURANCE_EXPRIY_NOTIFY("INSURANCE_EXPIRY_NOTIFY");
+    INSURANCE_EXPIRY_NOTIFY("INSURANCE_EXPIRY_NOTIFY");
 
     private String value;
 

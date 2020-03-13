@@ -24,6 +24,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -39,6 +40,7 @@ import javax.sql.DataSource;
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties({FileStorageProperties.class, MailProperties.class})
+@EnableScheduling
 public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired

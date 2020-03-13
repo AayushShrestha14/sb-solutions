@@ -1,13 +1,13 @@
 package com.sb.solutions.api.loan.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+/**
+ * @author Aashish Shrestha, 12/Mar/2020
+ */
 
 @Configuration
-@EnableScheduling
 public class LoanExpiryScheduler {
 
     private CustomerLoanService customerLoanService;
@@ -17,12 +17,13 @@ public class LoanExpiryScheduler {
         this.customerLoanService = customerLoanService;
     }
 
-    @Scheduled(cron = "*/10 * * * * *") // every 10s
+    @Scheduled(cron = "0 0 23 * * ?") // every day at 11pm
     public void runScheduler() {
+        System.out.println("Scheduler running !!");
         try {
             this.customerLoanService.runScheduler();
         } catch (Exception e) {
-            System.out.println("Exception " + e);
+            System.out.println("Exception: " + e);
         }
     }
 }

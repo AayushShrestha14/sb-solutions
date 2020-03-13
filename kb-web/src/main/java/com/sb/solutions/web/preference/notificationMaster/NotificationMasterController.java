@@ -26,9 +26,8 @@ public class NotificationMasterController {
     public ResponseEntity<?> upload(@RequestParam(value = "numOfDays") Integer numberOfDays) {
 
         NotificationMaster obj = new NotificationMaster(
-                (NotificationMasterType.INSURANCE_EXPRIY_NOTIFY).toString(), numberOfDays);
+                (NotificationMasterType.INSURANCE_EXPIRY_NOTIFY).toString(), numberOfDays);
 
         return new RestResponseDto().successModel(notificationMasterService.save(obj));
     }
-
 }

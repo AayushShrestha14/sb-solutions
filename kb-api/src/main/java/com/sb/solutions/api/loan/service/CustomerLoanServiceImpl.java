@@ -11,10 +11,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
+import com.sb.solutions.api.accountPurpose.repository.spec.AccountPurposeSpecBuilder;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.core.enums.*;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -781,44 +783,33 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public void runScheduler() {
 
         Calendar c = Calendar.getInstance();
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         c.setTime(new Date());
 
-        int daysToExpire = notificationMasterService.getValue(NotificationMasterType.INSURANCE_EXPRIY_NOTIFY.toString());
+        int daysToExpire = notificationMasterService.getValue(NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
         c.add(Calendar.DAY_OF_MONTH, daysToExpire);
 
-        for (CustomerLoan loan : customerLoanRepository.findAll()) {
+        Map<String, String> t = new HashMap<String, String>() {{
+            put("documentStatus", DocStatus.APPROVED.name());
+        }};
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> map = objectMapper.convertValue(t, Map.class);
+        final CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
+        final Specification<CustomerLoan> specification = builder.build();
 
-            boolean flag = false;
+        for (CustomerLoan loan : customerLoanRepository.findAll(specification)) {
+            boolean flag;
             try {
                 if (loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0) {
                     /* expired insurance, set expiry flag */
                     flag = true;
                 } else {
                     flag = false;
-                    loan.setHasInsuranceExpired(false);
                 }
                 customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
             } catch (NullPointerException e) {
 
             }
         }
-      /*  List<CustomerLoan> loans = customerLoanRepository.findAll();
-        for (CustomerLoan loan : loans) {
-
-            try {
-                if (loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0) {
-                    *//* expired insurance, set expiry flag *//*
-                    loan.setHasInsuranceExpired(true);
-                } else {
-                    loan.setHasInsuranceExpired(false);
-                }
-
-                customerLoanRepository.saveAndFlush(loan);
-            } catch (NullPointerException e) {
-
-            }
-        }*/
     }
 
 }

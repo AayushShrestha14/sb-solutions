@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import java.util.Date;
 
 /**
- * @uthor Aashish shrestha on 6th. March, 2020
+ * @author Aashish shrestha on 6th. March, 2020
  */
 
 @Entity
