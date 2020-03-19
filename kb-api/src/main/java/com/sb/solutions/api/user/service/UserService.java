@@ -52,4 +52,6 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     boolean checkIfValidOldPassword(User user, String password);
 
     List<UserDto>  getUserByRoleCad();
+
+    List<UserDto> getUserListChat();
 }

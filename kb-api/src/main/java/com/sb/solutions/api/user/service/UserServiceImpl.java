@@ -28,13 +28,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.authorization.dto.RoleDto;
-import com.sb.solutions.api.authorization.entity.Role;
-import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;
@@ -90,7 +90,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder.getContext()
+            .getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
             return this.getByUsername(user.getUsername());
@@ -356,5 +357,20 @@ public class UserServiceImpl implements UserService {
         }
         return userDtoList;
 
+    }
+
+    @Override
+    public List<UserDto> getUserListChat() {
+        User currentUser = this.getAuthenticatedUser();
+        List<User> userList = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
+        userList.remove(currentUser);
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User u : userList) {
+            UserDto userDto = new UserDto();
+            userDto.setId(u.getId());
+            userDto.setName(u.getName());
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 }

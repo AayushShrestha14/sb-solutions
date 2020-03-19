@@ -210,4 +210,10 @@ public class UserController {
             userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
                 Collectors.joining(",")));
     }
+
+    @GetMapping("/chat")
+    public ResponseEntity<?> getUsersForChat() {
+        return new RestResponseDto().successModel(
+            userService.getUserListChat());
+    }
 }
