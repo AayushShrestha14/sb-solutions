@@ -28,9 +28,9 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
  * @author : Rujan Maharjan on  3/16/2020
  **/
 @Component
-public class backupDatabase {
+public class BackupDatabase {
 
-    private static final Logger logger = LoggerFactory.getLogger(backupDatabase.class);
+    private static final Logger logger = LoggerFactory.getLogger(BackupDatabase.class);
 
     private static final String ROOT_BACKUP_DIR = FilePath.getOSPath() + "backup";
 
