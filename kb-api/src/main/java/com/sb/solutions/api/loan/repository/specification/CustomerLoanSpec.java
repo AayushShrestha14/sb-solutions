@@ -184,13 +184,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_GUARANTOR_NAME:
                 return criteriaBuilder
                         .and(criteriaBuilder
-                                .equal(root.join("security").join("guarantor").get("name"),
+                                .equal(root.join("guarantor").join("guarantorList").get("name"),
                                         value));
 
             case FILTER_BY_GUARANTOR_CITIZENSHIP:
                 return criteriaBuilder
                         .and(criteriaBuilder
-                                .equal(root.join("security").join("guarantor").get("citizenNumber"),
+                                .equal(root.join("guarantor").join("guarantorList").get("citizenNumber"),
                                         value));
 
             case FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE:
@@ -198,7 +198,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     return criteriaBuilder
                             .and(criteriaBuilder
                                     .equal(
-                                            root.join("security").join("guarantor").get("issuedYear"),
+                                            root.join("guarantor").join("guarantorList").get("issuedYear"),
                                             new SimpleDateFormat("yyyy-MM-dd").parse(value)));
                 } catch (ParseException e) {
                     return null;
@@ -207,13 +207,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_GUARANTOR_DISTRICT_ID:
                 return criteriaBuilder
                         .and(criteriaBuilder
-                                .equal(root.join("security").join("guarantor").join("district").get("id"),
+                                .equal(root.join("guarantor").join("guarantorList").join("district").get("id"),
                                         value));
 
             case FILTER_BY_GUARANTOR_PROVINCE_ID:
                 return criteriaBuilder
                         .and(criteriaBuilder
-                                .equal(root.join("security").join("guarantor").join("province").get("id"),
+                                .equal(root.join("guarantor").join("guarantorList").join("province").get("id"),
                                         value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:

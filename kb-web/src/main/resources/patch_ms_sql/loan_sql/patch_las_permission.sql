@@ -9,7 +9,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT permission on
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (2, 'Loan Configuration', 'smartphone-outline', '/home/admin/config', 30, 1)
+            VALUES (2, 'Loan Configuration', 'smartphone-outline', '/home/admin/config', 9, 1)
             SET IDENTITY_INSERT permission off
 
             SET IDENTITY_INSERT role_permission_rights on
@@ -27,21 +27,21 @@ BEGIN
 
 
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (4, 'Valuator', 'plus-circle-outline', '/home/admin/valuator', 25, 1)
+            VALUES (4, 'Valuator', 'plus-circle-outline', '/home/admin/valuator', 10, 1)
+--             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+--             VALUES (5, 'Sector', 'plus-circle-outline', '/home/admin/sector', 50, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (5, 'Sector', 'plus-circle-outline', '/home/admin/sector', 50, 1)
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (7, 'Approval Limit', 'plus-circle-outline', '/home/admin/approvalLimit', 2, 1)
+            VALUES (7, 'Approval Limit', 'plus-circle-outline', '/home/admin/approvalLimit', 6, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (8, 'Nepse Company', 'plus-circle-outline', '/home/admin/nepse', 21, 1)
+--             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+--             VALUES (9, 'Segment', 'plus-circle-outline', '/home/admin/segment', 22, 1)
+--             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+--             VALUES (10, 'Sub Segment', 'plus-circle-outline', '/home/admin/sub-segment', 23, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (9, 'Segment', 'plus-circle-outline', '/home/admin/segment', 22, 1)
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (10, 'Sub Segment', 'plus-circle-outline', '/home/admin/sub-segment', 23, 1)
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (11, 'Company', 'map-outline', '/home/admin/company', 24, 1)
-            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
-            VALUES (12, 'SubSector', 'plus-circle-outline', '/home/admin/subSector', 51, 1)
+            VALUES (11, 'Company', 'map-outline', '/home/admin/company', 11, 1)
+--             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+--             VALUES (12, 'SubSector', 'plus-circle-outline', '/home/admin/subSector', 51, 1)
             SET IDENTITY_INSERT permission off
 
 
@@ -50,8 +50,8 @@ BEGIN
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (4, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 4, 1)
 
-            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-            VALUES (5, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 5, 1)
+--             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+--             VALUES (5, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 5, 1)
 
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (7, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 7, 1)
@@ -59,17 +59,17 @@ BEGIN
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (8, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 8, 1)
 
-            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-            VALUES (9, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 9, 1)
-
-            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-            VALUES (10, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 10, 1)
+--             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+--             VALUES (9, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 9, 1)
+--
+--             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+--             VALUES (10, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 10, 1)
 
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (11, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 11, 1)
 
-            INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
-            VALUES (12, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 12, 1)
+--             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
+--             VALUES (12, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 12, 1)
 
 
             SET IDENTITY_INSERT role_permission_rights off

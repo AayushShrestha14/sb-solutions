@@ -8,7 +8,7 @@ if(@countLoanConfig = 0)
 BEGIN
 SET IDENTITY_INSERT permission ON
 INSERT  INTO permission (id,  permission_name, fa_icon, front_url, orders, status) VALUES
-(2,  'Loan Configuration', 'settings-2-outline', '/home/admin/config', 30, 1)
+(2,  'Loan Configuration', 'settings-2-outline', '/home/admin/config', 9, 1)
 SET IDENTITY_INSERT permission OFF
 SET IDENTITY_INSERT role_permission_rights ON
 INSERT  INTO role_permission_rights (id, created_at,  last_modified_at,  permission_id, role_id)

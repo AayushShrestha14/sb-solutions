@@ -289,7 +289,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
-        postLoanConditionCheck(customerLoan);
         customerLoanRepository.save(customerLoan);
     }
 
