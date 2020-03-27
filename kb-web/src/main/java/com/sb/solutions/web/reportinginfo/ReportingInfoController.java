@@ -1,5 +1,8 @@
 package com.sb.solutions.web.reportinginfo;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,13 @@ public class ReportingInfoController {
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(service.findAll());
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<?> getAllBySpec(@RequestBody Object search) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> params = objectMapper.convertValue(search, Map.class);
+        return new RestResponseDto().successModel(service.findAllBySpec(params));
     }
 
 }
