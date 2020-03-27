@@ -187,13 +187,21 @@ BEGIN
 
 END;
 
-
-
-
-
-
-
-
-
-
-
+-- ************************Reporting Info*******************************************
+BEGIN
+    DECLARE @reportName VARCHAR(100)
+    DECLARE @reportId BIGINT
+    SET @reportName = 'Reporting Info'
+    IF ((SELECT COUNT(*) FROM permission WHERE permission_name = @reportName) = 0)
+        BEGIN
+            INSERT INTO permission (permission_name, fa_icon, front_url, orders, status)
+            VALUES (@reportName, 'pie-chart-outline', '/home/report/dashboard', 121, 1)
+            SET @reportId = (SELECT id FROM permission WHERE permission_name = @reportName)
+        END
+    IF ((SELECT COUNT(*) FROM role_permission_rights WHERE permission_id = @reportId) = 0)
+        BEGIN
+            INSERT INTO role_permission_rights (created_at, last_modified_at, permission_id, role_id)
+            VALUES ('2020-03-27 09:31:01', '2020-03-27 09:31:01', @reportId, 1)
+        END
+END;
+-- ************************Reporting Info*******************************************
