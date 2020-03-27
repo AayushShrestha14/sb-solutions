@@ -24,24 +24,14 @@ BEGIN
         BEGIN
 
             SET IDENTITY_INSERT permission on
-
-
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (4, 'Valuator', 'plus-circle-outline', '/home/admin/valuator', 10, 1)
---             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
---             VALUES (5, 'Sector', 'plus-circle-outline', '/home/admin/sector', 50, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (7, 'Approval Limit', 'plus-circle-outline', '/home/admin/approvalLimit', 6, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (8, 'Nepse Company', 'plus-circle-outline', '/home/admin/nepse', 21, 1)
---             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
---             VALUES (9, 'Segment', 'plus-circle-outline', '/home/admin/segment', 22, 1)
---             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
---             VALUES (10, 'Sub Segment', 'plus-circle-outline', '/home/admin/sub-segment', 23, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (11, 'Company', 'map-outline', '/home/admin/company', 11, 1)
---             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
---             VALUES (12, 'SubSector', 'plus-circle-outline', '/home/admin/subSector', 51, 1)
             SET IDENTITY_INSERT permission off
 
 
@@ -49,31 +39,13 @@ BEGIN
             SET IDENTITY_INSERT role_permission_rights on
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (4, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 4, 1)
-
---             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
---             VALUES (5, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 5, 1)
-
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (7, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 7, 1)
-
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (8, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 8, 1)
-
---             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
---             VALUES (9, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 9, 1)
---
---             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
---             VALUES (10, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 10, 1)
-
             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
             VALUES (11, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 11, 1)
-
---             INSERT INTO role_permission_rights (id, created_at, last_modified_at, permission_id, role_id)
---             VALUES (12, '2019-04-04 13:17:01', '2019-04-04 13:17:07', 12, 1)
-
-
             SET IDENTITY_INSERT role_permission_rights off
-
 
             SET IDENTITY_INSERT url_api on
 -- ************************APPROVAL LIMIT*******************************************
@@ -113,72 +85,6 @@ BEGIN
 
             -- ************************NEPSE*******************************************
 
-
--- ************************SEGMENT*******************************************
-            INSERT INTO url_api (id, api_url, type) values (13, '/v1/segment', 'ADD SEGMENT')
-            INSERT INTO url_api (id, api_url, type) values (14, '/v1/segment/get', 'VIEW SEGMENT')
-            INSERT INTO url_api (id, api_url, type) values (15, '/v1/segment', 'EDIT SEGMENT')
-            INSERT INTO url_api (id, api_url, type) values (31, '/v1/segment/csv', 'DOWNLOAD CSV')
-
-
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (9, 13)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (9, 14)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (9, 15)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (9, 31)
-
-            -- ************************SEGMENT*******************************************
-
-
--- ************************SUB-SEGMENT*******************************************
-            INSERT INTO url_api (id, api_url, type) values (16, '/v1/subSegment', 'ADD SUB-SEGMENT')
-            INSERT INTO url_api (id, api_url, type)
-            values (17, '/v1/subSegment', 'EDIT SUB-SEGMENT')
-            INSERT INTO url_api (id, api_url, type)
-            values (18, '/v1/subSegment/get', 'VIEW SUB-SEGMENT')
-            INSERT INTO url_api (id, api_url, type)
-            values (32, '/v1/subSegment/csv', 'DOWNLOAD CSV')
-
-
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (10, 16)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (10, 17)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (10, 18)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (10, 32)
-
-            -- ************************SUB-SEGMENT*******************************************
-
--- ************************SECTOR*******************************************
-            INSERT INTO url_api (id, api_url, type) values (19, '/v1/sector', 'ADD SECTOR')
-            INSERT INTO url_api (id, api_url, type) values (20, '/v1/sector', 'EDIT SECTOR')
-            INSERT INTO url_api (id, api_url, type) values (21, '/v1/sector/get', 'VIEW SECTOR')
-            INSERT INTO url_api (id, api_url, type) values (33, '/get', 'DOWNLOAD CSV')
-
-
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (5, 19)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (5, 20)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (5, 21)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (5, 33)
-
-
-            -- ************************SECTOR*******************************************
-
-
--- ************************SUB-SECTOR*******************************************
-            INSERT INTO url_api (id, api_url, type) values (22, '/v1/subSector', 'ADD SUB-SECTOR')
-            INSERT INTO url_api (id, api_url, type) values (23, '/v1/subSector', 'EDIT SUB-SECTOR')
-            INSERT INTO url_api (id, api_url, type)
-            values (24, '/v1/subSector/get', 'VIEW SUB-SECTOR')
-            INSERT INTO url_api (id, api_url, type) values (25, '/v1/subSector/csv', 'DOWNLOAD CSV')
-
-
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (12, 22)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (12, 23)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (12, 24)
-            INSERT INTO permission_api_list(permission_id, api_list_id) values (12, 25)
-
-
-            -- ************************SUB-SECTOR*******************************************
-
-
 -- ************************VALUATOR*******************************************
             INSERT INTO url_api (id, api_url, type) values (26, '/v1/valuator', 'ADD VALUATOR')
             INSERT INTO url_api (id, api_url, type) values (27, '/v1/valuator', 'EDIT VALUATOR')
@@ -190,13 +96,12 @@ BEGIN
             INSERT INTO permission_api_list(permission_id, api_list_id) values (4, 27)
             INSERT INTO permission_api_list(permission_id, api_list_id) values (4, 28)
             INSERT INTO permission_api_list(permission_id, api_list_id) values (4, 29)
+-- ************************VALUATOR*******************************************
 
             SET IDENTITY_INSERT url_api off
 
         END
 END;
-
--- ************************VALUATOR*******************************************
 
 -- ************************DASHBOARD******************************************
 BEGIN
@@ -262,44 +167,6 @@ BEGIN
 
             -- ************************NEPSE MAP*******************************************
 
-
-            -- ************************SEGMENT MAP*******************************************
-            INSERT INTO role_permission_rights_api_rights values (9, 13)
-            INSERT INTO role_permission_rights_api_rights values (9, 14)
-            INSERT INTO role_permission_rights_api_rights values (9, 15)
-            INSERT INTO role_permission_rights_api_rights values (9, 31)
-
-            -- ************************SEGMENT MAP*******************************************
-
-            -- ************************SUB-SEGMENT*******************************************
-            INSERT INTO role_permission_rights_api_rights values (10, 16)
-            INSERT INTO role_permission_rights_api_rights values (10, 17)
-            INSERT INTO role_permission_rights_api_rights values (10, 18)
-            INSERT INTO role_permission_rights_api_rights values (10, 32)
-
-            -- ************************SUB-SEGMENT*******************************************
-
-            -- ************************SECTOR*******************************************
-
-            INSERT INTO role_permission_rights_api_rights values (5, 19)
-            INSERT INTO role_permission_rights_api_rights values (5, 20)
-            INSERT INTO role_permission_rights_api_rights values (5, 21)
-            INSERT INTO role_permission_rights_api_rights values (5, 33)
-
-
-            -- ************************SECTOR*******************************************
-
-            -- ************************SUB-SECTOR*******************************************
-
-            INSERT INTO role_permission_rights_api_rights values (12, 22)
-            INSERT INTO role_permission_rights_api_rights values (12, 23)
-            INSERT INTO role_permission_rights_api_rights values (12, 24)
-            INSERT INTO role_permission_rights_api_rights values (12, 25)
-
-
-            -- ************************SUB-SECTOR*******************************************
-
-
             -- ************************VALUATOR*******************************************
 
             INSERT INTO role_permission_rights_api_rights values (4, 26)
@@ -308,12 +175,6 @@ BEGIN
             INSERT INTO role_permission_rights_api_rights values (4, 29)
 
             -- ************************VALUATOR*******************************************
-
-
--- ************************COUNTVIEW*******************************************
-
-
--- ************************COUNTVIEW*******************************************
 
 -- ************************DEFAULT ADMIN*******************************************
 -- *************************DELETE EMAIL CONFIG AND NEPSE FROM NAV LINK ********************
