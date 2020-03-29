@@ -14,19 +14,22 @@ import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 
 /**
- * @author Elvin Shrestha on 3/27/2020
+ * @author Elvin Shrestha on 3/29/2020
  */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ReportingInfo extends BaseEntity<Long> {
+public class ReportingInfoLevel extends BaseEntity<Long> {
 
-    private String name;
+    private String code;
+
+    private String description;
 
     private Status status;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<ReportingInfoLevel> reportingInfoLevels;
+
 }
