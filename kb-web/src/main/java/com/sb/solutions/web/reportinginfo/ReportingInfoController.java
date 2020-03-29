@@ -1,10 +1,12 @@
 package com.sb.solutions.web.reportinginfo;
 
 import java.util.Map;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,20 @@ public class ReportingInfoController {
     public ReportingInfoController(
         ReportingInfoService service) {
         this.service = service;
+    }
+
+    @PostMapping("/initial")
+    public ResponseEntity<?> initialSave(@Valid @RequestBody ReportingInfo reportingInfo) {
+        if (reportingInfo.getId() != null) {
+            ReportingInfo find = service.findOne(reportingInfo.getId()).orElse(null);
+            if (find == null) {
+                return new RestResponseDto().failureModel(HttpStatus.NOT_FOUND, "Report not found");
+            }
+            // update name only
+            find.setName(reportingInfo.getName());
+            return new RestResponseDto().successModel(service.save(find));
+        }
+        return new RestResponseDto().successModel(service.save(reportingInfo));
     }
 
     @PostMapping
