@@ -53,5 +53,4 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<UserDto>  getUserByRoleCad();
 
-    List<UserDto> getUserListChat();
 }

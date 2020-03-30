@@ -359,18 +359,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public List<UserDto> getUserListChat() {
-        User currentUser = this.getAuthenticatedUser();
-        List<User> userList = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
-        userList.remove(currentUser);
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User u : userList) {
-            UserDto userDto = new UserDto();
-            userDto.setId(u.getId());
-            userDto.setName(u.getName());
-            userDtoList.add(userDto);
-        }
-        return userDtoList;
-    }
+
 }

@@ -211,9 +211,4 @@ public class UserController {
                 Collectors.joining(",")));
     }
 
-    @GetMapping("/chat")
-    public ResponseEntity<?> getUsersForChat() {
-        return new RestResponseDto().successModel(
-            userService.getUserListChat());
-    }
 }
