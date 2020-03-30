@@ -54,13 +54,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatMessage save(ChatMessage chatMessage) {
-//        new Thread(() -> {
-//            try {
-//                this.updateSeen(chatMessage.getToUserId());
-//            } catch (Exception e) {
-//                logger.error("error updating chat msg", e);
-//            }
-//        }).start();
+        this.updateSeen(chatMessage.getToUserId());
         return chatRepository.save(chatMessage);
     }
 
