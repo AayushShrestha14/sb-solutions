@@ -1861,6 +1861,46 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="94-drop-sub_sector" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_sector"/>
+        </preConditions>
+
+        <dropTable tableName="sub_sector"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sector" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sector"/>
+        </preConditions>
+
+        <dropTable tableName="sector"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sub_segment_loan_config" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_segment_loan_config"/>
+        </preConditions>
+
+        <dropTable tableName="sub_segment_loan_config"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sub_segment" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_segment"/>
+        </preConditions>
+
+        <dropTable tableName="sub_segment"/>
+    </changeSet>
+
+    <changeSet id="94-drop-segment" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="segment"/>
+        </preConditions>
+
+        <dropTable tableName="segment"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 
