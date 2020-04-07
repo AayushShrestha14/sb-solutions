@@ -1719,7 +1719,187 @@
 
 
     <!-- Update changesets below this section //-->
+    <changeSet id="94-create-reporting_info" author="elvin">
+        <preConditions>
+            <not>
+                <tableExists tableName="reporting_info"/>
+            </not>
+        </preConditions>
 
+        <createTable tableName="reporting_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_created_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_modified_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="94-create-reporting_info_level" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="reporting_info_level"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="reporting_info_level">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_level_created_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_level_modified_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="code" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(500)"/>
+            <column name="status" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="94-create-reporting_info_reporting_info_levels" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="reporting_info_reporting_info_levels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="reporting_info_reporting_info_levels">
+            <column name="reporting_info_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_reporting_info_levels_reporting_info_id_reporting_info_id"
+                  referencedTableName="reporting_info"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="reporting_info_levels_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_reporting_info_levels_reporting_info_levels_id_reporting_info_level_id"
+                  referencedTableName="reporting_info_level"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="94-create-reporting_info_level_reporting_info_levels" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="reporting_info_level_reporting_info_levels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="reporting_info_level_reporting_info_levels">
+            <column name="reporting_info_level_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_level_reporting_info_levels_reporting_info_level_id_reporting_info_level_id"
+                  referencedTableName="reporting_info_level"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="reporting_info_levels_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_reporting_info_level_reporting_info_levels_reporting_info_levels_id_reporting_info_level_id"
+                  referencedTableName="reporting_info_level"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="94-create-customer_loan_reporting_info_levels" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_loan_reporting_info_levels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_loan_reporting_info_levels">
+            <column name="customer_loan_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_loan_reporting_info_levels_customer_loan_id_customer_loan_id"
+                  referencedTableName="customer_loan"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="reporting_info_levels_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_loan_reporting_info_levels_reporting_info_levels_id_reporting_info_level_id"
+                  referencedTableName="reporting_info_level"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="94-drop-sub_sector" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_sector"/>
+        </preConditions>
+
+        <dropTable tableName="sub_sector"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sector" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sector"/>
+        </preConditions>
+
+        <dropTable tableName="sector"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sub_segment_loan_config" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_segment_loan_config"/>
+        </preConditions>
+
+        <dropTable tableName="sub_segment_loan_config"/>
+    </changeSet>
+
+    <changeSet id="94-drop-sub_segment" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sub_segment"/>
+        </preConditions>
+
+        <dropTable tableName="sub_segment"/>
+    </changeSet>
+
+    <changeSet id="94-drop-segment" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="segment"/>
+        </preConditions>
+
+        <dropTable tableName="segment"/>
+    </changeSet>
 
 </databaseChangeLog>
 

@@ -28,23 +28,29 @@ public class RestResponseDto {
     @JsonIgnore
     private int code;
 
-    public ResponseEntity successModel(Object o) {
+    public ResponseEntity<?> successModel(Object o) {
         RestResponseDto r = new RestResponseDto();
         r.setDetail(o);
         r.setMessage("SUCCESS");
-        return new ResponseEntity(r, HttpStatus.OK);
+        return new ResponseEntity<>(r, HttpStatus.OK);
     }
 
-    public ResponseEntity validationFailed(List<ObjectError> errors) {
+    public ResponseEntity<?> validationFailed(List<ObjectError> errors) {
         RestResponseDto r = new RestResponseDto();
         r.setDetail(errors);
 
-        return new ResponseEntity(r, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(r, HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity failureModel(String message) {
+    public ResponseEntity<?> failureModel(String message) {
         RestResponseDto r = new RestResponseDto();
         r.setMessage(message);
-        return new ResponseEntity(r, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(r, HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<?> failureModel(HttpStatus httpStatus, String message) {
+        RestResponseDto r = new RestResponseDto();
+        r.setMessage(message);
+        return new ResponseEntity<>(r, httpStatus);
     }
 }
