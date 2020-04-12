@@ -1,13 +1,13 @@
 package com.sb.solutions.api.insurance.service;
 
-import com.sb.solutions.api.insurance.entity.Insurance;
-import com.sb.solutions.api.insurance.repository.InsuranceRepository;
-import com.sb.solutions.api.insurance.service.InsuranceService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import com.sb.solutions.api.insurance.entity.Insurance;
+import com.sb.solutions.api.insurance.repository.InsuranceRepository;
 
 public class InsuranceServiceImpl implements InsuranceService {
 

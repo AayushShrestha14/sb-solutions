@@ -1,14 +1,15 @@
 package com.sb.solutions.api.insurance.entity;
 
-import com.sb.solutions.core.enitity.BaseEntity;
+import java.util.Date;
+import javax.persistence.Entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import java.util.Date;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
  * @author Aashish shrestha on 6th. March, 2020

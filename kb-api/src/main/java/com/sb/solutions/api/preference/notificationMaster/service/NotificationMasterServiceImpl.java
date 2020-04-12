@@ -1,14 +1,14 @@
 package com.sb.solutions.api.preference.notificationMaster.service;
 
-import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
-import com.sb.solutions.api.preference.notificationMaster.repository.NotificationMasterRepository;
-import com.sb.solutions.core.enums.NotificationMasterType;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
+import com.sb.solutions.api.preference.notificationMaster.repository.NotificationMasterRepository;
 
 @Service
 public class NotificationMasterServiceImpl implements NotificationMasterService {
@@ -16,7 +16,7 @@ public class NotificationMasterServiceImpl implements NotificationMasterService 
     private final NotificationMasterRepository notificationMasterRepository;
 
     public NotificationMasterServiceImpl(
-            NotificationMasterRepository notificationMasterRepository) {
+        NotificationMasterRepository notificationMasterRepository) {
         this.notificationMasterRepository = notificationMasterRepository;
     }
 

@@ -11,7 +11,9 @@ public enum NotificationMasterType {
 
     private String value;
 
-    NotificationMasterType(String value) { this.value = value; }
+    NotificationMasterType(String value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {

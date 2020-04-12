@@ -42,7 +42,6 @@ import com.sb.solutions.core.utils.ProductUtils;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableScheduling
 @EnableConfigurationProperties({FileStorageProperties.class, MailProperties.class})
-@EnableScheduling
 public class CpSolutionApplication extends SpringBootServletInitializer {
 
     @Autowired

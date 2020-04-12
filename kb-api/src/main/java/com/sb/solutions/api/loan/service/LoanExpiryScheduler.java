@@ -13,7 +13,7 @@ public class LoanExpiryScheduler {
     private CustomerLoanService customerLoanService;
 
     public LoanExpiryScheduler(
-            CustomerLoanService customerLoanService) {
+        CustomerLoanService customerLoanService) {
         this.customerLoanService = customerLoanService;
     }
 
