@@ -1995,11 +1995,11 @@
     <changeSet id="96-alter-customer_loan-add-has_insurance_expired" author="Aashish">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="customer_loan" columnName="has_insurance_expired"/>
+                <columnExists tableName="customer_loan" columnName="is_insurance_expired"/>
             </not>
         </preConditions>
         <addColumn tableName="customer_loan">
-            <column name="has_insurance_expired" type="BIT" defaultValue="0"/>
+            <column name="is_insurance_expired" type="BIT" defaultValue="0"/>
         </addColumn>
     </changeSet>
 

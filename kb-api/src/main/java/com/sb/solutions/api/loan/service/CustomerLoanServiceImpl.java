@@ -815,18 +815,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             c.add(Calendar.DAY_OF_MONTH, daysToExpire);
 
             Map<String, String> t = new HashMap<String, String>() {{
+                put("hasInsurance", "true");
                 put("documentStatus", DocStatus.APPROVED.name());
             }};
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, String> map = objectMapper.convertValue(t, Map.class);
             final CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
             final Specification<CustomerLoan> specification = builder.build();
-
             for (CustomerLoan loan : customerLoanRepository.findAll(specification)) {
-                boolean flag;
                 try {
                     /* expired insurance, set expiry flag */
-                    flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
+                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
                     customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
                 } catch (NullPointerException e) {
                     logger

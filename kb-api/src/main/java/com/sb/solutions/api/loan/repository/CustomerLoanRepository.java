@@ -194,6 +194,6 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Modifying
     @Transactional
-    @Query("UPDATE CustomerLoan c SET c.hasInsuranceExpired = :flag WHERE c.id = :id")
+    @Query("UPDATE CustomerLoan c SET c.isInsuranceExpired = :flag WHERE c.id = :id")
     void setInsuranceExpiryFlag(@Param("id") Long id, @Param("flag") Boolean flag);
 }
