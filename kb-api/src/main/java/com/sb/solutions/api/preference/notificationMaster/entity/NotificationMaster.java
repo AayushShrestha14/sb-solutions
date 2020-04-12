@@ -1,6 +1,8 @@
 package com.sb.solutions.api.preference.notificationMaster.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.NotificationMasterType;
 
 /**
  * @author Aashish shrestha on 10th. March, 2020
@@ -20,6 +23,8 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class NotificationMaster extends BaseEntity<Long> {
 
-    private String notificationKey;
+    @Enumerated(EnumType.STRING)
+    private NotificationMasterType notificationKey;
+
     private int value;
 }

@@ -6,17 +6,5 @@ package com.sb.solutions.core.enums;
  */
 
 public enum NotificationMasterType {
-
-    INSURANCE_EXPIRY_NOTIFY("INSURANCE_EXPIRY_NOTIFY");
-
-    private String value;
-
-    NotificationMasterType(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return value;
-    }
+    INSURANCE_EXPIRY_NOTIFY
 }
