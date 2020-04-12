@@ -50,6 +50,11 @@ public final class InitialPatch {
 
         populator3.execute(dataSource);
 
+        ClassPathResource dataResource4 = new ClassPathResource(
+            baseServerFolder + GENERALPATCHFOLDER + File.separator + "insurance_expiry.sql");
+        ResourceDatabasePopulator populator4 = new ResourceDatabasePopulator(dataResource4);
+
+        populator4.execute(dataSource);
 
     }
 
