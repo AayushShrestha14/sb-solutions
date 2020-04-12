@@ -51,7 +51,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_GUARANTOR_PROVINCE_ID = "guarantorProvinceId";
 
     private static final String FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT = "showShareLoanExcessingLimit";
-    private static final String FILTER_BY_INSURANCE_EXPIRY = "showExpiringInsurance";
+    private static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
     private static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
 
     private final String property;
@@ -235,17 +235,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 
             case FILTER_BY_INSURANCE_EXPIRY:
-
-                /* fetch expiry date from customer-loan/ insurance*/
-        /*        Calendar c = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date expiryDate = (Date) root.join("insurance").get("expiryDate");
-                c.setTime(expiryDate);
-                c.add(Calendar.DAY_OF_MONTH, root.join(""))
-                Predicate predicateForExpiringInsurance = criteriaBuilder.lessThanOrEqualTo(
-                        root.join("insurance").get("expiryDate")
-                )*/
-                return criteriaBuilder.equal(root.get("hasInsuranceExpired"), true);
+                return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_EXPIRY), true);
 
             case FILTER_BY_HAS_INSURANCE:
                 return criteriaBuilder.isNotNull(root.get("insurance"));

@@ -40,6 +40,7 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
+import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
@@ -791,6 +792,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
             shareSecurityService.execute(Optional.ofNullable(loan.getId()));
+        }
+        // insurance expiry verification
+        Insurance insurance = loan.getInsurance();
+        if (insurance != null) {
+            insuranceService.execute(Optional.ofNullable(loan.getId()));
         }
     }
 

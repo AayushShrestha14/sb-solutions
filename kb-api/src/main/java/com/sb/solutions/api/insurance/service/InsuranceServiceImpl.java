@@ -1,8 +1,10 @@
 package com.sb.solutions.api.insurance.service;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -73,11 +75,15 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             Map<String, String> map = objectMapper.convertValue(t, Map.class);
             CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
             Specification<CustomerLoan> specification = builder.build();
-            for (CustomerLoan loan : customerLoanRepository.findAll(specification)) {
+            List<CustomerLoan> loans = optional
+                .map(id -> Collections.singletonList(customerLoanRepository.getOne(id)))
+                .orElseGet(() -> customerLoanRepository.findAll(specification));
+            for (CustomerLoan loan : loans) {
                 try {
                     /* expired insurance, set expiry flag */
+                    String remarks = "Insurance expiry date is about to meet.";
                     boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
-                    customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
+                    customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), remarks, flag);
                 } catch (NullPointerException e) {
                     LOGGER
                         .error("Error updating insurance expiry flag {}", e.getLocalizedMessage());
