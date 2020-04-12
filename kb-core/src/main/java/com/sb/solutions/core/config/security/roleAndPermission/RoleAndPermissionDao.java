@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,8 @@ public class RoleAndPermissionDao {
 
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleAndPermissionDao.class);
 
     @Autowired
     DataSource dataSource;
@@ -122,6 +127,8 @@ public class RoleAndPermissionDao {
     }
 
     public List<Map<String, Object>> getEmailConfig() {
+        this.dropProcedure();
+        this.executeProcQuery();
         Map<String, Object> map1 = new HashMap<>();
         String query = "SELECT username,password,host,port,domain from email_config";
 
@@ -130,4 +137,41 @@ public class RoleAndPermissionDao {
 
     }
 
+    public void executeProcQuery() {
+        String query = "CREATE PROCEDURE db_backup \n"
+            + "@filePathName nvarchar(100),"
+            + "@db nvarchar(100)\n"
+            + "AS BEGIN\n"
+            + " BACKUP DATABASE @db\n"
+            + "TO DISK = @filePathName;\n"
+            + " END \n";
+
+        query = query.replaceAll("\\n", " ");
+        query = query.replaceAll("\\t", " ");
+
+        try {
+            JdbcTemplate tmp = new JdbcTemplate(dataSource);
+            tmp.execute(query);
+        } catch (Exception e) {
+            logger.error("unable to execute create procedure {}", e.getMessage());
+        }
+
+
+    }
+
+    public void dropProcedure() {
+        String query = "IF EXISTS (\n"
+            + "        SELECT type_desc, type\n"
+            + "        FROM sys.procedures WITH(NOLOCK)\n"
+            + "        WHERE NAME = 'db_backup'\n"
+            + "      )\n"
+            + "     DROP PROCEDURE db_backup;\n";
+
+        try {
+            JdbcTemplate tmp = new JdbcTemplate(dataSource);
+            tmp.execute(query);
+        } catch (Exception e) {
+            logger.error("unable to execute drop procedure {}", e.getMessage());
+        }
+    }
 }

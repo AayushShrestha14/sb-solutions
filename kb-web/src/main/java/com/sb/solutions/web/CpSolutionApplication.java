@@ -1,13 +1,8 @@
 package com.sb.solutions.web;
 
-import com.sb.solutions.api.basehttp.BaseHttp;
-import com.sb.solutions.api.basehttp.BaseHttpRepo;
-import com.sb.solutions.api.user.repository.UserRepository;
-import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
-import com.sb.solutions.core.config.security.property.FileStorageProperties;
-import com.sb.solutions.core.config.security.property.MailProperties;
-import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
-import com.sb.solutions.core.utils.ProductUtils;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -28,8 +23,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
+import com.sb.solutions.api.basehttp.BaseHttp;
+import com.sb.solutions.api.basehttp.BaseHttpRepo;
+import com.sb.solutions.api.user.repository.UserRepository;
+import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
+import com.sb.solutions.core.config.security.property.FileStorageProperties;
+import com.sb.solutions.core.config.security.property.MailProperties;
+import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
+import com.sb.solutions.core.utils.ProductUtils;
 
 /**
  * @author Rujan Maharjan on 12/27/2018
@@ -39,6 +40,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = "com.sb.solutions")
 @EntityScan(basePackages = "com.sb.solutions")
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@EnableScheduling
 @EnableConfigurationProperties({FileStorageProperties.class, MailProperties.class})
 @EnableScheduling
 public class CpSolutionApplication extends SpringBootServletInitializer {

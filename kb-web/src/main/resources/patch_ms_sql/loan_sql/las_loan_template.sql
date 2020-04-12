@@ -269,6 +269,7 @@ BEGIN
         END
 END;
 
+
 BEGIN
     DECLARE
         @count SMALLINT
@@ -289,20 +290,35 @@ END;
 
 BEGIN
     DECLARE
-        @count_insurance SMALLINT
-    SET @count_insurance = (SELECT COUNT(*) FROM loan_template WHERE id = 16)
-    if (@count_insurance = 0)
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 16)
+    if (@count = 0)
         BEGIN
             SET IDENTITY_INSERT loan_template ON
 
             INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
-                    created_by_id, modified_by_id, created_at, last_modified_at, version)
-            VALUES (16, 'Insurance', '#insurance', 16, 1, NULL, NULL, NULL,
-                    '2020-03-06', '2020-03-06', 0)
+                                       created_by_id, modified_by_id, created_at, last_modified_at,
+                                       version)
+            VALUES (16, 'Reporting Info', '#reportingInfo', 16, 1, NULL, NULL, NULL,
+                    '2019-01-11', '2019-01-11', 0)
 
             SET IDENTITY_INSERT loan_template OFF
         END
 END;
 
+BEGIN
+    DECLARE
+        @count_insurance SMALLINT
+    SET @count_insurance = (SELECT COUNT(*) FROM loan_template WHERE id = 17)
+    if (@count_insurance = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_template ON
 
+            INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
+                                       created_by_id, modified_by_id, created_at, last_modified_at, version)
+            VALUES (17, 'Insurance', '#insurance', 16, 1, NULL, NULL, NULL,
+                    '2020-03-06', '2020-03-06', 0)
 
+            SET IDENTITY_INSERT loan_template OFF
+        END
+END;
