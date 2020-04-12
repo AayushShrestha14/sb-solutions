@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -56,8 +55,6 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
-import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
-import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -69,7 +66,6 @@ import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
@@ -101,7 +97,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ShareSecurityService shareSecurityService;
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
-    private final NotificationMasterService notificationMasterService;
     private final InsuranceService insuranceService;
 
 
@@ -123,7 +118,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
-        NotificationMasterService notificationMasterService,
         InsuranceService insuranceService
     ) {
         this.customerLoanRepository = customerLoanRepository;
@@ -143,7 +137,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.shareSecurityService = shareSecurityService;
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
-        this.notificationMasterService = notificationMasterService;
         this.insuranceService = insuranceService;
     }
 
@@ -801,38 +794,5 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
     }
 
-    @Override
-    public void runScheduler() {
-        Map<String, String> insuranceFilter = new HashMap<String, String>() {{
-            put("notificationKey", NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
-        }};
-        NotificationMaster notificationMaster = notificationMasterService
-            .findOneBySpec(insuranceFilter).orElse(null);
-        if (notificationMaster != null) {
-            Calendar c = Calendar.getInstance();
-            c.setTime(new Date());
-            int daysToExpire = notificationMaster.getValue();
-            c.add(Calendar.DAY_OF_MONTH, daysToExpire);
-
-            Map<String, String> t = new HashMap<String, String>() {{
-                put("hasInsurance", "true");
-                put("documentStatus", DocStatus.APPROVED.name());
-            }};
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, String> map = objectMapper.convertValue(t, Map.class);
-            final CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
-            final Specification<CustomerLoan> specification = builder.build();
-            for (CustomerLoan loan : customerLoanRepository.findAll(specification)) {
-                try {
-                    /* expired insurance, set expiry flag */
-                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
-                    customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
-                } catch (NullPointerException e) {
-                    logger
-                        .error("Error updating insurance expiry flag {}", e.getLocalizedMessage());
-                }
-            }
-        }
-    }
 }
 
