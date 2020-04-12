@@ -20,6 +20,6 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class NotificationMaster extends BaseEntity<Long> {
 
-    private String notifKey;
+    private String notificationKey;
     private int value;
 }

@@ -212,7 +212,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<ReportingInfoLevel> reportingInfoLevels;
 
     @NotAudited
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Insurance insurance;
 
     @NotAudited

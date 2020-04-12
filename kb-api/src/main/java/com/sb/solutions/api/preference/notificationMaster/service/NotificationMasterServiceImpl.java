@@ -34,10 +34,10 @@ public class NotificationMasterServiceImpl implements NotificationMasterService 
     @Transactional
     public NotificationMaster save(NotificationMaster notificationMaster) {
 
-        final String notifKey = notificationMaster.getNotifKey();
+        final String key = notificationMaster.getNotificationKey();
         /* remove if the key already exits */
-        if (notificationMasterRepository.existsByNotifKey(notifKey)) {
-            notificationMasterRepository.removeByNotifKey(notifKey);
+        if (notificationMasterRepository.existsByNotificationKey(key)) {
+            notificationMasterRepository.removeByNotificationKey(key);
         }
         return notificationMasterRepository.save(notificationMaster);
     }
@@ -53,7 +53,7 @@ public class NotificationMasterServiceImpl implements NotificationMasterService 
     }
 
     @Override
-    public int getValue(String notifyKey) {
-        return notificationMasterRepository.getByNotifKey(notifyKey).getValue();
+    public int getValue(String notificationKey) {
+        return notificationMasterRepository.getByNotificationKey(notificationKey).getValue();
     }
 }

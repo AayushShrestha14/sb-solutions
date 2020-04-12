@@ -316,7 +316,7 @@ BEGIN
 
             INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
                                        created_by_id, modified_by_id, created_at, last_modified_at, version)
-            VALUES (17, 'Insurance', '#insurance', 16, 1, NULL, NULL, NULL,
+            VALUES (17, 'Insurance', '#insurance', 17, 1, NULL, NULL, NULL,
                     '2020-03-06', '2020-03-06', 0)
 
             SET IDENTITY_INSERT loan_template OFF

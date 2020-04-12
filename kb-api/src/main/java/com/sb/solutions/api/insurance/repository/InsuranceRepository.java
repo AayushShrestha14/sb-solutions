@@ -1,11 +1,11 @@
 package com.sb.solutions.api.insurance.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.sb.solutions.api.insurance.entity.Insurance;
+import com.sb.solutions.core.repository.BaseRepository;
 
 @Repository
-public interface InsuranceRepository extends JpaRepository<Insurance, Long> {
+public interface InsuranceRepository extends BaseRepository<Insurance, Long> {
 
 }

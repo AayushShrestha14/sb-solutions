@@ -5,5 +5,5 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface NotificationMasterService extends BaseService<NotificationMaster> {
 
-    int getValue(String notifKey);
+    int getValue(String notificationKey);
 }

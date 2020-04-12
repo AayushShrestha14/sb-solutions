@@ -1,42 +1,31 @@
 package com.sb.solutions.api.insurance.service;
 
-import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.repository.InsuranceRepository;
+import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
+import com.sb.solutions.core.repository.BaseSpecBuilder;
+import com.sb.solutions.core.service.BaseServiceImpl;
 
-public class InsuranceServiceImpl implements InsuranceService {
+@Service
+public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> implements
+    InsuranceService {
 
-    @Autowired
-    InsuranceRepository insuranceRepository;
+    private final InsuranceRepository repository;
 
-    @Override
-    public List<Insurance> findAll() {
-        return insuranceRepository.findAll();
+    protected InsuranceServiceImpl(
+        InsuranceRepository repository) {
+        super(repository);
+
+        this.repository = repository;
     }
 
-    @Override
-    public Insurance findOne(Long id) {
-        return insuranceRepository.getOne(id);
-    }
 
     @Override
-    public Insurance save(Insurance insurance) {
-        return insuranceRepository.save(insurance);
+    protected BaseSpecBuilder<Insurance> getSpec(Map<String, String> filterParams) {
+        return new InsuranceSpecBuilder(filterParams);
     }
-
-    @Override
-    public Page<Insurance> findAllPageable(Object t, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<Insurance> saveAll(List<Insurance> list) {
-        return insuranceRepository.saveAll(list);
-    }
-
 }

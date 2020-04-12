@@ -6,9 +6,9 @@ import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMas
 
 public interface NotificationMasterRepository extends JpaRepository<NotificationMaster, Long> {
 
-    Boolean existsByNotifKey(String notifKey);
+    Boolean existsByNotificationKey(String notificationKey);
 
-    void removeByNotifKey(String notifKey);
+    void removeByNotificationKey(String notificationKey);
 
-    NotificationMaster getByNotifKey(String notifKey);
+    NotificationMaster getByNotificationKey(String notificationKey);
 }

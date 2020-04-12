@@ -1920,13 +1920,13 @@
             <column name="policy_type" type="VARCHAR(256)"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_insurance_created_by_id"
+                             foreignKeyName="fk_insurance_created_by_id_users_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_insurance_modified_by_id"
+                             foreignKeyName="fk_insurance_modified_by_id_users_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
@@ -1950,7 +1950,7 @@
         <addColumn tableName="customer_loan">
             <column name="insurance_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_customer_loan_insurance_id"
+                             foreignKeyName="fk_customer_loan_insurance_id_insurance_id"
                              referencedTableName="insurance"
                              referencedColumnNames="id"/>
             </column>
@@ -1968,17 +1968,17 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="notif_key" type="VARCHAR(256)"/>
+            <column name="notification_key" type="VARCHAR(256)"/>
             <column name="value" type="INT"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_notification_master_created_by_id"
+                             foreignKeyName="fk_notification_master_created_by_id_users_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_notification_master_modified_by_id"
+                             foreignKeyName="fk_notification_master_modified_by_id_users_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
@@ -1992,7 +1992,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="96-alter-customer_loan-add-is_insurance_expired" author="Aashish">
+    <changeSet id="96-alter-customer_loan-add-has_insurance_expired" author="Aashish">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_loan" columnName="has_insurance_expired"/>

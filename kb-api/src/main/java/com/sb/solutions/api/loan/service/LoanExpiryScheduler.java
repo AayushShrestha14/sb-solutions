@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loan.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -10,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Configuration
 public class LoanExpiryScheduler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoanExpiryScheduler.class);
     private CustomerLoanService customerLoanService;
 
     public LoanExpiryScheduler(
@@ -19,11 +22,11 @@ public class LoanExpiryScheduler {
 
     @Scheduled(cron = "0 0 23 * * ?") // every day at 11pm
     public void runScheduler() {
-        System.out.println("Scheduler running !!");
+        LOGGER.debug("Scheduler running !!");
         try {
             this.customerLoanService.runScheduler();
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            LOGGER.debug("Error running loan expiry scheduler: {}", e.getLocalizedMessage());
         }
     }
 }

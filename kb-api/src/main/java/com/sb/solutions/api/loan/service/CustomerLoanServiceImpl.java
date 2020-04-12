@@ -41,6 +41,7 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
+import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -55,7 +56,6 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
-import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
@@ -100,8 +100,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ShareSecurityService shareSecurityService;
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
-    private final NepseMasterRepository nepseMasterRepository;
     private final NotificationMasterService notificationMasterService;
+    private final InsuranceService insuranceService;
 
 
     public CustomerLoanServiceImpl(
@@ -122,8 +122,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
-        NepseMasterRepository nepseMasterRepository,
-        NotificationMasterService notificationMasterService
+        NotificationMasterService notificationMasterService,
+        InsuranceService insuranceService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -142,8 +142,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.shareSecurityService = shareSecurityService;
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
-        this.nepseMasterRepository = nepseMasterRepository;
         this.notificationMasterService = notificationMasterService;
+        this.insuranceService = insuranceService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -205,8 +205,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.getDmsLoanFile()
                 .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
             customerLoan.getDmsLoanFile().setCreatedAt(new Date());
-        }
-        if (customerLoan.getDmsLoanFile() != null) {
             customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
         }
 
@@ -220,10 +218,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
-        }
-        if (customerLoan.getMawCreditRiskGrading() != null) {
-            customerLoan.setMawCreditRiskGrading(
-                this.mawCreditRiskGradingService.save(customerLoan.getMawCreditRiskGrading()));
         }
         if (customerLoan.getSecurity() != null) {
             customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
@@ -245,9 +239,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan
                 .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
         }
+        if (customerLoan.getMawCreditRiskGrading() != null) {
+            customerLoan.setMawCreditRiskGrading(
+                this.mawCreditRiskGradingService.save(customerLoan.getMawCreditRiskGrading()));
+        }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
                 .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
+        }
+        if (customerLoan.getInsurance() != null) {
+            customerLoan.setInsurance(this.insuranceService.save(customerLoan.getInsurance()));
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
@@ -565,6 +566,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.setMawCreditRiskGrading(
                 mawCreditRiskGradingService.save(previousLoan.getMawCreditRiskGrading()));
         }
+        if (previousLoan.getShareSecurity() != null) {
+            previousLoan.getShareSecurity().setId(null);
+            previousLoan
+                .setShareSecurity(this.shareSecurityService.save(previousLoan.getShareSecurity()));
+        }
+        if (previousLoan.getInsurance() != null) {
+            previousLoan.getInsurance().setId(null);
+            previousLoan.setInsurance(this.insuranceService.save(previousLoan.getInsurance()));
+        }
 
         LoanStage stage = new LoanStage();
         stage.setToRole(userService.getAuthenticatedUser().getRole());
@@ -815,7 +825,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
                 customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), flag);
             } catch (NullPointerException e) {
-
+                logger.error("Error updating insurance expiry flag {}", e.getLocalizedMessage());
             }
         }
     }
