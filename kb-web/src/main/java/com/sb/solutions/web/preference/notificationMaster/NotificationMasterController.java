@@ -1,5 +1,6 @@
 package com.sb.solutions.web.preference.notificationMaster;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +28,8 @@ public class NotificationMasterController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody NotificationMaster notificationMaster) {
-        return new RestResponseDto().successModel(service.save(notificationMaster));
+    public ResponseEntity<?> save(@RequestBody List<NotificationMaster> notificationMasters) {
+        return new RestResponseDto().successModel(service.saveAll(notificationMasters));
     }
 
     @PostMapping("/one")
