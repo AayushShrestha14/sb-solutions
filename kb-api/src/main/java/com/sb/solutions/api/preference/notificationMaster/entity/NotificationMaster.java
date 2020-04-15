@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.NotificationMasterType;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * @author Aashish shrestha on 10th. March, 2020
@@ -27,4 +28,6 @@ public class NotificationMaster extends BaseEntity<Long> {
     private NotificationMasterType notificationKey;
 
     private int value;
+
+    private Status status;
 }
