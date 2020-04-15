@@ -2003,6 +2003,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="97-alter-notification-master-add-status" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="notification_master" columnName="status"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="notification_master">
+            <column name="status" type="INT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
