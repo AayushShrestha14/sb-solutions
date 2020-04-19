@@ -2015,6 +2015,58 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="98-create-insurance_history" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="insurance_history"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="insurance_history">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="customer_loan_id" type="VARCHAR(256)"/>
+            <column name="company" type="VARCHAR(256)"/>
+            <column name="insured_amount" type="DOUBLE"/>
+            <column name="premium_amount" type="VARCHAR(256)"/>
+            <column name="issued_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="policy_type" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_insurance_history_created_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_insurance_history_modified_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="98-alter-insurance-add-remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="insurance" columnName="remarks"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="insurance">
+            <column name="remarks" type="LONGTEXT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
