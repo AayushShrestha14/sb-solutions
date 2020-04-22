@@ -61,8 +61,7 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
             .withClient("cp-solution")
             /*.accessTokenValiditySeconds(99999911)        // expire time for access token
             .refreshTokenValiditySeconds(900000000)         // expire time for refresh token*/
-            .authorizedGrantTypes("authorization_code", "refresh_token", "password",
-                "client_credentials")
+            .authorizedGrantTypes( "refresh_token", "password")
             .secret(passwordEncoder.encode("cpsolution123*#"))
             .scopes("read", "write", "trust")
             .redirectUris("/error")

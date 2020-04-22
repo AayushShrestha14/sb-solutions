@@ -27,8 +27,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
-import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,12 +46,16 @@ import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.group.entity.Group;
+import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.dto.NepaliTemplateDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import com.sb.solutions.api.proposal.entity.Proposal;
+import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -204,6 +206,17 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @NotAudited
     private String loanRemarks;
+
+    @NotAudited
+    @ManyToMany
+    private List<ReportingInfoLevel> reportingInfoLevels;
+
+    @NotAudited
+    @OneToOne
+    private Insurance insurance;
+
+    @NotAudited
+    private Boolean isInsuranceExpired;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
