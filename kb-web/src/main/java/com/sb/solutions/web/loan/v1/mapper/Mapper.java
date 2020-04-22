@@ -24,6 +24,7 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
@@ -145,7 +146,7 @@ public class Mapper {
                 logger.error("Error while performing the action");
                 throw new RuntimeException("No user present of selected To:");
             }
-            if (customerLoan.getLimitExceed() == 1) {
+            if (!customerLoan.getLoanFlag().equals(LoanFlag.NO_FLAG)) {
                 logger.info(customerLoan.getLoanRemarks());
                 throw new RuntimeException(customerLoan.getLoanRemarks());
             }

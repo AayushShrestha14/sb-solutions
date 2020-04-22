@@ -2067,6 +2067,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="99-alter-customer-loan-alter-limit_exceed" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="limit_exceed"/>
+        </preConditions>
+
+        <modifyDataType tableName="customer_loan" columnName="limit_exceed" newDataType="INT"/>
+        <renameColumn tableName="customer_loan" oldColumnName="limit_exceed" newColumnName="loan_flag"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

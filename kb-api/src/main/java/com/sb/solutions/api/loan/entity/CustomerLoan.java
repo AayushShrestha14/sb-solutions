@@ -62,6 +62,7 @@ import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.vehiclesecurity.entity.VehicleSecurity;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.Priority;
 
@@ -202,7 +203,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<NepaliTemplateDto> nepaliTemplates = new ArrayList<>();
 
     @NotAudited
-    private byte limitExceed;
+    private LoanFlag loanFlag;
 
     @NotAudited
     private String loanRemarks;

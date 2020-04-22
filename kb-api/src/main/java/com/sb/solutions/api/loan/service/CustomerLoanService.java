@@ -15,6 +15,7 @@ import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.service.BaseService;
 
 /**
@@ -61,5 +62,9 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable);
 
     List<CustomerLoan> getLoanByCustomerGuarantor(Guarantor guarantor);
+
+    void updateLoanFlag(LoanFlag loanFlag, String loanRemarks, Long customerLoanId);
+
+    void postLoanConditionCheck(CustomerLoan loan);
 
 }

@@ -60,6 +60,7 @@ public class InsuranceController {
             history.setCustomerLoanId(loanId);
             history.setId(null);
             insuranceHistoryService.save(history);
+            customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
 
             // update current
             BeanUtils.copyProperties(entity, old);

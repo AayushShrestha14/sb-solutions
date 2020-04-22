@@ -23,6 +23,7 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
@@ -81,9 +82,13 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             for (CustomerLoan loan : loans) {
                 try {
                     /* expired insurance, set expiry flag */
-                    String remarks = "Insurance expiry date is about to meet.";
-                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
-                    customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), remarks, flag);
+                    LoanFlag flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0
+                        ? LoanFlag.INSURANCE_EXPIRY : LoanFlag.NO_FLAG;
+                    if (!loan.getLoanFlag().equals(flag)) {
+                        String remarks = flag.equals(LoanFlag.INSURANCE_EXPIRY)
+                            ? "Insurance expiry date is about to meet." : null;
+                        customerLoanRepository.updateLoanFlag(flag, remarks, loan.getId());
+                    }
                 } catch (NullPointerException e) {
                     LOGGER
                         .error("Error updating insurance expiry flag {}", e.getLocalizedMessage());

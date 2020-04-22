@@ -67,6 +67,7 @@ import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
@@ -738,6 +739,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return customerLoanRepository.findAll(specification);
     }
 
+    @Override
+    public void updateLoanFlag(LoanFlag loanFlag, String loanRemarks, Long customerLoanId) {
+        this.customerLoanRepository.updateLoanFlag(loanFlag, loanRemarks, customerLoanId);
+    }
+
     public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;
         Date lastModifiedAt = lastModifiedDate;
@@ -774,17 +780,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
      *
      * @param loan An instance of Customer Loan.
      */
-    private void postLoanConditionCheck(CustomerLoan loan) {
+    @Override
+    public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            boolean lowProposedAmount =
-                loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
-            String remark = lowProposedAmount
+            LoanFlag flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0
+                ? LoanFlag.ZERO_PROPOSAL_AMOUNT
+                : LoanFlag.NO_FLAG;
+            String remark = flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)
                 ? "Cannot forward loan as proposed amount is zero."
                 : null;
             customerLoanRepository
-                .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
-            if (lowProposedAmount) {
+                .updateLoanFlag(flag, remark, loan.getId());
+            if (flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)) {
                 return;
             }
         }
