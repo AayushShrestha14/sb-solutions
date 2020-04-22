@@ -2015,7 +2015,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="-alter-customer_loan-add-is_insurance_notified" author="buddha">
+    <changeSet id="108-alter-customer_loan-add-is_insurance_notified" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_loan" columnName="is_insurance_notified"/>

@@ -115,7 +115,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                     String remarks = "Insurance expiry date is about to meet.";
                     boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
                     customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), remarks, flag);
-//                    CustomerLoan loanData = customerLoanRepository.getOne(loan.getId());
+                    customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
                     if(flag) {
                         User userMaker = userService.findOne((loan.getInsurance().getCreatedBy()));
                         email.setTo(userMaker.getEmail());
@@ -125,7 +125,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
                         }else {
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
-
                         }
                         if (loan.getCustomerInfo().getEmail() != null) {
                             try {
