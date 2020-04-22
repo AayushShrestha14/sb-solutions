@@ -216,9 +216,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private Insurance insurance;
 
-    @NotAudited
-    private Boolean isInsuranceExpired;
-
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

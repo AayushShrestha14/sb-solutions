@@ -2076,6 +2076,15 @@
         <renameColumn tableName="customer_loan" oldColumnName="limit_exceed" newColumnName="loan_flag"/>
     </changeSet>
 
+    <changeSet id="100-alter-customer-loan-drop-is_insurance_expired" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="is_insurance_expired"/>
+        </preConditions>
+
+        <dropDefaultValue tableName="customer_loan" columnName="is_insurance_expired"/>
+        <dropColumn tableName="customer_loan" columnName="is_insurance_expired"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

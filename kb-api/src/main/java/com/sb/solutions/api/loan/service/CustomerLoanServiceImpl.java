@@ -790,8 +790,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             String remark = flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)
                 ? "Cannot forward loan as proposed amount is zero."
                 : null;
-            customerLoanRepository
-                .updateLoanFlag(flag, remark, loan.getId());
+            customerLoanRepository.updateLoanFlag(flag, remark, loan.getId());
             if (flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)) {
                 return;
             }
