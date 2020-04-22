@@ -119,7 +119,13 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                     if(flag) {
                         User userMaker = userService.findOne((loan.getInsurance().getCreatedBy()));
                         email.setTo(userMaker.getEmail());
-                        email.setToName(loan.getCustomerInfo().getCustomerName());
+                        email.setToName(userMaker.getName());
+                        email.setClientName(loan.getCustomerInfo().getCustomerName());
+                        email.setExpiryDate(loan.getInsurance().getExpiryDate());
+                        email.setClientEmail(loan.getCustomerInfo().getEmail());
+                        email.setClientPhoneNumber(loan.getCustomerInfo().getContactNumber());
+                        email.setLoanTypes(loan.getLoanType());
+                        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
                         sendInsuranceEmail(email);
                         if (loan.getDocumentStatus() == DocStatus.APPROVED) {
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
@@ -128,6 +134,8 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         }
                         if (loan.getCustomerInfo().getEmail() != null) {
                             try {
+//                                email.setTo(userMaker.getEmail());
+//                                email.setToName(loan.getCustomerInfo().getCustomerName());
                                 email.setTo(loan.getCustomerInfo().getEmail());
                                 this.sendInsuranceEmail(email);
                             } catch (Exception e) {
@@ -144,7 +152,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     }
 
     public void sendInsuranceEmail(Email email){
-        Template template = Template.INSURANCE_EXPIRY;
+        Template template = Template.INSURANCE_EXPIRY_MAKER;
         try {
             mailThreadService.testMail(template, email);
             LOGGER.info(" sending Insurance Email config");

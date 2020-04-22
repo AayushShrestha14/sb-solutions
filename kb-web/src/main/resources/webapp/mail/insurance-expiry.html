@@ -35,12 +35,6 @@
                 <tr>
                   <td align="left" valign="middle"><a
                       style="color:#008cc9;display:inline-block;text-decoration:none">
-                    <!--<img alt=""
-                         border="0"
-                         height="50"
-                         src=""
-                         style="outline:none;color:#ffffff;text-decoration:none"
-                         width="150">-->
                   </a></td>
                   <td align="right" style="padding:0 0 0 10px" width="100%"><a
                       style="margin:0;color:#008cc9;display:inline-block;text-decoration:none">
@@ -65,13 +59,40 @@
                       <tr>
                         <td style="padding-bottom:20px"><h2
                             style="margin:0;color:#262626;font-weight:700;font-size:20px;line-height:1.2">
-                          Hello <span th:text="${data.getToName()}"></span>,</h2></td>
+                          Dear <span th:text="${data.getToName()}"></span>,</h2></td>
                       </tr>
                       <tr>
                         <td style="padding-bottom:20px">
                           <p class="custom-para">
-                            Your insurance has will be expired Soon
-                          </p>
+                            Please be advised about the following update regarding your client <b>Mr/Mrs/Miss.</b> <b><span th:text="${data.getClientName()}"></span> </b></p>
+                          <table class="table-bordered table-responsive table">
+                            <tr>
+                              <th>Loan:</th>
+                              <td><span th:text="${data.getLoanTypes()}"></span></td>
+                            </tr>
+                            <tr>
+                              <th>Type of Expiry:</th>
+                              <td></td>
+                            </tr>
+                            <tr>
+                              <th>Date of Expiry:</th>
+                              <td><span th:text="${data.getExpiryDate()}"></span></td>
+                            </tr>
+                            <tr>
+                              <th>Client Citizenship Number:</th>
+                              <td><span th:text="${data.getClientCitizenshipNumber()}"></span></td>
+                            </tr>
+                            <tr>
+                              <th>Client Phone Number:</th>
+                              <td><span th:text="${data.getClientPhoneNumber()}"></span></td>
+                            </tr>
+                            <tr>
+                              <th>Client Email:</th>
+                              <td><span th:text="${data.getClientEmail()}"></span></td>
+                            </tr>
+                          </table>
+                          <br>
+                          <p>Please update the TypeOfExpiry at the earliest to avoid the expiry.  </p>
                           <hr>
                           <p class="custom-para">
                             Regards, <br/>
@@ -79,10 +100,9 @@
                           </p>
                           <hr/>
                           <p class="custom-para">
-                            Note: Please do not reply to this email, as this is an automated email
-                            and any email sent to
-                            this email will not be answered.
-                          </p>
+                            <i> Note: This is a system generated notice. Please don’t reply to this email.
+                              This email will not be answered.</i>
+                          </p><br>
                         </td>
                       </tr>
                       </tbody>
