@@ -64,35 +64,25 @@
                       <tr>
                         <td style="padding-bottom:20px">
                           <p class="custom-para">
-                            Please be advised about the following update regarding your client <b>Mr/Mrs/Miss.</b> <b><span th:text="${data.getName()}"></span> </b></p>
-                          <table class="table-bordered table-responsive table">
+                            Greetings from <span th:text="${data.getBankName()}"></span>.<br> Please be advised that <span th:text="${data.getToName()}"></span>related to your <span th:text="${data.getLoanTypes()}"></span> has the following status.
+                          </p>
+                          <p><b>Expiry Date:<span th:text="${data.getExpiryDate()}"></span></b></p>
+                          <p>Please take the necessary status for renewal or updating of document. You can contact the following person to update the status. </p>
+                            <table class="table-bordered table-responsive table">
                             <tr>
-                              <th>Loan:</th>
-                              <td><span th:text="${data.getLoanTypes()}"></span></td>
+                              <th>Relationship Officer:</th>
+                              <td><span th:text="${data.getName()}"></span></td>
                             </tr>
                             <tr>
-                              <th>Type of Expiry:</th>
-                              <td></td>
+                              <th>Name of Branch:</th>
+                              <td><span th:text="${data.getBankBranch()}"></span></td>
                             </tr>
                             <tr>
-                              <th>Date of Expiry:</th>
-                              <td><span th:text="${data.getExpiryDate()}"></span></td>
-                            </tr>
-                            <tr>
-                              <th>Client Citizenship Number:</th>
-                              <td><span th:text="${data.getClientCitizenshipNumber()}"></span></td>
-                            </tr>
-                            <tr>
-                              <th>Client Phone Number:</th>
-                              <td><span th:text="${data.getClientPhoneNumber()}"></span></td>
-                            </tr>
-                            <tr>
-                              <th>Client Email:</th>
+                              <th>Email Address:</th>
                               <td><span th:text="${data.getEmail()}"></span></td>
                             </tr>
                           </table>
                           <br>
-                          <p>Please update the TypeOfExpiry at the earliest to avoid the expiry.  </p>
                           <hr>
                           <p class="custom-para">
                             Regards, <br/>
@@ -100,8 +90,7 @@
                           </p>
                           <hr/>
                           <p class="custom-para">
-                            <i> Note: This is a system generated notice. Please don’t reply to this email.
-                              This email will not be answered.</i>
+                            <i> Note:This is a computer generated notice. You will continue receiving this email as long as you have a loan with us.</i>
                           </p><br>
                         </td>
                       </tr>

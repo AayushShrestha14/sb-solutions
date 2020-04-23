@@ -27,8 +27,8 @@ public class Email {
     private String resetPasswordLink;
     private String expiry;
     private String loanType;
-    private String clientName;
-    private String clientEmail;
+    private String Name;
+    private String email;
     private Date expiryDate;
     private String clientPhoneNumber;
     private LoanType loanTypes;

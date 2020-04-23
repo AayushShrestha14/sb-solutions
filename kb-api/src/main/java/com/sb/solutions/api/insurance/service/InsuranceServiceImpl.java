@@ -9,15 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.instrument.Meter.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.emailConfig.entity.EmailConfig;
+import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.repository.InsuranceRepository;
@@ -25,19 +23,16 @@ import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
-import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
-import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
 import com.sb.solutions.core.utils.email.Email;
-import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.email.MailThreadService;
 
 @Service("insuranceService")
@@ -53,6 +48,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     private final NotificationMasterService notificationMasterService;
     private final CustomerLoanRepository customerLoanRepository;
     private final MailThreadService mailThreadService;
+    private final BranchService branchService;
 //    private final EmailConfigService emailConfigService;
 //    private final CustomerLoanService customerLoanService;
     private final UserService userService;
@@ -61,6 +57,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         InsuranceRepository repository,
         NotificationMasterService notificationMasterService,
         CustomerLoanRepository customerLoanRepository,
+        BranchService branchService,
         MailThreadService mailThreadService,
         EmailConfigService emailConfigService,
         UserService userService) {
@@ -70,6 +67,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         this.notificationMasterService = notificationMasterService;
         this.customerLoanRepository = customerLoanRepository;
         this.mailThreadService = mailThreadService;
+        this.branchService = branchService;
 //        this.customerLoanService  = customerLoanService;
 //        this.emailConfigService = emailConfigService;
         this.userService = userService;
@@ -120,13 +118,15 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         User userMaker = userService.findOne((loan.getInsurance().getCreatedBy()));
                         email.setTo(userMaker.getEmail());
                         email.setToName(userMaker.getName());
-                        email.setClientName(loan.getCustomerInfo().getCustomerName());
+                        email.setName(loan.getCustomerInfo().getCustomerName());
                         email.setExpiryDate(loan.getInsurance().getExpiryDate());
-                        email.setClientEmail(loan.getCustomerInfo().getEmail());
+                        email.setEmail(loan.getCustomerInfo().getEmail());
                         email.setClientPhoneNumber(loan.getCustomerInfo().getContactNumber());
                         email.setLoanTypes(loan.getLoanType());
                         email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
-                        sendInsuranceEmail(email);
+                        email.setBankBranch(loan.getBranch().getName());
+                        Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
+                        sendInsuranceEmail(templateMaker,email);
                         if (loan.getDocumentStatus() == DocStatus.APPROVED) {
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
                         }else {
@@ -134,12 +134,13 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         }
                         if (loan.getCustomerInfo().getEmail() != null) {
                             try {
-//                                email.setTo(userMaker.getEmail());
-//                                email.setToName(loan.getCustomerInfo().getCustomerName());
+                                email.setToName(loan.getCustomerInfo().getCustomerName());
                                 email.setTo(loan.getCustomerInfo().getEmail());
-                                this.sendInsuranceEmail(email);
+                                email.setEmail(userMaker.getEmail());
+                                Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
+                                this.sendInsuranceEmail(templateClient,email);
                             } catch (Exception e) {
-                                LOGGER.error("Error sending insurance email to Customer");
+                                LOGGER.error("Error sending insurance email to Client");
                             }
                         }
                     }
@@ -151,13 +152,12 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         }
     }
 
-    public void sendInsuranceEmail(Email email){
-        Template template = Template.INSURANCE_EXPIRY_MAKER;
+    public void sendInsuranceEmail(Template template,Email email){
         try {
             mailThreadService.testMail(template, email);
-            LOGGER.info(" sending Insurance Email config");
+            LOGGER.info(" sending Insurance Email ");
         } catch (Exception e) {
-            LOGGER.error("Error while sending Insurance Email to loan Maker", e);
+            LOGGER.error("Error while sending Insurance Email", e);
 //                        return new RestResponseDto()
 //                            .failureModel("Error occurred while Sending  Email" );
         }
