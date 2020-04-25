@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
-import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.repository.InsuranceRepository;
 import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
@@ -50,8 +49,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     private final CustomerLoanRepository customerLoanRepository;
     private final MailThreadService mailThreadService;
     private final BranchService branchService;
-//    private final EmailConfigService emailConfigService;
-//    private final CustomerLoanService customerLoanService;
     private final UserService userService;
 
     protected InsuranceServiceImpl(
@@ -60,7 +57,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         CustomerLoanRepository customerLoanRepository,
         BranchService branchService,
         MailThreadService mailThreadService,
-        EmailConfigService emailConfigService,
         UserService userService) {
         super(repository);
 
@@ -69,8 +65,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         this.customerLoanRepository = customerLoanRepository;
         this.mailThreadService = mailThreadService;
         this.branchService = branchService;
-//        this.customerLoanService  = customerLoanService;
-//        this.emailConfigService = emailConfigService;
         this.userService = userService;
     }
 
@@ -124,8 +118,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         email.setEmail(loan.getCustomerInfo().getEmail());
                         email.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
                         email.setLoanTypes(loan.getLoanType());
-                        email.setClientCitizenshipNumber(
-                            loan.getCustomerInfo().getCitizenshipNumber());
+                        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
                         email.setBankBranch(loan.getBranch().getName());
                         email.setInsuranceCompanyName(loan.getInsurance().getCompany());
                         Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
@@ -134,9 +127,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         if (loan.getDocumentStatus() == DocStatus.APPROVED) {
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
                         }
-//                        else {
-//                            customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
-//                        }
                         if (loan.getCustomerInfo().getEmail() != null) {
                             try {
                                 email.setToName(loan.getCustomerInfo().getCustomerName());
