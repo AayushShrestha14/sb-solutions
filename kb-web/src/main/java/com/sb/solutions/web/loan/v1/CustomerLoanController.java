@@ -1,7 +1,6 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
-import java.util.Optional;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -10,7 +9,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
-import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
@@ -47,9 +44,6 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
 @RequestMapping(CustomerLoanController.URL)
 public class CustomerLoanController {
 
-    @Value("${bank.name}")
-    private String bankName;
-
     static final String URL = "/v1/Loan-customer";
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
@@ -60,20 +54,14 @@ public class CustomerLoanController {
 
     private final Mapper mapper;
 
-    private final InsuranceService insuranceService;
-
-
-
     public CustomerLoanController(
         @Autowired CustomerLoanService service,
         @Autowired Mapper mapper,
-        @Autowired UserService userService,
-        InsuranceService insuranceService) {
+        @Autowired UserService userService) {
 
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
-        this.insuranceService = insuranceService;
     }
 
     @PostMapping(value = "/action")
@@ -84,14 +72,7 @@ public class CustomerLoanController {
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
-    @GetMapping(value = "/sends")
-public ResponseEntity<?> save1(){
-        insuranceService.execute((Optional.empty()));
-     return new RestResponseDto().successModel(null);
 
-
-
-}
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 
