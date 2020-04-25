@@ -30,8 +30,9 @@ public class Email {
     private String Name;
     private String email;
     private Date expiryDate;
-    private String clientPhoneNumber;
+    private String phoneNumber;
     private LoanType loanTypes;
     private String clientCitizenshipNumber;
+    private String insuranceCompanyName;
 
 }

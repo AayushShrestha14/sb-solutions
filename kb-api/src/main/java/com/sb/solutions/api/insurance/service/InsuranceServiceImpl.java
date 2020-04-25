@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.api.insurance.entity.Insurance;
@@ -121,24 +122,33 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         email.setName(loan.getCustomerInfo().getCustomerName());
                         email.setExpiryDate(loan.getInsurance().getExpiryDate());
                         email.setEmail(loan.getCustomerInfo().getEmail());
-                        email.setClientPhoneNumber(loan.getCustomerInfo().getContactNumber());
+                        email.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
                         email.setLoanTypes(loan.getLoanType());
-                        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
+                        email.setClientCitizenshipNumber(
+                            loan.getCustomerInfo().getCitizenshipNumber());
                         email.setBankBranch(loan.getBranch().getName());
+                        email.setInsuranceCompanyName(loan.getInsurance().getCompany());
                         Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
-                        sendInsuranceEmail(templateMaker,email);
+                        templateMaker.setSubject("Insurance Expiry Notice: " + email.getName());
+                        sendInsuranceEmail(templateMaker, email);
                         if (loan.getDocumentStatus() == DocStatus.APPROVED) {
                             customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
-                        }else {
-                            customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
                         }
+//                        else {
+//                            customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
+//                        }
                         if (loan.getCustomerInfo().getEmail() != null) {
                             try {
                                 email.setToName(loan.getCustomerInfo().getCustomerName());
                                 email.setTo(loan.getCustomerInfo().getEmail());
                                 email.setEmail(userMaker.getEmail());
+                                Branch branch = branchService.findOne(loan.getBranch().getId());
+                                email.setPhoneNumber(branch.getLandlineNumber());
                                 Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
-                                this.sendInsuranceEmail(templateClient,email);
+                                templateClient.setSubject(
+                                    "Insurance Expiry Notice related to " + email.getLoanTypes()
+                                        + " at " + bankName);
+                                this.sendInsuranceEmail(templateClient, email);
                             } catch (Exception e) {
                                 LOGGER.error("Error sending insurance email to Client");
                             }
@@ -158,9 +168,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             LOGGER.info(" sending Insurance Email ");
         } catch (Exception e) {
             LOGGER.error("Error while sending Insurance Email", e);
-//                        return new RestResponseDto()
-//                            .failureModel("Error occurred while Sending  Email" );
         }
-//        return null;
     }
 }

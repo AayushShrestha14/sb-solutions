@@ -71,20 +71,16 @@
                               <td><span th:text="${data.getLoanTypes()}"></span></td>
                             </tr>
                             <tr>
-                              <th>Type of Expiry:</th>
-                              <td></td>
+                              <th>Insurance Company Name:</th>
+                              <td><span th:text="${data.getInsuranceCompanyName()}"></span></td>
                             </tr>
                             <tr>
                               <th>Date of Expiry:</th>
                               <td><span th:text="${data.getExpiryDate()}"></span></td>
                             </tr>
                             <tr>
-                              <th>Client Citizenship Number:</th>
-                              <td><span th:text="${data.getClientCitizenshipNumber()}"></span></td>
-                            </tr>
-                            <tr>
                               <th>Client Phone Number:</th>
-                              <td><span th:text="${data.getClientPhoneNumber()}"></span></td>
+                              <td><span th:text="${data.getPhoneNumber()}"></span></td>
                             </tr>
                             <tr>
                               <th>Client Email:</th>
@@ -92,15 +88,15 @@
                             </tr>
                           </table>
                           <br>
-                          <p>Please update the TypeOfExpiry at the earliest to avoid the expiry.  </p>
+                          <p>Please update the Insurance Policy at the earliest to avoid the expiry.</p>
                           <hr>
                           <p class="custom-para">
                             Regards, <br/>
-                            <em><span th:text="${data.getBankName()}"></span></em>
+                            SB Loan Management System
                           </p>
                           <hr/>
                           <p class="custom-para">
-                            <i> Note: This is a system generated notice. Please don’t reply to this email.
+                            <i> Note: This is a system generated notice. Please dont reply to this email.
                               This email will not be answered.</i>
                           </p><br>
                         </td>
