@@ -34,5 +34,8 @@ public class LegalStatus extends BaseEntity<Long> {
 
     private Date panRegistrationDate;
 
+    private Date registrationExpiryDate;
+
+
 
 }

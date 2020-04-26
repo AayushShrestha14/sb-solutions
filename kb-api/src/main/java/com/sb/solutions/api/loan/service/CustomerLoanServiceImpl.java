@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -64,6 +65,7 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -788,6 +790,32 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 return;
             }
         }
+        if (loan.getCompanyInfo() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.MM_DD_YYYY);
+            try {
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.MONTH,1);
+                Date today = dateFormat.parse(dateFormat.format(c.getTime()));
+                Date expiry = dateFormat.parse(dateFormat.format(
+                    loan.getCompanyInfo().getLegalStatus().getRegistrationExpiryDate()
+                ));
+                boolean expired = expiry.before(today);
+                String remark = expired
+                    ? "Cannot forward loan as VAT/PAN Registration will expired within a month"
+                    : null;
+                customerLoanRepository
+                    .updateLimitExceed((byte) (expired ? 1 : 0), remark, loan.getId());
+
+                if (expired) {
+                    return;
+                }
+            } catch (ParseException e) {
+                logger.error("Error parsing company registration expiry date");
+                return;
+            }
+        }
+
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
