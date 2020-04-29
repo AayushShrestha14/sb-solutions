@@ -20,6 +20,8 @@ import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.core.enums.DocStatus;
@@ -37,16 +39,19 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     private final InsuranceRepository repository;
     private final NotificationMasterService notificationMasterService;
     private final CustomerLoanRepository customerLoanRepository;
+    private final CustomerLoanFlagService customerLoanFlagService;
 
     protected InsuranceServiceImpl(
         InsuranceRepository repository,
         NotificationMasterService notificationMasterService,
-        CustomerLoanRepository customerLoanRepository) {
+        CustomerLoanRepository customerLoanRepository,
+        CustomerLoanFlagService customerLoanFlagService) {
         super(repository);
 
         this.repository = repository;
         this.notificationMasterService = notificationMasterService;
         this.customerLoanRepository = customerLoanRepository;
+        this.customerLoanFlagService = customerLoanFlagService;
     }
 
 
@@ -81,17 +86,24 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                 .orElseGet(() -> customerLoanRepository.findAll(specification));
             for (CustomerLoan loan : loans) {
                 try {
-                    /* expired insurance, set expiry flag */
-                    LoanFlag flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0
-                        ? LoanFlag.INSURANCE_EXPIRY : LoanFlag.NO_FLAG;
-                    if (!loan.getLoanFlag().equals(flag)) {
-                        String remarks = flag.equals(LoanFlag.INSURANCE_EXPIRY)
-                            ? "Insurance expiry date is about to meet." : null;
-                        customerLoanRepository.updateLoanFlag(flag, remarks, loan.getId());
+                    CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                        .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.INSURANCE_EXPIRY,
+                            loan.getId());
+                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
+                    if (flag && customerLoanFlag == null) {
+                        customerLoanFlag = new CustomerLoanFlag();
+                        customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
+                        customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
+                        customerLoanFlag.setOrder(
+                            Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
+                        customerLoanFlag.setCustomerLoan(loan);
+                        customerLoanFlagService.save(customerLoanFlag);
+                    } else if (!flag && customerLoanFlag != null) {
+                        customerLoanFlagService.deleteById(customerLoanFlag.getId());
                     }
                 } catch (NullPointerException e) {
                     LOGGER
-                        .error("Error updating insurance expiry flag {}", e.getLocalizedMessage());
+                        .error("Error updating insurance expiry flag {}", e.getMessage());
                 }
             }
         }

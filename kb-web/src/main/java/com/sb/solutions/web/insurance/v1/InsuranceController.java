@@ -58,16 +58,20 @@ public class InsuranceController {
             InsuranceHistory history = new InsuranceHistory();
             BeanUtils.copyProperties(old, history);
             history.setCustomerLoanId(loanId);
-            history.setId(null);
+            history.setId(null);    // new instance
             insuranceHistoryService.save(history);
-            customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
 
             // update current
             BeanUtils.copyProperties(entity, old);
             old.setId(oldId);
-            return new RestResponseDto().successModel(insuranceService.save(old));
+            insuranceService.save(old);
+
+            customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
+            return new RestResponseDto().successModel("Insurance detail updated");
         } else {
-            return new RestResponseDto().successModel(insuranceService.save(entity));
+            insuranceService.save(entity);
+            customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
+            return new RestResponseDto().successModel("Insurance detail overridden");
         }
     }
 }

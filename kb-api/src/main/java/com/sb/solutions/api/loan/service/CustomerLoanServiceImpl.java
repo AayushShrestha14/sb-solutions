@@ -53,6 +53,8 @@ import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
@@ -100,7 +102,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
     private final InsuranceService insuranceService;
-
+    private final CustomerLoanFlagService customerLoanFlagService;
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -120,8 +122,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
-        InsuranceService insuranceService
-    ) {
+        InsuranceService insuranceService,
+        CustomerLoanFlagService customerLoanFlagService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -140,6 +142,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
         this.insuranceService = insuranceService;
+        this.customerLoanFlagService = customerLoanFlagService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -248,7 +251,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
-        postLoanConditionCheck(customerLoan);
+        postLoanConditionCheck(savedCustomerLoan);
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper
@@ -739,11 +742,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return customerLoanRepository.findAll(specification);
     }
 
-    @Override
-    public void updateLoanFlag(LoanFlag loanFlag, String loanRemarks, Long customerLoanId) {
-        this.customerLoanRepository.updateLoanFlag(loanFlag, loanRemarks, customerLoanId);
-    }
-
     public long calculateLoanSpanAndPossession(Date lastModifiedDate, Date createdLastDate) {
         int daysdiff = 0;
         Date lastModifiedAt = lastModifiedDate;
@@ -784,15 +782,21 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            LoanFlag flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0
-                ? LoanFlag.ZERO_PROPOSAL_AMOUNT
-                : LoanFlag.NO_FLAG;
-            String remark = flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)
-                ? "Cannot forward loan as proposed amount is zero."
-                : null;
-            customerLoanRepository.updateLoanFlag(flag, remark, loan.getId());
-            if (flag.equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)) {
-                return;
+            CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.ZERO_PROPOSAL_AMOUNT,
+                    loan.getId());
+
+            boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+            if (flag && customerLoanFlag == null) {
+                customerLoanFlag = new CustomerLoanFlag();
+                customerLoanFlag.setCustomerLoan(loan);
+                customerLoanFlag.setFlag(LoanFlag.ZERO_PROPOSAL_AMOUNT);
+                customerLoanFlag.setDescription(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[1]);
+                customerLoanFlag
+                    .setOrder(Integer.parseInt(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[0]));
+                customerLoanFlagService.save(customerLoanFlag);
+            } else if (!flag && customerLoanFlag != null) {
+                customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
             }
         }
         // check proposed limit VS considered amount
