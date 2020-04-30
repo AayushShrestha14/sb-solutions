@@ -17,7 +17,7 @@ import com.sb.solutions.api.insurance.service.InsuranceService;
 public class LoanExpiryScheduler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoanExpiryScheduler.class);
-    private InsuranceService insuranceService;
+    private final InsuranceService insuranceService;
 
     public LoanExpiryScheduler(
         InsuranceService insuranceService) {

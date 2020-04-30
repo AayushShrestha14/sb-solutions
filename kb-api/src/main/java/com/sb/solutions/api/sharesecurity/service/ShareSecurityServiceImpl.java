@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
 import javax.persistence.criteria.Predicate;
 
 import org.slf4j.Logger;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.nepseCompany.entity.CustomerShareData;
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
@@ -30,6 +31,7 @@ import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.repository.ShareSecurityRepo;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.ShareType;
 import com.sb.solutions.core.enums.Status;
 
@@ -37,46 +39,47 @@ import com.sb.solutions.core.enums.Status;
 public class ShareSecurityServiceImpl implements ShareSecurityService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShareSecurityService.class);
-    private ShareSecurityRepo shareSecurityRepo;
+    private final CustomerLoanFlagService customerLoanFlagService;
     private final NepseMasterRepository nepseMasterRepository;
     private final NepseCompanyRepository nepseCompanyRepository;
     private final CustomerLoanRepository customerLoanRepository;
+    private final ShareSecurityRepo shareSecurityRepository;
 
     public ShareSecurityServiceImpl(
-        ShareSecurityRepo shareSecurityRepo,
+        ShareSecurityRepo shareSecurityRepository,
         NepseMasterRepository nepseMasterRepository,
         NepseCompanyRepository nepseCompanyRepository,
-        CustomerLoanRepository customerLoanRepository) {
-        this.shareSecurityRepo = shareSecurityRepo;
+        CustomerLoanRepository customerLoanRepository,
+        CustomerLoanFlagService customerLoanFlagService) {
+        this.shareSecurityRepository = shareSecurityRepository;
         this.nepseMasterRepository = nepseMasterRepository;
         this.nepseCompanyRepository = nepseCompanyRepository;
         this.customerLoanRepository = customerLoanRepository;
+        this.customerLoanFlagService = customerLoanFlagService;
     }
 
     @Override
     public List<ShareSecurity> findAll() {
-        return shareSecurityRepo.findAll();
+        return shareSecurityRepository.findAll();
     }
 
     @Override
     public ShareSecurity findOne(Long id) {
-        return shareSecurityRepo.getOne(id);
+        return shareSecurityRepository.getOne(id);
     }
 
     @Override
     public ShareSecurity save(ShareSecurity shareSecurity) {
-        return shareSecurityRepo.save(shareSecurity);
+        return shareSecurityRepository.save(shareSecurity);
     }
 
     @Override
     public Page<ShareSecurity> findAllPageable(Object t, Pageable pageable) {
-        return shareSecurityRepo.findAll(pageable);
+        return shareSecurityRepository.findAll(pageable);
     }
 
     @Override
     public void execute(Optional<Long> optional) {
-        final byte LIMIT_EXCEED_YES = 1;
-        final byte LIMIT_EXCEED_NO = 0;
         final NepseMaster master = nepseMasterRepository.findByStatus(Status.ACTIVE);
         final Map<ShareType, Double> masterMap = new HashMap<ShareType, Double>() {{
             put(ShareType.ORDINARY, master.getOrdinary() / 100);
@@ -85,7 +88,6 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
         final Map<String, Double> marketPriceMap = nepseCompanyRepository.findAll().stream()
             .collect(
                 Collectors.toMap(NepseCompany::getCompanyCode, NepseCompany::getAmountPerUnit));
-        final String MSG_LOG = "Insufficient Security considered value. Maximum considered amount is %s";
         List<CustomerLoan> loan;
         if (optional.isPresent()) {
             loan = new ArrayList<>(
@@ -104,7 +106,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                     List<CustomerShareData> shareDataList = shareSecurity.getCustomerShareData();
                     AtomicReference<BigDecimal> reCalculateAmount = new AtomicReference<>(
                         BigDecimal.ZERO);
-                    shareDataList.stream().forEach(customerShareData -> {
+                    shareDataList.forEach(customerShareData -> {
 
                         String companyCode = customerShareData.getCompanyCode();
                         if (marketPriceMap.containsKey(companyCode)) {
@@ -118,19 +120,27 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
 
                         }
                     });
-                    logger.info(" Recalculate amount {} ===  {} proposal limt",
+                    logger.info("Recalculate amount {} ===  {} proposal limit",
                         reCalculateAmount.get(), customerLoan.getProposal().getProposedLimit());
-                    byte limitExccedFlag = LIMIT_EXCEED_NO;
-                    if (customerLoan.getProposal().getProposedLimit()
-                        .compareTo(reCalculateAmount.get()) >= 1) {
-                        limitExccedFlag = LIMIT_EXCEED_YES;
-                    }
-                    if (customerLoan.getLimitExceed() != limitExccedFlag) {
-                        String remark = limitExccedFlag == LIMIT_EXCEED_YES
-                            ? String.format(MSG_LOG, reCalculateAmount.get())
-                            : null;
-                        customerLoanRepository
-                            .updateLimitExceed(limitExccedFlag, remark, customerLoan.getId());
+
+                    CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                        .findCustomerLoanFlagByFlagAndCustomerLoanId(
+                            LoanFlag.INSUFFICIENT_SHARE_AMOUNT, customerLoan.getId());
+                    boolean flag = customerLoan.getProposal().getProposedLimit()
+                        .compareTo(reCalculateAmount.get()) >= 1;
+                    if (flag && customerLoanFlag == null) {
+                        customerLoanFlag = new CustomerLoanFlag();
+                        customerLoanFlag.setCustomerLoan(customerLoan);
+                        customerLoanFlag.setFlag(LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
+                        customerLoanFlag.setDescription(String
+                            .format(LoanFlag.INSUFFICIENT_SHARE_AMOUNT.getValue()[1],
+                                reCalculateAmount.get()));
+                        customerLoanFlag.setOrder(
+                            Integer.parseInt(LoanFlag.INSUFFICIENT_SHARE_AMOUNT.getValue()[0]));
+                        customerLoanFlagService.save(customerLoanFlag);
+                    } else if (!flag && customerLoanFlag != null) {
+                        customerLoanFlagService
+                            .deleteCustomerLoanFlagById(customerLoanFlag.getId());
                     }
                 }
             });
@@ -139,7 +149,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
 
     @Override
     public List<ShareSecurity> saveAll(List<ShareSecurity> list) {
-        return shareSecurityRepo.saveAll(list);
+        return shareSecurityRepository.saveAll(list);
     }
 
     private List<CustomerLoan> getLoanHavingShareTemplate() {

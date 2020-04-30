@@ -62,4 +62,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
 
     List<CustomerLoan> getLoanByCustomerGuarantor(Guarantor guarantor);
 
+    @Transactional
+    void postLoanConditionCheck(CustomerLoan loan);
+
 }
