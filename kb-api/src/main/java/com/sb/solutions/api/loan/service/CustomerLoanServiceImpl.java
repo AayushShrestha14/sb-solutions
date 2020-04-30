@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -58,6 +59,8 @@ import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
+import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
+import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -66,9 +69,11 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
@@ -102,6 +107,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
     private final InsuranceService insuranceService;
+    private final NotificationMasterService notificationMasterService;
     private final CustomerLoanFlagService customerLoanFlagService;
 
     public CustomerLoanServiceImpl(
@@ -123,7 +129,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
         InsuranceService insuranceService,
-        CustomerLoanFlagService customerLoanFlagService) {
+        NotificationMasterService notificationMasterService,
+        CustomerLoanFlagService customerLoanFlagService
+    ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -142,6 +150,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
         this.insuranceService = insuranceService;
+        this.notificationMasterService = notificationMasterService;
         this.customerLoanFlagService = customerLoanFlagService;
     }
 
@@ -799,6 +808,41 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
             }
         }
+        if (loan.getCompanyInfo() != null) {
+            Map<String, String> insuranceFilter = new HashMap<String, String>() {{
+                put("notificationKey", NotificationMasterType.COMPANY_REGISTRATION_EXPIRY_BEFORE.toString());
+            }};
+            NotificationMaster notificationMaster = notificationMasterService
+                .findOneBySpec(insuranceFilter).orElse(null);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.MM_DD_YYYY);
+            if (notificationMaster != null) {
+                try {
+                    int daysToExpiryBefore = notificationMaster.getValue();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DAY_OF_MONTH, daysToExpiryBefore);
+                    Date today = dateFormat.parse(dateFormat.format(c.getTime()));
+                    Date expiry = dateFormat.parse(dateFormat.format(
+                        loan.getCompanyInfo().getLegalStatus().getRegistrationExpiryDate()
+                    ));
+                    boolean expired = expiry.before(today);
+                    String remark = expired
+                        ? "Cannot forward loan as Company VAT/PAN Registration will expired within "+ daysToExpiryBefore +" days"
+                        : null;
+                    customerLoanRepository
+                        .updateLimitExceed((byte) (expired ? 1 : 0), remark, loan.getId());
+
+                    if (expired) {
+                        return;
+                    }
+
+                } catch (ParseException e) {
+                    logger.error("Error parsing company registration expiry date");
+                    return;
+                }
+            }
+        }
+
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
