@@ -10,7 +10,9 @@ public enum LoanFlag {
     ZERO_PROPOSAL_AMOUNT("1", "Cannot forward loan as proposed amount is zero"),
     INSURANCE_EXPIRY("2", "Insurance expiry date is about to meet."),
     INSUFFICIENT_SHARE_AMOUNT("3",
-        "Insufficient Security considered value. Maximum considered amount is %s");
+        "Insufficient Security considered value. Maximum considered amount is %s"),
+    COMPANY_VAT_PAN_EXPIRY("4",
+        "Cannot forward loan as Company VAT/PAN registration will expire within %s days");
 
     private final String[] value;
 
