@@ -27,4 +27,5 @@ public class InsuranceHistory extends BaseEntity<Long> {
     private Date issuedDate;
     private Date expiryDate;
     private String policyType;
+    private String remarks;
 }

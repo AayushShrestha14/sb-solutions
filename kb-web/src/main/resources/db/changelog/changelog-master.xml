@@ -2141,6 +2141,18 @@
         <modifyDataType tableName="insurance_history" columnName="premium_amount" newDataType="DOUBLE"/>
     </changeSet>
 
+    <changeSet id="102-alter-insurance-history-add-remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="insurance_history" columnName="remarks"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="insurance_history">
+            <column name="remarks" type="LONGTEXT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

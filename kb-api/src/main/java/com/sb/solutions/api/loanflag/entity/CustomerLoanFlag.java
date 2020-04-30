@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +32,7 @@ public class CustomerLoanFlag extends AbstractPersistable<Long> {
     @Column(name = "flag_order")
     private int order;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomerLoan customerLoan;
 }
