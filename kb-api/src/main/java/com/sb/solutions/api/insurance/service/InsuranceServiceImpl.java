@@ -23,12 +23,15 @@ import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
@@ -47,6 +50,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     private final InsuranceRepository repository;
     private final NotificationMasterService notificationMasterService;
     private final CustomerLoanRepository customerLoanRepository;
+    private final CustomerLoanFlagService customerLoanFlagService;
     private final MailThreadService mailThreadService;
     private final BranchService branchService;
     private final UserService userService;
@@ -55,6 +59,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         InsuranceRepository repository,
         NotificationMasterService notificationMasterService,
         CustomerLoanRepository customerLoanRepository,
+        CustomerLoanFlagService customerLoanFlagService,
         BranchService branchService,
         MailThreadService mailThreadService,
         UserService userService) {
@@ -63,6 +68,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         this.repository = repository;
         this.notificationMasterService = notificationMasterService;
         this.customerLoanRepository = customerLoanRepository;
+        this.customerLoanFlagService = customerLoanFlagService;
         this.mailThreadService = mailThreadService;
         this.branchService = branchService;
         this.userService = userService;
@@ -104,49 +110,24 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
 
             for (CustomerLoan loan : loans) {
                 try {
-                    /* expired insurance, set expiry flag */
-                    String remarks = "Insurance expiry date is about to meet.";
+                    CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                        .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.INSURANCE_EXPIRY,
+                            loan.getId());
                     boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
-                    customerLoanRepository.setInsuranceExpiryFlag(loan.getId(), remarks, flag);
-                    customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(),false);
-                    if(flag) {
-                        User userMaker = userService.findOne((loan.getInsurance().getCreatedBy()));
-                        email.setTo(userMaker.getEmail());
-                        email.setToName(userMaker.getName());
-                        email.setName(loan.getCustomerInfo().getCustomerName());
-                        email.setExpiryDate(loan.getInsurance().getExpiryDate());
-                        email.setEmail(loan.getCustomerInfo().getEmail());
-                        email.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
-                        email.setLoanTypes(loan.getLoanType());
-                        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
-                        email.setBankBranch(loan.getBranch().getName());
-                        email.setInsuranceCompanyName(loan.getInsurance().getCompany());
-                        Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
-                        templateMaker.setSubject("Insurance Expiry Notice: " + email.getName());
-                        sendInsuranceEmail(templateMaker, email);
-                        if (loan.getDocumentStatus() == DocStatus.APPROVED) {
-                            customerLoanRepository.setInsuranceNotifiedFlag(loan.getId(), true);
-                        }
-                        if (loan.getCustomerInfo().getEmail() != null) {
-                            try {
-                                email.setToName(loan.getCustomerInfo().getCustomerName());
-                                email.setTo(loan.getCustomerInfo().getEmail());
-                                email.setEmail(userMaker.getEmail());
-                                Branch branch = branchService.findOne(loan.getBranch().getId());
-                                email.setPhoneNumber(branch.getLandlineNumber());
-                                Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
-                                templateClient.setSubject(
-                                    "Insurance Expiry Notice related to " + email.getLoanTypes()
-                                        + " at " + bankName);
-                                this.sendInsuranceEmail(templateClient, email);
-                            } catch (Exception e) {
-                                LOGGER.error("Error sending insurance email to Client");
-                            }
-                        }
+                    if (flag && customerLoanFlag == null) {
+                        customerLoanFlag = new CustomerLoanFlag();
+                        customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
+                        customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
+                        customerLoanFlag.setOrder(
+                            Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
+                        customerLoanFlag.setCustomerLoan(loan);
+                        customerLoanFlagService.save(customerLoanFlag);
+                    } else if (!flag && customerLoanFlag != null) {
+                        customerLoanFlagService.deleteById(customerLoanFlag.getId());
                     }
                 } catch (NullPointerException e) {
                     LOGGER
-                        .error("Error updating insurance expiry flag {}", e.getLocalizedMessage());
+                        .error("Error updating insurance expiry flag {}", e.getMessage());
                 }
             }
         }

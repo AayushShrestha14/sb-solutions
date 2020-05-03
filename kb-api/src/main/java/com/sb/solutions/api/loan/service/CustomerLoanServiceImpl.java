@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -53,9 +56,14 @@ import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
+import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
+import com.sb.solutions.api.preference.notificationMaster.repository.spec.NotificationMasterSpec;
+import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -64,9 +72,12 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
+import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
@@ -99,7 +110,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
     private final InsuranceService insuranceService;
-
+    private final NotificationMasterService notificationMasterService;
+    private final CustomerLoanFlagService customerLoanFlagService;
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -119,7 +131,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
-        InsuranceService insuranceService
+        InsuranceService insuranceService,
+        NotificationMasterService notificationMasterService,
+        CustomerLoanFlagService customerLoanFlagService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -139,6 +153,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
         this.insuranceService = insuranceService;
+        this.notificationMasterService = notificationMasterService;
+        this.customerLoanFlagService = customerLoanFlagService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -178,6 +194,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return customerLoan;
     }
 
+    @Transactional
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
         if (customerLoan.getLoan() == null) {
@@ -247,7 +264,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
-        postLoanConditionCheck(customerLoan);
+        postLoanConditionCheck(savedCustomerLoan);
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper
@@ -774,20 +791,70 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
      *
      * @param loan An instance of Customer Loan.
      */
-    private void postLoanConditionCheck(CustomerLoan loan) {
+    @Override
+    public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            boolean lowProposedAmount =
-                loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
-            String remark = lowProposedAmount
-                ? "Cannot forward loan as proposed amount is zero."
-                : null;
-            customerLoanRepository
-                .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
-            if (lowProposedAmount) {
-                return;
+            CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.ZERO_PROPOSAL_AMOUNT,
+                    loan.getId());
+
+            boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+            if (flag && customerLoanFlag == null) {
+                customerLoanFlag = new CustomerLoanFlag();
+                customerLoanFlag.setCustomerLoan(loan);
+                customerLoanFlag.setFlag(LoanFlag.ZERO_PROPOSAL_AMOUNT);
+                customerLoanFlag.setDescription(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[1]);
+                customerLoanFlag
+                    .setOrder(Integer.parseInt(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[0]));
+                customerLoanFlagService.save(customerLoanFlag);
+            } else if (!flag && customerLoanFlag != null) {
+                customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
             }
         }
+        // check if company VAT/PAN registration will expire
+        if (loan.getCompanyInfo() != null) {
+            CustomerLoanFlag customerLoanFlag = customerLoanFlagService
+                .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.COMPANY_VAT_PAN_EXPIRY,
+                    loan.getId());
+
+            Map<String, String> insuranceFilter = new HashMap<>();
+            insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
+                NotificationMasterType.COMPANY_REGISTRATION_EXPIRY_BEFORE.toString());
+            NotificationMaster notificationMaster = notificationMasterService
+                .findOneBySpec(insuranceFilter).orElse(null);
+            if (notificationMaster != null) {
+                try {
+                    int daysToExpiryBefore = notificationMaster.getValue();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DAY_OF_MONTH, daysToExpiryBefore);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.MM_DD_YYYY);
+                    Date today = dateFormat.parse(dateFormat.format(c.getTime()));
+                    Date expiry = dateFormat.parse(dateFormat.format(
+                        loan.getCompanyInfo().getLegalStatus().getRegistrationExpiryDate()
+                    ));
+                    boolean flag = expiry.before(today);
+                    if (flag && customerLoanFlag == null) {
+                        customerLoanFlag = new CustomerLoanFlag();
+                        customerLoanFlag.setCustomerLoan(loan);
+                        customerLoanFlag.setFlag(LoanFlag.COMPANY_VAT_PAN_EXPIRY);
+                        customerLoanFlag.setDescription(String
+                            .format(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[1],
+                                daysToExpiryBefore));
+                        customerLoanFlag.setOrder(
+                            Integer.parseInt(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[0]));
+                        customerLoanFlagService.save(customerLoanFlag);
+                    } else if (!flag && customerLoanFlag != null) {
+                        customerLoanFlagService
+                            .deleteCustomerLoanFlagById(customerLoanFlag.getId());
+                    }
+                } catch (ParseException e) {
+                    logger.error("Error parsing company registration expiry date");
+                }
+            }
+        }
+
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
