@@ -11,6 +11,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -133,36 +134,38 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     }
 
     private void sendInsuranceExpiryEmail(CustomerLoan loan) {
-        Email email = new Email();
-        email.setBankName(this.bankName);
+        final Email emailMaker = new Email();
+        emailMaker.setBankName(this.bankName);
 
         // send to loan maker
         User userMaker = userService.findOne((loan.getCreatedBy()));
-        email.setTo(userMaker.getEmail());
-        email.setToName(userMaker.getName());
-        email.setName(loan.getCustomerInfo().getCustomerName());
-        email.setExpiryDate(loan.getInsurance().getExpiryDate());
-        email.setEmail(loan.getCustomerInfo().getEmail());
-        email.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
-        email.setLoanTypes(loan.getLoanType());
-        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
-        email.setBankBranch(loan.getBranch().getName());
-        email.setInsuranceCompanyName(loan.getInsurance().getCompany());
+        emailMaker.setTo(userMaker.getEmail());
+        emailMaker.setToName(userMaker.getName());
+        emailMaker.setName(loan.getCustomerInfo().getCustomerName());
+        emailMaker.setExpiryDate(loan.getInsurance().getExpiryDate());
+        emailMaker.setEmail(loan.getCustomerInfo().getEmail());
+        emailMaker.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
+        emailMaker.setLoanTypes(loan.getLoanType());
+        emailMaker.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
+        emailMaker.setBankBranch(loan.getBranch().getName());
+        emailMaker.setInsuranceCompanyName(loan.getInsurance().getCompany());
         Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
-        templateMaker.setSubject("Insurance Expiry Notice: " + email.getName());
-        mailThreadService.sendMain(templateMaker, email);
+        templateMaker.setSubject("Insurance Expiry Notice: " + emailMaker.getName());
+        mailThreadService.sendMain(templateMaker, emailMaker);
 
         // send to the client
         if (loan.getCustomerInfo().getEmail() != null) {
-            email.setToName(loan.getCustomerInfo().getCustomerName());
-            email.setTo(loan.getCustomerInfo().getEmail());
-            email.setEmail(userMaker.getEmail());
-            email.setPhoneNumber(loan.getBranch().getLandlineNumber());
+            final Email emailClient = new Email();
+            BeanUtils.copyProperties(emailMaker, emailClient);
+            emailClient.setToName(loan.getCustomerInfo().getCustomerName());
+            emailClient.setTo(loan.getCustomerInfo().getEmail());
+            emailClient.setEmail(userMaker.getEmail());
+            emailClient.setPhoneNumber(loan.getBranch().getLandlineNumber());
             Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
             templateClient.setSubject(String
-                .format("Insurance Expiry Notice related to %s at %s", email.getLoanTypes(),
+                .format("Insurance Expiry Notice related to %s at %s", emailMaker.getLoanTypes(),
                     bankName));
-            mailThreadService.sendMain(templateClient, email);
+            mailThreadService.sendMain(templateClient, emailClient);
         }
     }
 }
