@@ -162,7 +162,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             templateClient.setSubject(String
                 .format("Insurance Expiry Notice related to %s at %s", email.getLoanTypes(),
                     bankName));
-            mailThreadService.sendMain(templateMaker, email);
+            mailThreadService.sendMain(templateClient, email);
         }
     }
 }
