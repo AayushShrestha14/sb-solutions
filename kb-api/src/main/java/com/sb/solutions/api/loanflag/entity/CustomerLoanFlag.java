@@ -32,6 +32,8 @@ public class CustomerLoanFlag extends AbstractPersistable<Long> {
     @Column(name = "flag_order")
     private int order;
 
+    private Boolean notifiedByEmail;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomerLoan customerLoan;

@@ -216,9 +216,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     @JoinColumn(name = "customer_loan_id")
     private List<CustomerLoanFlag> loanFlags;
 
-    @NotAudited
-    private Boolean isInsuranceNotified;
-
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

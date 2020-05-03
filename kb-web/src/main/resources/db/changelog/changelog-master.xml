@@ -2176,16 +2176,18 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="108-alter-customer_loan-add-is_insurance_notified" author="buddha">
+    <changeSet id="103-alter-customer_loan_flag-add-notified_by_email" author="elvin">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="customer_loan" columnName="is_insurance_notified"/>
+                <columnExists tableName="customer_loan_flag" columnName="notified_by_email"/>
             </not>
         </preConditions>
-        <addColumn tableName="customer_loan">
-            <column name="is_insurance_notified" type="BIT" defaultValue="0"/>
+
+        <addColumn tableName="customer_loan_flag">
+            <column name="notified_by_email" type="BOOLEAN" defaultValue="0"/>
         </addColumn>
     </changeSet>
+
 </databaseChangeLog>
 
 

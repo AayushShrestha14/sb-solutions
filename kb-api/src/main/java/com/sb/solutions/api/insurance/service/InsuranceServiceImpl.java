@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.repository.InsuranceRepository;
 import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
@@ -52,7 +50,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     private final CustomerLoanRepository customerLoanRepository;
     private final CustomerLoanFlagService customerLoanFlagService;
     private final MailThreadService mailThreadService;
-    private final BranchService branchService;
     private final UserService userService;
 
     protected InsuranceServiceImpl(
@@ -60,7 +57,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         NotificationMasterService notificationMasterService,
         CustomerLoanRepository customerLoanRepository,
         CustomerLoanFlagService customerLoanFlagService,
-        BranchService branchService,
         MailThreadService mailThreadService,
         UserService userService) {
         super(repository);
@@ -70,7 +66,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanFlagService = customerLoanFlagService;
         this.mailThreadService = mailThreadService;
-        this.branchService = branchService;
         this.userService = userService;
     }
 
@@ -96,7 +91,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             Map<String, String> t = new HashMap<String, String>() {{
                 put("hasInsurance", "true");
                 put("documentStatus", DocStatus.APPROVED.name());
-                put("isInsuranceNotified","false");
             }};
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, String> map = objectMapper.convertValue(t, Map.class);
@@ -105,9 +99,6 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             List<CustomerLoan> loans = optional
                 .map(id -> Collections.singletonList(customerLoanRepository.getOne(id)))
                 .orElseGet(() -> customerLoanRepository.findAll(specification));
-            Email email = new Email();
-            email.setBankName(this.bankName);
-
             for (CustomerLoan loan : loans) {
                 try {
                     CustomerLoanFlag customerLoanFlag = customerLoanFlagService
@@ -121,9 +112,17 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                         customerLoanFlag.setOrder(
                             Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
                         customerLoanFlag.setCustomerLoan(loan);
+                        sendInsuranceExpiryEmail(loan);     // send mail
+                        customerLoanFlag.setNotifiedByEmail(true);
                         customerLoanFlagService.save(customerLoanFlag);
                     } else if (!flag && customerLoanFlag != null) {
                         customerLoanFlagService.deleteById(customerLoanFlag.getId());
+                    } else if (flag && customerLoanFlag.getFlag() != null
+                        && (customerLoanFlag.getNotifiedByEmail() == null
+                        || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
+                        sendInsuranceExpiryEmail(loan);     // send mail
+                        customerLoanFlag.setNotifiedByEmail(true);
+                        customerLoanFlagService.save(customerLoanFlag);
                     }
                 } catch (NullPointerException e) {
                     LOGGER
@@ -133,12 +132,37 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         }
     }
 
-    public void sendInsuranceEmail(Template template,Email email){
-        try {
-            mailThreadService.testMail(template, email);
-            LOGGER.info(" sending Insurance Email ");
-        } catch (Exception e) {
-            LOGGER.error("Error while sending Insurance Email", e);
+    private void sendInsuranceExpiryEmail(CustomerLoan loan) {
+        Email email = new Email();
+        email.setBankName(this.bankName);
+
+        // send to loan maker
+        User userMaker = userService.findOne((loan.getCreatedBy()));
+        email.setTo(userMaker.getEmail());
+        email.setToName(userMaker.getName());
+        email.setName(loan.getCustomerInfo().getCustomerName());
+        email.setExpiryDate(loan.getInsurance().getExpiryDate());
+        email.setEmail(loan.getCustomerInfo().getEmail());
+        email.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
+        email.setLoanTypes(loan.getLoanType());
+        email.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
+        email.setBankBranch(loan.getBranch().getName());
+        email.setInsuranceCompanyName(loan.getInsurance().getCompany());
+        Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
+        templateMaker.setSubject("Insurance Expiry Notice: " + email.getName());
+        mailThreadService.sendMain(templateMaker, email);
+
+        // send to the client
+        if (loan.getCustomerInfo().getEmail() != null) {
+            email.setToName(loan.getCustomerInfo().getCustomerName());
+            email.setTo(loan.getCustomerInfo().getEmail());
+            email.setEmail(userMaker.getEmail());
+            email.setPhoneNumber(loan.getBranch().getLandlineNumber());
+            Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
+            templateClient.setSubject(String
+                .format("Insurance Expiry Notice related to %s at %s", email.getLoanTypes(),
+                    bankName));
+            mailThreadService.sendMain(templateMaker, email);
         }
     }
 }

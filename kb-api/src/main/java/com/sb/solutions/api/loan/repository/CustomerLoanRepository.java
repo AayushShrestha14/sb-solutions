@@ -16,7 +16,6 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.LoanFlag;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -186,10 +185,4 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     void updateCloseRenewChildId(@Param("cId") Long cId, @Param("id") Long id);
 
     List<CustomerLoan> getCustomerLoanByCustomerInfoId(Long id);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE CustomerLoan c SET c.isInsuranceNotified = :flag  WHERE c.id = :id")
-    void setInsuranceNotifiedFlag(@Param("id") Long id,
-        @Param("flag") Boolean flag);
 }
