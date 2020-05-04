@@ -21,6 +21,7 @@ import com.sb.solutions.api.insurance.repository.InsuranceRepository;
 import com.sb.solutions.api.insurance.repository.spec.InsuranceSpecBuilder;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpec;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
@@ -89,10 +90,10 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             int daysToExpire = notificationMaster.getValue();
             c.add(Calendar.DAY_OF_MONTH, daysToExpire);
 
-            Map<String, String> t = new HashMap<String, String>() {{
-                put("hasInsurance", "true");
-                put("documentStatus", DocStatus.APPROVED.name());
-            }};
+            Map<String, String> t = new HashMap<>();
+            t.put(CustomerLoanSpec.FILTER_BY_HAS_INSURANCE, Boolean.toString(true));
+            t.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.APPROVED.name());
+            t.put(CustomerLoanSpec.FILTER_BY_IS_CLOSE_RENEW, Boolean.toString(false));
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, String> map = objectMapper.convertValue(t, Map.class);
             CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
