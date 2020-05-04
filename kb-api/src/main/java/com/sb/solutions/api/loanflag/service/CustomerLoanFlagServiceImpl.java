@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.repository.CustomerLoanFlagRepository;
 import com.sb.solutions.api.loanflag.repository.spec.CustomerLoanFlagSpecBuilder;
-import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
 
@@ -29,12 +28,6 @@ public class CustomerLoanFlagServiceImpl extends BaseServiceImpl<CustomerLoanFla
     @Override
     protected BaseSpecBuilder<CustomerLoanFlag> getSpec(Map<String, String> filterParams) {
         return new CustomerLoanFlagSpecBuilder(filterParams);
-    }
-
-    @Override
-    public CustomerLoanFlag findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag flag,
-        Long loanId) {
-        return repository.findCustomerLoanFlagByFlagAndCustomerLoanId(flag, loanId);
     }
 
     @Override

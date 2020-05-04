@@ -1,5 +1,7 @@
 package com.sb.solutions.api.loanflag.entity;
 
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,4 +39,19 @@ public class CustomerLoanFlag extends AbstractPersistable<Long> {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private CustomerLoan customerLoan;
+
+    public static <T> Collector<T, ?, T> toSingleton() {
+        return Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> {
+                if (list == null || list.isEmpty()) {
+                    return null;
+                }
+                if (list.size() > 1) {
+                    throw new IllegalStateException("Cannot have same flag more than once");
+                }
+                return list.get(0);
+            }
+        );
+    }
 }

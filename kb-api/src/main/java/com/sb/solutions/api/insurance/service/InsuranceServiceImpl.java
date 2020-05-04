@@ -104,9 +104,9 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                 .orElseGet(() -> customerLoanRepository.findAll(specification));
             for (CustomerLoan loan : loans) {
                 try {
-                    CustomerLoanFlag customerLoanFlag = customerLoanFlagService
-                        .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.INSURANCE_EXPIRY,
-                            loan.getId());
+                    CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+                        .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.INSURANCE_EXPIRY))
+                        .collect(CustomerLoanFlag.toSingleton());
                     boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
                     if (flag && customerLoanFlag == null) {
                         customerLoanFlag = new CustomerLoanFlag();

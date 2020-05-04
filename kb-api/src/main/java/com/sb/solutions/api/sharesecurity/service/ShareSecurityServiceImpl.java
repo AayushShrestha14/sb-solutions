@@ -123,9 +123,10 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                     logger.info("Recalculate amount {} ===  {} proposal limit",
                         reCalculateAmount.get(), customerLoan.getProposal().getProposedLimit());
 
-                    CustomerLoanFlag customerLoanFlag = customerLoanFlagService
-                        .findCustomerLoanFlagByFlagAndCustomerLoanId(
-                            LoanFlag.INSUFFICIENT_SHARE_AMOUNT, customerLoan.getId());
+                    CustomerLoanFlag customerLoanFlag = customerLoan.getLoanFlags().stream()
+                        .filter(loanFlag -> loanFlag.getFlag()
+                            .equals(LoanFlag.INSUFFICIENT_SHARE_AMOUNT))
+                        .collect(CustomerLoanFlag.toSingleton());
                     boolean flag = customerLoan.getProposal().getProposedLimit()
                         .compareTo(reCalculateAmount.get()) >= 1;
                     if (flag && customerLoanFlag == null) {
