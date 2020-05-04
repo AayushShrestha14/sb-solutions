@@ -795,9 +795,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            CustomerLoanFlag customerLoanFlag = customerLoanFlagService
-                .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.ZERO_PROPOSAL_AMOUNT,
-                    loan.getId());
+            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.ZERO_PROPOSAL_AMOUNT))
+                .collect(CustomerLoanFlag.toSingleton());
 
             boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
             if (flag && customerLoanFlag == null) {
@@ -814,9 +814,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         // check if company VAT/PAN registration will expire
         if (loan.getCompanyInfo() != null) {
-            CustomerLoanFlag customerLoanFlag = customerLoanFlagService
-                .findCustomerLoanFlagByFlagAndCustomerLoanId(LoanFlag.COMPANY_VAT_PAN_EXPIRY,
-                    loan.getId());
+            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.COMPANY_VAT_PAN_EXPIRY))
+                .collect(CustomerLoanFlag.toSingleton());
 
             Map<String, String> insuranceFilter = new HashMap<>();
             insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,

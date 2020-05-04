@@ -35,12 +35,6 @@
                 <tr>
                   <td align="left" valign="middle"><a
                       style="color:#008cc9;display:inline-block;text-decoration:none">
-                    <!--<img alt=""
-                         border="0"
-                         height="50"
-                         src=""
-                         style="outline:none;color:#ffffff;text-decoration:none"
-                         width="150">-->
                   </a></td>
                   <td align="right" style="padding:0 0 0 10px" width="100%"><a
                       style="margin:0;color:#008cc9;display:inline-block;text-decoration:none">
@@ -64,25 +58,45 @@
                       <tbody>
                       <tr>
                         <td style="padding-bottom:20px"><h2
-                            style="margin:0;color:#262626;font-weight:700;font-size:20px;line-height:1.2">
-                          Hello <span th:text="${data.getToName()}"></span>,</h2></td>
+                            style="margin:0;color:#262626;font-weight:700;font-size:15px;line-height:1.2">
+                          Dear <span th:text="${data.getToName()}"></span>,</h2></td>
                       </tr>
                       <tr>
                         <td style="padding-bottom:20px">
-                          <p class="custom-para">
-                            Email has been configured.
+                          <p class="custom-para text-justify">
+                            Greetings from <b><span th:text="${data.getBankName()}"></span></b>.<br> Please be advised that the insurance policy related to your <span th:text="${data.getLoanTypes()}"></span> has the following status.
                           </p>
+                          <p><b>Insurance Company: </b><span th:text="${data.getInsuranceCompanyName()}"></span><br>
+                          <p><b>Expiry Date: <span th:text="${data.getExpiryDate()}"></span></b></p>
+                          Please take the necessary status for renewal or updating of document. You can contact the following person to update the status. </p>
+                            <table class="table-bordered table-responsive table">
+                            <tr>
+                              <th>Relationship Officer:</th>
+                              <td><span th:text="${data.getName()}"></span></td>
+                            </tr>
+                            <tr>
+                              <th>Name of Branch:</th>
+                              <td><span th:text="${data.getBankBranch()}"></span></td>
+                            </tr>
+                              <tr>
+                                <th>Phone Number of Branch:</th>
+                                <td><span th:text="${data.getPhoneNumber()}"></span></td>
+                              </tr>
+                            <tr>
+                              <th>Email Address of Relationship Officer:</th>
+                              <td><span th:text="${data.getEmail()}"></span></td>
+                            </tr>
+                          </table>
+                          <br>
                           <hr>
                           <p class="custom-para">
                             Regards, <br/>
-                            <em><span th:text="${data.getBankName()}"></span></em>
+                            SB Loan Management System.
                           </p>
                           <hr/>
                           <p class="custom-para">
-                            Note: Please do not reply to this email, as this is an automated email
-                            and any email sent to
-                            this email will not be answered.
-                          </p>
+                            <i> Note:This is a computer generated notice. You will continue receiving this email as long as you have a loan with us.</i>
+                          </p><br>
                         </td>
                       </tr>
                       </tbody>
@@ -126,6 +140,5 @@
     </tbody>
   </table>
 </div>
-
 </body>
 </html>
