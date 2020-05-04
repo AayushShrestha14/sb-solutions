@@ -26,6 +26,7 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
+import com.sb.solutions.api.preference.notificationMaster.repository.spec.NotificationMasterSpec;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
@@ -79,9 +80,9 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
 
     @Override
     public void execute(Optional<Long> optional) {
-        Map<String, String> insuranceFilter = new HashMap<String, String>() {{
-            put("notificationKey", NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
-        }};
+        Map<String, String> insuranceFilter = new HashMap<>();
+        insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
+            NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
         NotificationMaster notificationMaster = notificationMasterService
             .findOneBySpec(insuranceFilter).orElse(null);
         if (notificationMaster != null) {
