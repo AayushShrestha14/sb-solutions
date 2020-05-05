@@ -21,6 +21,7 @@ public class BranchSpec implements Specification<Branch> {
     private static final String FILTER_BY_STREET_ADDRESS = "streetName";
     private static final String FILTER_BY_WARD_NUMBER = "wardNumber";
     private static final String FILTER_BY_CREATED_BY = "createdBy";
+    private static final String FILTER_BY_BRANCH_CODE = "branchCode";
     private final String property;
     private final String value;
 
@@ -52,6 +53,9 @@ public class BranchSpec implements Specification<Branch> {
             case FILTER_BY_MUNCIPALTIY:
                 return criteriaBuilder.and(criteriaBuilder
                     .equal(root.join("municipalityVdc").get("id"), Long.valueOf(value)));
+
+            case FILTER_BY_BRANCH_CODE:
+                return criteriaBuilder.like(root.get(property), value);
 
             default:
                 return null;
