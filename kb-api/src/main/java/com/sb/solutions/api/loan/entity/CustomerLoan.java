@@ -214,7 +214,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToMany
     @JoinColumn(name = "customer_loan_id")
-    private List<CustomerLoanFlag> loanFlags;
+    private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
