@@ -14,12 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.companyInfo.capital.entity.Capital;
-import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
+import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
 import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
@@ -59,6 +58,5 @@ public class CompanyInfo extends BaseEntity<Long> {
     private String panNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @NotAudited
     private CompanyLocations companyLocations;
 }
