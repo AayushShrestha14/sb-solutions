@@ -1,9 +1,8 @@
 package com.sb.solutions.api.companyInfo.companyLocations.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
+import com.sb.solutions.core.repository.BaseRepository;
 
-public interface CompanyLocationsRepository extends JpaRepository<CompanyLocations,Long> {
+public interface CompanyLocationsRepository extends BaseRepository<CompanyLocations, Long> {
 
 }
