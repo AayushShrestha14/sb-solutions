@@ -1,6 +1,7 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
+import java.util.Optional;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -9,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -24,15 +26,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.emailConfig.entity.EmailConfig;
+import com.sb.solutions.api.emailConfig.service.EmailConfigService;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
+import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.EmailConstant;
+import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.email.Email;
+import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
@@ -45,6 +54,12 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
 @RequestMapping(CustomerLoanController.URL)
 public class CustomerLoanController {
 
+    @Value("${bank.name}")
+    private String bankName;
+
+    @Value("${bank.em}")
+    private String email;
+
     static final String URL = "/v1/Loan-customer";
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
@@ -55,14 +70,28 @@ public class CustomerLoanController {
 
     private final Mapper mapper;
 
+    private final EmailConfigService emailConfigService;
+
+    private final MailThreadService mailThreadService;
+
+    private final InsuranceService insuranceService;
+
+
+
     public CustomerLoanController(
         @Autowired CustomerLoanService service,
         @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+        @Autowired UserService userService,
+        @Autowired EmailConfigService emailConfigService,
+    MailThreadService mailThreadService,
+        InsuranceService insuranceService) {
 
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
+        this.emailConfigService = emailConfigService;
+        this.mailThreadService = mailThreadService;
+        this.insuranceService = insuranceService;
     }
 
     @PostMapping(value = "/action")
@@ -73,12 +102,18 @@ public class CustomerLoanController {
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
+    @GetMapping(value = "/sends")
+public ResponseEntity<?> save1(){
+        insuranceService.execute((Optional.empty()));
+     return new RestResponseDto().successModel(null);
 
+
+
+}
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 
         logger.debug("saving Customer Loan {}", customerLoan);
-
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 

@@ -53,6 +53,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT = "showShareLoanExcessingLimit";
     private static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
     private static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
+    private static final String FILTER_BY_INSURANCE_NOTIFIED ="isInsuranceNotified";
 
     private final String property;
     private final String value;
@@ -237,8 +238,12 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_INSURANCE_EXPIRY:
                 return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_EXPIRY), true);
 
+            case FILTER_BY_INSURANCE_NOTIFIED:
+                return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_NOTIFIED),Boolean.parseBoolean(value));
+
             case FILTER_BY_HAS_INSURANCE:
                 return criteriaBuilder.isNotNull(root.get("insurance"));
+
 
             default:
                 return null;

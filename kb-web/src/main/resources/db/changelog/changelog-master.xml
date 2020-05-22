@@ -2015,6 +2015,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="-alter-customer_loan-add-is_insurance_notified" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="is_insurance_notified"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="is_insurance_notified" type="BIT" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

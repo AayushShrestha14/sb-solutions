@@ -19,6 +19,7 @@ public final class EmailConstant {
         .put(Template.TEST, "/mail/email-test.html")
         .put(Template.ACCOUNT_OPENING_ACCEPT, "/mail/account-opening-registration-accept")
         .put(Template.ELIGIBILITY_APPROVE, "/mail/eligible-approve")
+        .put(Template.INSURANCE_EXPIRY, "/mail/insurance-expiry")
         .build();
 
     private EmailConstant() {
@@ -33,7 +34,8 @@ public final class EmailConstant {
         ACCOUNT_OPENING_THANK_YOU("Thank You !! Account Opening request is received."),
         ONE_TIME_PASSWORD("One Time Password"),
         TEST("Email Configuration Test"),
-        ACCOUNT_OPENING_ACCEPT("Thank You !! Account Opening request has been accepted.");
+        ACCOUNT_OPENING_ACCEPT("Thank You !! Account Opening request has been accepted."),
+        INSURANCE_EXPIRY("Your Insurance has been expired");
 
         private String subject;
 
