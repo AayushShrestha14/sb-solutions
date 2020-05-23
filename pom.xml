@@ -8,6 +8,7 @@
         <module>kb-core</module>
         <module>kb-api</module>
         <module>kb-web</module>
+        <module>sb-report</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -4,16 +4,8 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -22,8 +14,11 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.report.core.bean.ReportParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -275,6 +270,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         return savedCustomerLoan;
     }
+
 
     @Override
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
@@ -867,5 +863,58 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
     }
 
+    @Override
+    public String title() {
+        return "Form Report For Loan";
+    }
+
+    @Override
+    public List<AbstractColumn> columns() {
+        AbstractColumn columnName = ColumnBuilder.getNew()
+                .setColumnProperty("name", String.class.getName())
+                .setTitle("Branch Name").setWidth(85)
+                .build();
+
+        AbstractColumn columnProvince = ColumnBuilder.getNew()
+                .setColumnProperty("province.name", String.class.getName())
+                .setTitle("Province").setWidth(85)
+                .build();
+
+        AbstractColumn columnDistrict = ColumnBuilder.getNew()
+                .setColumnProperty("district.name", String.class.getName())
+                .setTitle("District").setWidth(85)
+                .build();
+        AbstractColumn columnMunicipalityVdc = ColumnBuilder.getNew()
+                .setColumnProperty("municipalityVdc.name", String.class.getName())
+                .setTitle("Municipality / VDC").setWidth(85)
+                .build();
+        AbstractColumn columnStreetName = ColumnBuilder.getNew()
+                .setColumnProperty("streetName", String.class.getName())
+                .setTitle("Street Name").setWidth(85)
+                .build();
+
+        AbstractColumn columnWardNumber = ColumnBuilder.getNew()
+                .setColumnProperty("wardNumber", String.class.getName())
+                .setTitle("Ward No.").setWidth(85)
+                .build();
+        AbstractColumn columnEmail = ColumnBuilder.getNew()
+                .setColumnProperty("email", String.class.getName())
+                .setTitle("Email").setWidth(85)
+                .build();
+        AbstractColumn columnLandlineNumber = ColumnBuilder.getNew()
+                .setColumnProperty("landlineNumber", String.class.getName())
+                .setTitle("Land Line Number").setWidth(85)
+                .build();
+
+
+        return Arrays.asList(columnName, columnProvince, columnDistrict, columnMunicipalityVdc,
+                columnStreetName, columnWardNumber, columnEmail, columnLandlineNumber);
+    }
+
+
+    @Override
+    public ReportParam populate(Optional optional) {
+        return null;
+    }
 }
 

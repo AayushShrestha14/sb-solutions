@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.report.core.service.FormReportGeneratorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ import com.sb.solutions.core.service.BaseService;
 /**
  * @author Rujan Maharjan on 6/4/2019
  */
-public interface CustomerLoanService extends BaseService<CustomerLoan> {
+public interface CustomerLoanService extends BaseService<CustomerLoan>, FormReportGeneratorService {
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
