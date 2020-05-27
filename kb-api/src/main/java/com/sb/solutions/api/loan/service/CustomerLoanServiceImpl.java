@@ -18,6 +18,9 @@ import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+
+import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.report.core.bean.ReportParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,10 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.report.core.enums.ExportType;
+import com.sb.solutions.report.core.enums.ReportType;
+import com.sb.solutions.report.core.factory.ReportFactory;
+import com.sb.solutions.report.core.model.Report;
 
 
 /**
@@ -602,87 +609,32 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public String csv(Object searchDto) {
-        final CsvMaker csvMaker = new CsvMaker();
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final User u = userService.getAuthenticatedUser();
-        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
-        if (s.containsKey("branchIds")) {
-            branchAccess = s.get("branchIds");
-        }
-        s.put("branchIds", branchAccess);
-        boolean isPullCsv = false;
-        if (s.get("committee") != null) {
-            isPullCsv = true;
-        }
-        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
-            s.put("currentUserRole", u.getRole().getId().toString());
-            s.put("toUser",
-                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
-                    .getId()
-                    .toString());
-        }
-        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
-        List csvDto = new ArrayList();
-        for (CustomerLoan c : customerLoanList) {
-            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
-            customerLoanCsvDto.setBranch(c.getBranch());
-            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
-            customerLoanCsvDto.setLoan(c.getLoan());
-            customerLoanCsvDto.setProposal(c.getProposal());
-            customerLoanCsvDto.setLoanType(c.getLoanType());
-            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
-            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
-            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
-            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
-            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
-            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-            if (c.getDocumentStatus() == DocStatus.PENDING ||
-                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
-                c.getDocumentStatus() == DocStatus.VALUATION ||
-                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
-                c.getDocumentStatus() == DocStatus.DISCUSSION) {
-                customerLoanCsvDto.setLoanPendingSpan(
-                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
-                customerLoanCsvDto.setLoanPossession(
-                    this.calculatePendingLoanSpanAndPossession(
-                        c.getCurrentStage().getLastModifiedAt()));
-            } else {
-                customerLoanCsvDto.setLoanPossession(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getPreviousList().get(c.getPreviousList().size() - 1)
-                            .getLastModifiedAt()));
-                customerLoanCsvDto.setLoanSpan(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getCurrentStage().getCreatedAt()));
-            }
+        Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
+        return getDownloadPath() + report.getFileName();
 
-            csvDto.add(customerLoanCsvDto);
+//        final CsvMaker csvMaker = new CsvMaker();
 
-        }
-        Map<String, String> header = new LinkedHashMap<>();
-        header.put("branch,name", " Branch");
-        header.put("customerInfo,customerName", "Name");
-        header.put("loan,name", "Loan Name");
-        header.put("proposal,proposedLimit", "Proposed Amount");
-        header.put("loanType", "Type");
-        header.put("loanCategory", "Loan Category");
-        header.put("documentStatus", "Status");
-        header.put("toUser,name", "Current Position");
-        header.put("toRole,roleName", "Designation");
-        header.put("loanPossession", "Possession Under Days");
-        for (CustomerLoan c : customerLoanList) {
-            if (c.getDocumentStatus() == DocStatus.PENDING) {
-                header.put("loanPendingSpan", "Loan Lifespan");
-            } else {
-                header.put("loanSpan", "Loan Lifespan");
-            }
-        }
-        header.put("createdAt", "Created At");
-        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
+
+//        Map<String, String> header = new LinkedHashMap<>();
+//        header.put("branch,name", " Branch");
+//        header.put("customerInfo,customerName", "Name");
+//        header.put("loan,name", "Loan Name");
+//        header.put("proposal,proposedLimit", "Proposed Amount");
+//        header.put("loanType", "Type");
+//        header.put("loanCategory", "Loan Category");
+//        header.put("documentStatus", "Status");
+//        header.put("toUser,name", "Current Position");
+//        header.put("toRole,roleName", "Designation");
+//        header.put("loanPossession", "Possession Under Days");
+//        for (CustomerLoan c : customerLoanList) {
+//            if (c.getDocumentStatus() == DocStatus.PENDING) {
+//                header.put("loanPendingSpan", "Loan Lifespan");
+//            } else {
+//                header.put("loanSpan", "Loan Lifespan");
+//            }
+//        }
+//        header.put("createdAt", "Created At");
+//        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
     @Override
@@ -870,51 +822,159 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<AbstractColumn> columns() {
+        AbstractColumn columnBranch = ColumnBuilder.getNew()
+                .setColumnProperty("branch.name", String.class.getName())
+                .setTitle("Branch").setWidth(85)
+                .build();
+
         AbstractColumn columnName = ColumnBuilder.getNew()
-                .setColumnProperty("name", String.class.getName())
-                .setTitle("Branch Name").setWidth(85)
+                .setColumnProperty("customerInfo.customerName", String.class.getName())
+                .setTitle("Name").setWidth(85)
                 .build();
 
-        AbstractColumn columnProvince = ColumnBuilder.getNew()
-                .setColumnProperty("province.name", String.class.getName())
-                .setTitle("Province").setWidth(85)
+        AbstractColumn columnLoanName = ColumnBuilder.getNew()
+                .setColumnProperty("loan.name", String.class.getName())
+                .setTitle("Loan Name").setWidth(85)
                 .build();
 
-        AbstractColumn columnDistrict = ColumnBuilder.getNew()
-                .setColumnProperty("district.name", String.class.getName())
-                .setTitle("District").setWidth(85)
-                .build();
-        AbstractColumn columnMunicipalityVdc = ColumnBuilder.getNew()
-                .setColumnProperty("municipalityVdc.name", String.class.getName())
-                .setTitle("Municipality / VDC").setWidth(85)
-                .build();
-        AbstractColumn columnStreetName = ColumnBuilder.getNew()
-                .setColumnProperty("streetName", String.class.getName())
-                .setTitle("Street Name").setWidth(85)
-                .build();
+        AbstractColumn columnCurrentPosition = ColumnBuilder.getNew()
+            .setColumnProperty("toUser.name", String.class.getName())
+            .setTitle("Current Position").setWidth(85)
+            .build();
+        AbstractColumn columnDesignation = ColumnBuilder.getNew()
+            .setColumnProperty("toRole.roleName", String.class.getName())
+            .setTitle("Designation").setWidth(85)
+            .build();
+        AbstractColumn columnCreatedAt = ColumnBuilder.getNew()
+            .setColumnProperty("createdAt", String.class.getName())
+            .setTitle("Created At").setWidth(85)
+            .build();
+        AbstractColumn columnCompanyName = ColumnBuilder.getNew()
+            .setColumnProperty("companyInfo.companyName", String.class.getName())
+            .setTitle("Company Name").setWidth(85)
+            .build();
 
-        AbstractColumn columnWardNumber = ColumnBuilder.getNew()
-                .setColumnProperty("wardNumber", String.class.getName())
-                .setTitle("Ward No.").setWidth(85)
-                .build();
-        AbstractColumn columnEmail = ColumnBuilder.getNew()
-                .setColumnProperty("email", String.class.getName())
-                .setTitle("Email").setWidth(85)
-                .build();
-        AbstractColumn columnLandlineNumber = ColumnBuilder.getNew()
-                .setColumnProperty("landlineNumber", String.class.getName())
-                .setTitle("Land Line Number").setWidth(85)
-                .build();
+        //
+
+        AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
+            .setColumnProperty("loanPendingSpan", Long.class.getName())
+            .setTitle("Loan Pending Span").setWidth(85)
+            .build();
 
 
-        return Arrays.asList(columnName, columnProvince, columnDistrict, columnMunicipalityVdc,
-                columnStreetName, columnWardNumber, columnEmail, columnLandlineNumber);
+
+        AbstractColumn columnProposedAmount = ColumnBuilder.getNew()
+                .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
+                .setTitle("Proposed Amount").setWidth(85)
+                .build();
+
+        AbstractColumn columnPossessionUnderDays = ColumnBuilder.getNew()
+            .setColumnProperty("loanPossession", Long.class.getName())
+            .setTitle("Possession Under Days").setWidth(85)
+            .build();
+
+        AbstractColumn columnLifeSpan = ColumnBuilder.getNew()
+            .setColumnProperty("loanSpan", Long.class.getName())
+            .setTitle("Loan Lifespan").setWidth(85)
+            .build();
+
+        AbstractColumn columnTypes = ColumnBuilder.getNew()
+                .setColumnProperty("loanType", LoanType.class.getName())
+                .setTitle("Types").setWidth(85)
+                .build();
+        AbstractColumn columnLoanCategory = ColumnBuilder.getNew()
+            .setColumnProperty("loanCategory",LoanApprovalType.class.getName())
+            .setTitle("Loan Category").setWidth(85)
+            .build();
+
+        AbstractColumn columnStatus = ColumnBuilder.getNew()
+                .setColumnProperty("documentStatus", DocStatus.class.getName())
+                .setTitle("Status").setWidth(85)
+                .build();
+
+
+
+        return Arrays.asList(columnBranch,columnName,columnLoanName,columnCurrentPosition,columnDesignation,
+            columnCreatedAt,columnCompanyName, columnLoanPendingSpan, columnProposedAmount, columnLifeSpan, columnPossessionUnderDays, columnLoanCategory,columnTypes,columnStatus);
     }
+
 
 
     @Override
     public ReportParam populate(Optional optional) {
-        return null;
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final User u = userService.getAuthenticatedUser();
+        Map<String, String> s = objectMapper.convertValue(optional.get(), Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        boolean isPullCsv = false;
+        if (s.get("committee") != null) {
+            isPullCsv = true;
+        }
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+        }
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+        List csvDto = new ArrayList();
+        for (CustomerLoan c : customerLoanList) {
+            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
+            customerLoanCsvDto.setBranch(c.getBranch());
+            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
+            customerLoanCsvDto.setCompanyInfo(c.getCompanyInfo());
+            customerLoanCsvDto.setLoan(c.getLoan());
+            customerLoanCsvDto.setProposal(c.getProposal());
+            customerLoanCsvDto.setLoanType(c.getLoanType());
+            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
+            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
+            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
+            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
+            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
+            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
+            if (c.getDocumentStatus() == DocStatus.PENDING ||
+                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
+                c.getDocumentStatus() == DocStatus.VALUATION ||
+                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
+                c.getDocumentStatus() == DocStatus.DISCUSSION) {
+                customerLoanCsvDto.setLoanPendingSpan(
+                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculatePendingLoanSpanAndPossession(
+                        c.getCurrentStage().getLastModifiedAt()));
+            } else {
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getPreviousList().get(c.getPreviousList().size() - 1)
+                            .getLastModifiedAt()));
+                customerLoanCsvDto.setLoanSpan(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getCurrentStage().getCreatedAt()));
+            }
+
+            csvDto.add(customerLoanCsvDto);
+
+        }
+
+        String filePath = getDownloadPath();
+        ReportParam reportParam = ReportParam.builder().reportName("Catalogue Report").title(title())
+            .subTitle(subTitle()).columns(columns()).data(csvDto).reportType(ReportType.FORM_REPORT)
+            .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
+            .build();
+        return reportParam;
+    }
+
+    public String getDownloadPath() {
+        return new PathBuilder(UploadDir.initialDocument)
+            .buildBuildFormDownloadPath("Catalogue");
     }
 }
 
