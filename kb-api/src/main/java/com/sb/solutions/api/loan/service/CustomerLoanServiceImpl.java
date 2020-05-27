@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +78,6 @@ import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
-import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
@@ -612,29 +610,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
         return getDownloadPath() + report.getFileName();
 
-//        final CsvMaker csvMaker = new CsvMaker();
-
-
-//        Map<String, String> header = new LinkedHashMap<>();
-//        header.put("branch,name", " Branch");
-//        header.put("customerInfo,customerName", "Name");
-//        header.put("loan,name", "Loan Name");
-//        header.put("proposal,proposedLimit", "Proposed Amount");
-//        header.put("loanType", "Type");
-//        header.put("loanCategory", "Loan Category");
-//        header.put("documentStatus", "Status");
-//        header.put("toUser,name", "Current Position");
-//        header.put("toRole,roleName", "Designation");
-//        header.put("loanPossession", "Possession Under Days");
-//        for (CustomerLoan c : customerLoanList) {
-//            if (c.getDocumentStatus() == DocStatus.PENDING) {
-//                header.put("loanPendingSpan", "Loan Lifespan");
-//            } else {
-//                header.put("loanSpan", "Loan Lifespan");
-//            }
-//        }
-//        header.put("createdAt", "Created At");
-//        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
     @Override
@@ -829,7 +804,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         AbstractColumn columnName = ColumnBuilder.getNew()
                 .setColumnProperty("customerInfo.customerName", String.class.getName())
-                .setTitle("Name").setWidth(85)
+                .setTitle("Name").setWidth(100)
                 .build();
 
         AbstractColumn columnLoanName = ColumnBuilder.getNew()
@@ -851,33 +826,24 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .build();
         AbstractColumn columnCompanyName = ColumnBuilder.getNew()
             .setColumnProperty("companyInfo.companyName", String.class.getName())
-            .setTitle("Company Name").setWidth(85)
+            .setTitle("Company Name").setWidth(100)
             .build();
-
-        //
-
         AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
             .setColumnProperty("loanPendingSpan", Long.class.getName())
-            .setTitle("Loan Pending Span").setWidth(85)
+            .setTitle("Loan Pending Span").setWidth(80)
             .build();
-
-
-
         AbstractColumn columnProposedAmount = ColumnBuilder.getNew()
                 .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
                 .setTitle("Proposed Amount").setWidth(85)
                 .build();
-
         AbstractColumn columnPossessionUnderDays = ColumnBuilder.getNew()
             .setColumnProperty("loanPossession", Long.class.getName())
-            .setTitle("Possession Under Days").setWidth(85)
+            .setTitle("Possession Under Days").setWidth(80)
             .build();
-
         AbstractColumn columnLifeSpan = ColumnBuilder.getNew()
             .setColumnProperty("loanSpan", Long.class.getName())
-            .setTitle("Loan Lifespan").setWidth(85)
+            .setTitle("Loan Life span").setWidth(80)
             .build();
-
         AbstractColumn columnTypes = ColumnBuilder.getNew()
                 .setColumnProperty("loanType", LoanType.class.getName())
                 .setTitle("Types").setWidth(85)
@@ -886,16 +852,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setColumnProperty("loanCategory",LoanApprovalType.class.getName())
             .setTitle("Loan Category").setWidth(85)
             .build();
-
         AbstractColumn columnStatus = ColumnBuilder.getNew()
                 .setColumnProperty("documentStatus", DocStatus.class.getName())
                 .setTitle("Status").setWidth(85)
                 .build();
 
-
-
-        return Arrays.asList(columnBranch,columnName,columnLoanName,columnCurrentPosition,columnDesignation,
-            columnCreatedAt,columnCompanyName, columnLoanPendingSpan, columnProposedAmount, columnLifeSpan, columnPossessionUnderDays, columnLoanCategory,columnTypes,columnStatus);
+        return Arrays.asList(columnBranch,columnName,columnCompanyName,columnLoanName, columnProposedAmount,columnTypes, columnLoanCategory,columnStatus,columnCurrentPosition,columnDesignation,
+            columnCreatedAt, columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays);
     }
 
 
