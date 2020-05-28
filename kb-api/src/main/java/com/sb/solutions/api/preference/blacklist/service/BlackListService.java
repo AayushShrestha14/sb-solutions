@@ -1,11 +1,12 @@
 package com.sb.solutions.api.preference.blacklist.service;
 
-import com.sb.solutions.api.preference.blacklist.entity.BlackList;
-import com.sb.solutions.core.service.BaseService;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import com.sb.solutions.api.preference.blacklist.entity.BlackList;
+import com.sb.solutions.core.service.BaseService;
 
 public interface BlackListService extends BaseService<BlackList> {
     void saveList(List<BlackList> blackList);

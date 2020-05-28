@@ -81,10 +81,9 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
     @Override
     public void execute(Optional<Long> optional) {
         final NepseMaster master = nepseMasterRepository.findByStatus(Status.ACTIVE);
-        final Map<ShareType, Double> masterMap = new HashMap<ShareType, Double>() {{
-            put(ShareType.ORDINARY, master.getOrdinary() / 100);
-            put(ShareType.PROMOTER, master.getPromoter() / 100);
-        }};
+        final Map<ShareType, Double> masterMap = new HashMap<>();
+        masterMap.put(ShareType.ORDINARY, master.getOrdinary() / 100);
+        masterMap.put(ShareType.PROMOTER, master.getPromoter() / 100);
         final Map<String, Double> marketPriceMap = nepseCompanyRepository.findAll().stream()
             .collect(
                 Collectors.toMap(NepseCompany::getCompanyCode, NepseCompany::getAmountPerUnit));
@@ -154,19 +153,21 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
     }
 
     private List<CustomerLoan> getLoanHavingShareTemplate() {
-        final Specification<CustomerLoan> specification = (Specification<CustomerLoan>) (root, criteriaQuery, criteriaBuilder) -> {
-            Predicate nonClosedLoanFilter = criteriaBuilder
-                .and(criteriaBuilder
-                    .notEqual(root.get("documentStatus"),
-                        DocStatus.CLOSED));
-            Predicate nonRejectedLoanFilter = criteriaBuilder
-                .and(criteriaBuilder
-                    .notEqual(root.get("documentStatus"),
+        final Specification<CustomerLoan> specification = (Specification<CustomerLoan>)
+            (root, criteriaQuery, criteriaBuilder) -> {
+                Predicate nonClosedLoanFilter = criteriaBuilder
+                    .and(criteriaBuilder
+                        .notEqual(root.get("documentStatus"),
+                            DocStatus.CLOSED));
+                Predicate nonRejectedLoanFilter = criteriaBuilder
+                    .and(criteriaBuilder.notEqual(root.get("documentStatus"),
                         DocStatus.REJECTED));
-            Predicate predicateForShareTemplate = criteriaBuilder.
-                isMember(AppConstant.TEMPLATE_SHARE_SECURITY, root.join("loan").get("templateList"));
-            return criteriaBuilder.and(nonClosedLoanFilter, nonRejectedLoanFilter, predicateForShareTemplate);
-        };
+                Predicate predicateForShareTemplate = criteriaBuilder
+                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
+                        root.join("loan").get("templateList"));
+                return criteriaBuilder
+                    .and(nonClosedLoanFilter, nonRejectedLoanFilter, predicateForShareTemplate);
+            };
         return customerLoanRepository.findAll(specification);
     }
 }

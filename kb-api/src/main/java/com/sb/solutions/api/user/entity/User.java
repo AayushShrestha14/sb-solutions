@@ -28,8 +28,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 

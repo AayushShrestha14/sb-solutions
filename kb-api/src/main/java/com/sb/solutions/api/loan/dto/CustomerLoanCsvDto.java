@@ -1,16 +1,15 @@
 package com.sb.solutions.api.loan.dto;
 
-
 import lombok.Data;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
-import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;

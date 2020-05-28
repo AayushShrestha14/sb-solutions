@@ -1,5 +1,16 @@
 package com.sb.solutions.report.core.model;
 
+import static com.sb.solutions.report.core.util.StyleUtil.oddRowStyle;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.Collection;
+
+import lombok.RequiredArgsConstructor;
+
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
 import ar.com.fdvs.dj.core.layout.LayoutManager;
@@ -14,21 +25,11 @@ import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.util.ReportExporter;
 import com.sb.solutions.report.core.util.StyleUtil;
-import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Collection;
-
-import static com.sb.solutions.report.core.util.StyleUtil.oddRowStyle;
 
 /**
  * @author Sunil Babu Shrestha on 4/24/2020
@@ -46,13 +47,17 @@ public abstract class Report {
         drb.setTitleStyle(StyleUtil.titleStyle());
         drb.setTitle(reportParam.getTitle());
         drb.setSubtitle(reportParam.getSubTitle());
-        drb.setDetailHeight(reportParam.getHeight());     //defines the height for each record of the report
+        drb.setDetailHeight(
+            reportParam.getHeight());     //defines the height for each record of the report
         drb.setMargins(reportParam.getTopMargin(),
-                reportParam.getBottomMargin(),
-                reportParam.getLeftMargin(), reportParam.getRightMargin());//define the margin space for each side
-        drb.setDefaultStyles(StyleUtil.titleStyle(), null, StyleUtil.headerStyle(), StyleUtil.detailStyle());
-        drb.addImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100), ImageBanner.Alignment.Right)
-                .setOddRowBackgroundStyle(oddRowStyle());
+            reportParam.getBottomMargin(),
+            reportParam.getLeftMargin(),
+            reportParam.getRightMargin());//define the margin space for each side
+        drb.setDefaultStyles(StyleUtil.titleStyle(), null, StyleUtil.headerStyle(),
+            StyleUtil.detailStyle());
+        drb.addImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100),
+            ImageBanner.Alignment.Right)
+            .setOddRowBackgroundStyle(oddRowStyle());
 
         /**
          * We add the columns to the report (through the builder) in the order
@@ -73,11 +78,11 @@ public abstract class Report {
             }
         }
 
-
         /**
          * add some more options to the report (through the builder)
          */
-        drb.setUseFullPageWidth(true);  //we tell the report to use the full width of the page. this rezises
+        drb.setUseFullPageWidth(
+            true);  //we tell the report to use the full width of the page. this rezises
         //the columns width proportionally to meat the page width.
 
         DynamicReport dr = drb.build(); //Finally build the report!
@@ -97,7 +102,6 @@ public abstract class Report {
 
         // enalbe jsperViewr to view report
 //        JasperViewer.viewReport(jp, false);
-
 
         if (reportParam.getExportType() == ExportType.PDF) {
             this.fileName = ReportExporter.exportReportPDF(jp, reportParam.getFilePath());

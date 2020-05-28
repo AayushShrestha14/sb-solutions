@@ -28,13 +28,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
-import com.sb.solutions.api.authorization.dto.RoleDto;
-import com.sb.solutions.api.authorization.entity.Role;
-import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.repository.UserRepository;

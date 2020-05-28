@@ -197,9 +197,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
             .withLoanType(customerLoan.getLoan().getName()).build();
 
-        uploadPath = new StringBuilder().
-            append(uploadPath).
-            append("offer-letter/").toString();
+        uploadPath = new StringBuilder()
+            .append(uploadPath)
+            .append("offer-letter/").toString();
 
         final StringBuilder nameBuilder = new StringBuilder().append(action).append("-")
             .append(customerLoan.getBranch().getName()).append("-")

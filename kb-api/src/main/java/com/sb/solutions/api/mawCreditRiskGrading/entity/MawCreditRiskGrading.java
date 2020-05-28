@@ -1,12 +1,13 @@
 package com.sb.solutions.api.mawCreditRiskGrading.entity;
 
-import com.sb.solutions.core.enitity.BaseEntity;
+import javax.persistence.Entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
  * @author Amulya Shrestha on 1/31/2020

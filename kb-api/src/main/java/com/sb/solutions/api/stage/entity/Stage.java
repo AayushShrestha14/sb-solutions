@@ -5,7 +5,6 @@ import javax.persistence.OneToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import org.hibernate.envers.Audited;
 
 import com.sb.solutions.api.authorization.entity.Role;

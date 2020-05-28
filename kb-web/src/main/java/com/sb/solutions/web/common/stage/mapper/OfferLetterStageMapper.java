@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sb.solutions.api.loan.OfferLetterStage;
-import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleService;
+import com.sb.solutions.api.loan.OfferLetterStage;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.stage.entity.Stage;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
@@ -42,8 +42,9 @@ public class OfferLetterStageMapper {
 
     public CustomerOfferLetter actionMapper(StageDto stageDto,
         CustomerOfferLetter customerOfferLetter, User user, Long loanCreatedBranch) {
-        if(customerOfferLetter == null){
-            logger.error("customerOfferLetter has not been created for action", customerOfferLetter);
+        if (customerOfferLetter == null) {
+            logger
+                .error("customerOfferLetter has not been created for action", customerOfferLetter);
             throw new ServiceValidationException(
                 "Cannot perform action offer letter is not saved yet!!");
         }
@@ -127,9 +128,9 @@ public class OfferLetterStageMapper {
                                 final List<Long> userIdList = users.stream().map(User::getId)
                                     .collect(Collectors.toList());
                                 if (userIdList.contains(currentStage.getCreatedBy())) {
-                                    java.util.Optional<User> userOptional = users.stream().
-                                        filter(p -> p.getId().equals(currentStage.getCreatedBy())).
-                                        findFirst();
+                                    java.util.Optional<User> userOptional = users.stream()
+                                        .filter(p -> p.getId().equals(currentStage.getCreatedBy()))
+                                        .findFirst();
                                     currentStage.setToUser(
                                         objectMapper.convertValue(userOptional.get(), User.class));
                                 } else {
