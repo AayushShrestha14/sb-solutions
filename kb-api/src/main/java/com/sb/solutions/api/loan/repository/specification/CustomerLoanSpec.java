@@ -229,8 +229,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .and(criteriaBuilder
                         .equal(root.get("limitExceed"),
                             1));
-                Predicate predicateForShareTemplate = criteriaBuilder.
-                    isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
+                Predicate predicateForShareTemplate = criteriaBuilder
+                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
                         root.join("loan").get("templateList"));
                 return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 

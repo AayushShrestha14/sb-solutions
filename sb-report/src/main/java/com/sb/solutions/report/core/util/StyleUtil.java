@@ -1,15 +1,18 @@
 package com.sb.solutions.report.core.util;
 
-import ar.com.fdvs.dj.domain.Style;
-import ar.com.fdvs.dj.domain.constants.Font;
-import ar.com.fdvs.dj.domain.constants.Transparency;
-import ar.com.fdvs.dj.domain.constants.*;
-import lombok.experimental.UtilityClass;
-
-import java.awt.*;
-
 import static ar.com.fdvs.dj.domain.constants.Border.NO_BORDER;
 import static java.awt.Color.LIGHT_GRAY;
+
+import java.awt.Color;
+
+import lombok.experimental.UtilityClass;
+
+import ar.com.fdvs.dj.domain.Style;
+import ar.com.fdvs.dj.domain.constants.Border;
+import ar.com.fdvs.dj.domain.constants.Font;
+import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
+import ar.com.fdvs.dj.domain.constants.Transparency;
+import ar.com.fdvs.dj.domain.constants.VerticalAlign;
 
 
 /**
@@ -33,7 +36,7 @@ public class StyleUtil {
     public static Style headerVairalbleStyle() {
         Style headerVariables = new Style();
         headerVariables.setFont(Font.ARIAL_MEDIUM_BOLD);
-        //		headerVariables.setBorderBottom(Border.THIN());
+//        headerVariables.setBorderBottom(Border.THIN());
         headerVariables.setHorizontalAlign(HorizontalAlign.RIGHT);
         headerVariables.setVerticalAlign(VerticalAlign.MIDDLE);
         return headerVariables;

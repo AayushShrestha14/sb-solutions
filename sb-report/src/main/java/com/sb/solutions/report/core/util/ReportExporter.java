@@ -1,22 +1,29 @@
 package com.sb.solutions.report.core.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.export.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import net.sf.jasperreports.export.OutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 /**
  * @author Sunil Babu Shrestha on 4/28/2020
  */
 public class ReportExporter {
+
     /**
      * Logger for this class
      */
@@ -25,12 +32,13 @@ public class ReportExporter {
     /**
      * The path to the file must exist.
      *
-     * @param jp
-     * @param path
-     * @throws JRException
-     * @throws FileNotFoundException
+     * @param jp An instance of JasperPrint
+     * @param path A path to the file.
+     * @throws JRException Throws JRException
+     * @throws FileNotFoundException Throws FileNotFoundException
      */
-    public static String exportReportPDF(JasperPrint jp, String path) throws JRException, FileNotFoundException {
+    public static String exportReportPDF(JasperPrint jp, String path)
+        throws JRException, FileNotFoundException {
         logger.debug("Exporing report to: " + path);
         File dir = new File(path);
         if (!dir.exists()) {
@@ -42,7 +50,8 @@ public class ReportExporter {
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         SimpleExporterInput simpleExporterInput = new SimpleExporterInput(jp);
-        OutputStreamExporterOutput simpleOutputStreamExporterOutput = new SimpleOutputStreamExporterOutput(fos);
+        OutputStreamExporterOutput simpleOutputStreamExporterOutput = new SimpleOutputStreamExporterOutput(
+            fos);
 
         exporter.setExporterInput(simpleExporterInput);
         exporter.setExporterOutput(simpleOutputStreamExporterOutput);
@@ -53,7 +62,8 @@ public class ReportExporter {
         return fileName;
     }
 
-    public static String exportReportXLS(JasperPrint jp, String path, SimpleXlsReportConfiguration configuration) throws JRException, FileNotFoundException {
+    public static String exportReportXLS(JasperPrint jp, String path,
+        SimpleXlsReportConfiguration configuration) throws JRException, FileNotFoundException {
         File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -66,7 +76,8 @@ public class ReportExporter {
         exporter.setConfiguration(configuration);
 
         SimpleExporterInput simpleExporterInput = new SimpleExporterInput(jp);
-        OutputStreamExporterOutput simpleOutputStreamExporterOutput = new SimpleOutputStreamExporterOutput(fos);
+        OutputStreamExporterOutput simpleOutputStreamExporterOutput = new SimpleOutputStreamExporterOutput(
+            fos);
 
         exporter.setExporterInput(simpleExporterInput);
         exporter.setExporterOutput(simpleOutputStreamExporterOutput);
@@ -78,7 +89,8 @@ public class ReportExporter {
         return fileName;
     }
 
-    public static String exportReportXLS(JasperPrint jp, String path) throws JRException, FileNotFoundException {
+    public static String exportReportXLS(JasperPrint jp, String path)
+        throws JRException, FileNotFoundException {
         SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
         configuration.setDetectCellType(true);
         configuration.setWhitePageBackground(false);
@@ -88,14 +100,16 @@ public class ReportExporter {
         return exportReportXLS(jp, path, configuration);
     }
 
-    public static void exportReportHtml(JasperPrint jp, String path) throws JRException, FileNotFoundException {
+    public static void exportReportHtml(JasperPrint jp, String path)
+        throws JRException, FileNotFoundException {
         HtmlExporter exporter = new HtmlExporter();
 
         File outputFile = new File(path);
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         SimpleExporterInput simpleExporterInput = new SimpleExporterInput(jp);
-        SimpleHtmlExporterOutput simpleOutputStreamExporterOutput = new SimpleHtmlExporterOutput(fos);
+        SimpleHtmlExporterOutput simpleOutputStreamExporterOutput = new SimpleHtmlExporterOutput(
+            fos);
 
         exporter.setExporterInput(simpleExporterInput);
         exporter.setExporterOutput(simpleOutputStreamExporterOutput);

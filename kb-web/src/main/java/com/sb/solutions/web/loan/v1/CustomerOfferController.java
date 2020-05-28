@@ -67,7 +67,7 @@ public class CustomerOfferController {
     }
 
     @PostMapping(path = "/action")
-    public ResponseEntity<?> OfferLetterAction(@RequestBody StageDto stageDto) {
+    public ResponseEntity<?> offerLetterAction(@RequestBody StageDto stageDto) {
         final CustomerLoan customerLoan = customerLoanService.findOne(stageDto.getCustomerLoanId());
         final CustomerOfferLetter customerOfferLetter = offerLetterStageMapper
             .actionMapper(stageDto,

@@ -1,13 +1,14 @@
 package com.sb.solutions.api.preference.blacklist.service;
 
-import com.sb.solutions.api.preference.blacklist.entity.BlackList;
-import com.sb.solutions.api.preference.blacklist.repository.BlackListRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.preference.blacklist.entity.BlackList;
+import com.sb.solutions.api.preference.blacklist.repository.BlackListRepository;
 
 @Service
 public class BlackListServiceImpl implements BlackListService {
@@ -30,7 +31,7 @@ public class BlackListServiceImpl implements BlackListService {
     }
 
     @Override
-    public BlackList save(BlackList blackList){
+    public BlackList save(BlackList blackList) {
         return blackListRepository.save(blackList);
     }
 

@@ -1,14 +1,15 @@
 package com.sb.solutions.api.nepseCompany.entity;
 
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.ShareType;
-import com.sb.solutions.core.enums.Status;
+import javax.persistence.Entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.ShareType;
+import com.sb.solutions.core.enums.Status;
 
 @Entity
 @Data

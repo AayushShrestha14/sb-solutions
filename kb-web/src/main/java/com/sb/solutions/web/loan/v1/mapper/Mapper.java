@@ -112,8 +112,8 @@ public class Mapper {
                 throw new RuntimeException("Failed to Get Stage data");
             }
         }
-        if (loanActionDto.getDocAction().equals(DocAction.FORWARD) ||
-            loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
+        if (loanActionDto.getDocAction().equals(DocAction.FORWARD)
+            || loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
             customerLoan.setDocumentStatus(DocStatus.PENDING);
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());

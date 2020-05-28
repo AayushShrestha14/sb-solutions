@@ -45,7 +45,9 @@ public final class EmailConstant {
             this.subject = subject;
         }
 
-        public void setSubject(String subject) { this.subject = subject; }
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
 
         public String get() {
             return this.subject;

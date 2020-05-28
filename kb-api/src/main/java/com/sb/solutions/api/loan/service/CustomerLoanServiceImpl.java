@@ -4,21 +4,26 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
 
-import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
-import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.report.core.bean.ReportParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +33,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
@@ -77,6 +84,7 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.report.core.bean.ReportParam;
 
 
 /**
@@ -176,9 +184,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
         }
         if (ProductUtils.NEP_TEMPLATE) {
-            Map<String, String> filterParams = new HashMap<String, String>() {{
-                put("customerLoan.id", String.valueOf(id));
-            }};
+            Map<String, String> filterParams = new HashMap<>();
+            filterParams.put("customerLoan.id", String.valueOf(id));
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateService
                 .findAllBySpec(filterParams);
             if (!nepaliTemplates.isEmpty()) {
@@ -640,11 +647,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-            if (c.getDocumentStatus() == DocStatus.PENDING ||
-                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
-                c.getDocumentStatus() == DocStatus.VALUATION ||
-                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
-                c.getDocumentStatus() == DocStatus.DISCUSSION) {
+            if (c.getDocumentStatus() == DocStatus.PENDING
+                || c.getDocumentStatus() == DocStatus.DOCUMENTATION
+                || c.getDocumentStatus() == DocStatus.VALUATION
+                || c.getDocumentStatus() == DocStatus.UNDER_REVIEW
+                || c.getDocumentStatus() == DocStatus.DISCUSSION) {
                 customerLoanCsvDto.setLoanPendingSpan(
                     this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
                 customerLoanCsvDto.setLoanPossession(
@@ -709,7 +716,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable) {
-        List<Customer> customerList = new ArrayList<>();
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         s.put("distinctByCustomer", "true");
@@ -719,6 +725,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         Page<CustomerLoan> customerLoanPage = customerLoanRepository
             .findAll(specification, pageable);
+        List<Customer> customerList = new ArrayList<>();
         customerLoanPage.getContent().forEach(customerLoan -> {
             if (!customerList.contains(customerLoan)) {
                 customerList.add(customerLoan.getCustomerInfo());

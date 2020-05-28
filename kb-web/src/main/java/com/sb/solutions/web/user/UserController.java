@@ -79,8 +79,7 @@ public class UserController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?>
-    sergetAll(@RequestBody Object searchDto,
+    public ResponseEntity<?> sergetAll(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(userService.findAllPageable(searchDto, PaginationUtils

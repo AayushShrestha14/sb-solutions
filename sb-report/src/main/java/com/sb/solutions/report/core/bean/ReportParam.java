@@ -1,15 +1,16 @@
 package com.sb.solutions.report.core.bean;
 
+import java.util.List;
+
+import lombok.Builder;
+import lombok.Data;
+
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.entities.DJGroup;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.FormType;
 import com.sb.solutions.report.core.enums.ReportType;
-import lombok.Builder;
-import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author Sunil Babu Shrestha on 4/5/2020

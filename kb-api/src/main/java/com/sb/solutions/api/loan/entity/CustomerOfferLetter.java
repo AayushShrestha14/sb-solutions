@@ -1,6 +1,5 @@
 package com.sb.solutions.api.loan.entity;
 
-
 import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
 
 import java.io.IOException;

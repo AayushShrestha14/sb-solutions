@@ -1,9 +1,10 @@
 package com.sb.solutions.api.nepseCompany.util;
 
-import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
-import com.sb.solutions.core.enums.ShareType;
-import com.sb.solutions.core.exception.ServiceValidationException;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
+import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
+import com.sb.solutions.core.enums.ShareType;
+import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 
 /**
  * @author Sunil Babu Shrestha on 1/17/2020
@@ -59,13 +60,16 @@ public class NepseExcelReader {
                     nepseCompany.setCompanyCode(row.getCell(COMPANY_CODE_COLUMN_POS).toString());
                 }
                 if (row.getCell(SHARE_TYPE_COLUMN_POS).toString() != null) {
-                    if (!(row.getCell(SHARE_TYPE_COLUMN_POS).toString().trim().equalsIgnoreCase(ShareType.ORDINARY.toString())
-                            || row.getCell(SHARE_TYPE_COLUMN_POS).toString().trim().equalsIgnoreCase(ShareType.PROMOTER.toString()))) {
-                        throw new ServiceValidationException(row.getCell(SHARE_TYPE_COLUMN_POS).toString() + " "
+                    if (!(row.getCell(SHARE_TYPE_COLUMN_POS).toString().trim()
+                        .equalsIgnoreCase(ShareType.ORDINARY.toString())
+                        || row.getCell(SHARE_TYPE_COLUMN_POS).toString().trim()
+                        .equalsIgnoreCase(ShareType.PROMOTER.toString()))) {
+                        throw new ServiceValidationException(
+                            row.getCell(SHARE_TYPE_COLUMN_POS).toString() + " "
                                 + "is  not valid ShareType on row" + " " + (value - 1));
                     }
                     nepseCompany.setShareType(
-                            ShareType.valueOf(row.getCell(3).getStringCellValue().toUpperCase()));
+                        ShareType.valueOf(row.getCell(3).getStringCellValue().toUpperCase()));
                 }
                 nepseCompanyList.add(nepseCompany);
             });

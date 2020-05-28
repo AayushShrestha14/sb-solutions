@@ -52,7 +52,6 @@ public class InsuranceController {
 
         if (entity.getId() == null) {
             Insurance old = customerLoan.getInsurance();
-            Long oldId = old.getId();
 
             // save to history
             InsuranceHistory history = new InsuranceHistory();
@@ -63,6 +62,7 @@ public class InsuranceController {
 
             // update current
             BeanUtils.copyProperties(entity, old);
+            Long oldId = old.getId();
             old.setId(oldId);
             insuranceService.save(old);
 

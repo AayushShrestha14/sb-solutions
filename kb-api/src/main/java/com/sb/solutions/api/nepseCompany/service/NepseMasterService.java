@@ -1,7 +1,5 @@
 package com.sb.solutions.api.nepseCompany.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,5 +13,5 @@ public interface NepseMasterService extends BaseService<NepseMaster> {
 
     NepseMaster findActiveMasterRecord();
 
-    Page<NepseMaster> findNepseListOrderById(Object searchDto , Pageable pageable);
+    Page<NepseMaster> findNepseListOrderById(Object searchDto, Pageable pageable);
 }

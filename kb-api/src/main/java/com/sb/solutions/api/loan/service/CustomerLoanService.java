@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-import com.sb.solutions.report.core.service.FormReportGeneratorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
+import com.sb.solutions.report.core.service.FormReportGeneratorService;
 
 /**
  * @author Rujan Maharjan on 6/4/2019

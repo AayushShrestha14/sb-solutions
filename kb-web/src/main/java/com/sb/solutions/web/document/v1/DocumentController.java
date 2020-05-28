@@ -1,5 +1,20 @@
 package com.sb.solutions.web.document.v1;
 
+import java.util.List;
+import javax.validation.Valid;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.service.DocumentService;
@@ -10,14 +25,6 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.web.document.v1.dto.DocumentDto;
 import com.sb.solutions.web.document.v1.mapper.DocumentMapper;
 import edu.emory.mathcs.backport.java.util.Arrays;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 
 @RestController
@@ -101,7 +108,7 @@ public class DocumentController {
     }
 
     @PostMapping(value = "/downloadDoc")
-    public ResponseEntity<?> downloadDoc(@RequestBody String path){
+    public ResponseEntity<?> downloadDoc(@RequestBody String path) {
         String finalPath = String.join("/",
                 (Arrays.asList(path.split("/"))
                         .subList(0, Arrays.asList(path.split("/"))

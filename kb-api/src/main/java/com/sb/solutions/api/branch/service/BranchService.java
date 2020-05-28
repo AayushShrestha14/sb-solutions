@@ -3,11 +3,11 @@ package com.sb.solutions.api.branch.service;
 import java.util.List;
 import java.util.Map;
 
-import com.sb.solutions.report.core.service.FormReportGeneratorService;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.service.BaseService;
+import com.sb.solutions.report.core.service.FormReportGeneratorService;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
