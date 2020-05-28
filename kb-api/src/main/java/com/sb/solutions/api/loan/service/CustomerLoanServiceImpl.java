@@ -9,13 +9,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -25,10 +23,6 @@ import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-
-import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.core.utils.PathBuilder;
-import com.sb.solutions.report.core.bean.ReportParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -84,11 +78,12 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanFlag;
+import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
-import com.sb.solutions.core.utils.csv.CsvMaker;
 import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
@@ -809,19 +804,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<AbstractColumn> columns() {
         AbstractColumn columnBranch = ColumnBuilder.getNew()
-                .setColumnProperty("branch.name", String.class.getName())
-                .setTitle("Branch").setWidth(85)
-                .build();
+            .setColumnProperty("branch.name", String.class.getName())
+            .setTitle("Branch").setWidth(85)
+            .build();
 
         AbstractColumn columnName = ColumnBuilder.getNew()
-                .setColumnProperty("customerInfo.customerName", String.class.getName())
-                .setTitle("Name").setWidth(100)
-                .build();
+            .setColumnProperty("customerInfo.customerName", String.class.getName())
+            .setTitle("Name").setWidth(100)
+            .build();
 
         AbstractColumn columnLoanName = ColumnBuilder.getNew()
-                .setColumnProperty("loan.name", String.class.getName())
-                .setTitle("Loan Name").setWidth(85)
-                .build();
+            .setColumnProperty("loan.name", String.class.getName())
+            .setTitle("Loan Name").setWidth(85)
+            .build();
 
         AbstractColumn columnCurrentPosition = ColumnBuilder.getNew()
             .setColumnProperty("toUser.name", String.class.getName())
@@ -844,9 +839,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setTitle("Loan Pending Span").setWidth(80)
             .build();
         AbstractColumn columnProposedAmount = ColumnBuilder.getNew()
-                .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
-                .setTitle("Proposed Amount").setWidth(85)
-                .build();
+            .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
+            .setTitle("Proposed Amount").setWidth(85)
+            .build();
         AbstractColumn columnPossessionUnderDays = ColumnBuilder.getNew()
             .setColumnProperty("loanPossession", Long.class.getName())
             .setTitle("Possession Under Days").setWidth(80)
@@ -856,22 +851,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setTitle("Loan Life span").setWidth(80)
             .build();
         AbstractColumn columnTypes = ColumnBuilder.getNew()
-                .setColumnProperty("loanType", LoanType.class.getName())
-                .setTitle("Types").setWidth(85)
-                .build();
+            .setColumnProperty("loanType", LoanType.class.getName())
+            .setTitle("Types").setWidth(85)
+            .build();
         AbstractColumn columnLoanCategory = ColumnBuilder.getNew()
-            .setColumnProperty("loanCategory",LoanApprovalType.class.getName())
+            .setColumnProperty("loanCategory", LoanApprovalType.class.getName())
             .setTitle("Loan Category").setWidth(85)
             .build();
         AbstractColumn columnStatus = ColumnBuilder.getNew()
-                .setColumnProperty("documentStatus", DocStatus.class.getName())
-                .setTitle("Status").setWidth(85)
-                .build();
+            .setColumnProperty("documentStatus", DocStatus.class.getName())
+            .setTitle("Status").setWidth(85)
+            .build();
 
-        return Arrays.asList(columnBranch,columnName,columnCompanyName,columnLoanName, columnProposedAmount,columnTypes, columnLoanCategory,columnStatus,columnCurrentPosition,columnDesignation,
+        return Arrays.asList(columnBranch, columnName, columnCompanyName, columnLoanName,
+            columnProposedAmount, columnTypes, columnLoanCategory, columnStatus,
+            columnCurrentPosition, columnDesignation,
             columnCreatedAt, columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays);
     }
-
 
 
     @Override
@@ -914,11 +910,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-            if (c.getDocumentStatus() == DocStatus.PENDING ||
-                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
-                c.getDocumentStatus() == DocStatus.VALUATION ||
-                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
-                c.getDocumentStatus() == DocStatus.DISCUSSION) {
+            if (c.getDocumentStatus() == DocStatus.PENDING
+                || c.getDocumentStatus() == DocStatus.DOCUMENTATION
+                || c.getDocumentStatus() == DocStatus.VALUATION
+                || c.getDocumentStatus() == DocStatus.UNDER_REVIEW
+                || c.getDocumentStatus() == DocStatus.DISCUSSION) {
                 customerLoanCsvDto.setLoanPendingSpan(
                     this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
                 customerLoanCsvDto.setLoanPossession(
@@ -939,7 +935,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         String filePath = getDownloadPath();
-        ReportParam reportParam = ReportParam.builder().reportName("Catalogue Report").title(title())
+        ReportParam reportParam = ReportParam.builder().reportName("Catalogue Report")
+            .title(title())
             .subTitle(subTitle()).columns(columns()).data(csvDto).reportType(ReportType.FORM_REPORT)
             .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
             .build();
