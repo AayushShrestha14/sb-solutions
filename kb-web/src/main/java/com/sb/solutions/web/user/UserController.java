@@ -209,4 +209,5 @@ public class UserController {
             userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
                 Collectors.joining(",")));
     }
+
 }

@@ -90,7 +90,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder.getContext()
+            .getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
             return this.getByUsername(user.getUsername());
@@ -357,4 +358,6 @@ public class UserServiceImpl implements UserService {
         return userDtoList;
 
     }
+
+
 }
