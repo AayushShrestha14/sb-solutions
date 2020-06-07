@@ -20,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -53,6 +54,7 @@ import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.dto.NepaliTemplateDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
@@ -202,12 +204,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<NepaliTemplateDto> nepaliTemplates = new ArrayList<>();
 
     @NotAudited
-    private byte limitExceed;
-
-    @NotAudited
-    private String loanRemarks;
-
-    @NotAudited
     @ManyToMany
     private List<ReportingInfoLevel> reportingInfoLevels;
 
@@ -216,7 +212,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Insurance insurance;
 
     @NotAudited
-    private Boolean isInsuranceExpired;
+    @OneToMany
+    @JoinColumn(name = "customer_loan_id")
+    private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

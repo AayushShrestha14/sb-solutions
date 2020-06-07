@@ -5,7 +5,6 @@ import javax.persistence.EntityListeners;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

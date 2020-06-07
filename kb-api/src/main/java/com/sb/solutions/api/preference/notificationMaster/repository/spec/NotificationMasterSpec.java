@@ -15,7 +15,7 @@ import com.sb.solutions.core.enums.NotificationMasterType;
  */
 public class NotificationMasterSpec implements Specification<NotificationMaster> {
 
-    private static final String FILTER_BY_NOTIFICATION_KEY = "notificationKey";
+    public static final String FILTER_BY_NOTIFICATION_KEY = "notificationKey";
 
     private final String property;
     private final String value;

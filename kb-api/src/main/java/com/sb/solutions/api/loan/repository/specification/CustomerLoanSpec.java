@@ -28,31 +28,31 @@ import com.sb.solutions.core.enums.LoanType;
  */
 public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
-    private static final String FILTER_BY_LOAN = "loanConfigId";
-    private static final String FILTER_BY_DOC_STATUS = "documentStatus";
-    private static final String FILTER_BY_CURRENT_USER_ROLE = "currentUserRole";
-    private static final String FILTER_BY_TO_USER = "toUser";
-    private static final String FILTER_BY_BRANCH = "branchIds";
-    private static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
-    private static final String FILTER_BY_TYPE = "loanNewRenew";
-    private static final String FILTER_BY_NOTIFY = "notify";
-    private static final String FILTER_BY_CUSTOMER_NAME = "customerName";
-    private static final String FILTER_BY_CURRENT_OFFER_LETTER_STAGE = "currentOfferLetterStage";
-    private static final String FILTER_BY_COMPANY_NAME = "companyName";
-    private static final String FILTER_BY_DOC_ACTION = "docAction";
-    private static final String FILTER_BY_CUSTOMER_RELATIVE_NAME = "customerRelativeName";
-    private static final String FILTER_BY_CUSTOMER_CITIZENSHIP = "citizenshipNumber";
-    private static final String FILTER_BY_CUSTOMER_CITIZEN_ISSUE_DATE = "citizenshipIssuedDate";
+    public static final String FILTER_BY_LOAN = "loanConfigId";
+    public static final String FILTER_BY_DOC_STATUS = "documentStatus";
+    public static final String FILTER_BY_CURRENT_USER_ROLE = "currentUserRole";
+    public static final String FILTER_BY_TO_USER = "toUser";
+    public static final String FILTER_BY_BRANCH = "branchIds";
+    public static final String FILTER_BY_CURRENT_STAGE_DATE = "currentStageDate";
+    public static final String FILTER_BY_TYPE = "loanNewRenew";
+    public static final String FILTER_BY_NOTIFY = "notify";
+    public static final String FILTER_BY_CUSTOMER_NAME = "customerName";
+    public static final String FILTER_BY_COMPANY_NAME = "companyName";
+    public static final String FILTER_BY_DOC_ACTION = "docAction";
+    public static final String FILTER_BY_CUSTOMER_RELATIVE_NAME = "customerRelativeName";
+    public static final String FILTER_BY_CUSTOMER_CITIZENSHIP = "citizenshipNumber";
+    public static final String FILTER_BY_CUSTOMER_CITIZEN_ISSUE_DATE = "citizenshipIssuedDate";
 
-    private static final String FILTER_BY_GUARANTOR_NAME = "guarantorName";
-    private static final String FILTER_BY_GUARANTOR_CITIZENSHIP = "guarantorCitizenshipNumber";
-    private static final String FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE = "guarantorCitizenshipIssuedDate";
-    private static final String FILTER_BY_GUARANTOR_DISTRICT_ID = "guarantorDistrictId";
-    private static final String FILTER_BY_GUARANTOR_PROVINCE_ID = "guarantorProvinceId";
+    public static final String FILTER_BY_GUARANTOR_NAME = "guarantorName";
+    public static final String FILTER_BY_GUARANTOR_CITIZENSHIP = "guarantorCitizenshipNumber";
+    public static final String FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE = "guarantorCitizenshipIssuedDate";
+    public static final String FILTER_BY_GUARANTOR_DISTRICT_ID = "guarantorDistrictId";
+    public static final String FILTER_BY_GUARANTOR_PROVINCE_ID = "guarantorProvinceId";
 
-    private static final String FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT = "showShareLoanExcessingLimit";
-    private static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
-    private static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
+    public static final String FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT = "showShareLoanExcessingLimit";
+    public static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
+    public static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
+    public static final String FILTER_BY_IS_CLOSE_RENEW = "isCloseRenew";
 
     private final String property;
     private final String value;
@@ -229,8 +229,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .and(criteriaBuilder
                         .equal(root.get("limitExceed"),
                             1));
-                Predicate predicateForShareTemplate = criteriaBuilder.
-                    isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
+                Predicate predicateForShareTemplate = criteriaBuilder
+                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
                         root.join("loan").get("templateList"));
                 return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 
@@ -239,6 +239,10 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_HAS_INSURANCE:
                 return criteriaBuilder.isNotNull(root.get("insurance"));
+
+            case FILTER_BY_IS_CLOSE_RENEW:
+                return criteriaBuilder
+                    .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
 
             default:
                 return null;

@@ -1,10 +1,13 @@
 package com.sb.solutions.core.utils.email;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.sb.solutions.core.enums.LoanType;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +27,12 @@ public class Email {
     private String resetPasswordLink;
     private String expiry;
     private String loanType;
+    private String name;
+    private String email;
+    private Date expiryDate;
+    private String phoneNumber;
+    private LoanType loanTypes;
+    private String clientCitizenshipNumber;
+    private String insuranceCompanyName;
 
 }

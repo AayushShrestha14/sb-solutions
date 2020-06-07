@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity

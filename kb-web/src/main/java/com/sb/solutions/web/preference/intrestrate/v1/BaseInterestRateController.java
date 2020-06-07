@@ -1,17 +1,26 @@
 package com.sb.solutions.web.preference.intrestrate.v1;
+
+import java.util.List;
+import javax.validation.Valid;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sb.solutions.api.preference.interestrate.entity.BaseInterestRate;
 import com.sb.solutions.api.preference.interestrate.service.BaseInterestService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/base-interest")
@@ -55,7 +64,8 @@ public class BaseInterestRateController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateIntrest(@PathVariable("id") Long id, @Valid @RequestBody BaseInterestRate intrestDetail) {
+    public ResponseEntity<?> updateIntrest(@PathVariable("id") Long id,
+        @Valid @RequestBody BaseInterestRate intrestDetail) {
         BaseInterestRate base = baseInterestService.findOne(id);
         if (base == null) {
             return new RestResponseDto().failureModel("Unable to save value");

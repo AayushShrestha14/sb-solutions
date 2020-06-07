@@ -1,10 +1,11 @@
 package com.sb.solutions.api.branch.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
@@ -26,8 +29,13 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.csv.CsvReader;
+import com.sb.solutions.report.core.bean.ReportParam;
+import com.sb.solutions.report.core.enums.ExportType;
+import com.sb.solutions.report.core.enums.ReportType;
+import com.sb.solutions.report.core.factory.ReportFactory;
+import com.sb.solutions.report.core.model.Report;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
@@ -45,7 +53,6 @@ public class BranchServiceImpl implements BranchService {
 
     @Autowired
     UserService userService;
-
 
     @Override
     public List<Branch> findAll() {
@@ -91,21 +98,8 @@ public class BranchServiceImpl implements BranchService {
     @Override
     @PreAuthorize("hasAuthority('DOWNLOAD CSV')")
     public String csv(Object searchDto) {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-        final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
-        final Specification<Branch> specification = branchSpecBuilder.build();
-        final CsvMaker csvMaker = new CsvMaker();
-        final List branchList = branchRepository.findAll(specification);
-        Map<String, String> header = new LinkedHashMap<>();
-        header.put("name", " Name");
-        header.put("province,name", "Province");
-        header.put("district,name", "District");
-        header.put("municipalityVdc,name", "Municipality or Vdc");
-        header.put("streetName", "Street Name");
-        header.put("wardNumber", "Ward No.");
-        header.put("branchCode", "Branch Code");
-        return csvMaker.csv("branch", header, branchList, UploadDir.branchCsv);
+        Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
+        return getDownloadPath() + report.getFileName();
 
     }
 
@@ -138,4 +132,74 @@ public class BranchServiceImpl implements BranchService {
         return branchRepository.getByIdNotIn(branches);
     }
 
+    @Override
+    public String title() {
+        return "Form Report For Branch";
+    }
+
+    @Override
+    public List<AbstractColumn> columns() {
+        AbstractColumn columnName = ColumnBuilder.getNew()
+                .setColumnProperty("name", String.class.getName())
+                .setTitle("Branch Name").setWidth(85)
+                .build();
+
+        AbstractColumn columnProvince = ColumnBuilder.getNew()
+                .setColumnProperty("province.name", String.class.getName())
+                .setTitle("Province").setWidth(85)
+                .build();
+
+        AbstractColumn columnDistrict = ColumnBuilder.getNew()
+                .setColumnProperty("district.name", String.class.getName())
+                .setTitle("District").setWidth(85)
+                .build();
+        AbstractColumn columnMunicipalityVdc = ColumnBuilder.getNew()
+                .setColumnProperty("municipalityVdc.name", String.class.getName())
+                .setTitle("Municipality / VDC").setWidth(85)
+                .build();
+        AbstractColumn columnStreetName = ColumnBuilder.getNew()
+                .setColumnProperty("streetName", String.class.getName())
+                .setTitle("Street Name").setWidth(85)
+                .build();
+
+        AbstractColumn columnWardNumber = ColumnBuilder.getNew()
+                .setColumnProperty("wardNumber", String.class.getName())
+                .setTitle("Ward No.").setWidth(85)
+                .build();
+        AbstractColumn columnEmail = ColumnBuilder.getNew()
+                .setColumnProperty("email", String.class.getName())
+                .setTitle("Email").setWidth(85)
+                .build();
+        AbstractColumn columnLandlineNumber = ColumnBuilder.getNew()
+                .setColumnProperty("landlineNumber", String.class.getName())
+                .setTitle("Land Line Number").setWidth(85)
+                .build();
+
+
+        return Arrays.asList(columnName, columnProvince, columnDistrict, columnMunicipalityVdc,
+                columnStreetName, columnWardNumber, columnEmail, columnLandlineNumber);
+    }
+
+    @Override
+    public ReportParam populate(Optional optional) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, String> s = objectMapper.convertValue(optional.get(), Map.class);
+        final BranchSpecBuilder branchSpecBuilder = new BranchSpecBuilder(s);
+        final Specification<Branch> specification = branchSpecBuilder.build();
+        final List branchList = branchRepository.findAll(specification);
+
+        String filePath = getDownloadPath();
+        ReportParam reportParam = ReportParam.builder().reportName("Branch Report").title(title())
+                .subTitle(subTitle()).columns(columns()).data(branchList).reportType(ReportType.FORM_REPORT)
+                .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
+                .build();
+
+
+        return reportParam;
+    }
+
+    public String getDownloadPath() {
+        return new PathBuilder(UploadDir.initialDocument)
+                .buildBuildFormDownloadPath("Branch");
+    }
 }

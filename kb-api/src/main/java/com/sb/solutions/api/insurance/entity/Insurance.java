@@ -35,4 +35,6 @@ public class Insurance extends BaseEntity<Long> {
     private Date expiryDate;
 
     private String policyType;
+
+    private String remarks;
 }

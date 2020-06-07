@@ -57,7 +57,9 @@ public class CustomerLoanOfferSpec implements Specification<CustomerOfferLetter>
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
 
+            default:
+                return null;
+
         }
-        return null;
     }
 }

@@ -1,11 +1,10 @@
 package com.sb.solutions.api.nepseCompany.service;
 
-import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
-import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
-import com.sb.solutions.api.nepseCompany.repository.NepseCompanyRepository;
-import com.sb.solutions.api.nepseCompany.repository.specification.NepseSpecBuilder;
-import com.sb.solutions.core.dto.SearchDto;
-import com.sb.solutions.core.enums.Status;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
@@ -13,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
+import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
+import com.sb.solutions.api.nepseCompany.repository.NepseCompanyRepository;
+import com.sb.solutions.api.nepseCompany.repository.specification.NepseSpecBuilder;
+import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.Status;
 
 @Service
 public class NepseCompanyServiceImpl implements NepseCompanyService {
@@ -27,7 +28,8 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
     private TaskExecutor executor;
 
     public NepseCompanyServiceImpl(
-            NepseCompanyRepository nepseCompanyRepository, TaskExecutor taskExecutor, CustomerShareLoanThreadService customerShareLoanThreadService) {
+        NepseCompanyRepository nepseCompanyRepository, TaskExecutor taskExecutor,
+        CustomerShareLoanThreadService customerShareLoanThreadService) {
         this.nepseCompanyRepository = nepseCompanyRepository;
         this.executor = taskExecutor;
         this.customerShareLoanThreadService = customerShareLoanThreadService;
@@ -75,12 +77,12 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
         List<NepseCompany> existingNepseList = nepseCompanyRepository.findAll();
         // Get latest Company code list
         List<String> newCompanyCodeList = newNepseList.stream()
-                .map(NepseCompany::getCompanyCode).collect(Collectors.toList());
+            .map(NepseCompany::getCompanyCode).collect(Collectors.toList());
 
         // get list company that is  in new nepse list
-        existingNepseList = existingNepseList.stream().
-                filter(nepseCompany -> newCompanyCodeList.contains(nepseCompany.getCompanyCode()))
-                .collect(Collectors.toList());
+        existingNepseList = existingNepseList.stream()
+            .filter(nepseCompany -> newCompanyCodeList.contains(nepseCompany.getCompanyCode()))
+            .collect(Collectors.toList());
 
         nepseCompanyRepository.deleteAll(existingNepseList);
         nepseCompanyRepository.saveAll(newNepseList);

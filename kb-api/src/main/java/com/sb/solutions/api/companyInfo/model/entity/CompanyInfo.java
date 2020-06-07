@@ -17,6 +17,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.companyInfo.capital.entity.Capital;
+import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
 import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
@@ -55,4 +56,7 @@ public class CompanyInfo extends BaseEntity<Long> {
     private Date establishmentDate;
     private BusinessType businessType;
     private String panNumber;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private CompanyLocations companyLocations;
 }

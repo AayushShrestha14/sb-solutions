@@ -2,6 +2,7 @@ package com.sb.solutions.web.loan.v1.mapper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import com.sb.solutions.api.approvallimit.service.ApprovalLimitService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -41,7 +43,6 @@ public class Mapper {
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
     private final StageMapper stageMapper;
     private final ApprovalLimitService approvalLimitService;
-
 
     public Mapper(@Autowired StageMapper stageMapper,
         @Autowired ApprovalLimitService approvalLimitService) {
@@ -111,8 +112,8 @@ public class Mapper {
                 throw new RuntimeException("Failed to Get Stage data");
             }
         }
-        if (loanActionDto.getDocAction().equals(DocAction.FORWARD) ||
-            loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
+        if (loanActionDto.getDocAction().equals(DocAction.FORWARD)
+            || loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
             customerLoan.setDocumentStatus(DocStatus.PENDING);
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());
@@ -145,9 +146,12 @@ public class Mapper {
                 logger.error("Error while performing the action");
                 throw new RuntimeException("No user present of selected To:");
             }
-            if (customerLoan.getLimitExceed() == 1) {
-                logger.info(customerLoan.getLoanRemarks());
-                throw new RuntimeException(customerLoan.getLoanRemarks());
+            // Check loan flags
+            if (!customerLoan.getLoanFlags().isEmpty()) {
+                customerLoan.getLoanFlags()
+                    .sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
+                logger.error(customerLoan.getLoanFlags().get(0).getDescription());
+                throw new RuntimeException(customerLoan.getLoanFlags().get(0).getDescription());
             }
         }
         return stageMapper

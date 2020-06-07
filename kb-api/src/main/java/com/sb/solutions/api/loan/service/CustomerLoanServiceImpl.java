@@ -5,9 +5,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -30,6 +32,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
@@ -53,9 +57,14 @@ import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
+import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
+import com.sb.solutions.api.preference.notificationMaster.repository.spec.NotificationMasterSpec;
+import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -64,13 +73,22 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
+import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
-import com.sb.solutions.core.utils.csv.CsvMaker;
+import com.sb.solutions.report.core.bean.ReportParam;
+import com.sb.solutions.report.core.enums.ExportType;
+import com.sb.solutions.report.core.enums.ReportType;
+import com.sb.solutions.report.core.factory.ReportFactory;
+import com.sb.solutions.report.core.model.Report;
 
 
 /**
@@ -99,7 +117,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NepaliTemplateService nepaliTemplateService;
     private final NepaliTemplateMapper nepaliTemplateMapper;
     private final InsuranceService insuranceService;
-
+    private final NotificationMasterService notificationMasterService;
+    private final CustomerLoanFlagService customerLoanFlagService;
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -119,7 +138,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ShareSecurityService shareSecurityService,
         NepaliTemplateService nepaliTemplateService,
         NepaliTemplateMapper nepaliTemplateMapper,
-        InsuranceService insuranceService
+        InsuranceService insuranceService,
+        NotificationMasterService notificationMasterService,
+        CustomerLoanFlagService customerLoanFlagService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -139,6 +160,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.nepaliTemplateService = nepaliTemplateService;
         this.nepaliTemplateMapper = nepaliTemplateMapper;
         this.insuranceService = insuranceService;
+        this.notificationMasterService = notificationMasterService;
+        this.customerLoanFlagService = customerLoanFlagService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -165,9 +188,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
         }
         if (ProductUtils.NEP_TEMPLATE) {
-            Map<String, String> filterParams = new HashMap<String, String>() {{
-                put("customerLoan.id", String.valueOf(id));
-            }};
+            Map<String, String> filterParams = new HashMap<>();
+            filterParams.put("customerLoan.id", String.valueOf(id));
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateService
                 .findAllBySpec(filterParams);
             if (!nepaliTemplates.isEmpty()) {
@@ -178,6 +200,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return customerLoan;
     }
 
+    @Transactional
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
         if (customerLoan.getLoan() == null) {
@@ -247,7 +270,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
-        postLoanConditionCheck(customerLoan);
+        postLoanConditionCheck(savedCustomerLoan);
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper
@@ -258,6 +281,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         return savedCustomerLoan;
     }
+
 
     @Override
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
@@ -589,87 +613,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public String csv(Object searchDto) {
-        final CsvMaker csvMaker = new CsvMaker();
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final User u = userService.getAuthenticatedUser();
-        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
-        if (s.containsKey("branchIds")) {
-            branchAccess = s.get("branchIds");
-        }
-        s.put("branchIds", branchAccess);
-        boolean isPullCsv = false;
-        if (s.get("committee") != null) {
-            isPullCsv = true;
-        }
-        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
-            s.put("currentUserRole", u.getRole().getId().toString());
-            s.put("toUser",
-                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
-                    .getId()
-                    .toString());
-        }
-        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
-        List csvDto = new ArrayList();
-        for (CustomerLoan c : customerLoanList) {
-            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
-            customerLoanCsvDto.setBranch(c.getBranch());
-            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
-            customerLoanCsvDto.setLoan(c.getLoan());
-            customerLoanCsvDto.setProposal(c.getProposal());
-            customerLoanCsvDto.setLoanType(c.getLoanType());
-            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
-            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
-            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
-            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
-            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
-            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
-            if (c.getDocumentStatus() == DocStatus.PENDING ||
-                c.getDocumentStatus() == DocStatus.DOCUMENTATION ||
-                c.getDocumentStatus() == DocStatus.VALUATION ||
-                c.getDocumentStatus() == DocStatus.UNDER_REVIEW ||
-                c.getDocumentStatus() == DocStatus.DISCUSSION) {
-                customerLoanCsvDto.setLoanPendingSpan(
-                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
-                customerLoanCsvDto.setLoanPossession(
-                    this.calculatePendingLoanSpanAndPossession(
-                        c.getCurrentStage().getLastModifiedAt()));
-            } else {
-                customerLoanCsvDto.setLoanPossession(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getPreviousList().get(c.getPreviousList().size() - 1)
-                            .getLastModifiedAt()));
-                customerLoanCsvDto.setLoanSpan(
-                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
-                        c.getCurrentStage().getCreatedAt()));
-            }
+        Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
+        return getDownloadPath() + report.getFileName();
 
-            csvDto.add(customerLoanCsvDto);
-
-        }
-        Map<String, String> header = new LinkedHashMap<>();
-        header.put("branch,name", " Branch");
-        header.put("customerInfo,customerName", "Name");
-        header.put("loan,name", "Loan Name");
-        header.put("proposal,proposedLimit", "Proposed Amount");
-        header.put("loanType", "Type");
-        header.put("loanCategory", "Loan Category");
-        header.put("documentStatus", "Status");
-        header.put("toUser,name", "Current Position");
-        header.put("toRole,roleName", "Designation");
-        header.put("loanPossession", "Possession Under Days");
-        for (CustomerLoan c : customerLoanList) {
-            if (c.getDocumentStatus() == DocStatus.PENDING) {
-                header.put("loanPendingSpan", "Loan Lifespan");
-            } else {
-                header.put("loanSpan", "Loan Lifespan");
-            }
-        }
-        header.put("createdAt", "Created At");
-        return csvMaker.csv("customer_loan", header, csvDto, UploadDir.customerLoanCsv);
     }
 
     @Override
@@ -696,7 +642,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable) {
-        List<Customer> customerList = new ArrayList<>();
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         s.put("distinctByCustomer", "true");
@@ -706,6 +651,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         Page<CustomerLoan> customerLoanPage = customerLoanRepository
             .findAll(specification, pageable);
+        List<Customer> customerList = new ArrayList<>();
         customerLoanPage.getContent().forEach(customerLoan -> {
             if (!customerList.contains(customerLoan)) {
                 customerList.add(customerLoan.getCustomerInfo());
@@ -774,20 +720,70 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
      *
      * @param loan An instance of Customer Loan.
      */
-    private void postLoanConditionCheck(CustomerLoan loan) {
+    @Override
+    public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            boolean lowProposedAmount =
-                loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
-            String remark = lowProposedAmount
-                ? "Cannot forward loan as proposed amount is zero."
-                : null;
-            customerLoanRepository
-                .updateLimitExceed((byte) (lowProposedAmount ? 1 : 0), remark, loan.getId());
-            if (lowProposedAmount) {
-                return;
+            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.ZERO_PROPOSAL_AMOUNT))
+                .collect(CustomerLoanFlag.toSingleton());
+
+            boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+            if (flag && customerLoanFlag == null) {
+                customerLoanFlag = new CustomerLoanFlag();
+                customerLoanFlag.setCustomerLoan(loan);
+                customerLoanFlag.setFlag(LoanFlag.ZERO_PROPOSAL_AMOUNT);
+                customerLoanFlag.setDescription(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[1]);
+                customerLoanFlag
+                    .setOrder(Integer.parseInt(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[0]));
+                customerLoanFlagService.save(customerLoanFlag);
+            } else if (!flag && customerLoanFlag != null) {
+                customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
             }
         }
+        // check if company VAT/PAN registration will expire
+        if (loan.getCompanyInfo() != null) {
+            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.COMPANY_VAT_PAN_EXPIRY))
+                .collect(CustomerLoanFlag.toSingleton());
+
+            Map<String, String> insuranceFilter = new HashMap<>();
+            insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
+                NotificationMasterType.COMPANY_REGISTRATION_EXPIRY_BEFORE.toString());
+            NotificationMaster notificationMaster = notificationMasterService
+                .findOneBySpec(insuranceFilter).orElse(null);
+            if (notificationMaster != null) {
+                try {
+                    int daysToExpiryBefore = notificationMaster.getValue();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DAY_OF_MONTH, daysToExpiryBefore);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.MM_DD_YYYY);
+                    Date today = dateFormat.parse(dateFormat.format(c.getTime()));
+                    Date expiry = dateFormat.parse(dateFormat.format(
+                        loan.getCompanyInfo().getLegalStatus().getRegistrationExpiryDate()
+                    ));
+                    boolean flag = expiry.before(today);
+                    if (flag && customerLoanFlag == null) {
+                        customerLoanFlag = new CustomerLoanFlag();
+                        customerLoanFlag.setCustomerLoan(loan);
+                        customerLoanFlag.setFlag(LoanFlag.COMPANY_VAT_PAN_EXPIRY);
+                        customerLoanFlag.setDescription(String
+                            .format(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[1],
+                                daysToExpiryBefore));
+                        customerLoanFlag.setOrder(
+                            Integer.parseInt(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[0]));
+                        customerLoanFlagService.save(customerLoanFlag);
+                    } else if (!flag && customerLoanFlag != null) {
+                        customerLoanFlagService
+                            .deleteCustomerLoanFlagById(customerLoanFlag.getId());
+                    }
+                } catch (ParseException e) {
+                    logger.error("Error parsing company registration expiry date");
+                }
+            }
+        }
+
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getShareSecurity();
         if (shareSecurity != null) {
@@ -800,5 +796,156 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
     }
 
+    @Override
+    public String title() {
+        return "Form Report For Loan";
+    }
+
+    @Override
+    public List<AbstractColumn> columns() {
+        AbstractColumn columnBranch = ColumnBuilder.getNew()
+            .setColumnProperty("branch.name", String.class.getName())
+            .setTitle("Branch").setWidth(85)
+            .build();
+
+        AbstractColumn columnName = ColumnBuilder.getNew()
+            .setColumnProperty("customerInfo.customerName", String.class.getName())
+            .setTitle("Name").setWidth(100)
+            .build();
+
+        AbstractColumn columnLoanName = ColumnBuilder.getNew()
+            .setColumnProperty("loan.name", String.class.getName())
+            .setTitle("Loan Name").setWidth(85)
+            .build();
+
+        AbstractColumn columnCurrentPosition = ColumnBuilder.getNew()
+            .setColumnProperty("toUser.name", String.class.getName())
+            .setTitle("Current Position").setWidth(85)
+            .build();
+        AbstractColumn columnDesignation = ColumnBuilder.getNew()
+            .setColumnProperty("toRole.roleName", String.class.getName())
+            .setTitle("Designation").setWidth(85)
+            .build();
+        AbstractColumn columnCreatedAt = ColumnBuilder.getNew()
+            .setColumnProperty("createdAt", String.class.getName())
+            .setTitle("Created At").setWidth(85)
+            .build();
+        AbstractColumn columnCompanyName = ColumnBuilder.getNew()
+            .setColumnProperty("companyInfo.companyName", String.class.getName())
+            .setTitle("Company Name").setWidth(100)
+            .build();
+        AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
+            .setColumnProperty("loanPendingSpan", Long.class.getName())
+            .setTitle("Loan Pending Span").setWidth(80)
+            .build();
+        AbstractColumn columnProposedAmount = ColumnBuilder.getNew()
+            .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
+            .setTitle("Proposed Amount").setWidth(85)
+            .build();
+        AbstractColumn columnPossessionUnderDays = ColumnBuilder.getNew()
+            .setColumnProperty("loanPossession", Long.class.getName())
+            .setTitle("Possession Under Days").setWidth(80)
+            .build();
+        AbstractColumn columnLifeSpan = ColumnBuilder.getNew()
+            .setColumnProperty("loanSpan", Long.class.getName())
+            .setTitle("Loan Life span").setWidth(80)
+            .build();
+        AbstractColumn columnTypes = ColumnBuilder.getNew()
+            .setColumnProperty("loanType", LoanType.class.getName())
+            .setTitle("Types").setWidth(85)
+            .build();
+        AbstractColumn columnLoanCategory = ColumnBuilder.getNew()
+            .setColumnProperty("loanCategory", LoanApprovalType.class.getName())
+            .setTitle("Loan Category").setWidth(85)
+            .build();
+        AbstractColumn columnStatus = ColumnBuilder.getNew()
+            .setColumnProperty("documentStatus", DocStatus.class.getName())
+            .setTitle("Status").setWidth(85)
+            .build();
+
+        return Arrays.asList(columnBranch, columnName, columnCompanyName, columnLoanName,
+            columnProposedAmount, columnTypes, columnLoanCategory, columnStatus,
+            columnCurrentPosition, columnDesignation,
+            columnCreatedAt, columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays);
+    }
+
+
+    @Override
+    public ReportParam populate(Optional optional) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final User u = userService.getAuthenticatedUser();
+        Map<String, String> s = objectMapper.convertValue(optional.get(), Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        boolean isPullCsv = false;
+        if (s.get("committee") != null) {
+            isPullCsv = true;
+        }
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE) && isPullCsv) {
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+        }
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+        List csvDto = new ArrayList();
+        for (CustomerLoan c : customerLoanList) {
+            CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
+            customerLoanCsvDto.setBranch(c.getBranch());
+            customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
+            customerLoanCsvDto.setCompanyInfo(c.getCompanyInfo());
+            customerLoanCsvDto.setLoan(c.getLoan());
+            customerLoanCsvDto.setProposal(c.getProposal());
+            customerLoanCsvDto.setLoanType(c.getLoanType());
+            customerLoanCsvDto.setLoanCategory(c.getLoanCategory());
+            customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
+            customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
+            customerLoanCsvDto.setToRole(c.getCurrentStage().getToRole());
+            customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
+            customerLoanCsvDto.setCurrentStage(c.getCurrentStage());
+            if (c.getDocumentStatus() == DocStatus.PENDING
+                || c.getDocumentStatus() == DocStatus.DOCUMENTATION
+                || c.getDocumentStatus() == DocStatus.VALUATION
+                || c.getDocumentStatus() == DocStatus.UNDER_REVIEW
+                || c.getDocumentStatus() == DocStatus.DISCUSSION) {
+                customerLoanCsvDto.setLoanPendingSpan(
+                    this.calculatePendingLoanSpanAndPossession(c.getCurrentStage().getCreatedAt()));
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculatePendingLoanSpanAndPossession(
+                        c.getCurrentStage().getLastModifiedAt()));
+            } else {
+                customerLoanCsvDto.setLoanPossession(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getPreviousList().get(c.getPreviousList().size() - 1)
+                            .getLastModifiedAt()));
+                customerLoanCsvDto.setLoanSpan(
+                    this.calculateLoanSpanAndPossession(c.getCurrentStage().getLastModifiedAt(),
+                        c.getCurrentStage().getCreatedAt()));
+            }
+
+            csvDto.add(customerLoanCsvDto);
+
+        }
+
+        String filePath = getDownloadPath();
+        ReportParam reportParam = ReportParam.builder().reportName("Catalogue Report")
+            .title(title())
+            .subTitle(subTitle()).columns(columns()).data(csvDto).reportType(ReportType.FORM_REPORT)
+            .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
+            .build();
+        return reportParam;
+    }
+
+    public String getDownloadPath() {
+        return new PathBuilder(UploadDir.initialDocument)
+            .buildBuildFormDownloadPath("Catalogue");
+    }
 }
 

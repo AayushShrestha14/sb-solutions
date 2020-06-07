@@ -1,15 +1,16 @@
 package com.sb.solutions.api.nepseCompany.service;
 
-import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
-import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
-import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
-import com.sb.solutions.core.enums.Status;
+import java.util.List;
+
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sb.solutions.api.loan.service.CustomerShareLoanThreadService;
+import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
+import com.sb.solutions.api.nepseCompany.repository.NepseMasterRepository;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * @author Sunil Babu Shrestha on 1/17/2020
@@ -20,7 +21,8 @@ public class NepseMasterServiceImpl implements NepseMasterService {
     private final CustomerShareLoanThreadService customerShareLoanThreadService;
     private TaskExecutor executor;
 
-    public NepseMasterServiceImpl(NepseMasterRepository nepseMasterRepository, TaskExecutor taskExecutor, CustomerShareLoanThreadService customerShareLoanThreadService) {
+    public NepseMasterServiceImpl(NepseMasterRepository nepseMasterRepository,
+        TaskExecutor taskExecutor, CustomerShareLoanThreadService customerShareLoanThreadService) {
         this.nepseMasterRepository = nepseMasterRepository;
         this.executor = taskExecutor;
         this.customerShareLoanThreadService = customerShareLoanThreadService;

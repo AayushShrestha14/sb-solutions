@@ -16,11 +16,12 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
+import com.sb.solutions.report.core.service.FormReportGeneratorService;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
  */
-public interface CustomerLoanService extends BaseService<CustomerLoan> {
+public interface CustomerLoanService extends BaseService<CustomerLoan>, FormReportGeneratorService {
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
@@ -61,5 +62,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan> {
     Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable);
 
     List<CustomerLoan> getLoanByCustomerGuarantor(Guarantor guarantor);
+
+    @Transactional
+    void postLoanConditionCheck(CustomerLoan loan);
 
 }

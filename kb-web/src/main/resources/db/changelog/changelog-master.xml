@@ -2015,6 +2015,266 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="98-alter-legal-status-add-registration-expiry-date" author="buddha-shrestha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status" columnName="registration_expiry_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status">
+            <column name="registration_expiry_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="99-alter-legal-status-audit-add-registration-expiry-date" author="buddha-shrestha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status_audit" columnName="registration_expiry_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status_audit">
+            <column name="registration_expiry_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="98-create-insurance_history" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="insurance_history"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="insurance_history">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="customer_loan_id" type="VARCHAR(256)"/>
+            <column name="company" type="VARCHAR(256)"/>
+            <column name="insured_amount" type="DOUBLE"/>
+            <column name="premium_amount" type="VARCHAR(256)"/>
+            <column name="issued_date" type="DATE"/>
+            <column name="expiry_date" type="DATE"/>
+            <column name="policy_type" type="VARCHAR(256)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_insurance_history_created_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_insurance_history_modified_by_id_users_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="98-alter-insurance-add-remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="insurance" columnName="remarks"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="insurance">
+            <column name="remarks" type="LONGTEXT"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="99-alter-customer-loan-alter-limit_exceed" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="limit_exceed"/>
+        </preConditions>
+
+        <modifyDataType tableName="customer_loan" columnName="limit_exceed" newDataType="INT"/>
+        <renameColumn tableName="customer_loan" oldColumnName="limit_exceed" newColumnName="loan_flag"/>
+    </changeSet>
+
+    <changeSet id="100-alter-customer-loan-drop-is_insurance_expired" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="is_insurance_expired"/>
+        </preConditions>
+
+        <dropDefaultValue tableName="customer_loan" columnName="is_insurance_expired"/>
+        <dropColumn tableName="customer_loan" columnName="is_insurance_expired"/>
+    </changeSet>
+
+    <changeSet id="101-alter-customer_loan-drop-loan_flag" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="loan_flag"/>
+        </preConditions>
+
+        <dropColumn tableName="customer_loan" columnName="loan_flag"/>
+    </changeSet>
+
+    <changeSet id="101-alter-customer_loan-drop-loan_remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_loan" columnName="loan_remarks"/>
+        </preConditions>
+
+        <dropColumn tableName="customer_loan" columnName="loan_remarks"/>
+    </changeSet>
+
+    <changeSet id="101-create-customer_loan_flag" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_loan_flag"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_loan_flag">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="flag" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flag_order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_loan_id" type="BIGINT">
+                <constraints nullable="false"
+                foreignKeyName="fk_customer_loan_flag_customer_loan_id_customer_loan_id"
+                referencedTableName="customer_loan"
+                referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="101-alter-insurance-premium_amount-type" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="insurance" columnName="premium_amount"/>
+            <columnExists tableName="insurance_history" columnName="premium_amount"/>
+        </preConditions>
+
+        <modifyDataType tableName="insurance" columnName="premium_amount" newDataType="DOUBLE"/>
+        <modifyDataType tableName="insurance_history" columnName="premium_amount" newDataType="DOUBLE"/>
+    </changeSet>
+
+    <changeSet id="102-alter-insurance-history-add-remarks" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="insurance_history" columnName="remarks"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="insurance_history">
+            <column name="remarks" type="LONGTEXT"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="103-alter-customer_loan_flag-add-notified_by_email" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_flag" columnName="notified_by_email"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_flag">
+            <column name="notified_by_email" type="BOOLEAN" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="110-add-table-company-companyLocations" author="buddha-shrestha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company_locations"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_locations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_company_locations_created_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_company_locations_modified_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="house_number" type="VARCHAR(256)"/>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="address" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="111-add-table-company_locations-audit" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company_locations_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_locations_audit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="house_number" type="VARCHAR(256)"/>
+            <column name="street_name" type="VARCHAR(256)"/>
+            <column name="address" type="VARCHAR(256)"/>
+        </createTable>
+        <addPrimaryKey tableName="company_locations_audit" columnNames="id,rev"
+          constraintName="PK_company_locations_audit_id_rev"/>
+        <addForeignKeyConstraint baseTableName="company_locations_audit" baseColumnNames="rev"
+          constraintName="FK_company_locations_audit_rev_revinfo_rev"
+          referencedTableName="revinfo" referencedColumnNames="rev"/>
+    </changeSet>
+
+    <changeSet id="112-add-column-company-locations-id-table-company-info-" author="buddha-shrestha">
+        <preConditions onFail="MARK_RAN">
+          <not>
+            <columnExists tableName="company_info" columnName="company_locations_id"/>
+          </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_locations_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_entity_info_company_locations_id"
+                  referencedTableName="company_locations"
+                  referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="113-add-column-company-locations-id-table-company-info-audit" author="buddha-shrestha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info_audit" columnName="company_locations_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info_audit">
+            <column name="company_locations_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
   <changeSet id="94-create-table-chat-message" author="rujan">
     <preConditions onFail="MARK_RAN">
       <not>

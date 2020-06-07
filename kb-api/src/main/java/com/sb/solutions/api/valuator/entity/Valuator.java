@@ -11,21 +11,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
-import com.sb.solutions.api.branch.entity.Branch;
-import com.sb.solutions.core.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.State;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.enums.ValuatingField;
-
-import org.hibernate.annotations.Where;
 
 @Entity
 @Data

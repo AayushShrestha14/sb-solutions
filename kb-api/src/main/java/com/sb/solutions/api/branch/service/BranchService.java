@@ -7,11 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.service.BaseService;
+import com.sb.solutions.report.core.service.FormReportGeneratorService;
 
 /**
  * @author Rujan Maharjan on 2/13/2019
  */
-public interface BranchService extends BaseService<Branch> {
+public interface BranchService extends BaseService<Branch>, FormReportGeneratorService {
 
     Map<Object, Object> branchStatusCount();
 
