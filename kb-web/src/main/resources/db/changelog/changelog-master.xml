@@ -2361,6 +2361,29 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="114-create-table-account_category_documents" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="account_category_documents"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="account_category_documents">
+            <column name="account_category_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_account_category_documents_account_category_id"
+                    referencedTableName="account_category"
+                    referencedColumnNames="id"/>
+            </column>
+            <column name="documents_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_account_category_documents_documents_id"
+                    referencedTableName="document"
+                    referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
 
 
