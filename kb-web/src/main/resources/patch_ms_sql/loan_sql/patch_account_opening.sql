@@ -35,7 +35,7 @@ BEGIN
             INSERT INTO sub_nav (id, sub_nav_name, front_url, fa_icon)
             VALUES (9, 'Account Type', '/home/admin/openingAccountConfig/accountType',
                     'settings-outline'),
-                   (10, 'Account Purpose', '/home/admin/openingAccountConfig/accountPurpose',
+                   (10, 'Account Category', '/home/admin/openingAccountConfig/accountCategory',
                     'settings-outline')
             SET IDENTITY_INSERT sub_nav Off
 

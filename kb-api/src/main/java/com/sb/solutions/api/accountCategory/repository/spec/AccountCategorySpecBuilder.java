@@ -1,4 +1,4 @@
-package com.sb.solutions.api.accountPurpose.repository.spec;
+package com.sb.solutions.api.accountCategory.repository.spec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +7,17 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
+import com.sb.solutions.api.accountCategory.entity.AccountCategory;
 
-public class AccountPurposeSpecBuilder {
+public class AccountCategorySpecBuilder {
 
     private final Map<String, String> params;
 
-    public AccountPurposeSpecBuilder(Map<String, String> params) {
+    public AccountCategorySpecBuilder(Map<String, String> params) {
         this.params = params;
     }
 
-    public Specification<AccountPurpose> build() {
+    public Specification<AccountCategory> build() {
         if (MapUtils.isEmpty(params)) {
             return null;
         }
@@ -26,13 +26,13 @@ public class AccountPurposeSpecBuilder {
 
         final String firstProperty = properties.get(0);
 
-        Specification<AccountPurpose> spec = new AccountPurposeSpec(properties.get(0),
+        Specification<AccountCategory> spec = new AccountCategorySpec(properties.get(0),
             params.get(firstProperty));
 
         for (int i = 1; i < properties.size(); i++) {
             final String property = properties.get(i);
             spec = Specification.where(spec)
-                .and(new AccountPurposeSpec(property, params.get(property)));
+                .and(new AccountCategorySpec(property, params.get(property)));
         }
 
         return spec;
