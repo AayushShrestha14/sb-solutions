@@ -2316,7 +2316,73 @@
 
   </changeSet>
 
+    <changeSet id="114-rename-account_purpose-to-account_category" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="account_purpose"/>
+        </preConditions>
 
+        <renameTable oldTableName="account_purpose" newTableName="account_category"/>
+    </changeSet>
+
+    <changeSet id="114-drop-table-account_type_account_purpose" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="account_type_account_purpose"/>
+        </preConditions>
+
+        <dropTable tableName="account_type_account_purpose"/>
+    </changeSet>
+
+    <changeSet id="114-rename-account-category-primary-key" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <primaryKeyExists tableName="account_category" primaryKeyName="PK_ACCOUNT_PURPOSE"/>
+        </preConditions>
+
+        <dropPrimaryKey tableName="account_category" constraintName="PK_ACCOUNT_PURPOSE"/>
+        <addPrimaryKey
+          tableName="account_category"
+          columnNames="id"
+          constraintName="PK_ACCOUNT_CATEGORY"/>
+    </changeSet>
+
+    <changeSet id="114-alter-account_category-add-account_type_id" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="account_category" columnName="account_type_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="account_category">
+            <column name="account_type_id" type="BIGINT">
+                <constraints
+                  foreignKeyName="fk_account_category_account_type_id_account_type_id"
+                  referencedTableName="account_type"
+                  referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="114-create-table-account_category_documents" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="account_category_documents"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="account_category_documents">
+            <column name="account_category_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_account_category_documents_account_category_id"
+                    referencedTableName="account_category"
+                    referencedColumnNames="id"/>
+            </column>
+            <column name="documents_id" type="BIGINT">
+                <constraints nullable="false"
+                    foreignKeyName="fk_account_category_documents_documents_id"
+                    referencedTableName="document"
+                    referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
 

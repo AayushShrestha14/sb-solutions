@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.accountPurpose.entity.AccountPurpose;
+import com.sb.solutions.api.accountCategory.entity.AccountCategory;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeningAccount {
 
-    private AccountPurpose purposeOfAccount;
+    private AccountCategory purposeOfAccount;
     private String currency;
     private boolean haveJoint;
     private boolean haveNominee;

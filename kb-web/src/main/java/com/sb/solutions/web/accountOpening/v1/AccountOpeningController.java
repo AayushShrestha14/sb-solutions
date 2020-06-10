@@ -24,7 +24,7 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.email.Email;
-import com.sb.solutions.core.utils.email.MailSenderService;
+import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.file.ByteToMultipartFile;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 
@@ -33,7 +33,7 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
 public class AccountOpeningController {
 
     private final OpeningFormService openingFormService;
-    private final MailSenderService mailSenderService;
+    private final MailThreadService mailThreadService;
     private final Logger logger = LoggerFactory.getLogger(AccountOpeningController.class);
     @Value("${bank.name}")
     private String bankName;
@@ -42,10 +42,10 @@ public class AccountOpeningController {
 
     public AccountOpeningController(
         @Autowired OpeningFormService openingFormService,
-        @Autowired MailSenderService mailSenderService
+        @Autowired MailThreadService mailThreadService
     ) {
         this.openingFormService = openingFormService;
-        this.mailSenderService = mailSenderService;
+        this.mailThreadService = mailThreadService;
     }
 
     @PostMapping
@@ -62,7 +62,7 @@ public class AccountOpeningController {
             for (OpeningCustomer customer : c.getOpeningAccount().getOpeningCustomers()) {
                 email.setTo(customer.getEmail());
                 email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
-                mailSenderService.send(Template.ACCOUNT_OPENING_THANK_YOU, email);
+                mailThreadService.sendMain(Template.ACCOUNT_OPENING_THANK_YOU, email);
             }
             logger.debug("Email sent for Account Opening Request");
             return new RestResponseDto().successModel(c);
@@ -94,7 +94,7 @@ public class AccountOpeningController {
                     email.setTo(customer.getEmail());
                     email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
                     if (newOpeningForm.getStatus().equals(AccountStatus.APPROVAL)) {
-                        mailSenderService.send(Template.ACCOUNT_OPENING_ACCEPT, email);
+                        mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
                     }
                 }
             }

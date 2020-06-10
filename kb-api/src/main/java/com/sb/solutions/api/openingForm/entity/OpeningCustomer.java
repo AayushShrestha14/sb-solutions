@@ -1,6 +1,7 @@
 package com.sb.solutions.api.openingForm.entity;
 
 import java.util.Date;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class OpeningCustomer {
 
     private String title;
-    private String imagePath;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -43,26 +43,21 @@ public class OpeningCustomer {
     private String citizenNumber;
     private String citizenIssuedPlace;
     private Date citizenIssuedDate;
-    private String citizenImagePath;
     private String voterNumber;
     private String voterIssuedPlace;
     private Date voterIssuedDate;
-    private String voterImagePath;
     private String licenseNumber;
     private String licenseIssuedPlace;
     private Date licenseIssuedDate;
     private Date licenseExpireDate;
-    private String licenseImagePath;
     private String passportNumber;
     private String passportIssuedPlace;
     private Date passportIssuedDate;
     private Date passportExpireDate;
-    private String passportImagePath;
     private String idCardNumber;
     private String idCardIssueAuthority;
     private Date idCardIssuedDate;
     private Date idCardExpireDate;
-    private String idImagePath;
     private Date visaIssueDate;
     private Date visaValidity;
     private String panNo;
@@ -85,4 +80,5 @@ public class OpeningCustomer {
     private String residentialPermitOfForeignType;
     private boolean highProfileRelation;
     private String residentialPermitOfForeignCountryName;
+    private Set<AccountOpeningDocument> documents;
 }
