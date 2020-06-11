@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -130,4 +131,27 @@ public class AccountOpeningController {
             uploadDto.getBranch(), uploadDto.getType(), uploadDto.getName(),
             uploadDto.getCitizenship(), uploadDto.getCustomerName());
     }
+
+    @PostMapping(value = "/action")
+    public ResponseEntity<?> updateCustomer(@Valid @RequestBody OpeningActionDto openingActionDto) {
+        OpeningForm openingForm = openingFormService.findOne(openingActionDto.getId());
+        openingForm.setStatus(openingActionDto.getActionStatus());
+        OpeningForm savedAccountOpening = openingFormService.save(openingForm);
+        if (ObjectUtils.isEmpty(savedAccountOpening)) {
+            return new RestResponseDto()
+                .failureModel("Error while " + openingActionDto.getActionStatus() + "ing" + "form");
+        }
+        if (openingActionDto.getActionStatus().equals(AccountStatus.APPROVAL)) {
+            Email email = new Email();
+            email.setBankName(this.bankName);
+            email.setBankWebsite(this.bankWebsite);
+            email.setBankBranch(openingForm.getBranch().getName());
+            email.setAccountType(openingForm.getAccountType().getName());
+            email.setTo(openingActionDto.getEmail());
+            email.setToName(openingForm.getFullName());
+            mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
+        }
+        return new RestResponseDto().successModel(savedAccountOpening);
+    }
+
 }
