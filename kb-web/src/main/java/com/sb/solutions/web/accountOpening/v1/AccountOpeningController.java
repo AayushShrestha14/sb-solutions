@@ -141,16 +141,16 @@ public class AccountOpeningController {
             return new RestResponseDto()
                 .failureModel("Error while " + openingActionDto.getActionStatus() + "ing" + "form");
         }
-        if (openingActionDto.getActionStatus().equals(AccountStatus.APPROVAL)) {
+        openingActionDto.getOpeningCustomers().forEach(openingCustomer -> {
             Email email = new Email();
             email.setBankName(this.bankName);
             email.setBankWebsite(this.bankWebsite);
             email.setBankBranch(openingForm.getBranch().getName());
             email.setAccountType(openingForm.getAccountType().getName());
-            email.setTo(openingActionDto.getEmail());
-            email.setToName(openingForm.getFullName());
+            email.setTo(openingCustomer.getEmail());
+            email.setName(openingCustomer.getFirstName() + ' ' + openingCustomer.getLastName());
             mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
-        }
+        });
         return new RestResponseDto().successModel(savedAccountOpening);
     }
 
