@@ -1,5 +1,6 @@
 package com.sb.solutions.web.accountOpening.v1;
 
+import java.util.List;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -55,16 +56,31 @@ public class AccountOpeningController {
         if (c == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
-            logger.debug("Account Opening Request Saved");
+
+            // notify user and branch user for new request
             Email email = new Email();
             email.setBankName(this.bankName);
             email.setBankWebsite(this.bankWebsite);
             email.setBankBranch(c.getBranch().getName());
+            // get branch user's email
+            List<String> representativesEmailIds = openingFormService
+                .getUsersEmailHavingAccountOpeningPermissionInBranch(c.getBranch().getId());
             for (OpeningCustomer customer : c.getOpeningAccount().getOpeningCustomers()) {
+                String customerName = customer.getFirstName() + ' ' + customer.getLastName();
                 email.setTo(customer.getEmail());
-                email.setToName(customer.getFirstName() + ' ' + customer.getLastName());
+                email.setToName(customerName);
                 mailThreadService.sendMain(Template.ACCOUNT_OPENING_THANK_YOU, email);
+                if (null != representativesEmailIds && representativesEmailIds.size() > 0) {
+                    email.setBody(customerName);
+                    email.setToName("Account Opening Representative");
+                    representativesEmailIds.parallelStream().forEach(id -> {
+                        email.setTo(id);
+                        mailThreadService
+                            .sendMain(Template.ACCOUNT_OPENING_BRANCH_NOTIFICATION, email);
+                    });
+                }
             }
+
             logger.debug("Email sent for Account Opening Request");
             return new RestResponseDto().successModel(c);
         }

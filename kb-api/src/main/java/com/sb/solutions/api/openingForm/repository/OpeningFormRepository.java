@@ -28,4 +28,7 @@ public interface OpeningFormRepository extends JpaRepository<OpeningForm, Long>,
         + "        from opening_form"
         + "        where opening_form.branch_id in (:branchIds)) total", nativeQuery = true)
     Map<Object, Object> openingFormStatusCount(List<Long> branchIds);
+
+    @Query(value = "select u.email from users u join role_permission_rights r on u.role_id=r.role_id join users_branch ub on u.id = ub.user_id  where r.permission_id=:permission and ub.branch_id=:branchId", nativeQuery = true)
+    List<String> getUsersEmailHavingAccountOpeningPermissionInBranch(int permission, long branchId);
 }
