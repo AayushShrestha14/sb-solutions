@@ -1,5 +1,6 @@
 package com.sb.solutions.web.accountOpening.v1;
 
+import java.util.Date;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -152,6 +154,15 @@ public class AccountOpeningController {
             mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
         });
         return new RestResponseDto().successModel(savedAccountOpening);
+    }
+
+    // requested whole form for future use
+    @PatchMapping("/update-form-data")
+    public ResponseEntity<?> getById(@RequestBody OpeningForm form) {
+        OpeningForm  openingForm = openingFormService.findOne(form.getId());
+        openingForm.setRemark(form.getRemark());
+        openingForm.setLastFollowUp(new Date());
+        return new RestResponseDto().successModel(openingFormService.save(openingForm));
     }
 
 }
