@@ -28,6 +28,7 @@ import com.sb.solutions.api.openingForm.entity.OpeningForm;
 import com.sb.solutions.api.openingForm.repository.OpeningFormRepository;
 import com.sb.solutions.api.openingForm.repository.specification.OpeningFormSpecBuilder;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.AccountStatus;
@@ -123,6 +124,12 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     public Map<Object, Object> getStatus() {
         List<Long> currentUserBranches = userService.getRoleAccessFilterByBranch();
         return openingFormRepository.openingFormStatusCount(currentUserBranches);
+    }
+
+    @Override
+    public List<String> getUsersEmailHavingAccountOpeningPermissionInBranch(long branchId) {
+         return openingFormRepository.getUsersEmailHavingAccountOpeningPermissionInBranch(
+            AppConstant.ACCOUNT_OPENING_PERMISSION, branchId);;
     }
 
     private void validateDateFields(OpeningForm openingForm) {
