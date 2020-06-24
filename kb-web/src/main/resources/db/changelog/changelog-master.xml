@@ -2384,6 +2384,28 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="115-add-remark-account-opening-table" author="bibash">
+        <preConditions>
+            <not>
+                <columnExists tableName="opening_form" columnName="remark"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="opening_form">
+            <column name="remark" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="116-add-last-follow-up-account-opening-table" author="bibash">
+        <preConditions>
+            <not>
+                <columnExists tableName="opening_form" columnName="last_follow_up"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="opening_form">
+            <column name="last_follow_up" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

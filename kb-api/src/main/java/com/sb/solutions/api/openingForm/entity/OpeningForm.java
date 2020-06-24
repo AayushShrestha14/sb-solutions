@@ -9,12 +9,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.data.annotation.LastModifiedDate;
+
 import com.sb.solutions.api.accountType.entity.AccountType;
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.AccountStatus;
 
 @Entity
@@ -22,7 +26,7 @@ import com.sb.solutions.core.enums.AccountStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "opening_form")
-public class OpeningForm {
+public class OpeningForm{
 
     @Id
     @GeneratedValue
@@ -38,4 +42,10 @@ public class OpeningForm {
     private String customerDetailsJson;
     @Transient
     private OpeningAccount openingAccount;
+
+    private String remark;
+
+    @LastModifiedDate
+    @JsonFormat(pattern = AppConstant.DATE_FORMAT)
+    private Date lastFollowUp = new Date();
 }
