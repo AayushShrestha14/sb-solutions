@@ -1,6 +1,8 @@
 package com.sb.solutions.core.utils.string;
 
 import java.security.SecureRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StringUtil {
 
@@ -25,4 +27,11 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static String getAcronym(final String sentence, final String seperator) {
+        String acronym = Stream.of(sentence.split(seperator))
+            .map(s -> s.substring(0, 1))
+            .collect(Collectors.joining());
+
+        return acronym;
+    }
 }

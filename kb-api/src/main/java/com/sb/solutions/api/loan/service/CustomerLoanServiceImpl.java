@@ -1,9 +1,13 @@
 package com.sb.solutions.api.loan.service;
 
+import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
+import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
+
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -22,7 +26,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +38,7 @@ import org.springframework.stereotype.Service;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.customer.entity.Customer;
@@ -84,6 +88,7 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
@@ -203,11 +208,30 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Transactional
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
+        // validation start
         if (customerLoan.getLoan() == null) {
             throw new ServiceValidationException("Loan can not be null");
         }
+        CompanyInfo companyInfo = null;
+        boolean isNewLoan = false;
+        Customer customer = customerLoan.getCustomerInfo();
+        if (customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
+            companyInfo = customerLoan.getCompanyInfo();
+            if (!companyInfo.isValid()) {
+                throw new ServiceValidationException(
+                    companyInfo.getValidationMsg());
+            }
+        } else {
+            if (!customer.isValid()) {
+                throw new ServiceValidationException(
+                    customer.getValidationMsg());
+            }
+        }
+
+        // validation end
 
         if (customerLoan.getId() == null) {
+            isNewLoan = true;
             customerLoan.setBranch(userService.getAuthenticatedUser().getBranch().get(0));
             LoanStage stage = new LoanStage();
             stage.setToRole(userService.getAuthenticatedUser().getRole());
@@ -219,21 +243,42 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
         }
 
-        if (customerLoan.getDmsLoanFile() != null) {
-            customerLoan.getDmsLoanFile()
-                .setDocumentPath(new Gson().toJson(customerLoan.getDmsLoanFile().getDocumentMap()));
-            customerLoan.getDmsLoanFile().setCreatedAt(new Date());
-            customerLoan.setDmsLoanFile(dmsLoanFileService.save(customerLoan.getDmsLoanFile()));
+        if (null != companyInfo) {
+            customerLoan
+                .setCompanyInfo(this.companyInfoService.save(companyInfo));
+
+            /*
+            if business loan , business pan/vat number will be citizenship number , companay name will be customer name
+            and establishment date will be issue date
+             */
+
+            customer.setCustomerName(companyInfo.getCompanyName());
+            customer.setCitizenshipNumber(companyInfo.getPanNumber());
+            customer.setCitizenshipIssuedDate(companyInfo.getEstablishmentDate());
+            customer.setOccupation(companyInfo.getBusinessType().toString());
+            // look whether customer already exists
+            try {
+                Customer existingCustomer = customerService
+                    .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
+                        customer.getCustomerName(), customer.getCitizenshipNumber(),
+                        customer.getCitizenshipIssuedDate()
+                    );
+                if (existingCustomer != null) {
+
+                    customer.setId(existingCustomer.getId());
+                }
+            } catch (Exception e) {
+                logger.debug(" No customer {} with pan {} exists", customer.getCustomerName(),
+                    customer.getCitizenshipNumber());
+            }
+
+
         }
 
-        if (customerLoan.getCustomerInfo() != null) {
-            customerLoan.setCustomerInfo(this.customerService.save(customerLoan.getCustomerInfo()));
+        if (customer != null) {
+            customerLoan.setCustomerInfo(this.customerService.save(customer));
         }
-        if (customerLoan.getCompanyInfo() != null
-            && customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
-            customerLoan
-                .setCompanyInfo(this.companyInfoService.save(customerLoan.getCompanyInfo()));
-        }
+
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
         }
@@ -277,6 +322,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .mapDtosToEntities(customerLoan.getNepaliTemplates());
             nepaliTemplates.forEach(v -> v.setCustomerLoan(savedCustomerLoan));
             nepaliTemplateService.saveAll(nepaliTemplates);
+        }
+
+        if (isNewLoan) {
+
+            String refNumber = new StringBuilder().append(LocalDate.now().getYear())
+                .append(LocalDate.now().getMonthValue())
+                .append(LocalDate.now().getDayOfMonth()).append(SEPERATOR_FRONT_SLASH)
+                .append(customerLoan.getLoan().getId()).append(SEPERATOR_FRONT_SLASH)
+                .append(
+                    StringUtil.getAcronym(customerLoan.getLoanCategory().name(), SEPERATOR_BLANK))
+                .append(SEPERATOR_FRONT_SLASH).append(customerLoan.getId()).toString();
+
+            customerLoanRepository.updateReferenceNo(refNumber, customerLoan.getId());
         }
 
         return savedCustomerLoan;

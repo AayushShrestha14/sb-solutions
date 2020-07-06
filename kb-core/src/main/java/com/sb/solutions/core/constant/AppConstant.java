@@ -15,4 +15,7 @@ public class AppConstant {
 
     // Permission Constant
     public static final int ACCOUNT_OPENING_PERMISSION = 19;
+
+    public static final String SEPERATOR_FRONT_SLASH = "/";
+    public static final String SEPERATOR_BLANK = " ";
 }

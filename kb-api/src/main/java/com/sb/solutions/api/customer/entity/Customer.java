@@ -2,6 +2,8 @@ package com.sb.solutions.api.customer.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -21,12 +23,14 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.util.Pair;
 
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enitity.EntityValidator;
 import com.sb.solutions.core.enums.Status;
 
 @Entity
@@ -37,7 +41,7 @@ import com.sb.solutions.core.enums.Status;
 @Table(name = "customer")
 @EntityListeners({AuditingEntityListener.class})
 @Audited
-public class Customer extends BaseEntity<Long> {
+public class Customer extends BaseEntity<Long> implements EntityValidator {
 
     @NotAudited
     private String profilePic;
@@ -76,4 +80,20 @@ public class Customer extends BaseEntity<Long> {
     private List<CustomerRelative> customerRelatives;
 
     private String nepaliDetail;
+
+    @Override
+    public Pair<Boolean, String> valid() {
+        final String validationMsg =
+            "Customer Info - Name, Date of Birth, citizenship Number, Citizenship Issue date,"
+                + "Citizenship Issued Place";
+        Pair pair = Pair.of(Boolean.TRUE, "");
+        Boolean anyAttributeNull = Stream.of(this.customerName,
+            this.dob, this.citizenshipIssuedPlace,
+            this.citizenshipNumber, this.citizenshipIssuedDate).anyMatch(Objects::isNull);
+        if (anyAttributeNull) {
+            pair = Pair.of(Boolean.FALSE,
+                validationMsg);
+        }
+        return pair;
+    }
 }

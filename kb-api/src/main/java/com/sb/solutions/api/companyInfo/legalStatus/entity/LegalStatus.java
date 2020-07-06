@@ -1,6 +1,8 @@
 package com.sb.solutions.api.companyInfo.legalStatus.entity;
 
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Stream;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 
@@ -10,8 +12,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.util.Pair;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enitity.EntityValidator;
 
 @Entity
 @Data
@@ -20,7 +24,7 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @EntityListeners({AuditingEntityListener.class})
 @Audited
-public class LegalStatus extends BaseEntity<Long> {
+public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
 
     private String corporateStructure;
 
@@ -36,6 +40,19 @@ public class LegalStatus extends BaseEntity<Long> {
 
     private Date registrationExpiryDate;
 
-
+    @Override
+    public Pair<Boolean, String> valid() {
+        final String validationMsg = "Company Info -None of Legal Status Section Field can be left empty.";
+        Pair pair = Pair.of(Boolean.TRUE, "");
+        Boolean anyAttributeNull = Stream.of(this.corporateStructure,
+            this.registeredOffice, this.registeredUnderAct,
+            this.registrationDate, this.panRegistrationOffice,
+            this.panRegistrationDate, this.registrationExpiryDate).anyMatch(Objects::isNull);
+        if (anyAttributeNull) {
+            pair = Pair.of(Boolean.FALSE,
+                validationMsg);
+        }
+        return pair;
+    }
 
 }

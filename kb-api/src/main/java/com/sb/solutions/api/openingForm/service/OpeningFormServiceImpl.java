@@ -129,7 +129,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
     @Override
     public List<String> getUsersEmailHavingAccountOpeningPermissionInBranch(long branchId) {
          return openingFormRepository.getUsersEmailHavingAccountOpeningPermissionInBranch(
-            AppConstant.ACCOUNT_OPENING_PERMISSION, branchId);;
+            AppConstant.ACCOUNT_OPENING_PERMISSION, branchId);
     }
 
     private void validateDateFields(OpeningForm openingForm) {

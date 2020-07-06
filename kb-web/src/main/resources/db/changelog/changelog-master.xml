@@ -2406,6 +2406,19 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="117-alter-customer-loan-add-ref-no" author="sunil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="ref_no"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="ref_no" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

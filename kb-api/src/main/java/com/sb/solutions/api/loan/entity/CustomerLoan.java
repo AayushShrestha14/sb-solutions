@@ -212,6 +212,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Insurance insurance;
 
     @NotAudited
+    private String refNo;
+
+    @NotAudited
     @OneToMany
     @JoinColumn(name = "customer_loan_id")
     private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
