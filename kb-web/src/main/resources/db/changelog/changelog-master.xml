@@ -2429,6 +2429,14 @@
             <column name="loan_category" type="SMALLINT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="119-alter-customer-remove-citizenship-constraint" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer" columnName="citizenship_number"/>
+        </preConditions>
+        <dropUniqueConstraint tableName="customer" constraintName="customer_unique_citizenship_number"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 
