@@ -13,8 +13,14 @@ public class AppConstant {
     // List available template id
     public static final int TEMPLATE_SHARE_SECURITY = 13;
 
+    // Role Constant
+    public static final String ADMIN_ROLE = "admin";
+
     // Permission Constant
     public static final int ACCOUNT_OPENING_PERMISSION = 19;
+    public static final int ELIGIBILITY_PERMISSION = 18;
+    public static final int ELIGIBILITY_PERMISSION_SUBNAV_QUESTION = 4;
+    public static final int ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION = 5;
 
     public static final String SEPERATOR_FRONT_SLASH = "/";
     public static final String SEPERATOR_BLANK = " ";
