@@ -2419,6 +2419,24 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="118-alter-loan_config-add-category" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="loan_config" columnName="loan_category"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="loan_config">
+            <column name="loan_category" type="SMALLINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="119-alter-customer-remove-citizenship-constraint" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer" columnName="citizenship_number"/>
+        </preConditions>
+        <dropUniqueConstraint tableName="customer" constraintName="customer_unique_citizenship_number"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

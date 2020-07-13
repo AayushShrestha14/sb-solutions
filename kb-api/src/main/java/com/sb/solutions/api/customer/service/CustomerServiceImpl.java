@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findCustomerByCitizenshipNumber(String citizenshipNumber) {
+    public List<Customer> findCustomerByCitizenshipNumber(String citizenshipNumber) {
         return customerRepository.findCustomerByCitizenshipNumber(citizenshipNumber);
     }
 

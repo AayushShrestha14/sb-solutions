@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -79,4 +80,6 @@ public class LoanConfig extends BaseEntity<Long> {
     private Double minimumProposedAmount;
 
     private Double interestRate;
+
+    private LoanApprovalType loanCategory;
 }
