@@ -7,6 +7,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.core.enums.LoanTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -82,4 +83,6 @@ public class LoanConfig extends BaseEntity<Long> {
     private Double interestRate;
 
     private LoanApprovalType loanCategory;
+
+    private LoanTag loanTag;
 }
