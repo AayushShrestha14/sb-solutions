@@ -711,7 +711,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .findAll(specification, pageable);
         List<Customer> customerList = new ArrayList<>();
         customerLoanPage.getContent().forEach(customerLoan -> {
-            if (!customerList.contains(customerLoan)) {
+            if (!customerList.contains(customerLoan) && (customerLoan.getCustomerInfo() != null)) {
                 customerList.add(customerLoan.getCustomerInfo());
             }
         });
