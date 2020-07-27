@@ -2437,6 +2437,17 @@
         <dropUniqueConstraint tableName="customer" constraintName="customer_unique_citizenship_number"/>
     </changeSet>
 
+    <changeSet id="120-alter-loan_config-add-loan_tag" author="Aashish">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="loan_config" columnName="loan_tag"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="loan_config">
+            <column name="loan_tag" type="SMALLINT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
