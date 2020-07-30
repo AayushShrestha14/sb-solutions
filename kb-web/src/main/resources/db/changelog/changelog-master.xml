@@ -2448,6 +2448,54 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="create-credit-risk-grading-alpha" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="credit-risk-grading-alpha"/>
+            </not>
+        </preConditions>
+        <createTable tableName="credit-risk-grading-alpha">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_credit-risk-grading-alpha_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_credit-risk-grading-alpha_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="alter-customer-loan-add-credit-risk-grading-alpha" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="credit-risk-grading-alpha_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="credit-risk-grading-alpha_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_credit-risk-grading-alpha_id"
+                             referencedTableName="credit-risk-grading-alpha"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
