@@ -34,4 +34,8 @@ public class AccountCategory {
     @ManyToMany
     @Where(clause = "status = 1")
     private List<Document> documents;
+
+    private Float interestRate;
+
+    private Double minimumBalance;
 }

@@ -2448,6 +2448,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="123-alter-account_category_add_interest_rate_and_minimum_balance" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="account_category" columnName="interest_rate"/>
+                <columnExists tableName="account_category" columnName="minimum_balance"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="account_category">
+            <column name="interest_rate" type="float"/>
+            <column name="minimum_balance" type="double"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
