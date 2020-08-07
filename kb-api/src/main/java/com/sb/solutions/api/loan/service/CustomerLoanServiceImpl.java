@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -112,6 +113,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final MawCreditRiskGradingService mawCreditRiskGradingService;
+    private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private final GroupServices groupService;
@@ -134,6 +136,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         SiteVisitService siteVisitService,
         FinancialService financialService,
         MawCreditRiskGradingService mawCreditRiskGradingService,
+        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
         SecurityService securityservice,
         ProposalService proposalService,
         CustomerOfferService customerOfferService,
@@ -155,6 +158,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.mawCreditRiskGradingService = mawCreditRiskGradingService;
+        this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
@@ -305,6 +309,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getMawCreditRiskGrading() != null) {
             customerLoan.setMawCreditRiskGrading(
                 this.mawCreditRiskGradingService.save(customerLoan.getMawCreditRiskGrading()));
+        }
+        if (customerLoan.getCreditRiskGradingAlpha() != null) {
+            customerLoan.setCreditRiskGradingAlpha(
+                    this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
@@ -642,6 +650,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.getMawCreditRiskGrading().setId(null);
             previousLoan.setMawCreditRiskGrading(
                 mawCreditRiskGradingService.save(previousLoan.getMawCreditRiskGrading()));
+        }
+        if (previousLoan.getCreditRiskGradingAlpha() != null) {
+            previousLoan.getCreditRiskGradingAlpha().setId(null);
+            previousLoan.setCreditRiskGradingAlpha(
+                    creditRiskGradingAlphaService.save(previousLoan.getCreditRiskGradingAlpha()));
         }
         if (previousLoan.getShareSecurity() != null) {
             previousLoan.getShareSecurity().setId(null);
