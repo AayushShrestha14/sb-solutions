@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.repository.CustomerRepository;
@@ -20,11 +21,15 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    private final CustomerInfoService customerInfoService;
 
     public CustomerServiceImpl(
-        @Autowired CustomerRepository customerRepository) {
+        @Autowired CustomerRepository customerRepository,
+        CustomerInfoService customerInfoService) {
         this.customerRepository = customerRepository;
+        this.customerInfoService = customerInfoService;
     }
 
     @Override
@@ -37,9 +42,16 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.getOne(id);
     }
 
+    @Transactional
     @Override
     public Customer save(Customer customer) {
-        return customerRepository.save(customer);
+        if (!customer.isValid()) {
+            throw new ServiceValidationException(
+                customer.getValidationMsg());
+        }
+        final Customer customer1 = customerRepository.save(customer);
+        customerInfoService.saveObject(customer1);
+        return customer1;
     }
 
     @Override

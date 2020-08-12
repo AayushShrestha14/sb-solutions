@@ -44,6 +44,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.group.entity.Group;
@@ -83,6 +84,11 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Audited
     @ManyToOne
     private Customer customerInfo;
+
+
+    @NotAudited
+    @ManyToOne
+    private CustomerInfo loanHolder;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne

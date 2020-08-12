@@ -42,6 +42,7 @@ import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
@@ -124,6 +125,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final InsuranceService insuranceService;
     private final NotificationMasterService notificationMasterService;
     private final CustomerLoanFlagService customerLoanFlagService;
+    private final CustomerInfoService customerInfoService;
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -145,8 +147,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         NepaliTemplateMapper nepaliTemplateMapper,
         InsuranceService insuranceService,
         NotificationMasterService notificationMasterService,
-        CustomerLoanFlagService customerLoanFlagService
-    ) {
+        CustomerLoanFlagService customerLoanFlagService,
+
+        CustomerInfoService customerInfoService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -167,6 +170,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.insuranceService = insuranceService;
         this.notificationMasterService = notificationMasterService;
         this.customerLoanFlagService = customerLoanFlagService;
+        this.customerInfoService = customerInfoService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -276,7 +280,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (customer != null) {
-            customerLoan.setCustomerInfo(this.customerService.save(customer));
+            Customer c = this.customerService.save(customer);
+            customerLoan.setCustomerInfo(c);
+            customerLoan.setLoanHolder(customerInfoService.findByAssociateId(c.getId()));
         }
 
         if (customerLoan.getFinancial() != null) {
