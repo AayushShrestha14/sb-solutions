@@ -36,6 +36,7 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private CustomerIdType idType;
 
+    @NotNull(message = "idNumber cannot be null")
     private String idNumber;
 
     private Date idRegDate;
