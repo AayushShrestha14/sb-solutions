@@ -2510,6 +2510,28 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="124-alter-account_category_remove_interest_rate_and_minimum_balance" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="account_category" columnName="interest_rate"/>
+            <columnExists tableName="account_category" columnName="minimum_balance"/>
+        </preConditions>
+
+        <dropColumn tableName="account_category" columnName="interest_rate"/>
+        <dropColumn tableName="account_category" columnName="minimum_balance"/>
+    </changeSet>
+    
+    <changeSet id="124-alter-account_category_add_additional_information" author="elvin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="account_category" columnName="additional_information"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="account_category">
+            <column name="additional_information" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
