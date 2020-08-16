@@ -1,8 +1,11 @@
 package com.sb.solutions.web.navigation;
 
+import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION;
+import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION;
+import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_QUESTION;
+
 import java.util.List;
 
-import com.sb.solutions.core.constant.AppConstant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +16,9 @@ import com.sb.solutions.api.authorization.entity.RolePermissionRights;
 import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.web.navigation.mapper.MenuMapper;
-
-import static com.sb.solutions.core.constant.AppConstant.*;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -56,13 +58,13 @@ public class NavigationController {
         below logic is to guard
          */
         boolean hasEligibilityPermission = rolePermissionRights.stream()
-                .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
+            .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
         if (!u.getRole().getRoleName().equals(AppConstant.ADMIN_ROLE) && hasEligibilityPermission) {
             rolePermissionRights.stream().forEach(role -> {
                 if (role.getPermission().getId() == ELIGIBILITY_PERMISSION) {
                     role.getPermission().getSubNavs()
-                            .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
-                                    || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
+                        .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
+                            || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
                 }
             });
 
