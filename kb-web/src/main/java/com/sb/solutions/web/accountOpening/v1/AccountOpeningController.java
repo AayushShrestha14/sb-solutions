@@ -1,7 +1,7 @@
 package com.sb.solutions.web.accountOpening.v1;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -93,6 +93,15 @@ public class AccountOpeningController {
         return new RestResponseDto().successModel(openingFormService.findOne(id));
     }
 
+    // requested whole form for future use
+    @PatchMapping("/update-form-data")
+    public ResponseEntity<?> getById(@RequestBody OpeningForm form) {
+        OpeningForm openingForm = openingFormService.findOne(form.getId());
+        openingForm.setRemark(form.getRemark());
+        openingForm.setLastFollowUp(new Date());
+        return new RestResponseDto().successModel(openingFormService.save(openingForm));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id,
         @RequestBody OpeningForm openingForm) {
@@ -119,6 +128,28 @@ public class AccountOpeningController {
             }
             return new RestResponseDto().successModel(newOpeningForm);
         }
+    }
+
+    @PostMapping(value = "/action")
+    public ResponseEntity<?> updateCustomer(@Valid @RequestBody OpeningActionDto openingActionDto) {
+        OpeningForm openingForm = openingFormService.findOne(openingActionDto.getId());
+        openingForm.setStatus(openingActionDto.getActionStatus());
+        OpeningForm savedAccountOpening = openingFormService.save(openingForm);
+        if (ObjectUtils.isEmpty(savedAccountOpening)) {
+            return new RestResponseDto()
+                .failureModel("Error while " + openingActionDto.getActionStatus() + "ing" + "form");
+        }
+        openingActionDto.getOpeningCustomers().forEach(openingCustomer -> {
+            Email email = new Email();
+            email.setBankName(this.bankName);
+            email.setBankWebsite(this.bankWebsite);
+            email.setBankBranch(openingForm.getBranch().getName());
+            email.setAccountType(openingForm.getAccountType().getName());
+            email.setTo(openingCustomer.getEmail());
+            email.setName(openingCustomer.getFirstName() + ' ' + openingCustomer.getLastName());
+            mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
+        });
+        return new RestResponseDto().successModel(savedAccountOpening);
     }
 
     @GetMapping(value = "/statusCount")
@@ -148,37 +179,6 @@ public class AccountOpeningController {
         return FileUploadUtils.uploadAccountOpeningFile(multipartFile,
             uploadDto.getBranch(), uploadDto.getType(), uploadDto.getName(),
             uploadDto.getCitizenship(), uploadDto.getCustomerName());
-    }
-
-    @PostMapping(value = "/action")
-    public ResponseEntity<?> updateCustomer(@Valid @RequestBody OpeningActionDto openingActionDto) {
-        OpeningForm openingForm = openingFormService.findOne(openingActionDto.getId());
-        openingForm.setStatus(openingActionDto.getActionStatus());
-        OpeningForm savedAccountOpening = openingFormService.save(openingForm);
-        if (ObjectUtils.isEmpty(savedAccountOpening)) {
-            return new RestResponseDto()
-                .failureModel("Error while " + openingActionDto.getActionStatus() + "ing" + "form");
-        }
-        openingActionDto.getOpeningCustomers().forEach(openingCustomer -> {
-            Email email = new Email();
-            email.setBankName(this.bankName);
-            email.setBankWebsite(this.bankWebsite);
-            email.setBankBranch(openingForm.getBranch().getName());
-            email.setAccountType(openingForm.getAccountType().getName());
-            email.setTo(openingCustomer.getEmail());
-            email.setName(openingCustomer.getFirstName() + ' ' + openingCustomer.getLastName());
-            mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
-        });
-        return new RestResponseDto().successModel(savedAccountOpening);
-    }
-
-    // requested whole form for future use
-    @PatchMapping("/update-form-data")
-    public ResponseEntity<?> getById(@RequestBody OpeningForm form) {
-        OpeningForm  openingForm = openingFormService.findOne(form.getId());
-        openingForm.setRemark(form.getRemark());
-        openingForm.setLastFollowUp(new Date());
-        return new RestResponseDto().successModel(openingFormService.save(openingForm));
     }
 
 }
