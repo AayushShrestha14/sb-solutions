@@ -10,6 +10,8 @@ public interface CustomerInfoService extends Service<CustomerInfo, Long> {
 
     CustomerInfo saveObject(Object o);
 
+    CustomerInfo saveLoanInformation(Object o, Long customerInfoId, String template);
+
     CustomerInfo findByAssociateId(Long id);
 
 }

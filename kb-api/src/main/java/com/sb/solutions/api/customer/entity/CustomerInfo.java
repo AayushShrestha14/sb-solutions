@@ -3,6 +3,7 @@ package com.sb.solutions.api.customer.entity;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 
@@ -57,5 +59,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     private Long associateId;
 
     private Status status = Status.ACTIVE;
+
+    @OneToOne
+    private SiteVisit siteVisit;
 
 }

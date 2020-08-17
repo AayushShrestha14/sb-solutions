@@ -2463,8 +2463,79 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="create-credit-risk-grading-alpha" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="credit_risk_grading_alpha"/>
+      </not>
+    </preConditions>
+    <createTable tableName="credit_risk_grading_alpha">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_risk_grading_alpha_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_risk_grading_alpha_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
 
-  <changeSet id="124-create-customer-info-table" author="rujan">
+  <changeSet id="alter-customer-loan-add-credit-risk-grading-alpha" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="credit_risk_grading_alpha_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="credit_risk_grading_alpha_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_loan_credit_risk_grading_alpha_id"
+          referencedTableName="credit_risk_grading_alpha"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="124-alter-account_category_remove_interest_rate_and_minimum_balance"
+    author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="account_category" columnName="interest_rate"/>
+      <columnExists tableName="account_category" columnName="minimum_balance"/>
+    </preConditions>
+
+    <dropColumn tableName="account_category" columnName="interest_rate"/>
+    <dropColumn tableName="account_category" columnName="minimum_balance"/>
+  </changeSet>
+
+  <changeSet id="124-alter-account_category_add_additional_information" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="account_category" columnName="additional_information"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="account_category">
+      <column name="additional_information" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="125-create-customer-info-table" author="rujan">
     <preConditions onFail="MARK_RAN">
       <not>
         <tableExists tableName="customer_info"/>
@@ -2517,12 +2588,54 @@
       </column>
       <column name="status" type="BIGINT">
       </column>
+
+      <column name="site_visit_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_site_visit_id"
+          referencedTableName="site_visit"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="financial_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_financial_id"
+          referencedTableName="financial"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_group_id"
+          referencedTableName="groups"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="guarantor_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_guarantor_id"
+          referencedTableName="guarantor"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="insurance_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_insurance_id"
+          referencedTableName="insurance"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="credit_risk_grading_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_credit_risk_grading_id"
+          referencedTableName="credit_risk_grading"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="credit_risk_grading_alpha_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_credit_risk_grading_alpha_id"
+          referencedTableName="credit_risk_grading_alpha"
+          referencedColumnNames="id"/>
+      </column>
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
   </changeSet>
 
-
-  <changeSet id="125-alter-customer-loan-add-customer-info" author="rujan">
+  <changeSet id="126-alter-customer-loan-add-customer-info" author="rujan">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_loan" columnName="loan_holder_id"/>
@@ -2539,77 +2652,6 @@
     </addColumn>
 
   </changeSet>
-
-    <changeSet id="create-credit-risk-grading-alpha" author="Amulya">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="credit_risk_grading_alpha"/>
-            </not>
-        </preConditions>
-        <createTable tableName="credit_risk_grading_alpha">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="created_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_credit_risk_grading_alpha_created_by_id"
-                             referencedTableName="users"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="modified_by_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_credit_risk_grading_alpha_modified_by_id"
-                             referencedTableName="users"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="created_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_at" type="DATE">
-                <constraints nullable="false"/>
-            </column>
-            <column name="version" type="INT" defaultValueNumeric="0"/>
-            <column name="data" type="LONGTEXT"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="alter-customer-loan-add-credit-risk-grading-alpha" author="Amulya">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="customer_loan" columnName="credit_risk_grading_alpha_id"/>
-            </not>
-        </preConditions>
-        <addColumn tableName="customer_loan">
-            <column name="credit_risk_grading_alpha_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_customer_loan_credit_risk_grading_alpha_id"
-                             referencedTableName="credit_risk_grading_alpha"
-                             referencedColumnNames="id"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="124-alter-account_category_remove_interest_rate_and_minimum_balance" author="elvin">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="account_category" columnName="interest_rate"/>
-            <columnExists tableName="account_category" columnName="minimum_balance"/>
-        </preConditions>
-
-        <dropColumn tableName="account_category" columnName="interest_rate"/>
-        <dropColumn tableName="account_category" columnName="minimum_balance"/>
-    </changeSet>
-    
-    <changeSet id="124-alter-account_category_add_additional_information" author="elvin">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="account_category" columnName="additional_information"/>
-            </not>
-        </preConditions>
-
-        <addColumn tableName="account_category">
-            <column name="additional_information" type="LONGTEXT"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>
 
 

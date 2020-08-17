@@ -1,11 +1,18 @@
 package com.sb.solutions.api.customer.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.customer.entity.Customer;
@@ -14,6 +21,9 @@ import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
+import com.sb.solutions.api.siteVisit.entity.SiteVisit;
+import com.sb.solutions.api.siteVisit.service.SiteVisitService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
 
@@ -25,13 +35,19 @@ import com.sb.solutions.core.service.BaseServiceImpl;
 public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long> implements
     CustomerInfoService {
 
+    private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
+
     private final CustomerInfoRepository customerInfoRepository;
 
+
+    private final SiteVisitService siteVisitService;
+
     public CustomerInfoServiceImpl(
-        @Autowired CustomerInfoRepository customerInfoRepository) {
+        @Autowired CustomerInfoRepository customerInfoRepository,
+        SiteVisitService siteVisitService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
-
+        this.siteVisitService = siteVisitService;
     }
 
 
@@ -57,6 +73,21 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         return this.save(customerInfo);
     }
 
+    @Transactional
+    @Override
+    public CustomerInfo saveLoanInformation(Object o, Long customerInfoId, String template) {
+        Optional<CustomerInfo> customerInfo = customerInfoRepository.findById(customerInfoId);
+        Preconditions.checkArgument(customerInfo.isPresent(), NULL_MESSAGE);
+        final CustomerInfo customerInfo1 = customerInfo.get();
+        if ((template.equalsIgnoreCase(TemplateName.SITE_VISIT))) {
+
+            final SiteVisit siteVisit = siteVisitService
+                .save(objectMapper().convertValue(o, SiteVisit.class));
+            customerInfo1.setSiteVisit(siteVisit);
+        }
+        return customerInfoRepository.save(customerInfo1);
+    }
+
     @Override
     public CustomerInfo findByAssociateId(Long id) {
         return customerInfoRepository.findByAssociateId(id);
@@ -67,4 +98,23 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         filterParams.values().removeIf(Objects::isNull);
         return new CustomerInfoSpecBuilder(filterParams);
     }
+
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
+        return objectMapper;
+    }
 }
+
+
+class TemplateName {
+
+    static final String SITE_VISIT = "SiteVisit";
+    static final String FINANCIAL = "Financial";
+
+
+}
+
+
