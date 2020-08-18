@@ -21,6 +21,8 @@ import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
+import com.sb.solutions.api.security.entity.Security;
+import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.core.constant.AppConstant;
@@ -41,13 +43,16 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
     private final SiteVisitService siteVisitService;
+    private final SecurityService securityService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
-        SiteVisitService siteVisitService) {
+        SiteVisitService siteVisitService,
+        SecurityService securityService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.siteVisitService = siteVisitService;
+        this.securityService = securityService;
     }
 
 
@@ -85,6 +90,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
         }
+        if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
+
+            final Security security = securityService
+                .save(objectMapper().convertValue(o, Security.class));
+            customerInfo1.setSecurity(security);
+        }
         return customerInfoRepository.save(customerInfo1);
     }
 
@@ -113,6 +124,7 @@ class TemplateName {
 
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
+    static final String SECURITY = "Security";
 
 
 }

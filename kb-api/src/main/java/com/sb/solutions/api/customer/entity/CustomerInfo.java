@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
@@ -62,5 +63,8 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private SiteVisit siteVisit;
+
+    @OneToOne
+    private Security security;
 
 }

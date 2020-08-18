@@ -2652,6 +2652,22 @@
     </addColumn>
 
   </changeSet>
+
+  <changeSet id="127-alter-customer-info-add-security-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="security_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="security_id" type="BIGINT">
+      <constraints nullable="true"
+        foreignKeyName="fk_customer_info_security_id"
+        referencedTableName="security"
+        referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
