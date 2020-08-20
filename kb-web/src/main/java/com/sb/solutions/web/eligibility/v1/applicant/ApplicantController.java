@@ -94,9 +94,9 @@ public class ApplicantController {
         email.setPhoneNumber(branch.getLandlineNumber());
         email.setLoanType(
             loanConfigService.findOne(applicant.getLoanConfig().getId()).getName());
-        if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE ||
-            applicant.getEligibilityStatus() == EligibilityStatus.NOT_ELIGIBLE ||
-            applicant.getEligibilityStatus() == EligibilityStatus.NEW_REQUEST) {
+        if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE
+            || applicant.getEligibilityStatus() == EligibilityStatus.NOT_ELIGIBLE
+            || applicant.getEligibilityStatus() == EligibilityStatus.NEW_REQUEST) {
             mailSenderService.send(Template.ELIGIBILITY_REQUEST, email);
         } else if (applicant.getEligibilityStatus() == EligibilityStatus.APPROVED) {
             mailSenderService.send(Template.ELIGIBILITY_APPROVE, email);
