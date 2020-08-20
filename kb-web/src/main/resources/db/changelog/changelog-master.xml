@@ -2652,6 +2652,75 @@
     </addColumn>
 
   </changeSet>
+
+  <changeSet id="127-add-table-contact_person" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="contact_person"/>
+      </not>
+    </preConditions>
+    <createTable tableName="contact_person">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_created_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_modified_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="contact_number" type="VARCHAR(20)"/>
+      <column name="email" type="VARCHAR(255)"/>
+      <column name="province_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_province_id"
+                     referencedTableName="province"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="district_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_district_id"
+                     referencedTableName="district"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="municipality_vdc_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_municipality_vdc_id"
+                     referencedTableName="municipality_vdc"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="128-alter-company_info-add-contact_person_id" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="contact_person_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="contact_person_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_company_info_contact_person_id"
+                     referencedTableName="contact_person"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

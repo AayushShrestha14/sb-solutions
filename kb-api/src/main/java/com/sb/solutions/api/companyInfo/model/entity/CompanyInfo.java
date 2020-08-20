@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.sb.solutions.api.contactPerson.entity.ContactPerson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
@@ -62,6 +64,11 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;
+
+    @NotAudited
+    @OneToOne(cascade = CascadeType.ALL)
+    private ContactPerson contactPerson;
+
     @Override
     public Pair<Boolean, String> valid() {
         Boolean validator = Boolean.TRUE;
