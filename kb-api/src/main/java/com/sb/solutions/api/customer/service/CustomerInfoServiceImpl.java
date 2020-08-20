@@ -85,7 +85,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Preconditions.checkArgument(customerInfo.isPresent(), NULL_MESSAGE);
         final CustomerInfo customerInfo1 = customerInfo.get();
         if ((template.equalsIgnoreCase(TemplateName.SITE_VISIT))) {
-
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
@@ -107,10 +106,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     @Override
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
+        filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
         return new CustomerInfoSpecBuilder(filterParams);
     }
 
-    public ObjectMapper objectMapper() {
+
+    private ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

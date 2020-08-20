@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.eligibility.applicant.entity.Applicant;
 import com.sb.solutions.api.eligibility.applicant.service.ApplicantService;
@@ -57,6 +58,7 @@ public class ApplicantController {
         this.loanConfigService = loanConfigService;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     @PostMapping
     public final ResponseEntity<?> saveApplicant(@Valid @RequestBody Applicant applicant,
         @PathVariable long loanConfigId) {
@@ -67,9 +69,7 @@ public class ApplicantController {
         if (savedApplicant == null) {
             return new RestResponseDto().failureModel("Oops! Something went wrong.");
         } else {
-            if (savedApplicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE) {
-                sendMail(savedApplicant);
-            }
+            sendMail(savedApplicant);
             return new RestResponseDto()
                 .successModel(applicantMapper.mapEntityToDto(savedApplicant));
         }
@@ -86,16 +86,19 @@ public class ApplicantController {
 
     private void sendMail(Applicant applicant) {
         Email email = new Email();
+        Branch branch = branchService.findOne(applicant.getBranch().getId());
         email.setBankName(this.bankName);
         email.setBankWebsite(this.bankWebsite);
-        email.setBankBranch(
-            branchService.findOne(applicant.getBranch().getId()).getName());
+        email.setBankBranch(branch.getName());
         email.setTo(applicant.getEmail());
         email.setToName(applicant.getFullName());
+        email.setPhoneNumber(branch.getLandlineNumber());
         email.setLoanType(
             loanConfigService.findOne(applicant.getLoanConfig().getId()).getName());
-        if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE) {
-            mailSenderService.send(Template.ELIGIBILITY_ELIGIBLE, email);
+        if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE
+            || applicant.getEligibilityStatus() == EligibilityStatus.NOT_ELIGIBLE
+            || applicant.getEligibilityStatus() == EligibilityStatus.NEW_REQUEST) {
+            mailSenderService.send(Template.ELIGIBILITY_REQUEST, email);
         } else if (applicant.getEligibilityStatus() == EligibilityStatus.APPROVED) {
             mailSenderService.send(Template.ELIGIBILITY_APPROVE, email);
         }
