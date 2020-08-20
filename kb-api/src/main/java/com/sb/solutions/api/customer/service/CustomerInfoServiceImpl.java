@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.financial.service.FinancialService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,12 +43,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
     private final SiteVisitService siteVisitService;
+    private final FinancialService financialService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
+        FinancialService financialService,
         SiteVisitService siteVisitService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
+        this.financialService = financialService;
         this.siteVisitService = siteVisitService;
     }
 
@@ -83,6 +88,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
+        }
+        if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+
+            final Financial financial = financialService
+                    .save(objectMapper().convertValue(o, Financial.class));
+            customerInfo1.setFinancial(financial);
         }
         return customerInfoRepository.save(customerInfo1);
     }
