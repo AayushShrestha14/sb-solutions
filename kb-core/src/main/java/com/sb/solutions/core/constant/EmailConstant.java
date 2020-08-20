@@ -21,8 +21,8 @@ public final class EmailConstant {
         .put(Template.ELIGIBILITY_APPROVE, "/mail/eligible-approve")
         .put(Template.INSURANCE_EXPIRY_MAKER, "/mail/insurance-expiry")
         .put(Template.INSURANCE_EXPIRY_CLIENT, "/mail/insurance-expiry-client")
-        .put(Template.ACCOUNT_OPENING_BRANCH_NOTIFICATION,
-            "/mail/account-opening-branch-notification")
+        .put(Template.ACCOUNT_OPENING_BRANCH_NOTIFICATION, "/mail/account-opening-branch-notification")
+        .put(Template.ELIGIBILITY_REQUEST, "/mail/eligible-request.html")
         .build();
 
     private EmailConstant() {
@@ -40,7 +40,8 @@ public final class EmailConstant {
         ACCOUNT_OPENING_ACCEPT("Thank You !! Account Opening request has been accepted."),
         INSURANCE_EXPIRY_MAKER("Your Insurance will be expired soon !!!"),
         INSURANCE_EXPIRY_CLIENT("Your Insurance will be expired soon !!!"),
-        ACCOUNT_OPENING_BRANCH_NOTIFICATION("New Request for Account Opening");
+        ACCOUNT_OPENING_BRANCH_NOTIFICATION("New Request for Account Opening"),
+        ELIGIBILITY_REQUEST("Loan Request Sent");
 
         private String subject;
 
