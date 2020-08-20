@@ -21,8 +21,7 @@ public final class EmailConstant {
         .put(Template.ELIGIBILITY_APPROVE, "/mail/eligible-approve")
         .put(Template.INSURANCE_EXPIRY_MAKER, "/mail/insurance-expiry")
         .put(Template.INSURANCE_EXPIRY_CLIENT, "/mail/insurance-expiry-client")
-        .put(Template.ACCOUNT_OPENING_BRANCH_NOTIFICATION,
-            "/mail/account-opening-branch-notification")
+        .put(Template.ACCOUNT_OPENING_BRANCH_NOTIFICATION, "/mail/account-opening-branch-notification")
         .put(Template.ELIGIBILITY_REQUEST, "/mail/eligible-request.html")
         .build();
 

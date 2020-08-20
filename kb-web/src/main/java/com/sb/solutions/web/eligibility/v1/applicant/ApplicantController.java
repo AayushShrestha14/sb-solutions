@@ -58,6 +58,7 @@ public class ApplicantController {
         this.loanConfigService = loanConfigService;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     @PostMapping
     public final ResponseEntity<?> saveApplicant(@Valid @RequestBody Applicant applicant,
         @PathVariable long loanConfigId) {
@@ -68,7 +69,7 @@ public class ApplicantController {
         if (savedApplicant == null) {
             return new RestResponseDto().failureModel("Oops! Something went wrong.");
         } else {
-                sendMail(savedApplicant);
+            sendMail(savedApplicant);
             return new RestResponseDto()
                 .successModel(applicantMapper.mapEntityToDto(savedApplicant));
         }
