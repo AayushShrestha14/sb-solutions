@@ -2721,6 +2721,57 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="129-alter-customer-info-add-security-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="security_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="security_id" type="BIGINT">
+      <constraints nullable="true"
+        foreignKeyName="fk_customer_info_security_id"
+        referencedTableName="security"
+        referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="130-alter-customer-info-add-share-security-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="share_security_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="share_security_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_share_security_id"
+          referencedTableName="share_security"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="131-alter-table-customer-share-data-column-rename-share_rate" author="buddha">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="customer_share_data" columnName="share_rate"/>
+    </preConditions>
+    <renameColumn tableName="customer_share_data" oldColumnName="share_rate" newColumnName="amount_per_unit"/>
+  </changeSet>
+
+  <changeSet id="132-alter-customer-share-date_add-column-company-code" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_share_data" columnName="company_code"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_share_data">
+      <column name="company_code" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
