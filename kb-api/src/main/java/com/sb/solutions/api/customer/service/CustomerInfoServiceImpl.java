@@ -23,6 +23,8 @@ import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.api.sharesecurity.ShareSecurity;
+import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.core.constant.AppConstant;
@@ -44,15 +46,18 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
     private final SiteVisitService siteVisitService;
     private final SecurityService securityService;
+    private final ShareSecurityService shareSecurityService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
         SiteVisitService siteVisitService,
-        SecurityService securityService) {
+        SecurityService securityService,
+        ShareSecurityService shareSecurityService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.siteVisitService = siteVisitService;
         this.securityService = securityService;
+        this.shareSecurityService = shareSecurityService;
     }
 
 
@@ -96,6 +101,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
         }
+        if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
+
+            final ShareSecurity shareSecurity = shareSecurityService
+                .save(objectMapper().convertValue(o, ShareSecurity.class));
+            customerInfo1.setShareSecurity(shareSecurity);
+        }
         return customerInfoRepository.save(customerInfo1);
     }
 
@@ -125,6 +136,7 @@ class TemplateName {
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";
+    static  final String SHARE_SECURITY = "Share Security";
 
 
 }

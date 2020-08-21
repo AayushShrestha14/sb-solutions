@@ -3,7 +3,8 @@ package com.sb.solutions.core.enums;
 public enum LoanTag {
     GENERAL("GENERAL"),
     VEHICLE("VEHICLE"),
-    FIXED_DEPOSIT("FIXED DEPOSIT");
+    FIXED_DEPOSIT("FIXED DEPOSIT"),
+    SHARE_SECURITY("SHARE SECURITY");
 
     private final String value;
 
