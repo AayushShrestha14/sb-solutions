@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import com.sb.solutions.api.financial.entity.Financial;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -65,6 +66,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToOne
     private SiteVisit siteVisit;
 
+    @OneToOne
+    private Financial financial;
     @OneToOne
     private Security security;
 

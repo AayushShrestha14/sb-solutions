@@ -2653,7 +2653,76 @@
 
   </changeSet>
 
-  <changeSet id="127-alter-customer-info-add-security-id" author="buddha">
+  <changeSet id="127-add-table-contact_person" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="contact_person"/>
+      </not>
+    </preConditions>
+    <createTable tableName="contact_person">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_created_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_modified_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="contact_number" type="VARCHAR(20)"/>
+      <column name="email" type="VARCHAR(255)"/>
+      <column name="province_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_province_id"
+                     referencedTableName="province"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="district_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_district_id"
+                     referencedTableName="district"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="municipality_vdc_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_contact_person_municipality_vdc_id"
+                     referencedTableName="municipality_vdc"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="128-alter-company_info-add-contact_person_id" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="contact_person_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="contact_person_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_company_info_contact_person_id"
+                     referencedTableName="contact_person"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="129-alter-customer-info-add-security-id" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_info" columnName="security_id"/>
@@ -2669,7 +2738,7 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="128-alter-customer-info-add-share-security-id" author="buddha">
+  <changeSet id="130-alter-customer-info-add-share-security-id" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_info" columnName="share_security_id"/>
@@ -2685,14 +2754,14 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="129-alter-table-customer-share-data-column-rename-share_rate" author="buddha">
+  <changeSet id="131-alter-table-customer-share-data-column-rename-share_rate" author="buddha">
     <preConditions onFail="MARK_RAN">
         <columnExists tableName="customer_share_data" columnName="share_rate"/>
     </preConditions>
     <renameColumn tableName="customer_share_data" oldColumnName="share_rate" newColumnName="amount_per_unit"/>
   </changeSet>
 
-  <changeSet id="130-alter-customer-share-date_add-column-company-code" author="buddha">
+  <changeSet id="132-alter-customer-share-date_add-column-company-code" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_share_data" columnName="company_code"/>

@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.financial.service.FinancialService;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,20 +46,26 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
     private final CustomerInfoRepository customerInfoRepository;
+    private final CompanyInfoRepository companyInfoRepository;
 
 
     private final SiteVisitService siteVisitService;
+    private final FinancialService financialService;
     private final SecurityService securityService;
     private final ShareSecurityService shareSecurityService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        SiteVisitService siteVisitService,
-        SecurityService securityService,
-        ShareSecurityService shareSecurityService) {
+            @Autowired CompanyInfoRepository companyInfoRepository,
+            @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
+            SiteVisitService siteVisitService,
+            SecurityService securityService,
+            ShareSecurityService shareSecurityService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
+        this.financialService = financialService;
         this.siteVisitService = siteVisitService;
+        this.companyInfoRepository = companyInfoRepository;
         this.securityService = securityService;
         this.shareSecurityService = shareSecurityService;
     }
@@ -80,6 +90,19 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setContactNo(((Customer) o).getContactNumber());
             customerInfo.setEmail(((Customer) o).getEmail());
         }
+        if (o instanceof CompanyInfo) {
+            customerInfo = customerInfoRepository.findByAssociateId(((CompanyInfo) o).getId());
+            log.info("Saving company into customer info {}", o);
+            if (ObjectUtils.isEmpty(customerInfo)) {
+                customerInfo = new CustomerInfo();
+            }
+            customerInfo.setAssociateId(((CompanyInfo) o).getId());
+            customerInfo.setCustomerType(CustomerType.COMPANY);
+            customerInfo.setName(((CompanyInfo) o).getCompanyName());
+            customerInfo.setIdType(CustomerIdType.PAN);
+            customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
+        }
+
         return this.save(customerInfo);
     }
 
@@ -90,10 +113,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Preconditions.checkArgument(customerInfo.isPresent(), NULL_MESSAGE);
         final CustomerInfo customerInfo1 = customerInfo.get();
         if ((template.equalsIgnoreCase(TemplateName.SITE_VISIT))) {
-
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
+        }
+        if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+
+            final Financial financial = financialService
+                    .save(objectMapper().convertValue(o, Financial.class));
+            customerInfo1.setFinancial(financial);
         }
         if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
 
@@ -118,10 +146,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     @Override
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
+        filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
         return new CustomerInfoSpecBuilder(filterParams);
     }
 
-    public ObjectMapper objectMapper() {
+
+    private ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
