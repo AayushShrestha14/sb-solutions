@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -44,13 +46,16 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
     private final SiteVisitService siteVisitService;
+    private final FinancialService financialService;
 
     public CustomerInfoServiceImpl(
             @Autowired CompanyInfoRepository companyInfoRepository,
             @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
             SiteVisitService siteVisitService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
+        this.financialService = financialService;
         this.siteVisitService = siteVisitService;
         this.companyInfoRepository = companyInfoRepository;
     }
@@ -98,10 +103,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Preconditions.checkArgument(customerInfo.isPresent(), NULL_MESSAGE);
         final CustomerInfo customerInfo1 = customerInfo.get();
         if ((template.equalsIgnoreCase(TemplateName.SITE_VISIT))) {
-
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
+        }
+        if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+
+            final Financial financial = financialService
+                    .save(objectMapper().convertValue(o, Financial.class));
+            customerInfo1.setFinancial(financial);
         }
         return customerInfoRepository.save(customerInfo1);
     }
@@ -114,10 +124,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     @Override
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
+        filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
         return new CustomerInfoSpecBuilder(filterParams);
     }
 
-    public ObjectMapper objectMapper() {
+
+    private ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

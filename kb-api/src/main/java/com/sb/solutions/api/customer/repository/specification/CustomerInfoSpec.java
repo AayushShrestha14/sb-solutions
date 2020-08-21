@@ -8,6 +8,8 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.CustomerIdType;
+import com.sb.solutions.api.customer.enums.CustomerType;
 
 /**
  * @author : Rujan Maharjan on  8/10/2020
@@ -15,6 +17,8 @@ import com.sb.solutions.api.customer.entity.CustomerInfo;
 public class CustomerInfoSpec implements Specification<CustomerInfo> {
 
     private static final String FILTER_BY_CUSTOMER_NAME = "name";
+    private static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
+    private static final String FILTER_BY_CUSTOMER_ID_TYPE = "idType";
 
     private final String property;
     private final String value;
@@ -35,6 +39,12 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
                     .like(criteriaBuilder
                             .lower(root.get(property)),
                         value.toLowerCase() + "%");
+
+            case FILTER_BY_CUSTOMER_TYPE:
+                return criteriaBuilder.equal(root.get(property), CustomerType.valueOf(value));
+
+            case FILTER_BY_CUSTOMER_ID_TYPE:
+                return criteriaBuilder.equal(root.get(property), CustomerIdType.valueOf(value));
             default:
                 return null;
         }
