@@ -3,6 +3,7 @@ package com.sb.solutions.api.companyInfo.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.api.customer.service.CustomerInfoService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,13 @@ import com.sb.solutions.api.companyInfo.model.repository.specification.CompanyIn
 public class CompanyInfoServiceImpl implements CompanyInfoService {
 
     private final CompanyInfoRepository companyInfoRepository;
+    private final CustomerInfoService customerInfoService;
 
-    public CompanyInfoServiceImpl(@Autowired CompanyInfoRepository companyInfoRepository) {
+    public CompanyInfoServiceImpl(
+            @Autowired CompanyInfoRepository companyInfoRepository,
+            CustomerInfoService customerInfoService) {
         this.companyInfoRepository = companyInfoRepository;
+        this.customerInfoService = customerInfoService;
     }
 
     @Override
@@ -36,7 +41,9 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
     @Override
     public CompanyInfo save(CompanyInfo companyInfo) {
-        return companyInfoRepository.save(companyInfo);
+        final CompanyInfo info = companyInfoRepository.save(companyInfo);
+        customerInfoService.saveObject(info);
+        return info;
     }
 
     @Override

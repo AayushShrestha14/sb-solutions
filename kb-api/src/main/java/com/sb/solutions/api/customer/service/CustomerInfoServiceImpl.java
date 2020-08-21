@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,19 +42,22 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
     private final CustomerInfoRepository customerInfoRepository;
+    private final CompanyInfoRepository companyInfoRepository;
 
 
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        FinancialService financialService,
-        SiteVisitService siteVisitService) {
+            @Autowired CompanyInfoRepository companyInfoRepository,
+            @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
+            SiteVisitService siteVisitService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
         this.siteVisitService = siteVisitService;
+        this.companyInfoRepository = companyInfoRepository;
     }
 
 
@@ -75,6 +80,19 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setContactNo(((Customer) o).getContactNumber());
             customerInfo.setEmail(((Customer) o).getEmail());
         }
+        if (o instanceof CompanyInfo) {
+            customerInfo = customerInfoRepository.findByAssociateId(((CompanyInfo) o).getId());
+            log.info("Saving company into customer info {}", o);
+            if (ObjectUtils.isEmpty(customerInfo)) {
+                customerInfo = new CustomerInfo();
+            }
+            customerInfo.setAssociateId(((CompanyInfo) o).getId());
+            customerInfo.setCustomerType(CustomerType.COMPANY);
+            customerInfo.setName(((CompanyInfo) o).getCompanyName());
+            customerInfo.setIdType(CustomerIdType.PAN);
+            customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
+        }
+
         return this.save(customerInfo);
     }
 
