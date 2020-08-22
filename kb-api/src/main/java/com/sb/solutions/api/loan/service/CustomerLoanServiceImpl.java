@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -42,7 +41,9 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
+import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
@@ -286,7 +287,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customer != null) {
             Customer c = this.customerService.save(customer);
             customerLoan.setCustomerInfo(c);
-            customerLoan.setLoanHolder(customerInfoService.findByAssociateId(c.getId()));
+            customerLoan
+                .setLoanHolder(customerInfoService.findByAssociateIdAndCustomerType(c.getId(),
+                    CustomerType.INDIVIDUAL));
         }
 
         if (customerLoan.getFinancial() != null) {
@@ -318,7 +321,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
             customerLoan.setCreditRiskGradingAlpha(
-                    this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
+                this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
@@ -660,7 +663,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getCreditRiskGradingAlpha() != null) {
             previousLoan.getCreditRiskGradingAlpha().setId(null);
             previousLoan.setCreditRiskGradingAlpha(
-                    creditRiskGradingAlphaService.save(previousLoan.getCreditRiskGradingAlpha()));
+                creditRiskGradingAlphaService.save(previousLoan.getCreditRiskGradingAlpha()));
         }
         if (previousLoan.getShareSecurity() != null) {
             previousLoan.getShareSecurity().setId(null);

@@ -1,6 +1,7 @@
 package com.sb.solutions.api.customer.service;
 
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.core.service.Service;
 
 /**
@@ -12,6 +13,6 @@ public interface CustomerInfoService extends Service<CustomerInfo, Long> {
 
     CustomerInfo saveLoanInformation(Object o, Long customerInfoId, String template);
 
-    CustomerInfo findByAssociateId(Long id);
+    CustomerInfo findByAssociateIdAndCustomerType(Long id, CustomerType customerType);
 
 }

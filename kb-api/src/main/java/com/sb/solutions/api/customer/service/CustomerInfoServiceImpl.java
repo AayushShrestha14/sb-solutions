@@ -9,22 +9,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.financial.entity.Financial;
-import com.sb.solutions.api.financial.service.FinancialService;
-import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
-import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
+import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -75,7 +75,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     public CustomerInfo saveObject(Object o) {
         CustomerInfo customerInfo = new CustomerInfo();
         if (o instanceof Customer) {
-            customerInfo = customerInfoRepository.findByAssociateId(((Customer) o).getId());
+            customerInfo = customerInfoRepository
+                .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.INDIVIDUAL);
             log.info("Saving customer into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -91,7 +92,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setEmail(((Customer) o).getEmail());
         }
         if (o instanceof CompanyInfo) {
-            customerInfo = customerInfoRepository.findByAssociateId(((CompanyInfo) o).getId());
+            customerInfo = customerInfoRepository
+                .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.COMPANY);
             log.info("Saving company into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -139,8 +141,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     }
 
     @Override
-    public CustomerInfo findByAssociateId(Long id) {
-        return customerInfoRepository.findByAssociateId(id);
+    public CustomerInfo findByAssociateIdAndCustomerType(Long id, CustomerType customerType) {
+        return customerInfoRepository.findByAssociateIdAndCustomerType(id, customerType);
     }
 
     @Override
