@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,6 +43,7 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
@@ -82,7 +82,7 @@ import com.sb.solutions.core.enums.Priority;
 @Audited
 public class CustomerLoan extends BaseEntity<Long> {
 
-    @Audited
+    @NotAudited
     @ManyToOne
     private Customer customerInfo;
 
@@ -96,6 +96,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanConfig loan;
 
     @Audited
+    @Transient
     @ManyToOne
     private CompanyInfo companyInfo;
 
@@ -111,15 +112,18 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<CustomerDocument> customerDocument;
 
     @NotAudited
+    @Transient
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
     @Audited
+    @Transient
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;
 
     @NotAudited
+    @Transient
     @OneToOne
     private ShareSecurity shareSecurity;
 
@@ -159,30 +163,37 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Proposal proposal;
 
     @Audited
+    @Transient
     @OneToOne
     private Financial financial;
 
     @Audited
+    @Transient
     @OneToOne
     private Security security;
 
     @NotAudited
+    @Transient
     @OneToOne
     private Group group;
 
     @NotAudited
+    @Transient
     @OneToOne
     private VehicleSecurity vehicleSecurity;
 
     @NotAudited
+    @Transient
     @OneToOne
     private MawCreditRiskGrading mawCreditRiskGrading;
 
     @NotAudited
+    @Transient
     @OneToOne
     private CreditRiskGradingAlpha creditRiskGradingAlpha;
 
     @NotAudited
+    @Transient
     @OneToOne(cascade = CascadeType.ALL)
     private GuarantorDetail guarantor;
 
@@ -208,6 +219,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private int uploadedOfferLetterStat = 0;
 
     @Audited
+    @Transient
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
 
@@ -219,6 +231,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<ReportingInfoLevel> reportingInfoLevels;
 
     @NotAudited
+    @Transient
     @OneToOne
     private Insurance insurance;
 

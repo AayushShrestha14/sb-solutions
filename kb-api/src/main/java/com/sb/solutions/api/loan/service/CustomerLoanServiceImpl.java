@@ -43,6 +43,7 @@ import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
@@ -211,7 +212,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
             }
         }
-        return customerLoan;
+        return mapLoanHolderToCustomerLoan(customerLoan);
     }
 
     @Transactional
@@ -293,13 +294,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (customerLoan.getFinancial() != null) {
-            customerLoan.setFinancial(this.financialService.save(customerLoan.getFinancial()));
+            customerLoan.setFinancial(customerLoan.getLoanHolder().getFinancial());
         }
         if (customerLoan.getSecurity() != null) {
-            customerLoan.setSecurity(this.securityService.save(customerLoan.getSecurity()));
+            customerLoan.setSecurity(customerLoan.getLoanHolder().getSecurity());
         }
         if (customerLoan.getSiteVisit() != null) {
-            customerLoan.setSiteVisit(this.siteVisitService.save(customerLoan.getSiteVisit()));
+            customerLoan.setSiteVisit(customerLoan.getLoanHolder().getSiteVisit());
         }
         if (customerLoan.getProposal() != null) {
             customerLoan.setProposal(this.proposalService.save(customerLoan.getProposal()));
@@ -1026,6 +1027,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public String getDownloadPath() {
         return new PathBuilder(UploadDir.initialDocument)
             .buildBuildFormDownloadPath("Catalogue");
+    }
+
+    private CustomerLoan mapLoanHolderToCustomerLoan(CustomerLoan customerLoan) {
+        CustomerInfo customerInfo = customerLoan.getLoanHolder();
+        customerLoan.setSecurity(customerInfo.getSecurity());
+        customerLoan.setFinancial(customerInfo.getFinancial());
+        customerLoan.setSiteVisit(customerInfo.getSiteVisit());
+        return customerLoan;
     }
 }
 
