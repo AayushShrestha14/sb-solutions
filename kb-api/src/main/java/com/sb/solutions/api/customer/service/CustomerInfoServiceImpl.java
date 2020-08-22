@@ -55,12 +55,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final ShareSecurityService shareSecurityService;
 
     public CustomerInfoServiceImpl(
-            @Autowired CompanyInfoRepository companyInfoRepository,
-            @Autowired CustomerInfoRepository customerInfoRepository,
-            FinancialService financialService,
-            SiteVisitService siteVisitService,
-            SecurityService securityService,
-            ShareSecurityService shareSecurityService) {
+        @Autowired CompanyInfoRepository companyInfoRepository,
+        @Autowired CustomerInfoRepository customerInfoRepository,
+        FinancialService financialService,
+        SiteVisitService siteVisitService,
+        SecurityService securityService,
+        ShareSecurityService shareSecurityService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -93,7 +93,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         }
         if (o instanceof CompanyInfo) {
             customerInfo = customerInfoRepository
-                .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.COMPANY);
+                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.COMPANY);
             log.info("Saving company into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -122,7 +122,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
 
             final Financial financial = financialService
-                    .save(objectMapper().convertValue(o, Financial.class));
+                .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
         }
         if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
@@ -168,7 +168,7 @@ class TemplateName {
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";
-    static  final String SHARE_SECURITY = "Share Security";
+    static final String SHARE_SECURITY = "Share Security";
 
 
 }
