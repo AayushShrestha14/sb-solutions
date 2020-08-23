@@ -2772,6 +2772,22 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="133-alter-customer_info-add-guarantor_details_id" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="guarantors_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="guarantors_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_info_guarantors_id"
+                     referencedTableName="guarantor_detail"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
