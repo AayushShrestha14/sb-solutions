@@ -63,7 +63,7 @@ public class OpeningFormServiceImpl implements OpeningFormService {
 
     @Override
     public OpeningForm findOne(Long id) {
-        OpeningForm openingForm = openingFormRepository.getOne(id);
+        OpeningForm openingForm = openingFormRepository.findById(id).get();
         openingForm.setOpeningAccount(jsonConverter
             .convertToJson(FilePath.getOSPath() + openingForm.getCustomerDetailsJson(),
                 OpeningAccount.class));
