@@ -119,19 +119,19 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
         }
-        if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+        else if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
 
             final Financial financial = financialService
                 .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
         }
-        if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
+        else if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
 
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
         }
-        if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
+        else if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
