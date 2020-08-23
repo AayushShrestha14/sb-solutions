@@ -34,5 +34,6 @@ public class Email {
     private LoanType loanTypes;
     private String clientCitizenshipNumber;
     private String insuranceCompanyName;
+    private String accountNumber;
 
 }
