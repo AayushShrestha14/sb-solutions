@@ -2775,7 +2775,7 @@
     <changeSet id="116-add-account-no-las-account-opening-table" author="bibash">
         <preConditions>
             <not>
-                <columnExists tableName="opening_form" columnName="account_no"/>
+                <columnExists tableName="opening_form" columnName="account_number"/>
             </not>
         </preConditions>
         <addColumn tableName="opening_form">
