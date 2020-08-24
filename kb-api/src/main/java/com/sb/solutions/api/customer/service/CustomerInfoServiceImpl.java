@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
-import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +25,18 @@ import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
+import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.sharesecurity.service.ShareSecurityService;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.api.siteVisit.service.SiteVisitService;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
 
@@ -48,28 +51,27 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
     private final CustomerInfoRepository customerInfoRepository;
-    private final CompanyInfoRepository companyInfoRepository;
-
-
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ShareSecurityService shareSecurityService;
     private final GuarantorDetailService guarantorDetailService;
+    private final UserService userService;
 
     public CustomerInfoServiceImpl(
-            @Autowired CompanyInfoRepository companyInfoRepository,
-            @Autowired CustomerInfoRepository customerInfoRepository,
-            FinancialService financialService,
-            SiteVisitService siteVisitService,
-            SecurityService securityService,
-            ShareSecurityService shareSecurityService,
-            GuarantorDetailService guarantorDetailService) {
+        @Autowired CompanyInfoRepository companyInfoRepository,
+        @Autowired CustomerInfoRepository customerInfoRepository,
+        FinancialService financialService,
+        SiteVisitService siteVisitService,
+        SecurityService securityService,
+        ShareSecurityService shareSecurityService,
+        GuarantorDetailService guarantorDetailService,
+        UserService userService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
         this.siteVisitService = siteVisitService;
-        this.companyInfoRepository = companyInfoRepository;
+        this.userService = userService;
         this.securityService = securityService;
         this.shareSecurityService = shareSecurityService;
         this.guarantorDetailService = guarantorDetailService;
@@ -79,6 +81,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     @Override
     public CustomerInfo saveObject(Object o) {
         CustomerInfo customerInfo = new CustomerInfo();
+        User user = userService.getAuthenticatedUser();
+        Preconditions.checkArgument(user.getRole().getRoleType() == RoleType.MAKER,
+            "You are not Authorize to save customer info");
         if (o instanceof Customer) {
             customerInfo = customerInfoRepository
                 .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.INDIVIDUAL);
@@ -109,7 +114,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdType(CustomerIdType.PAN);
             customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
         }
-
+        customerInfo.setBranch(user.getBranch().get(0));
         return this.save(customerInfo);
     }
 
@@ -144,7 +149,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         }
         if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
-                    .save(objectMapper().convertValue(o, GuarantorDetail.class));
+                .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
         }
         return customerInfoRepository.save(customerInfo1);
