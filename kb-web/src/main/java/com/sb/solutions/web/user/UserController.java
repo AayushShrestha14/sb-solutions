@@ -62,6 +62,11 @@ public class UserController {
         return new RestResponseDto().successModel(userService.getAuthenticatedUser());
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getAuthenticated(@PathVariable Long id) {
+        return new RestResponseDto().successModel(userService.findOne(id));
+    }
+
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody User user) {
         return new RestResponseDto().successModel(userService.save(user));

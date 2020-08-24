@@ -1,15 +1,20 @@
 package com.sb.solutions.web.accountOpening.v1;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +32,7 @@ import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.AccountStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailThreadService;
 import com.sb.solutions.core.utils.file.ByteToMultipartFile;
@@ -39,10 +45,14 @@ public class AccountOpeningController {
     private final OpeningFormService openingFormService;
     private final MailThreadService mailThreadService;
     private final Logger logger = LoggerFactory.getLogger(AccountOpeningController.class);
+    final ObjectMapper mapper = new ObjectMapper();
     @Value("${bank.name}")
     private String bankName;
     @Value("${bank.website}")
     private String bankWebsite;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     public AccountOpeningController(
         @Autowired OpeningFormService openingFormService,
@@ -93,15 +103,6 @@ public class AccountOpeningController {
         return new RestResponseDto().successModel(openingFormService.findOne(id));
     }
 
-    // requested whole form for future use
-    @PatchMapping("/update-form-data")
-    public ResponseEntity<?> getById(@RequestBody OpeningForm form) {
-        OpeningForm openingForm = openingFormService.findOne(form.getId());
-        openingForm.setRemark(form.getRemark());
-        openingForm.setLastFollowUp(new Date());
-        return new RestResponseDto().successModel(openingFormService.save(openingForm));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id,
         @RequestBody OpeningForm openingForm) {
@@ -145,6 +146,7 @@ public class AccountOpeningController {
             email.setBankWebsite(this.bankWebsite);
             email.setBankBranch(openingForm.getBranch().getName());
             email.setAccountType(openingForm.getAccountType().getName());
+            email.setAccountNumber(savedAccountOpening.getAccountNumber());
             email.setTo(openingCustomer.getEmail());
             email.setName(openingCustomer.getFirstName() + ' ' + openingCustomer.getLastName());
             mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
@@ -179,6 +181,28 @@ public class AccountOpeningController {
         return FileUploadUtils.uploadAccountOpeningFile(multipartFile,
             uploadDto.getBranch(), uploadDto.getType(), uploadDto.getName(),
             uploadDto.getCitizenship(), uploadDto.getCustomerName());
+    }
+
+    // requested whole form for future use
+    @PatchMapping("/update-form-data/{id}")
+    public ResponseEntity<?> updateFormData(@PathVariable Long id,
+        @RequestBody Object requestData) {
+        Map<String, Object> d = objectMapper.convertValue(requestData, Map.class);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OpeningForm openingForm = openingFormService.findOne(id);
+        d.forEach((k, v) -> {
+            Field field = ReflectionUtils.findField(OpeningForm.class, k);
+            if (!ObjectUtils.isEmpty(field)) {
+                field.setAccessible(true);
+                if (DateManipulator.isValidDate(v)) {
+                    ReflectionUtils.setField(field, openingForm, new Date(v.toString()));
+                } else {
+                    ReflectionUtils.setField(field, openingForm,
+                        objectMapper.convertValue(v, field.getType()));
+                }
+            }
+        });
+        return new RestResponseDto().successModel(openingFormService.save(openingForm));
     }
 
 }
