@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AppConstant {
 
-        public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String MM_DD_YYYY = "MM-dd-yyyy";
     // List available template id
     public static final int TEMPLATE_SHARE_SECURITY = 13;
