@@ -2826,6 +2826,22 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="137-alter-customer_info-add-branchid" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="branch_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="branch_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_branch_id"
+          referencedTableName="branch"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 

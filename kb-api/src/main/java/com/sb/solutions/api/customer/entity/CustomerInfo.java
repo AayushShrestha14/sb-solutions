@@ -8,16 +8,17 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.api.financial.entity.Financial;
-import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.financial.entity.Financial;
+import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -77,4 +78,7 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private GuarantorDetail guarantors;
+
+    @OneToOne
+    private Branch branch;
 }
