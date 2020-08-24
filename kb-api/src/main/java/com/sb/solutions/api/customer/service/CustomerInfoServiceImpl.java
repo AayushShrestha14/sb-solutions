@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,14 +55,16 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final FinancialService financialService;
     private final SecurityService securityService;
     private final ShareSecurityService shareSecurityService;
+    private final GuarantorDetailService guarantorDetailService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CompanyInfoRepository companyInfoRepository,
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        FinancialService financialService,
-        SiteVisitService siteVisitService,
-        SecurityService securityService,
-        ShareSecurityService shareSecurityService) {
+            @Autowired CompanyInfoRepository companyInfoRepository,
+            @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
+            SiteVisitService siteVisitService,
+            SecurityService securityService,
+            ShareSecurityService shareSecurityService,
+            GuarantorDetailService guarantorDetailService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -68,6 +72,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.companyInfoRepository = companyInfoRepository;
         this.securityService = securityService;
         this.shareSecurityService = shareSecurityService;
+        this.guarantorDetailService = guarantorDetailService;
     }
 
 
@@ -137,6 +142,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
         }
+        if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
+            final GuarantorDetail guarantors = guarantorDetailService
+                    .save(objectMapper().convertValue(o, GuarantorDetail.class));
+            customerInfo1.setGuarantors(guarantors);
+        }
         return customerInfoRepository.save(customerInfo1);
     }
 
@@ -169,8 +179,7 @@ class TemplateName {
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";
     static final String SHARE_SECURITY = "Share Security";
-
-
+    static final String GUARANTOR = "Guarantor";
 }
 
 

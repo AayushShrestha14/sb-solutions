@@ -2772,7 +2772,23 @@
     </addColumn>
   </changeSet>
 
-    <changeSet id="116-add-account-no-las-account-opening-table" author="bibash">
+  <changeSet id="133-alter-customer_info-add-guarantor_details_id" author="Aashish">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="guarantors_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="guarantors_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_info_guarantors_id"
+                     referencedTableName="guarantor_detail"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+    <changeSet id="134-add-account-no-las-account-opening-table" author="bibash">
         <preConditions>
             <not>
                 <columnExists tableName="opening_form" columnName="account_number"/>
@@ -2783,7 +2799,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="120-add-last-follow-up-by-account-opening-table" author="bibash">
+    <changeSet id="135-add-last-follow-up-by-account-opening-table" author="bibash">
         <preConditions>
             <not>
                 <columnExists tableName="opening_form" columnName="last_follow_by"/>
@@ -2799,7 +2815,7 @@
         </addColumn>
     </changeSet>
 
-  <changeSet id="124-add-customer-photo-path-account-opening-table" author="bibash">
+  <changeSet id="136-add-customer-photo-path-account-opening-table" author="bibash">
     <preConditions>
       <not>
         <columnExists tableName="opening_form" columnName="customer_photo_path"/>

@@ -1034,6 +1034,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setSecurity(customerInfo.getSecurity());
         customerLoan.setFinancial(customerInfo.getFinancial());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
+        customerLoan.setGuarantor(customerInfo.getGuarantors());
         return customerLoan;
     }
 }
