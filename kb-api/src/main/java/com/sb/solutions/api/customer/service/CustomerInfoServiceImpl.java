@@ -27,6 +27,8 @@ import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
+import com.sb.solutions.api.insurance.entity.Insurance;
+import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -57,6 +59,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final ShareSecurityService shareSecurityService;
     private final GuarantorDetailService guarantorDetailService;
     private final UserService userService;
+    private final InsuranceService insuranceService;
 
     public CustomerInfoServiceImpl(
         @Autowired CompanyInfoRepository companyInfoRepository,
@@ -66,7 +69,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         SecurityService securityService,
         ShareSecurityService shareSecurityService,
         GuarantorDetailService guarantorDetailService,
-        UserService userService) {
+        UserService userService,
+        InsuranceService insuranceService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -75,6 +79,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.securityService = securityService;
         this.shareSecurityService = shareSecurityService;
         this.guarantorDetailService = guarantorDetailService;
+        this.insuranceService = insuranceService;
     }
 
 
@@ -152,6 +157,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
         }
+        if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
+            final Insurance insurance = insuranceService
+                .save(objectMapper().convertValue(o, Insurance.class));
+            customerInfo1.setInsurance(insurance);
+        }
         return customerInfoRepository.save(customerInfo1);
     }
 
@@ -185,6 +195,9 @@ class TemplateName {
     static final String SECURITY = "Security";
     static final String SHARE_SECURITY = "Share Security";
     static final String GUARANTOR = "Guarantor";
+    static final String INSURANCE = "Insurance";
+
+
 }
 
 

@@ -2772,6 +2772,22 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="133-alter-customer-info-add-insurance-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="insurance_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="insurance_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_insurance_id"
+          referencedTableName="insurance"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="133-alter-customer_info-add-guarantor_details_id" author="Aashish">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -2839,6 +2855,17 @@
           referencedTableName="branch"
           referencedColumnNames="id"/>
       </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="138-alter-insurance-add-column-policy-number" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="insurance" columnName="policy_number"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="insurance">
+      <column name="policy_number" type="varchar(256)"/>
     </addColumn>
   </changeSet>
 
