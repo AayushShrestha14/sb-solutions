@@ -3,11 +3,11 @@ package com.sb.solutions.api.insurance.entity;
 import java.util.Date;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.sb.solutions.core.enitity.BaseEntity;
 
@@ -28,13 +28,15 @@ public class Insurance extends BaseEntity<Long> {
 
     private double premiumAmount;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date issuedDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date expiryDate;
 
     private String policyType;
 
     private String remarks;
+
+    private String policyNumber;
 }
