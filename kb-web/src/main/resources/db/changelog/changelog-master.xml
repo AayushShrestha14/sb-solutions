@@ -2772,6 +2772,22 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="133-alter-customer-info-add-insurance-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="insurance_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="insurance_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_insurance_id"
+          referencedTableName="insurance"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="133-alter-customer_info-add-guarantor_details_id" author="Aashish">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -2789,7 +2805,7 @@
   </changeSet>
 
     <changeSet id="134-add-account-no-las-account-opening-table" author="bibash">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="opening_form" columnName="account_number"/>
             </not>
@@ -2800,11 +2816,11 @@
     </changeSet>
 
     <changeSet id="135-add-last-follow-up-by-account-opening-table" author="bibash">
-        <preConditions>
+         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="opening_form" columnName="last_follow_by"/>
+                <columnExists tableName="opening_form" columnName="last_follow_up_by"/>
             </not>
-        </preConditions>
+         </preConditions>
         <addColumn tableName="opening_form">
             <column name="last_follow_up_by" type="BIGINT">
                 <constraints nullable="true"
@@ -2816,7 +2832,7 @@
     </changeSet>
 
   <changeSet id="136-add-customer-photo-path-account-opening-table" author="bibash">
-    <preConditions>
+    <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="opening_form" columnName="customer_photo_path"/>
       </not>
@@ -2839,6 +2855,17 @@
           referencedTableName="branch"
           referencedColumnNames="id"/>
       </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="138-alter-insurance-add-column-policy-number" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="insurance" columnName="policy_number"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="insurance">
+      <column name="policy_number" type="varchar(256)"/>
     </addColumn>
   </changeSet>
 

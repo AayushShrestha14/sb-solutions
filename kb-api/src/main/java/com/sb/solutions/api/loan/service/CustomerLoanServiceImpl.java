@@ -329,7 +329,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
         }
         if (customerLoan.getInsurance() != null) {
-            customerLoan.setInsurance(this.insuranceService.save(customerLoan.getInsurance()));
+            customerLoan.setInsurance(customerLoan.getLoanHolder().getInsurance());
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
@@ -1040,6 +1040,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setFinancial(customerInfo.getFinancial());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
         customerLoan.setGuarantor(customerInfo.getGuarantors());
+        customerLoan.setInsurance(customerInfo.getInsurance());
         return customerLoan;
     }
 }

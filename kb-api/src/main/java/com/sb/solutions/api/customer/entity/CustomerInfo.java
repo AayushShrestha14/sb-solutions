@@ -19,6 +19,7 @@ import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -75,6 +76,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private ShareSecurity shareSecurity;
+
+    @OneToOne
+    private Insurance insurance;
 
     @OneToOne
     private GuarantorDetail guarantors;
