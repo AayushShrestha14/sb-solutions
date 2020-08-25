@@ -57,6 +57,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     List<CustomerLoan> getLoanByCustomerId(Long id);
 
+    List<CustomerLoan> getLoanByLoanHolderId(Long id);
+
     List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative);
 
     Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable);

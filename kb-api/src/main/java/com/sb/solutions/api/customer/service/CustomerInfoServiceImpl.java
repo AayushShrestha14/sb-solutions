@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -164,6 +165,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
         filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (filterParams.containsKey("branchIds")) {
+            branchAccess = filterParams.get("branchIds");
+        }
+        filterParams.put("branchIds", branchAccess);
         return new CustomerInfoSpecBuilder(filterParams);
     }
 

@@ -705,6 +705,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> getLoanByLoanHolderId(Long id) {
+        return customerLoanRepository.getCustomerLoanByAndLoanHolderId(id);
+    }
+
+    @Override
     public List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative) {
         String date = new SimpleDateFormat("yyyy-MM-dd")
             .format(customerRelative.getCitizenshipIssuedDate());
