@@ -2816,11 +2816,11 @@
     </changeSet>
 
     <changeSet id="135-add-last-follow-up-by-account-opening-table" author="bibash">
-        <preConditions onFail="MARK_RAN">
+         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="opening_form" columnName="last_follow_by"/>
+                <columnExists tableName="opening_form" columnName="last_follow_up_by"/>
             </not>
-        </preConditions>
+         </preConditions>
         <addColumn tableName="opening_form">
             <column name="last_follow_up_by" type="BIGINT">
                 <constraints nullable="true"
