@@ -21,8 +21,8 @@ public class OpeningAccount {
     private OpeningNominee nominee;
     private OpeningBeneficiary beneficiary;
     private Set<OpeningCustomer> openingCustomers;
-    private double annualTurnover;
-    private double annualTransaction;
+    private String annualTransactionNumber;
+    private String annualTransaction;
     private boolean internetBanking;
     private boolean mobileBanking;
     private boolean debitCard;

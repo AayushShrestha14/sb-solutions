@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,6 +41,8 @@ public class Guarantor extends BaseEntity<Long> {
     private MunicipalityVdc municipalities;
 
     private String citizenNumber;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date issuedYear;
 
     private String issuedPlace;

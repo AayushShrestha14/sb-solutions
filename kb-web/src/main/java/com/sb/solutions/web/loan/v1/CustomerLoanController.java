@@ -272,4 +272,9 @@ public class CustomerLoanController {
             .successModel(service.getLoanByCustomerGuarantor(guarantor));
     }
 
+    @GetMapping("/loan-holder/{id}")
+    public ResponseEntity<?> getLoanByLoanHolderId(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
+    }
+
 }

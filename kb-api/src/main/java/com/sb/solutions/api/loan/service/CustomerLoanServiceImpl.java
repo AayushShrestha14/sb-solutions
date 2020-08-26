@@ -326,10 +326,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
-                .setShareSecurity(this.shareSecurityService.save(customerLoan.getShareSecurity()));
+                .setShareSecurity(customerLoan.getLoanHolder().getShareSecurity());
         }
         if (customerLoan.getInsurance() != null) {
-            customerLoan.setInsurance(this.insuranceService.save(customerLoan.getInsurance()));
+            customerLoan.setInsurance(customerLoan.getLoanHolder().getInsurance());
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
@@ -705,6 +705,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> getLoanByLoanHolderId(Long id) {
+        return customerLoanRepository.getCustomerLoanByAndLoanHolderId(id);
+    }
+
+    @Override
     public List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative) {
         String date = new SimpleDateFormat("yyyy-MM-dd")
             .format(customerRelative.getCitizenshipIssuedDate());
@@ -1034,6 +1039,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setSecurity(customerInfo.getSecurity());
         customerLoan.setFinancial(customerInfo.getFinancial());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
+        customerLoan.setGuarantor(customerInfo.getGuarantors());
+        customerLoan.setInsurance(customerInfo.getInsurance());
+        customerLoan.setShareSecurity(customerInfo.getShareSecurity());
         return customerLoan;
     }
 }
