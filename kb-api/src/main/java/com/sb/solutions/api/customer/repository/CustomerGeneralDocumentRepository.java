@@ -1,0 +1,12 @@
+package com.sb.solutions.api.customer.repository;
+
+import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
+import com.sb.solutions.core.repository.BaseRepository;
+
+/**
+ * @author : Rujan Maharjan on  8/25/2020
+ **/
+public interface CustomerGeneralDocumentRepository extends
+    BaseRepository<CustomerGeneralDocument, Long> {
+
+}
