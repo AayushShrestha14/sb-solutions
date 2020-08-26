@@ -63,7 +63,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final InsuranceService insuranceService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CompanyInfoRepository companyInfoRepository,
         @Autowired CustomerInfoRepository customerInfoRepository,
         FinancialService financialService,
         SiteVisitService siteVisitService,
@@ -196,15 +195,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
 class TemplateName {
-
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";
     static final String SHARE_SECURITY = "Share Security";
     static final String GUARANTOR = "Guarantor";
     static final String INSURANCE = "Insurance";
-
-
 }
 
 
