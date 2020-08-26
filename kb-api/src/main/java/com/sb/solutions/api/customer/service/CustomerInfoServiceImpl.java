@@ -153,12 +153,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
         }
-        if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
+        else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
         }
-        if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
+        else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
             final Insurance insurance = insuranceService
                 .save(objectMapper().convertValue(o, Insurance.class));
             customerInfo1.setInsurance(insurance);
