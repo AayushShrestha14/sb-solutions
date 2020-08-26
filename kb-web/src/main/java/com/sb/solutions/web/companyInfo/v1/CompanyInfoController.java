@@ -4,11 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
@@ -36,5 +32,12 @@ public class CompanyInfoController {
         return new RestResponseDto()
             .successModel(companyInfoService.findAllPageable(searchDto, PaginationUtils
                 .pageable(page, size)));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCompanyInfoByID(
+            @PathVariable("id") Long id) {
+        return new RestResponseDto()
+                .successModel(companyInfoService.findOne(id));
     }
 }
