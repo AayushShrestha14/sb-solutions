@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
-import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
@@ -117,6 +116,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setCustomerType(CustomerType.COMPANY);
             customerInfo.setName(((CompanyInfo) o).getCompanyName());
             customerInfo.setIdType(CustomerIdType.PAN);
+            customerInfo.setIdRegDate(((CompanyInfo) o).getLegalStatus().getRegistrationDate());
             customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
         }
         customerInfo.setBranch(user.getBranch().get(0));
