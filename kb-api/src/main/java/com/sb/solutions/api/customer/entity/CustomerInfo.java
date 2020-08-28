@@ -1,16 +1,15 @@
 package com.sb.solutions.api.customer.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -93,8 +92,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToOne
     private Branch branch;
 
-    @OneToMany(mappedBy = "customerInfo", fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<CustomerGeneralDocument> customerGeneralDocuments = new HashSet<>();
+    @Transient
+    private List<CustomerGeneralDocument> customerGeneralDocuments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "customer_info_customer_group_id")

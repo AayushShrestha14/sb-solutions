@@ -70,4 +70,9 @@ public class CustomerGeneralDocumentServiceImpl implements CustomerGeneralDocume
     public Optional<CustomerGeneralDocument> findOneBySpec(Map<String, String> filterParams) {
         return Optional.empty();
     }
+
+    @Override
+    public List<CustomerGeneralDocument> findByCustomerInfoId(Long id) {
+        return customerGeneralDocumentRepository.findByCustomerInfoId(id);
+    }
 }
