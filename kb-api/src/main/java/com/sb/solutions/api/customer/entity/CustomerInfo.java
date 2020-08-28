@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,6 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.insurance.entity.Insurance;
@@ -92,4 +95,8 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "customerInfo", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<CustomerGeneralDocument> customerGeneralDocuments = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "customer_info_customer_group_id")
+    private CustomerGroup customerGroup;
 }

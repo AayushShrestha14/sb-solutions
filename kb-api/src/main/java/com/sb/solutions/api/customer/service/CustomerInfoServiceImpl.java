@@ -23,6 +23,7 @@ import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
@@ -161,6 +162,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Insurance insurance = insuranceService
                 .save(objectMapper().convertValue(o, Insurance.class));
             customerInfo1.setInsurance(insurance);
+        } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
+            customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
         }
         return customerInfoRepository.save(customerInfo1);
     }
@@ -201,6 +204,7 @@ class TemplateName {
     static final String SHARE_SECURITY = "Share Security";
     static final String GUARANTOR = "Guarantor";
     static final String INSURANCE = "Insurance";
+    static final String CUSTOMER_GROUP = "customerGroup";
 }
 
 
