@@ -1,5 +1,6 @@
 package com.sb.solutions.web.customerInfo.v1;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -28,14 +32,16 @@ public class CustomerInfoController {
     public static final String URL = "/v1/customer-info";
     private final Logger logger = LoggerFactory.getLogger(CustomerInfoController.class);
     private final CustomerInfoService customerInfoService;
+    private final CustomerGeneralDocumentService customerGeneralDocumentService;
 
 
     @Autowired
     public CustomerInfoController(
-        CustomerInfoService customerInfoService
-    ) {
+        CustomerInfoService customerInfoService,
+        CustomerGeneralDocumentService customerGeneralDocumentService) {
         this.customerInfoService = customerInfoService;
 
+        this.customerGeneralDocumentService = customerGeneralDocumentService;
     }
 
     @PostMapping("/list")
@@ -58,8 +64,14 @@ public class CustomerInfoController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getCustomerInfoByID(
         @PathVariable("id") Long id) {
+        CustomerInfo customerInfo = customerInfoService.findOne(id).get();
+        List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
+            .findByCustomerInfoId(id);
+        if (!generalDocuments.isEmpty()) {
+            customerInfo.setCustomerGeneralDocuments(generalDocuments);
+        }
         return new RestResponseDto()
-            .successModel(customerInfoService.findOne(id).get());
+            .successModel(customerInfo);
     }
 
 }

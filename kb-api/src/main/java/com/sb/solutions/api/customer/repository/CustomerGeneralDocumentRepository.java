@@ -1,5 +1,7 @@
 package com.sb.solutions.api.customer.repository;
 
+import java.util.List;
+
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.core.repository.BaseRepository;
 
@@ -8,5 +10,7 @@ import com.sb.solutions.core.repository.BaseRepository;
  **/
 public interface CustomerGeneralDocumentRepository extends
     BaseRepository<CustomerGeneralDocument, Long> {
+
+    List<CustomerGeneralDocument> findByCustomerInfoId(Long id);
 
 }

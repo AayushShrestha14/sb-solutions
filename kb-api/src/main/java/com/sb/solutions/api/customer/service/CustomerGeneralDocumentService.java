@@ -1,5 +1,7 @@
 package com.sb.solutions.api.customer.service;
 
+import java.util.List;
+
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.core.service.Service;
 
@@ -8,4 +10,5 @@ import com.sb.solutions.core.service.Service;
  **/
 public interface CustomerGeneralDocumentService extends Service<CustomerGeneralDocument, Long> {
 
+    List<CustomerGeneralDocument> findByCustomerInfoId(Long id);
 }

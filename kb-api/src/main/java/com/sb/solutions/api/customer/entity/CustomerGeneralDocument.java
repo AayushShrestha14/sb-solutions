@@ -2,9 +2,6 @@ package com.sb.solutions.api.customer.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -12,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString.Exclude;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.document.entity.Document;
@@ -36,10 +32,7 @@ public class CustomerGeneralDocument extends BaseEntity<Long> {
 
     private String docPath;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @Exclude
-    @JoinColumn(name = "customer_info_id")
-    private CustomerInfo customerInfo;
+
+    private Long customerInfoId;
 
 }
