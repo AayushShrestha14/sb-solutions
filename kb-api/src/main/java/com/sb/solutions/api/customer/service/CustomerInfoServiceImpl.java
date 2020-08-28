@@ -162,8 +162,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Insurance insurance = insuranceService
                 .save(objectMapper().convertValue(o, Insurance.class));
             customerInfo1.setInsurance(insurance);
-        }else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
-            customerInfo1.setCustomerGroup(objectMapper().convertValue(o , CustomerGroup.class));
+        } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
+            customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
         }
         return customerInfoRepository.save(customerInfo1);
     }

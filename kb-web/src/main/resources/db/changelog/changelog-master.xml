@@ -2086,7 +2086,7 @@
     </preConditions>
 
     <addColumn tableName="insurance">
-      <column name="remarks" type="LONGTEXT"></column>
+      <column name="remarks" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
 
