@@ -58,6 +58,7 @@ public class CustomerGroupController {
     public final ResponseEntity<?> getPageableCustomerGroup(
         @RequestBody(required = false) Map<String, String> requestParams,
         @RequestParam("page") int page, @RequestParam("size") int size) {
+        logger.debug("Request to get customer group pageable");
         final Page<CustomerGroup> customerGroups = customerGroupService
             .findPageableBySpec(requestParams,
                 PaginationUtils.pageable(page, size));
@@ -66,7 +67,7 @@ public class CustomerGroupController {
 
     @GetMapping(path = "/all")
     public final ResponseEntity<?> getAllCustomerGroup() {
-        logger.debug("Request to get customer group pageable");
+        logger.debug("Request to get all customer group");
         return new RestResponseDto().successModel(customerGroupService.findAll());
     }
 

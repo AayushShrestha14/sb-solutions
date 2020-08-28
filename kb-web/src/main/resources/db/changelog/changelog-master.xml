@@ -2246,7 +2246,7 @@
     <addForeignKeyConstraint baseTableName="company_locations_audit" baseColumnNames="rev"
       constraintName="FK_company_locations_audit_rev_revinfo_rev"
       referencedTableName="revinfo" referencedColumnNames="rev"/>
-  </changeSet>
+   </changeSet>
 
   <changeSet id="112-add-column-company-locations-id-table-company-info-" author="buddha-shrestha">
     <preConditions onFail="MARK_RAN">
