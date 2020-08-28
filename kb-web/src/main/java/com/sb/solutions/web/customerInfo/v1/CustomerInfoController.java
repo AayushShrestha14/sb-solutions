@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -62,4 +64,16 @@ public class CustomerInfoController {
             .successModel(customerInfoService.findOne(id).get());
     }
 
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody CustomerInfo customer) {
+        CustomerInfo savedCustomer = customerInfoService.save(customer);
+
+        if (null == savedCustomer) {
+            logger.error("Error while saving customer info {}", customer);
+            return new RestResponseDto()
+                .failureModel("Error occurred while saving Customer info" + customer);
+        }
+
+        return new RestResponseDto().successModel(savedCustomer);
+    }
 }
