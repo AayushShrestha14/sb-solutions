@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
-import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
@@ -64,7 +63,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final InsuranceService insuranceService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CompanyInfoRepository companyInfoRepository,
         @Autowired CustomerInfoRepository customerInfoRepository,
         FinancialService financialService,
         SiteVisitService siteVisitService,
@@ -119,6 +117,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setCustomerType(CustomerType.COMPANY);
             customerInfo.setName(((CompanyInfo) o).getCompanyName());
             customerInfo.setIdType(CustomerIdType.PAN);
+            customerInfo.setIdRegDate(((CompanyInfo) o).getLegalStatus().getRegistrationDate());
             customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
         }
         customerInfo.setBranch(user.getBranch().get(0));
@@ -136,30 +135,30 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
         }
-        if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+        else if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
 
             final Financial financial = financialService
                 .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
         }
-        if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
+        else if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
 
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
         }
-        if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
+        else if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
         }
-        if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
+        else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
         }
-        if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
+        else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
             final Insurance insurance = insuranceService
                 .save(objectMapper().convertValue(o, Insurance.class));
             customerInfo1.setInsurance(insurance);
@@ -200,7 +199,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
 class TemplateName {
-
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";

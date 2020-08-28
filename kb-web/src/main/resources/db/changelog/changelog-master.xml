@@ -2917,6 +2917,14 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="140-alter-data-type-id-number-customer-info" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="id_number"/>
+      </not>
+    </preConditions>
+    <modifyDataType columnName="id_number" newDataType="varchar(100)" tableName="customer_info"/>
+  </changeSet>
 
   <changeSet id="140-create-customer-group-table" author="bibash">
     <preConditions onFail="MARK_RAN">
