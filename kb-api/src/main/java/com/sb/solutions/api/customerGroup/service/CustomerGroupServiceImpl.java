@@ -20,6 +20,7 @@ public class CustomerGroupServiceImpl extends BaseServiceImpl<CustomerGroup, Lon
 
   public CustomerGroupServiceImpl(@Autowired CustomerGroupRepository customerGroupRepository) {
     super(customerGroupRepository);
+
     this.customerGroupRepository = customerGroupRepository;
   }
 

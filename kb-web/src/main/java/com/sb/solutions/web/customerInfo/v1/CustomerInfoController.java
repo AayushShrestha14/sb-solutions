@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.core.dto.RestResponseDto;
