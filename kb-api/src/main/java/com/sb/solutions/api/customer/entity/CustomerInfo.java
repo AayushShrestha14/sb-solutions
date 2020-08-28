@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -96,8 +94,6 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @Transient
     private List<CustomerGeneralDocument> customerGeneralDocuments = new ArrayList<>();
-    @OneToMany(mappedBy = "customerInfo", fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<CustomerGeneralDocument> customerGeneralDocuments = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "customer_info_customer_group_id")
