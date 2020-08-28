@@ -22,46 +22,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(CustomerGroupController.URL)
 public class CustomerGroupController {
 
-    static final String URL = "/v1/customer-group";
+  static final String URL = "/v1/customer-group";
 
-    private final CustomerGroupService customerGroupService;
+  private final CustomerGroupService customerGroupService;
 
-    private final Logger logger = LoggerFactory.getLogger(CustomerGroupController.class);
+  private final Logger logger = LoggerFactory.getLogger(CustomerGroupController.class);
 
-    public CustomerGroupController(
-        CustomerGroupService customerGroupService) {
-        this.customerGroupService = customerGroupService;
-    }
+  public CustomerGroupController(
+      CustomerGroupService customerGroupService) {
+    this.customerGroupService = customerGroupService;
+  }
 
 
-    @PostMapping
+  @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CustomerGroup customerGroup) {
-        logger.debug("Request to save customer group");
-        return new RestResponseDto().successModel(customerGroupService.save(customerGroup));
-    }
+    logger.debug("Request to save customer group");
+    return new RestResponseDto().successModel(customerGroupService.save(customerGroup));
+  }
 
 
-    @GetMapping(path = "/{id}")
+  @GetMapping(path = "/{id}")
     public final ResponseEntity<?> findOne(@PathVariable long id) {
-        logger.debug("Request to get customer group");
-        return new RestResponseDto().successModel(customerGroupService.findOne(id).get());
-    }
+    logger.debug("Request to get customer group");
+    return new RestResponseDto().successModel(customerGroupService.findOne(id).get());
+  }
 
-    @PostMapping(path = "/list")
-    public final ResponseEntity<?> getPageableCustomerGroup(
-        @RequestBody(required = false) Map<String, String> requestParams,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
-        logger.debug("Request to get customer group pageable");
-        final Page<CustomerGroup> customerGroups = customerGroupService
-            .findPageableBySpec(requestParams,
-                PaginationUtils.pageable(page, size));
-        return new RestResponseDto().successModel(customerGroups);
-    }
+  @PostMapping(path = "/list")
+  public final ResponseEntity<?> getPageableCustomerGroup(
+      @RequestBody(required = false) Map<String, String> requestParams,
+      @RequestParam("page") int page, @RequestParam("size") int size) {
+    final Page<CustomerGroup> customerGroups = customerGroupService
+        .findPageableBySpec(requestParams,
+        PaginationUtils.pageable(page, size));
+    return new RestResponseDto().successModel(customerGroups);
+  }
 
-    @GetMapping(path = "/all")
+  @GetMapping(path = "/all")
     public final ResponseEntity<?> getAllCustomerGroup() {
-        logger.debug("Request to get customer group pageable");
-        return new RestResponseDto().successModel(customerGroupService.findAll());
-    }
+    logger.debug("Request to get customer group pageable");
+    return new RestResponseDto().successModel(customerGroupService.findAll());
+  }
 
 }
