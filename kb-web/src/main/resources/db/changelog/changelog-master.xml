@@ -1571,16 +1571,11 @@
   </changeSet>
 
   <changeSet id="3-create-memo-table" author="msucil">
-    <preConditions onFail="MARK_RAN">
-   <not>
-     <tableExists tableName="memo"/>
-   </not>
-    </preConditions>
     <createTable tableName="memo">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
-      <column name="groupCode" type="VARCHAR(256)">
+      <column name="reference_number" type="VARCHAR(256)">
         <constraints nullable="true"/>
       </column>
       <column name="subject" type="VARCHAR(256)">
@@ -2937,7 +2932,7 @@
         <constraints primaryKey="true"/>
       </column>
       <column name="group_code" type="varchar(256)">
-        <constraints nullable="false" unique="true" uniqueConstraintName="customer_group_number"/>
+        <constraints nullable="false" unique="true" uniqueConstraintName="customer_group_code"/>
       </column>
       <column name="last_modified_at" type="DATE">
         <constraints nullable="false"/>

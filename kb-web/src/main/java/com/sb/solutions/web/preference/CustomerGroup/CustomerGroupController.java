@@ -1,4 +1,4 @@
-package com.sb.solutions.web.preference.CustomerGroup.v1;
+package com.sb.solutions.web.preference.CustomerGroup;
 
 import java.util.Map;
 import java.util.Optional;
