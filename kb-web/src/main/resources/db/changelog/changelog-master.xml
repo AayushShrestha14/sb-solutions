@@ -2086,7 +2086,7 @@
     </preConditions>
 
     <addColumn tableName="insurance">
-      <column name="remarks" type="LONGTEXT"></column>
+      <column name="remarks" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
 
@@ -2246,7 +2246,7 @@
     <addForeignKeyConstraint baseTableName="company_locations_audit" baseColumnNames="rev"
       constraintName="FK_company_locations_audit_rev_revinfo_rev"
       referencedTableName="revinfo" referencedColumnNames="rev"/>
-  </changeSet>
+   </changeSet>
 
   <changeSet id="112-add-column-company-locations-id-table-company-info-" author="buddha-shrestha">
     <preConditions onFail="MARK_RAN">
@@ -2921,6 +2921,51 @@
     <modifyDataType columnName="id_number" newDataType="varchar(100)" tableName="customer_info"/>
   </changeSet>
 
+  <changeSet id="140-create-customer-group-table" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_group"/>
+      </not>
+    </preConditions>
+    <createTable tableName="customer_group">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="group_code" type="varchar(256)">
+        <constraints nullable="false" unique="true" uniqueConstraintName="customer_group_code"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="group_limit" type="BIGINT">
+      </column>
+      <column name="status" type="INT"/>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="141-create-column-customer-info-reference-id" author="bibash">
+  <preConditions onFail="MARK_RAN">
+    <not>
+      <columnExists tableName="customer_info" columnName="customer_info_group_id"/>
+    </not>
+  </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="customer_info_customer_group_id" type="Bigint">
+        <constraints referencedTableName="customer_group" referencedColumnNames="id"
+        foreignKeyName="fk_customer_info_customer_group_id"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
