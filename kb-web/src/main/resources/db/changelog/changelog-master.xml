@@ -2966,6 +2966,25 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="142-alter-customer-general-document-remove-customer-info-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="customer_general_document" columnName="customer_info_id"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="customer_general_document" constraintName="fk_customer_general_document_customer_info_id"/>
+    <dropColumn tableName="customer_general_document" columnName="customer_info_id"/>
+  </changeSet>
+
+  <changeSet id="143-alter-customer-general-document-add-column-customer-info-id-" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_general_document" columnName="customer_info_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_general_document">
+      <column name="customer_info_id" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
