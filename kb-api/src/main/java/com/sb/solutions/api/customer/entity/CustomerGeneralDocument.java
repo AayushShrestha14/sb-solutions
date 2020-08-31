@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.validation.constraint.NotEmpty;
 
 /**
  * @author : Rujan Maharjan on  8/25/2020
@@ -33,7 +33,7 @@ public class CustomerGeneralDocument extends BaseEntity<Long> {
 
     private String docPath;
 
-    @NotEmpty(message = "customer Id cannot be null")
+    @NotNull(message = "customer Id cannot be null")
     private Long customerInfoId;
 
 }
