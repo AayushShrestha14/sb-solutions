@@ -10,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +65,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final GuarantorDetailService guarantorDetailService;
     private final UserService userService;
     private final InsuranceService insuranceService;
+    private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
+    private final CreditRiskGradingService creditRiskGradingService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -70,7 +76,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         ShareSecurityService shareSecurityService,
         GuarantorDetailService guarantorDetailService,
         UserService userService,
-        InsuranceService insuranceService) {
+        InsuranceService insuranceService,
+        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+        CreditRiskGradingService creditRiskGradingService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -80,6 +88,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.shareSecurityService = shareSecurityService;
         this.guarantorDetailService = guarantorDetailService;
         this.insuranceService = insuranceService;
+        this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
+        this.creditRiskGradingService = creditRiskGradingService;
     }
 
 
@@ -164,6 +174,14 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo1.setInsurance(insurance);
         } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
             customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
+        } else if ((template.equalsIgnoreCase(TemplateName.CRG_ALPHA))) {
+            final CreditRiskGradingAlpha creditRiskGradingAlpha = creditRiskGradingAlphaService
+                    .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
+            customerInfo1.setCreditRiskGradingAlpha(creditRiskGradingAlpha);
+        } else if ((template.equalsIgnoreCase(TemplateName.CRG))) {
+            final CreditRiskGrading creditRiskGrading = creditRiskGradingService
+                    .save(objectMapper().convertValue(o, CreditRiskGrading.class));
+            customerInfo1.setCreditRiskGrading(creditRiskGrading);
         }
         return customerInfoRepository.save(customerInfo1);
     }
@@ -205,6 +223,8 @@ class TemplateName {
     static final String GUARANTOR = "Guarantor";
     static final String INSURANCE = "Insurance";
     static final String CUSTOMER_GROUP = "customerGroup";
+    static final String CRG_ALPHA = "CrgAlpha";
+    static final String CRG = "Crg";
 }
 
 

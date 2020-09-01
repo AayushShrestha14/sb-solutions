@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -88,6 +90,12 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private GuarantorDetail guarantors;
+
+    @OneToOne
+    private CreditRiskGradingAlpha creditRiskGradingAlpha;
+
+    @OneToOne
+    private CreditRiskGrading creditRiskGrading;
 
     @OneToOne
     private Branch branch;
