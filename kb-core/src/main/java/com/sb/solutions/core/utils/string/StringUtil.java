@@ -4,10 +4,15 @@ import java.security.SecureRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.sb.solutions.core.exception.ServiceValidationException;
+
 public class StringUtil {
 
     private static final String COMBO_SEED = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final String NUMBER_SEED = "0123456789";
+    private static final String NULL_CHECK = "value cannot be null";
 
     private static SecureRandom random = new SecureRandom();
 
@@ -33,5 +38,18 @@ public class StringUtil {
             .collect(Collectors.joining());
 
         return acronym;
+    }
+
+    public static String getStringWithoutWhiteSpaceAndWithCapitalize(String string) {
+        if (StringUtils.isBlank(string)) {
+            throw new ServiceValidationException(NULL_CHECK);
+        }
+        String[] nameArray = string.split(" ");
+        String finalName = "";
+        for (String s : nameArray) {
+            finalName = finalName + StringUtils.capitalize(s);
+        }
+        finalName = StringUtils.deleteWhitespace(finalName);
+        return finalName.trim();
     }
 }
