@@ -2985,6 +2985,36 @@
       <column name="customer_info_id" type="BIGINT"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="142-alter-customer-info-remove-insurance-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="customer_info" columnName="insurance_id"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="customer_info" constraintName="fk_customer_info_insurance_id"/>
+    <dropColumn tableName="customer_info" columnName="insurance_id"/>
+  </changeSet>
+
+  <changeSet id="143-add-customer-info-insurance-third-table" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_info_insurance"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="customer_info_insurance">
+      <column name="customer_info_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_info_insurance_customer_info_id_customer_info_id"
+          referencedTableName="customer_info"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="insurance_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_info_insurance_insurance_id_insurance_id"
+          referencedTableName="insurance"
+          referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
+
 </databaseChangeLog>
 
 

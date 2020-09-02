@@ -672,8 +672,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .setShareSecurity(this.shareSecurityService.save(previousLoan.getShareSecurity()));
         }
         if (previousLoan.getInsurance() != null) {
-            previousLoan.getInsurance().setId(null);
-            previousLoan.setInsurance(this.insuranceService.save(previousLoan.getInsurance()));
+            previousLoan.getInsurance().forEach(value -> value.setId(null));
+            previousLoan.setInsurance(this.insuranceService.saveAll(previousLoan.getInsurance()));
         }
 
         LoanStage stage = new LoanStage();
@@ -876,7 +876,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             shareSecurityService.execute(Optional.ofNullable(loan.getId()));
         }
         // insurance expiry verification
-        Insurance insurance = loan.getInsurance();
+        List<Insurance> insurance = loan.getInsurance();
         if (insurance != null) {
             insuranceService.execute(Optional.ofNullable(loan.getId()));
         }
