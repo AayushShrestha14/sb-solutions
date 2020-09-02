@@ -232,8 +232,8 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @NotAudited
     @Transient
-    @OneToOne
-    private Insurance insurance;
+    @OneToMany
+    private List<Insurance> insurance;
 
     @NotAudited
     private String refNo;

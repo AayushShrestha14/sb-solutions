@@ -1,6 +1,8 @@
 package com.sb.solutions.api.customer.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -159,8 +161,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo1.setGuarantors(guarantors);
         }
         else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
-            final Insurance insurance = insuranceService
-                .save(objectMapper().convertValue(o, Insurance.class));
+            ObjectMapper mapper = new ObjectMapper();
+            List<Insurance> insurances = Arrays.asList(mapper.convertValue(o,Insurance[].class));
+            final List<Insurance> insurance = insuranceService
+                .saveAll(insurances);
             customerInfo1.setInsurance(insurance);
         } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
             customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));

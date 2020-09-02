@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -83,8 +84,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToOne
     private ShareSecurity shareSecurity;
 
-    @OneToOne
-    private Insurance insurance;
+    @OneToMany
+    private List<Insurance> insurance;
 
     @OneToOne
     private GuarantorDetail guarantors;
