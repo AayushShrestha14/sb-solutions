@@ -54,7 +54,7 @@ public class InsuranceController {
 
         if (entity.getId() == null) {
             List<Insurance> old = customerLoan.getInsurance();
-            old.forEach(value->{
+            old.forEach( value -> {
                 // save to history
                 InsuranceHistory history = new InsuranceHistory();
                 BeanUtils.copyProperties(value, history);
