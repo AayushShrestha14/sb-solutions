@@ -85,89 +85,90 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
             NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
         NotificationMaster notificationMaster = notificationMasterService
             .findOneBySpec(insuranceFilter).orElse(null);
-        if (notificationMaster != null) {
-            Calendar c = Calendar.getInstance();
-            c.setTime(new Date());
-            int daysToExpire = notificationMaster.getValue();
-            c.add(Calendar.DAY_OF_MONTH, daysToExpire);
-
-            Map<String, String> t = new HashMap<>();
-            t.put(CustomerLoanSpec.FILTER_BY_HAS_INSURANCE, Boolean.toString(true));
-            t.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.APPROVED.name());
-            t.put(CustomerLoanSpec.FILTER_BY_IS_CLOSE_RENEW, Boolean.toString(false));
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, String> map = objectMapper.convertValue(t, Map.class);
-            CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
-            Specification<CustomerLoan> specification = builder.build();
-            List<CustomerLoan> loans = optional
-                .map(id -> Collections.singletonList(customerLoanRepository.getOne(id)))
-                .orElseGet(() -> customerLoanRepository.findAll(specification));
-            for (CustomerLoan loan : loans) {
-                try {
-                    CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
-                        .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.INSURANCE_EXPIRY))
-                        .collect(CustomerLoanFlag.toSingleton());
-                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
-                    if (flag && customerLoanFlag == null) {
-                        customerLoanFlag = new CustomerLoanFlag();
-                        customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
-                        customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
-                        customerLoanFlag.setOrder(
-                            Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
-                        customerLoanFlag.setCustomerLoan(loan);
-                        sendInsuranceExpiryEmail(loan);     // send mail
-                        customerLoanFlag.setNotifiedByEmail(true);
-                        customerLoanFlagService.save(customerLoanFlag);
-                    } else if (!flag && customerLoanFlag != null) {
-                        customerLoanFlagService.deleteById(customerLoanFlag.getId());
-                    } else if (flag && customerLoanFlag.getFlag() != null
-                        && (customerLoanFlag.getNotifiedByEmail() == null
-                        || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
-                        sendInsuranceExpiryEmail(loan);     // send mail
-                        customerLoanFlag.setNotifiedByEmail(true);
-                        customerLoanFlagService.save(customerLoanFlag);
-                    }
-                } catch (NullPointerException e) {
-                    LOGGER
-                        .error("Error updating insurance expiry flag {}", e.getMessage());
-                }
-            }
-        }
+        // TODO: Expiry should be checked to array of insurance instead of single insurance
+//        if (notificationMaster != null) {
+//            Calendar c = Calendar.getInstance();
+//            c.setTime(new Date());
+//            int daysToExpire = notificationMaster.getValue();
+//            c.add(Calendar.DAY_OF_MONTH, daysToExpire);
+//
+//            Map<String, String> t = new HashMap<>();
+//            t.put(CustomerLoanSpec.FILTER_BY_HAS_INSURANCE, Boolean.toString(true));
+//            t.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.APPROVED.name());
+//            t.put(CustomerLoanSpec.FILTER_BY_IS_CLOSE_RENEW, Boolean.toString(false));
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            Map<String, String> map = objectMapper.convertValue(t, Map.class);
+//            CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(map);
+//            Specification<CustomerLoan> specification = builder.build();
+//            List<CustomerLoan> loans = optional
+//                .map(id -> Collections.singletonList(customerLoanRepository.getOne(id)))
+//                .orElseGet(() -> customerLoanRepository.findAll(specification));
+//            for (CustomerLoan loan : loans) {
+//                try {
+//                    CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
+//                        .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.INSURANCE_EXPIRY))
+//                        .collect(CustomerLoanFlag.toSingleton());
+//                    boolean flag = loan.getInsurance().getExpiryDate().compareTo(c.getTime()) <= 0;
+//                    if (flag && customerLoanFlag == null) {
+//                        customerLoanFlag = new CustomerLoanFlag();
+//                        customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
+//                        customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
+//                        customerLoanFlag.setOrder(
+//                            Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
+//                        customerLoanFlag.setCustomerLoan(loan);
+//                        sendInsuranceExpiryEmail(loan);     // send mail
+//                        customerLoanFlag.setNotifiedByEmail(true);
+//                        customerLoanFlagService.save(customerLoanFlag);
+//                    } else if (!flag && customerLoanFlag != null) {
+//                        customerLoanFlagService.deleteById(customerLoanFlag.getId());
+//                    } else if (flag && customerLoanFlag.getFlag() != null
+//                        && (customerLoanFlag.getNotifiedByEmail() == null
+//                        || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
+//                        sendInsuranceExpiryEmail(loan);     // send mail
+//                        customerLoanFlag.setNotifiedByEmail(true);
+//                        customerLoanFlagService.save(customerLoanFlag);
+//                    }
+//                } catch (NullPointerException e) {
+//                    LOGGER
+//                        .error("Error updating insurance expiry flag {}", e.getMessage());
+//                }
+//            }
+//        }
     }
 
-    private void sendInsuranceExpiryEmail(CustomerLoan loan) {
-        final Email emailMaker = new Email();
-        emailMaker.setBankName(this.bankName);
-
-        // send to loan maker
-        User userMaker = userService.findOne((loan.getCreatedBy()));
-        emailMaker.setTo(userMaker.getEmail());
-        emailMaker.setToName(userMaker.getName());
-        emailMaker.setName(loan.getCustomerInfo().getCustomerName());
-        emailMaker.setExpiryDate(loan.getInsurance().getExpiryDate());
-        emailMaker.setEmail(loan.getCustomerInfo().getEmail());
-        emailMaker.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
-        emailMaker.setLoanTypes(loan.getLoanType());
-        emailMaker.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
-        emailMaker.setBankBranch(loan.getBranch().getName());
-        emailMaker.setInsuranceCompanyName(loan.getInsurance().getCompany());
-        Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
-        templateMaker.setSubject("Insurance Expiry Notice: " + emailMaker.getName());
-        mailThreadService.sendMain(templateMaker, emailMaker);
-
-        // send to the client
-        if (loan.getCustomerInfo().getEmail() != null) {
-            final Email emailClient = new Email();
-            BeanUtils.copyProperties(emailMaker, emailClient);
-            emailClient.setToName(loan.getCustomerInfo().getCustomerName());
-            emailClient.setTo(loan.getCustomerInfo().getEmail());
-            emailClient.setEmail(userMaker.getEmail());
-            emailClient.setPhoneNumber(loan.getBranch().getLandlineNumber());
-            Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
-            templateClient.setSubject(String
-                .format("Insurance Expiry Notice related to %s at %s", emailMaker.getLoanTypes(),
-                    bankName));
-            mailThreadService.sendMain(templateClient, emailClient);
-        }
-    }
+//    private void sendInsuranceExpiryEmail(CustomerLoan loan) {
+//        final Email emailMaker = new Email();
+//        emailMaker.setBankName(this.bankName);
+//
+//        // send to loan maker
+//        User userMaker = userService.findOne((loan.getCreatedBy()));
+//        emailMaker.setTo(userMaker.getEmail());
+//        emailMaker.setToName(userMaker.getName());
+//        emailMaker.setName(loan.getCustomerInfo().getCustomerName());
+//        emailMaker.setExpiryDate(loan.getInsurance().getExpiryDate());
+//        emailMaker.setEmail(loan.getCustomerInfo().getEmail());
+//        emailMaker.setPhoneNumber(loan.getCustomerInfo().getContactNumber());
+//        emailMaker.setLoanTypes(loan.getLoanType());
+//        emailMaker.setClientCitizenshipNumber(loan.getCustomerInfo().getCitizenshipNumber());
+//        emailMaker.setBankBranch(loan.getBranch().getName());
+//        emailMaker.setInsuranceCompanyName(loan.getInsurance().getCompany());
+//        Template templateMaker = Template.INSURANCE_EXPIRY_MAKER;
+//        templateMaker.setSubject("Insurance Expiry Notice: " + emailMaker.getName());
+//        mailThreadService.sendMain(templateMaker, emailMaker);
+//
+//        // send to the client
+//        if (loan.getCustomerInfo().getEmail() != null) {
+//            final Email emailClient = new Email();
+//            BeanUtils.copyProperties(emailMaker, emailClient);
+//            emailClient.setToName(loan.getCustomerInfo().getCustomerName());
+//            emailClient.setTo(loan.getCustomerInfo().getEmail());
+//            emailClient.setEmail(userMaker.getEmail());
+//            emailClient.setPhoneNumber(loan.getBranch().getLandlineNumber());
+//            Template templateClient = Template.INSURANCE_EXPIRY_CLIENT;
+//            templateClient.setSubject(String
+//                .format("Insurance Expiry Notice related to %s at %s", emailMaker.getLoanTypes(),
+//                    bankName));
+//            mailThreadService.sendMain(templateClient, emailClient);
+//        }
+//    }
 }

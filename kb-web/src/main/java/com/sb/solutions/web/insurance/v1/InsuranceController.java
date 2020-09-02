@@ -1,5 +1,7 @@
 package com.sb.solutions.web.insurance.v1;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -51,22 +53,23 @@ public class InsuranceController {
         }
 
         if (entity.getId() == null) {
-            Insurance old = customerLoan.getInsurance();
+            List<Insurance> old = customerLoan.getInsurance();
+            old.forEach(value->{
+                // save to history
+                InsuranceHistory history = new InsuranceHistory();
+                BeanUtils.copyProperties(value, history);
+                history.setCustomerLoanId(loanId);
+                history.setId(null);    // new instance
+                insuranceHistoryService.save(history);
 
-            // save to history
-            InsuranceHistory history = new InsuranceHistory();
-            BeanUtils.copyProperties(old, history);
-            history.setCustomerLoanId(loanId);
-            history.setId(null);    // new instance
-            insuranceHistoryService.save(history);
+                // update current
+                BeanUtils.copyProperties(entity, value);
+                Long oldId = value.getId();
+                value.setId(oldId);
+                insuranceService.save(value);
 
-            // update current
-            BeanUtils.copyProperties(entity, old);
-            Long oldId = old.getId();
-            old.setId(oldId);
-            insuranceService.save(old);
-
-            customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
+                customerLoanService.postLoanConditionCheck(customerLoanService.findOne(loanId));
+            });
             return new RestResponseDto().successModel("Insurance detail updated");
         } else {
             insuranceService.save(entity);
