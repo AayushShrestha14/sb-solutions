@@ -2,6 +2,7 @@ package com.sb.solutions.api.customer.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,10 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
-import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
-import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
-import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
@@ -146,33 +147,28 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
-        }
-        else if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+        } else if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
 
             final Financial financial = financialService
                 .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
-        }
-        else if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
+        } else if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
 
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
-        }
-        else if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
+        } else if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
-        }
-        else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
+        } else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
-        }
-        else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
+        } else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
             ObjectMapper mapper = new ObjectMapper();
-            List<Insurance> insurances = Arrays.asList(mapper.convertValue(o,Insurance[].class));
+            List<Insurance> insurances = Arrays.asList(mapper.convertValue(o, Insurance[].class));
             final List<Insurance> insurance = insuranceService
                 .saveAll(insurances);
             customerInfo1.setInsurance(insurance);
@@ -180,11 +176,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
         } else if ((template.equalsIgnoreCase(TemplateName.CRG_ALPHA))) {
             final CreditRiskGradingAlpha creditRiskGradingAlpha = creditRiskGradingAlphaService
-                    .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
+                .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
             customerInfo1.setCreditRiskGradingAlpha(creditRiskGradingAlpha);
         } else if ((template.equalsIgnoreCase(TemplateName.CRG))) {
             final CreditRiskGrading creditRiskGrading = creditRiskGradingService
-                    .save(objectMapper().convertValue(o, CreditRiskGrading.class));
+                .save(objectMapper().convertValue(o, CreditRiskGrading.class));
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
         }
         return customerInfoRepository.save(customerInfo1);
@@ -193,6 +189,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     @Override
     public CustomerInfo findByAssociateIdAndCustomerType(Long id, CustomerType customerType) {
         return customerInfoRepository.findByAssociateIdAndCustomerType(id, customerType);
+    }
+
+    @Override
+    public CustomerInfo findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
+        CustomerType customerType, String idNumber, String idRegPlace,
+        CustomerIdType customerIdType, Date date) {
+        return customerInfoRepository
+            .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(customerType, idNumber,
+                idRegPlace, customerIdType, date);
     }
 
     @Override
@@ -220,6 +225,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
 class TemplateName {
+
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";

@@ -23,6 +23,7 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
     private static final String FILTER_BY_CUSTOMER_NAME = "name";
     private static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
     private static final String FILTER_BY_CUSTOMER_ID_TYPE = "idType";
+    private static final String FILTER_BY_CUSTOMER_ID_NUMBER = "idNumber";
     private static final String FILTER_BY_BRANCH = "branchIds";
     private final String property;
     private final String value;
@@ -49,6 +50,9 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
 
             case FILTER_BY_CUSTOMER_ID_TYPE:
                 return criteriaBuilder.equal(root.get(property), CustomerIdType.valueOf(value));
+
+            case FILTER_BY_CUSTOMER_ID_NUMBER:
+                return criteriaBuilder.equal(root.get(property), value.trim());
 
             case FILTER_BY_BRANCH:
                 Pattern pattern = Pattern.compile(",");
