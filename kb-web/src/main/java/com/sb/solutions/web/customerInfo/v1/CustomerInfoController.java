@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,4 +75,19 @@ public class CustomerInfoController {
             .successModel(customerInfo);
     }
 
+    @PostMapping("/customer")
+    public ResponseEntity getCustomerByTypeIdNumberIdTypeRegDate(
+        @RequestBody CustomerInfo customerInfo) {
+        final CustomerInfo customerInfo1 = customerInfoService
+            .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
+                customerInfo.getCustomerType(), customerInfo.getIdNumber(),
+                customerInfo.getIdRegPlace(), customerInfo.getIdType(),
+                customerInfo.getIdRegDate());
+        if (ObjectUtils.isEmpty(customerInfo1)) {
+            return new RestResponseDto().failureModel("no Customer Found");
+        }
+        return new RestResponseDto().successModel(
+            customerInfo1
+        );
+    }
 }
