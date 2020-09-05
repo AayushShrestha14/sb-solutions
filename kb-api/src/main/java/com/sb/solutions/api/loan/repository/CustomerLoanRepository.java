@@ -193,4 +193,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
 
     List<CustomerLoan> getCustomerLoanByAndLoanHolderId(Long id);
+
+    List<CustomerLoan> findAllByCombinedLoanId(long id);
+
 }
