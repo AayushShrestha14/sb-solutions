@@ -76,6 +76,7 @@ public class CustomerInfoController {
     }
 
     @PostMapping("/customer")
+
     public ResponseEntity getCustomerByTypeIdNumberIdTypeRegDate(
         @RequestBody CustomerInfo customerInfo) {
         final CustomerInfo customerInfo1 = customerInfoService
