@@ -53,6 +53,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
     public static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
     public static final String FILTER_BY_IS_CLOSE_RENEW = "isCloseRenew";
+    public static final String FILTER_BY_IS_NOT_COMBINED = "isNotCombined";
 
     private final String property;
     private final String value;
@@ -243,6 +244,9 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_IS_CLOSE_RENEW:
                 return criteriaBuilder
                     .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
+
+            case FILTER_BY_IS_NOT_COMBINED:
+                return criteriaBuilder.isNull(root.get("combinedLoan"));
 
             default:
                 return null;

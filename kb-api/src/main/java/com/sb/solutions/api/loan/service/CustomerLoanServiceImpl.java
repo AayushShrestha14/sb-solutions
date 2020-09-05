@@ -394,6 +394,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public void sendForwardBackwardLoan(List<CustomerLoan> customerLoans) {
+        customerLoans.forEach(this::sendForwardBackwardLoan);
+    }
+
+    @Override
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticatedUser();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
@@ -880,6 +885,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (insurance != null) {
             insuranceService.execute(Optional.ofNullable(loan.getId()));
         }
+    }
+
+    @Override
+    public List<CustomerLoan> findAllBySpec(Map<String, String> filterParams) {
+        CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(filterParams);
+        return customerLoanRepository.findAll(builder.build());
+    }
+
+    @Override
+    public List<CustomerLoan> findByCombinedLoanId(long id) {
+        return customerLoanRepository.findAllByCombinedLoanId(id);
     }
 
     @Override

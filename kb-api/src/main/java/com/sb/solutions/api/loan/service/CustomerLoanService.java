@@ -25,6 +25,9 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
+    @Transactional
+    void sendForwardBackwardLoan(List<CustomerLoan> customerLoans);
+
     Map<String, Integer> statusCount();
 
     List<CustomerLoan> getFirst5CustomerLoanByDocumentStatus(DocStatus status);
@@ -67,5 +70,9 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     @Transactional
     void postLoanConditionCheck(CustomerLoan loan);
+
+    List<CustomerLoan> findAllBySpec(Map<String, String> filterParams);
+
+    List<CustomerLoan> findByCombinedLoanId(long id);
 
 }
