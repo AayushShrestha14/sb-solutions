@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
@@ -326,4 +327,12 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(loans);
     }
 
+
+    @PostMapping("/customer-group")
+    public ResponseEntity<?> getLoanByCustomerGroup(
+        @RequestBody CustomerGroup customerGroup) {
+        logger.info("getting Customer Loan by CustomerGroup {}", customerGroup);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerGroup(customerGroup));
+    }
 }

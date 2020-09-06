@@ -47,6 +47,7 @@ import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
@@ -722,6 +723,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         map.put("customerRelativeName", customerRelative.getCustomerRelativeName());
         map.put("citizenshipNumber", customerRelative.getCitizenshipNumber());
         map.put("citizenshipIssuedDate", date);
+        map.values().removeIf(Objects::isNull);
+        logger.info("get loan by kyc search parm{}", map);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            map);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
+
+    }@Override
+    public List<CustomerLoan> getLoanByCustomerGroup(CustomerGroup customerGroup) {
+        Map<String, String> map = new HashMap<>();
+        map.put("groupCode", customerGroup.getGroupCode());
         map.values().removeIf(Objects::isNull);
         logger.info("get loan by kyc search parm{}", map);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
