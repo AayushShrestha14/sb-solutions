@@ -316,7 +316,7 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
     }
 
-    @GetMapping("/loan-holder/{id}/not-combine")
+    @GetMapping("/loan-holder/{id}/for-combine")
     public ResponseEntity<?> getInitialLoanByLoanHolderId(@PathVariable("id") Long id) {
         Map<String, String> filter = new HashMap<>();
         User u = userService.getAuthenticatedUser();
@@ -326,7 +326,6 @@ public class CustomerLoanController {
         filter.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         filter.put("toUser", u.getId().toString());
         filter.put("loanHolderId", String.valueOf(id));
-        filter.put(CustomerLoanSpec.FILTER_BY_IS_NOT_COMBINED, String.valueOf(true));
         filter.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, "initial");
         List<CustomerLoan> loans = new ArrayList<>(service.findAllBySpec(filter));
         filter
