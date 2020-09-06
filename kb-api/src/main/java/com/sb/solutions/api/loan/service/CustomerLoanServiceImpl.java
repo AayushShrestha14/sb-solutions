@@ -380,6 +380,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> findAll(Object search) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(search, Map.class);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
+    }
+
+    @Override
     public List<CustomerLoan> saveAll(List<CustomerLoan> list) {
         return customerLoanRepository.saveAll(list);
     }
