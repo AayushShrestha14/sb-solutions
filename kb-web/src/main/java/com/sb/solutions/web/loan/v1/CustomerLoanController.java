@@ -152,6 +152,11 @@ public class CustomerLoanController {
             .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
+    @PostMapping("/all")
+    public ResponseEntity<?> getAllBySearch(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.findAll(searchDto));
+    }
+
     @GetMapping(value = "/statusCount")
     public ResponseEntity<?> countLoanStatus() {
         return new RestResponseDto().successModel(service.statusCount());

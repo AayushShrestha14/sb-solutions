@@ -55,6 +55,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_IS_CLOSE_RENEW = "isCloseRenew";
     public static final String FILTER_BY_IS_NOT_COMBINED = "isNotCombined";
     public static final String FILTER_BY_LOAN_HOLDER_ID = "loanHolderId";
+    public static final String FILTER_BY_IS_STAGED = "isStaged";
 
     private final String property;
     private final String value;
@@ -251,6 +252,11 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_LOAN_HOLDER_ID:
                 return criteriaBuilder
                     .equal(root.join("loanHolder").get("id"), Long.valueOf(value));
+
+            case FILTER_BY_IS_STAGED:
+                boolean isStaged = Boolean.parseBoolean(value);
+                Expression<?> ex = root.get("previousStageList");
+                return isStaged ? criteriaBuilder.isNotNull(ex) : criteriaBuilder.isNull(ex);
             default:
                 return null;
         }
