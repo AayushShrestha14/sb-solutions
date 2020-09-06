@@ -60,7 +60,7 @@ public class StringUtil {
             String finalName = string.replaceAll("\\s+", WHITESPACE);
             int pos = 0;
             boolean capitalize = true;
-            StringBuilder sb = new StringBuilder(finalName);
+            StringBuilder sb = new StringBuilder(finalName.toLowerCase());
             while (pos < sb.length()) {
                 if (sb.charAt(pos) == '.') {
                     capitalize = true;

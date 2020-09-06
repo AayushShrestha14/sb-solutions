@@ -38,6 +38,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -92,13 +93,16 @@ public class CustomerLoanController {
             .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
             .collect(Collectors.toList());
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
-        // remove from combined loan
-        if (stageSingle) {
+        // remove from combined loan if loans are staged individually
+        // or loans are combined and approved
+        boolean removeCombined = stageSingle || actionDtoList.stream()
+            .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
+        if (removeCombined) {
             loans.forEach(l -> l.setCombinedLoan(null));
         }
         service.sendForwardBackwardLoan(loans);
         // remove unassociated combined loan entry
-        if (stageSingle) {
+        if (removeCombined) {
             combinedLoanService.deleteById(combinedLoanId);
         }
         return new RestResponseDto().successModel(actionDtoList);
@@ -151,6 +155,11 @@ public class CustomerLoanController {
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<?> getAllBySearch(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.findAll(searchDto));
     }
 
     @GetMapping(value = "/statusCount")
@@ -308,7 +317,7 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
     }
 
-    @GetMapping("/loan-holder/{id}/not-combine")
+    @GetMapping("/loan-holder/{id}/for-combine")
     public ResponseEntity<?> getInitialLoanByLoanHolderId(@PathVariable("id") Long id) {
         Map<String, String> filter = new HashMap<>();
         User u = userService.getAuthenticatedUser();
@@ -318,7 +327,6 @@ public class CustomerLoanController {
         filter.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         filter.put("toUser", u.getId().toString());
         filter.put("loanHolderId", String.valueOf(id));
-        filter.put(CustomerLoanSpec.FILTER_BY_IS_NOT_COMBINED, String.valueOf(true));
         filter.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, "initial");
         List<CustomerLoan> loans = new ArrayList<>(service.findAllBySpec(filter));
         filter

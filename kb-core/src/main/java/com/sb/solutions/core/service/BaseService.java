@@ -1,5 +1,6 @@
 package com.sb.solutions.core.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,11 @@ public interface BaseService<T> {
      *
      */
     List<T> findAll();
+
+
+    default List<T> findAll(Object search) {
+        return Collections.emptyList();
+    }
 
     /**
      *
