@@ -316,6 +316,7 @@ public class CustomerLoanController {
         filter.put("branchIds", branchAccess);
         filter.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         filter.put("toUser", u.getId().toString());
+        filter.put("loanHolderId", String.valueOf(id));
         filter.put(CustomerLoanSpec.FILTER_BY_IS_NOT_COMBINED, String.valueOf(true));
         filter.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, "initial");
         List<CustomerLoan> loans = new ArrayList<>(service.findAllBySpec(filter));
