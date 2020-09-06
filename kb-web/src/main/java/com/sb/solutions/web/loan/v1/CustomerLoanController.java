@@ -37,6 +37,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -91,13 +92,16 @@ public class CustomerLoanController {
             .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
             .collect(Collectors.toList());
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
-        // remove from combined loan
-        if (stageSingle) {
+        // remove from combined loan if loans are staged individually
+        // or loans are combined and approved
+        boolean removeCombined = stageSingle || actionDtoList.stream()
+            .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
+        if (removeCombined) {
             loans.forEach(l -> l.setCombinedLoan(null));
         }
         service.sendForwardBackwardLoan(loans);
         // remove unassociated combined loan entry
-        if (stageSingle) {
+        if (removeCombined) {
             combinedLoanService.deleteById(combinedLoanId);
         }
         return new RestResponseDto().successModel(actionDtoList);
