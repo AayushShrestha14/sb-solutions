@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,7 @@ import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.string.NameFormatter;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -46,6 +48,7 @@ import com.sb.solutions.core.enums.Status;
 @Audited
 public class User extends BaseEntity<Long> implements UserDetails, Serializable {
 
+    @JsonDeserialize(using = NameFormatter.class)
     private String name;
 
     @Column(name = "user_name", unique = true, nullable = false)

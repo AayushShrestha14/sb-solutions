@@ -14,8 +14,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
-import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +22,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
@@ -34,6 +35,7 @@ import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.string.NameFormatter;
 
 /**
  * @author : Rujan Maharjan on  8/9/2020
@@ -48,7 +50,9 @@ import com.sb.solutions.core.enums.Status;
 @EntityListeners({AuditingEntityListener.class})
 public class CustomerInfo extends BaseEntity<Long> {
 
+
     @NotNull(message = "name cannot be null")
+    @JsonDeserialize(using = NameFormatter.class)
     private String name;
 
     private CustomerIdType idType;

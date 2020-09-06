@@ -255,38 +255,40 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         if (null != companyInfo) {
             customerLoan
-                .setCompanyInfo(this.companyInfoService.save(companyInfo));
+                .setCompanyInfo(
+                    this.companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
 
             /*
             if business loan , business pan/vat number will be citizenship number , companay name will be customer name
             and establishment date will be issue date
              */
 
-            customer.setCustomerName(companyInfo.getCompanyName());
-            customer.setCitizenshipNumber(companyInfo.getPanNumber());
-            customer.setCitizenshipIssuedDate(companyInfo.getEstablishmentDate());
-            customer.setOccupation(companyInfo.getBusinessType().toString());
-            // look whether customer already exists
-            try {
-                Customer existingCustomer = customerService
-                    .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
-                        customer.getCustomerName(), customer.getCitizenshipNumber(),
-                        customer.getCitizenshipIssuedDate()
-                    );
-                if (existingCustomer != null) {
-
-                    customer.setId(existingCustomer.getId());
-                }
-            } catch (Exception e) {
-                logger.debug(" No customer {} with pan {} exists", customer.getCustomerName(),
-                    customer.getCitizenshipNumber());
-            }
-
+//            customer.setCustomerName(companyInfo.getCompanyName());
+//            customer.setCitizenshipNumber(companyInfo.getPanNumber());
+//            customer.setCitizenshipIssuedDate(companyInfo.getEstablishmentDate());
+//            customer.setOccupation(companyInfo.getBusinessType().toString());
+//            // look whether customer already exists
+//            try {
+//                Customer existingCustomer = customerService
+//                    .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
+//                        customer.getCustomerName(), customer.getCitizenshipNumber(),
+//                        customer.getCitizenshipIssuedDate()
+//                    );
+//                if (existingCustomer != null) {
+//
+//                    customer.setId(existingCustomer.getId());
+//                }
+//            } catch (Exception e) {
+//                logger.debug(" No customer {} with pan {} exists", customer.getCustomerName(),
+//                    customer.getCitizenshipNumber());
+//            }
+//
 
         }
 
         if (customer != null) {
-            Customer c = this.customerService.save(customer);
+            Customer c = this.customerService
+                .findOne(customerLoan.getLoanHolder().getAssociateId());
             customerLoan.setCustomerInfo(c);
             customerLoan
                 .setLoanHolder(customerInfoService.findByAssociateIdAndCustomerType(c.getId(),
@@ -378,6 +380,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> findAll(Object search) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(search, Map.class);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        return customerLoanRepository.findAll(specification);
+    }
+
+    @Override
     public List<CustomerLoan> saveAll(List<CustomerLoan> list) {
         return customerLoanRepository.saveAll(list);
     }
@@ -391,6 +402,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             throw new ServiceValidationException("Unable to perform Task");
         }
         customerLoanRepository.save(customerLoan);
+    }
+
+    @Override
+    public void sendForwardBackwardLoan(List<CustomerLoan> customerLoans) {
+        customerLoans.forEach(this::sendForwardBackwardLoan);
     }
 
     @Override
@@ -883,6 +899,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> findAllBySpec(Map<String, String> filterParams) {
+        CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(filterParams);
+        return customerLoanRepository.findAll(builder.build());
+    }
+
+    @Override
+    public List<CustomerLoan> findByCombinedLoanId(long id) {
+        return customerLoanRepository.findAllByCombinedLoanId(id);
+    }
+
+    @Override
     public String title() {
         return "Form Report For Loan";
     }
@@ -1042,6 +1069,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setGuarantor(customerInfo.getGuarantors());
         customerLoan.setInsurance(customerInfo.getInsurance());
         customerLoan.setShareSecurity(customerInfo.getShareSecurity());
+        if (customerInfo.getCustomerType().equals(CustomerType.COMPANY)) {
+            customerLoan.setCompanyInfo(
+                companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
+        } else {
+            customerLoan.setCustomerInfo(customerService.findOne(customerInfo.getAssociateId()));
+        }
+
         return customerLoan;
     }
 }

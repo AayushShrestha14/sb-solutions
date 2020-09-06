@@ -96,7 +96,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanConfig loan;
 
     @Audited
-    @Transient
     @ManyToOne
     private CompanyInfo companyInfo;
 
@@ -242,6 +241,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToMany
     @JoinColumn(name = "customer_loan_id")
     private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
+
+    @NotAudited
+    @ManyToOne
+    private CombinedLoan combinedLoan;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
