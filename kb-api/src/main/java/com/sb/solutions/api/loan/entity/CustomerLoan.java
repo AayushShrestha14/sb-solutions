@@ -96,7 +96,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private LoanConfig loan;
 
     @Audited
-    @Transient
     @ManyToOne
     private CompanyInfo companyInfo;
 
