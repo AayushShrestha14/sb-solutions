@@ -55,6 +55,7 @@ import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
+import com.sb.solutions.api.loan.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -741,8 +742,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification);
 
-    }@Override
-    public List<CustomerLoan> getLoanByCustomerGroup(CustomerGroup customerGroup) {
+    }
+
+    @Override
+    public Object getLoanByCustomerGroup(CustomerGroup customerGroup) {
         Map<String, String> map = new HashMap<>();
         map.put("groupCode", customerGroup.getGroupCode());
         map.values().removeIf(Objects::isNull);
@@ -750,7 +753,26 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
             map);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        return customerLoanRepository.findAll(specification);
+        List<CustomerLoan> customerLoans = customerLoanRepository.findAll(specification);
+        Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
+
+        customerLoans.forEach(customerLoan -> {
+            if (!filterList.containsKey(String.valueOf(customerLoan.getCustomerInfo().getId()))) {
+                CustomerInfo customerInfo = customerLoan.getLoanHolder();
+                List<BigDecimal> l = customerLoans.stream()
+                    .filter(c -> Objects.equals(c.getCustomerInfo().getId(),
+                        customerLoan.getCustomerInfo().getId()) && c.getProposal() != null)
+                    .map(c -> c.getProposal().getProposedLimit()).
+                        collect(Collectors.toList());
+                BigDecimal totalLimit = l.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+                CustomerLoanGroupDto customerLoanGroupDto = new CustomerLoanGroupDto();
+                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
+                customerLoanGroupDto.setTotalObtainedLimit(totalLimit);
+                filterList.put(String.valueOf(customerInfo.getId()), customerLoanGroupDto);
+            }
+        });
+
+        return filterList.values();
 
     }
 
