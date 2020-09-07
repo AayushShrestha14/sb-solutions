@@ -61,6 +61,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private Date establishmentDate;
     private BusinessType businessType;
     private String panNumber;
+    private String issuePlace;
+    private String email;
+    private String contactNum;
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;
