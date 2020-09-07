@@ -3057,6 +3057,28 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="115-alter-proposal-add-checkedData-column" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="checked_data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="checked_data" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="116-alter-proposal-add-checkedData-column" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="checked_data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="checked_data" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
