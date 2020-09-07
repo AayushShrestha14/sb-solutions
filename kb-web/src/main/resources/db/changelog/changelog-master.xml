@@ -3057,6 +3057,72 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="140-alter-company-info-add-column-contact-num" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="contact_num"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="contact_num" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="141-alter-company-info-add-column-email" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="email"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="email" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="142-alter-company-info-add-column-issue-place" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="issue_place"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="issue_place" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="143-alter-company-info-audit-add-column-issue-place" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="issue_place"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="issue_place" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="144-alter-company-info-audit-add-column-contact-num" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="contact_num"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="contact_num" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="145-alter-company-info-audit-add-column-email" author="sujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="email"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="email" type="varchar(256)"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
