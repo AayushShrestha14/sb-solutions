@@ -48,6 +48,15 @@ public class CombinedLoanServiceImpl extends BaseServiceImpl<CombinedLoan, Long>
             loan.setCombinedLoan(saved);
             loans.add(loan);
         });
+        // remove from existing combined loan
+        List<CustomerLoan> existingCombinedLoans = customerLoanService
+            .findByCombinedLoanId(saved.getId());
+        existingCombinedLoans.forEach(l -> {
+            if (loans.stream().mapToLong(CustomerLoan::getId).noneMatch(id -> id == l.getId())) {
+                l.setCombinedLoan(null);
+                loans.add(l);
+            }
+        });
         customerLoanService.saveAll(loans);
         return addCombinedLoanList(saved);
     }
