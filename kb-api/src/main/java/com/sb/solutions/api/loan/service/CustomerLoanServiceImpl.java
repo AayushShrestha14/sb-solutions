@@ -34,6 +34,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
@@ -746,30 +747,42 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Object getLoanByCustomerGroup(CustomerGroup customerGroup) {
-        Map<String, String> map = new HashMap<>();
+        if (ObjectUtils.isEmpty(customerGroup.getId())) {
+            throw new NullPointerException("group id cannot be null");
+        }
+      /*  Map<String, String> map = new HashMap<>();
         map.put("groupCode", customerGroup.getGroupCode());
         map.values().removeIf(Objects::isNull);
         logger.info("get loan by kyc search parm{}", map);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
             map);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        List<CustomerLoan> customerLoans = customerLoanRepository.findAll(specification);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();*/
+        List<CustomerLoan> customerLoans = customerLoanRepository.
+            getCustomerLoansByDocumentStatusAndCurrentStage(customerGroup.getId());
         Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
-
         customerLoans.forEach(customerLoan -> {
             if (!filterList.containsKey(String.valueOf(customerLoan.getCustomerInfo().getId()))) {
-                CustomerInfo customerInfo = customerLoan.getLoanHolder();
-                List<BigDecimal> l = customerLoans.stream()
-                    .filter(c -> Objects.equals(c.getCustomerInfo().getId(),
-                        customerLoan.getCustomerInfo().getId()) && c.getProposal() != null)
-                    .map(c -> c.getProposal().getProposedLimit()).
-                        collect(Collectors.toList());
-                BigDecimal totalLimit = l.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
                 CustomerLoanGroupDto customerLoanGroupDto = new CustomerLoanGroupDto();
                 customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
-                customerLoanGroupDto.setTotalObtainedLimit(totalLimit);
-                filterList.put(String.valueOf(customerInfo.getId()), customerLoanGroupDto);
+                List<CustomerLoan> loans = customerLoans.stream().filter(c -> Objects
+                    .equals(c.getCustomerInfo().getId(), customerLoan.getCustomerInfo().getId())
+                    && c.getProposal() != null).collect(Collectors.toList());
+                BigDecimal totalApprovedLimit = loans.stream()
+                    .filter(c -> c.getDocumentStatus() == DocStatus.APPROVED)
+                    .map(c -> c.getProposal().getProposedLimit())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal totalPendingLimit = loans.stream()
+                    .filter(c -> c.getDocumentStatus() != DocStatus.APPROVED)
+                    .map(c -> c.getProposal().getProposedLimit())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
+                customerLoanGroupDto.setTotalApprovedLimit(totalApprovedLimit);
+                customerLoanGroupDto.setTotalPendingLimit(totalPendingLimit);
+                customerLoanGroupDto.setCustomerLoans(customerLoans);
+                filterList.put(String.valueOf(customerLoanGroupDto.getLoanHolder().getId()),
+                    customerLoanGroupDto);
             }
+
         });
 
         return filterList.values();
