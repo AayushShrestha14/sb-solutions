@@ -1,5 +1,9 @@
 package com.sb.solutions.core.utils;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.sb.solutions.core.utils.string.StringUtil;
+
 /**
  * this utility method is use for chaining folder path for json file or document file
  *
@@ -65,29 +69,44 @@ public class PathBuilder {
     public String build() {
         StringBuilder sb = new StringBuilder(this.basePath);
         return sb.append(branchName).append("/")
-                .append(customerName.trim().replace(" ", "_")).append("_")
-                .append(getDigitsFromString(customerCitizenship)).append("/")
-                .append(loanType.trim().replace(" ", "_")).append("/")
-                .append(action).append("/")
-                .append(jsonPath ? "json/" : "doc/").toString();
+            .append(customerName.trim().replace(" ", "_")).append("_")
+            .append(getDigitsFromString(customerCitizenship)).append("/")
+            .append(loanType.trim().replace(" ", "_")).append("/")
+            .append(action).append("/")
+            .append(jsonPath ? "json/" : "doc/").toString();
     }
 
     public String buildAccountOpening() {
         StringBuilder sb = new StringBuilder(this.basePath);
         return sb.append(branchName)
-                .append("/")
-                .append(customerName.trim().replace(" ", "_"))
-                .append("_")
-                .append(getDigitsFromString(customerCitizenship)).append("/")
-                .append("AccountOpening")
-                .append("/")
-                .append(jsonPath ? "json/" : "doc/")
-                .toString();
+            .append("/")
+            .append(customerName.trim().replace(" ", "_"))
+            .append("_")
+            .append(getDigitsFromString(customerCitizenship)).append("/")
+            .append("AccountOpening")
+            .append("/")
+            .append(jsonPath ? "json/" : "doc/")
+            .toString();
     }
 
     public String buildBuildFormDownloadPath(String formName) {
         StringBuilder sb = new StringBuilder(this.basePath);
         sb.append("download/").append(formName).append("/");
         return sb.toString();
+    }
+
+    public String buildCustomerInfoBasePath(Long customerInfoId, String name, String branch,
+        String customerType) {
+        return new StringBuilder(this.basePath)
+            .append("customers")
+            .append("/")
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
+            .append("/")
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append("/")
+            .append(
+                customerInfoId + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
+            .append("/")
+            .toString();
     }
 }

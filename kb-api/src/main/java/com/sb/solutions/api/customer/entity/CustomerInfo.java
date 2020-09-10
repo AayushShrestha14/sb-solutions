@@ -111,4 +111,6 @@ public class CustomerInfo extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "customer_info_customer_group_id")
     private CustomerGroup customerGroup;
+
+    private String profilePic;
 }

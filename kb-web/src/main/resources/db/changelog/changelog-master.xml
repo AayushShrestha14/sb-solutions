@@ -3123,6 +3123,8 @@
     </addColumn>
   </changeSet>
 
+
+
   <changeSet id="115-alter-proposal-add-checkedData-column" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -3144,6 +3146,59 @@
       <column name="checked_data" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
+
+
+  <changeSet id="117-alter-customer-info-column" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="profile_pic"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="profile_pic" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="150-crg-group" author="sunil">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="crg-group"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="crg-group">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="label" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="weightage" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+
+    </createTable>
+  </changeSet>
+
 
 </databaseChangeLog>
 
