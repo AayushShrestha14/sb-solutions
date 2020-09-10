@@ -132,6 +132,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdType(CustomerIdType.PAN);
             customerInfo.setIdRegDate(((CompanyInfo) o).getLegalStatus().getRegistrationDate());
             customerInfo.setIdNumber(((CompanyInfo) o).getPanNumber());
+            customerInfo.setIdRegPlace(((CompanyInfo) o).getIssuePlace());
+            customerInfo.setContactNo(((CompanyInfo) o).getContactNum());
+            customerInfo.setEmail(((Customer) o).getEmail());
         }
         customerInfo.setBranch(user.getBranch().get(0));
         return this.save(customerInfo);

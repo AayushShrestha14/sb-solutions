@@ -3145,6 +3145,18 @@
     </addColumn>
   </changeSet>
 
+
+  <changeSet id="117-alter-customer-info-column" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="profile_pic"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="profile_pic" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 

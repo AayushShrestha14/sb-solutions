@@ -54,7 +54,8 @@ public class CustomerGeneralDocumentController {
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") Long documentId,
-        @RequestParam("customerId") Long id
+        @RequestParam("customerInfoId") Long id,
+        @RequestParam("customerType") String customerType
     ) {
         CustomerGeneralDocument customerGeneralDocument = new CustomerGeneralDocument();
         Document document = new Document();
@@ -69,6 +70,8 @@ public class CustomerGeneralDocumentController {
             .append("customers")
             .append("/")
             .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branchName))
+            .append("/")
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
             .append("/")
             .append(id + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
             .append("/")
