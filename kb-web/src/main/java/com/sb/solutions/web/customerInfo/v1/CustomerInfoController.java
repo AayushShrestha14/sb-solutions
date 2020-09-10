@@ -118,7 +118,7 @@ public class CustomerInfoController {
             .buildCustomerInfoBasePath(customerInfoId, name, branch, customerType);
         ResponseEntity responseEntity = FileUploadUtils
             .uploadFile(multipartFile, uploadPath,
-                StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name));
+                StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name).toLowerCase());
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Object body = responseEntity.getBody();
             RestResponseDto restResponseDto = new RestResponseDto();
@@ -128,6 +128,7 @@ public class CustomerInfoController {
                 final Optional<CustomerInfo> customerInfo = customerInfoService
                     .findOne(customerInfoId);
                 if (customerInfo.isPresent()) {
+                    logger.info("updating profile picture::{}", customerInfo.get().getName());
                     CustomerInfo c = customerInfo.get();
                     c.setProfilePic(path);
                     customerInfoService.save(c);
