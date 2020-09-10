@@ -1,5 +1,7 @@
 package com.sb.solutions.web.customerInfo.v1;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -114,11 +116,18 @@ public class CustomerInfoController {
         Preconditions.checkNotNull(branch.equals("null") ? null
                 : (StringUtils.isEmpty(branch) ? null : branch),
             "Branch Name is required to upload file.");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+
+        String formattedDateTime = currentDateTime.format(formatter);
         String uploadPath = new PathBuilder(UploadDir.initialDocument)
             .buildCustomerInfoBasePath(customerInfoId, name, branch, customerType);
         ResponseEntity responseEntity = FileUploadUtils
             .uploadFile(multipartFile, uploadPath,
-                StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name).toLowerCase());
+                formattedDateTime + "-" + StringUtil
+                    .getStringWithoutWhiteSpaceAndWithCapitalize(name)
+                    .toLowerCase());
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Object body = responseEntity.getBody();
             RestResponseDto restResponseDto = new RestResponseDto();
