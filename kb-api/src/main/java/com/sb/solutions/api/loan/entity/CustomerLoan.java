@@ -56,7 +56,6 @@ import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.dto.NepaliTemplateDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
-import com.sb.solutions.api.mawCreditRiskGrading.entity.MawCreditRiskGrading;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.api.security.entity.Security;
@@ -168,9 +167,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private VehicleSecurity vehicleSecurity;
 
-    @NotAudited
-    @OneToOne
-    private MawCreditRiskGrading mawCreditRiskGrading;
+
 
     @NotAudited
     @OneToOne
