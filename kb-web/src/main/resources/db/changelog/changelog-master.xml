@@ -3162,11 +3162,11 @@
   <changeSet id="150-crg-group" author="sunil">
     <preConditions onFail="MARK_RAN">
       <not>
-        <tableExists tableName="crg-group"/>
+        <tableExists tableName="crg_group"/>
       </not>
     </preConditions>
 
-    <createTable tableName="crg-group">
+    <createTable tableName="crg_group">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
