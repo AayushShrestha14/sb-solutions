@@ -106,7 +106,7 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="province_id" type="BIGINT">
+      <column name="province_id" type="BIGINT">`
         <constraints nullable="true"
           foreignKeyName="fk_district_province_id"
           referencedTableName="province"
@@ -3199,6 +3199,23 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="151-alter-customer_loan_remove_maw_credit_risk_grading_id" author="sunil">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="customer_loan" columnName="maw_credit_risk_grading_id"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="customer_loan"
+                              constraintName="fk_customer_loan_maw_credit_risk_grading_id"/>
+    <dropColumn tableName="customer_loan" columnName="maw_credit_risk_grading_id"/>
+
+  </changeSet>
+
+  <changeSet id="152-remove-maw_credit_risk_grading" author="sunil">
+    <preConditions onFail="MARK_RAN">
+        <tableExists tableName="maw_credit_risk_grading"/>
+    </preConditions>
+
+    <dropTable tableName="maw_credit_risk_grading"/>
+  </changeSet>
 
 </databaseChangeLog>
 
