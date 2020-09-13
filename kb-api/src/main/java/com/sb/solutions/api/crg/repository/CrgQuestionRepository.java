@@ -10,5 +10,5 @@ import java.util.List;
  * @author Sunil Babu Shrestha on 9/10/2020
  */
 public interface CrgQuestionRepository extends JpaRepository<CrgQuestion, Long> {
-    List<CrgQuestion> findByLoanConfigIdAndStatusNot(Long loadConfigId, Status status);
+    List<CrgQuestion> findByLoanApprovalTypeAndStatusNot(Long loanArproveType, Status status);
 }

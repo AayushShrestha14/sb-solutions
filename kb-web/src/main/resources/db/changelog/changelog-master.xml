@@ -3217,6 +3217,74 @@
     <dropTable tableName="maw_credit_risk_grading"/>
   </changeSet>
 
+  <changeSet id="153-create-crg-question" author="sunil">
+    <createTable tableName="crg-question">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="maximum_points" type="BIGINT"/>
+      <column name="appearance_order" type="BIGINT"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="crg_group_id" type="BIGINT"/>
+      <column name="loan_approval_type" type="BIGINT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="154-create-crg-answer" author="sunil">
+    <createTable tableName="crg-answer">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="points" type="BIGINT"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="crg_question_id" type="BIGINT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="crg_question_id"
+                             baseTableName="crg-answer"
+                             constraintName="fk_crg_answer_crg_question_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE"
+                             referencedColumnNames="id"
+                             referencedTableName="crg-question"/>
+  </changeSet>
+
+
 </databaseChangeLog>
 
 
