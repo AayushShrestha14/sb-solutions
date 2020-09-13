@@ -4,20 +4,23 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.core.enums.LoanFlag;
 
 /**
+ * Note: If the flag is loan specific, example: zero proposed amount or insufficient considered
+ * amount for share, then {@link CustomerLoanFlag#customerLoanId} is required to be set when
+ * creating a new flag. Otherwise, it is good left `null`.
+ *
  * @author Elvin Shrestha on 4/28/2020
  */
 @Entity
@@ -36,9 +39,11 @@ public class CustomerLoanFlag extends AbstractPersistable<Long> {
 
     private Boolean notifiedByEmail;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CustomerLoan customerLoan;
+    private Long customerLoanId;
+
+    @ManyToOne
+    @JsonBackReference
+    private CustomerInfo customerInfo;
 
     public static <T> Collector<T, ?, T> toSingleton() {
         return Collectors.collectingAndThen(

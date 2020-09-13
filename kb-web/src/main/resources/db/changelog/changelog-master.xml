@@ -106,7 +106,7 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="province_id" type="BIGINT">`
+      <column name="province_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_district_province_id"
           referencedTableName="province"
@@ -3284,6 +3284,41 @@
                              referencedTableName="crg-question"/>
   </changeSet>
 
+
+  <changeSet id="151-alter-customer_loan_flag-remove-fk_customer_loan" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists
+        foreignKeyTableName="customer_loan_flag"
+        foreignKeyName="fk_customer_loan_flag_customer_loan_id_customer_loan_id"/>
+    </preConditions>
+
+    <dropForeignKeyConstraint
+      baseTableName="customer_loan_flag"
+      constraintName="fk_customer_loan_flag_customer_loan_id_customer_loan_id"/>
+  </changeSet>
+
+  <changeSet id="151-alter-customer_loan_flag-add-customer_info_id" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan_flag" columnName="customer_info_id"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan_flag">
+      <column name="customer_info_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_flag_customer_info_id_customer_info_id"
+          referencedTableName="customer_info"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="151-alter-customer_loan_flag_allow_customer_loan_id_null" author="elvin">
+    <dropNotNullConstraint
+      tableName="customer_loan_flag"
+      columnName="customer_loan_id"
+      columnDataType="BIGINT"/>
+  </changeSet>
 
 </databaseChangeLog>
 

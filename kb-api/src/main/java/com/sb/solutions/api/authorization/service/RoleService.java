@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.service.BaseService;
 
 /**
@@ -19,6 +21,6 @@ public interface RoleService extends BaseService<Role> {
 
     Role getRoleCAD();
 
-    List<Role> getApproval();
+    List<Role> getByRoleTypeAndStatus(RoleType roleType, Status status);
 }
 
