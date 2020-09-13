@@ -33,6 +33,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
@@ -46,6 +47,7 @@ import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
@@ -55,6 +57,7 @@ import com.sb.solutions.api.helper.HelperDto;
 import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
+import com.sb.solutions.api.loan.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
@@ -68,7 +71,6 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
-import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
@@ -112,7 +114,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CompanyInfoService companyInfoService;
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
-    private final MawCreditRiskGradingService mawCreditRiskGradingService;
     private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
@@ -136,7 +137,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         DmsLoanFileService dmsLoanFileService,
         SiteVisitService siteVisitService,
         FinancialService financialService,
-        MawCreditRiskGradingService mawCreditRiskGradingService,
         CreditRiskGradingAlphaService creditRiskGradingAlphaService,
         SecurityService securityservice,
         ProposalService proposalService,
@@ -159,7 +159,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.dmsLoanFileService = dmsLoanFileService;
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
-        this.mawCreditRiskGradingService = mawCreditRiskGradingService;
         this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
@@ -315,10 +314,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan
                 .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
         }
-        if (customerLoan.getMawCreditRiskGrading() != null) {
-            customerLoan.setMawCreditRiskGrading(
-                this.mawCreditRiskGradingService.save(customerLoan.getMawCreditRiskGrading()));
-        }
+
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
             customerLoan.setCreditRiskGradingAlpha(
                 this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
@@ -669,11 +665,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan
                 .setVehicleSecurity(vehicleSecurityService.save(previousLoan.getVehicleSecurity()));
         }
-        if (previousLoan.getMawCreditRiskGrading() != null) {
-            previousLoan.getMawCreditRiskGrading().setId(null);
-            previousLoan.setMawCreditRiskGrading(
-                mawCreditRiskGradingService.save(previousLoan.getMawCreditRiskGrading()));
-        }
+
         if (previousLoan.getCreditRiskGradingAlpha() != null) {
             previousLoan.getCreditRiskGradingAlpha().setId(null);
             previousLoan.setCreditRiskGradingAlpha(
@@ -736,6 +728,50 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             map);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         return customerLoanRepository.findAll(specification);
+
+    }
+
+    @Override
+    public Object getLoanByCustomerGroup(CustomerGroup customerGroup) {
+        if (ObjectUtils.isEmpty(customerGroup.getId())) {
+            throw new NullPointerException("group id cannot be null");
+        }
+      /*  Map<String, String> map = new HashMap<>();
+        map.put("groupCode", customerGroup.getGroupCode());
+        map.values().removeIf(Objects::isNull);
+        logger.info("get loan by kyc search parm{}", map);
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            map);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();*/
+        List<CustomerLoan> customerLoans = customerLoanRepository.
+            getCustomerLoansByDocumentStatusAndCurrentStage(customerGroup.getId());
+        Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
+        customerLoans.forEach(customerLoan -> {
+            if (!filterList.containsKey(String.valueOf(customerLoan.getCustomerInfo().getId()))) {
+                CustomerLoanGroupDto customerLoanGroupDto = new CustomerLoanGroupDto();
+                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
+                List<CustomerLoan> loans = customerLoans.stream().filter(c -> Objects
+                    .equals(c.getCustomerInfo().getId(), customerLoan.getCustomerInfo().getId())
+                    && c.getProposal() != null).collect(Collectors.toList());
+                BigDecimal totalApprovedLimit = loans.stream()
+                    .filter(c -> c.getDocumentStatus() == DocStatus.APPROVED)
+                    .map(c -> c.getProposal().getProposedLimit())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal totalPendingLimit = loans.stream()
+                    .filter(c -> c.getDocumentStatus() != DocStatus.APPROVED)
+                    .map(c -> c.getProposal().getProposedLimit())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
+                customerLoanGroupDto.setTotalApprovedLimit(totalApprovedLimit);
+                customerLoanGroupDto.setTotalPendingLimit(totalPendingLimit);
+                customerLoanGroupDto.setCustomerLoans(customerLoans);
+                filterList.put(String.valueOf(customerLoanGroupDto.getLoanHolder().getId()),
+                    customerLoanGroupDto);
+            }
+
+        });
+
+        return filterList.values();
 
     }
 

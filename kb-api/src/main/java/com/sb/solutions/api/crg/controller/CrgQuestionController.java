@@ -2,7 +2,6 @@ package com.sb.solutions.api.crg.controller;
 
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.api.crg.service.CrgQuestionService;
-import com.sb.solutions.api.eligibility.question.entity.Question;
 import com.sb.solutions.core.dto.RestResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author Sunil Babu Shrestha on 9/10/2020
  */
 @RestController
-@RequestMapping("/v1/loan-configs/{loanConfigId}/crg-questions")
+@RequestMapping("/v1/{loanTypeId}/crg-questions")
 @RequiredArgsConstructor
 public class CrgQuestionController {
     private final CrgQuestionService questionService;
@@ -35,8 +34,8 @@ public class CrgQuestionController {
     }
 
     @GetMapping
-    public final ResponseEntity<?> getQuestionsOfLoanConfig(@PathVariable long loanConfigId) {
-        final List<CrgQuestion> questions = questionService.findByLoanConfigId(loanConfigId);
+    public final ResponseEntity<?> getQuestionsOfLoanConfig(@PathVariable long loanTypeId) {
+        final List<CrgQuestion> questions = questionService.findByLoanTypeId(loanTypeId);
         return new RestResponseDto().successModel(questions);
     }
 
@@ -44,7 +43,7 @@ public class CrgQuestionController {
     public final ResponseEntity<?> updateQuestions(
             @Valid @RequestBody CrgQuestion question) {
 
-        final Question updatedQuestion = questionService.update(question);
+        final CrgQuestion updatedQuestion = questionService.update(question);
         return new RestResponseDto().successModel(updatedQuestion);
     }
 

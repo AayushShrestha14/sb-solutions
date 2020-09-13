@@ -185,7 +185,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             insuranceService
                 .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
         } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
-            customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
+            CustomerGroup customerGroup = objectMapper().convertValue(o, CustomerGroup.class);
+            if(customerGroup.getId() == null && customerGroup.getGroupCode() == null){
+                customerInfo1.setCustomerGroup(null);
+            } else {
+                customerInfo1.setCustomerGroup(customerGroup);
+            }
         } else if ((template.equalsIgnoreCase(TemplateName.CRG_ALPHA))) {
             final CreditRiskGradingAlpha creditRiskGradingAlpha = creditRiskGradingAlphaService
                 .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
