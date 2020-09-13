@@ -13,4 +13,6 @@ public interface CustomerLoanFlagService extends Service<CustomerLoanFlag, Long>
     void deleteCustomerLoanFlagById(Long id);
 
     List<CustomerLoanFlag> findAllByCustomerInfoId(Long id);
+
+    void updateEmailStatus(boolean flag, Long flagId);
 }

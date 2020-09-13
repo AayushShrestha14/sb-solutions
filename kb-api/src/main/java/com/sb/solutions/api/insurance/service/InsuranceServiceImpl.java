@@ -148,18 +148,16 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                     customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
                     customerLoanFlag.setOrder(
                         Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
-                    sendInsuranceExpiryEmail(holder, expiredInsurance);     // send mail
-                    customerLoanFlag.setNotifiedByEmail(true);
-                    customerLoanFlagService.save(customerLoanFlag);
+                    CustomerLoanFlag savedFlag = customerLoanFlagService.save(customerLoanFlag);
+                    sendInsuranceExpiryEmail(holder, expiredInsurance, savedFlag);     // send mail
                     return;
                 } else if (!flag && customerLoanFlag != null) {
                     customerLoanFlagService.deleteById(customerLoanFlag.getId());
                 } else if (flag && customerLoanFlag.getFlag() != null
                     && (customerLoanFlag.getNotifiedByEmail() == null
                     || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
-                    sendInsuranceExpiryEmail(holder, expiredInsurance);     // send mail
-                    customerLoanFlag.setNotifiedByEmail(true);
-                    customerLoanFlagService.save(customerLoanFlag);
+                    sendInsuranceExpiryEmail(holder, expiredInsurance,
+                        customerLoanFlag);     // send mail
                 }
             } catch (NullPointerException e) {
                 LOGGER.error("Error updating insurance expiry flag {}", e.getMessage());
@@ -167,7 +165,8 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         }
     }
 
-    private void sendInsuranceExpiryEmail(CustomerInfo holder, List<Insurance> expiredInsurance) {
+    private void sendInsuranceExpiryEmail(CustomerInfo holder, List<Insurance> expiredInsurance,
+        CustomerLoanFlag flag) {
         final Email emailMaker = new Email();
         emailMaker.setBankName(this.bankName);
 
@@ -218,13 +217,13 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
                 templateClient.setSubject(String.format("Insurance Expiry Notice at %s", bankName));
                 mailThreadService.sendMain(templateClient, emailClient);
             }
+            customerLoanFlagService.updateEmailStatus(true, flag.getId());
         });
     }
 
     private Specification<CustomerLoan> getInsuranceSpecs() {
         Map<String, String> t = new HashMap<>();
         t.put(CustomerLoanSpec.FILTER_BY_HAS_INSURANCE, Boolean.toString(true));
-        t.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.APPROVED.name());
         t.put(CustomerLoanSpec.FILTER_BY_IS_CLOSE_RENEW, Boolean.toString(false));
         CustomerLoanSpecBuilder builder = new CustomerLoanSpecBuilder(t);
         return builder.build();
