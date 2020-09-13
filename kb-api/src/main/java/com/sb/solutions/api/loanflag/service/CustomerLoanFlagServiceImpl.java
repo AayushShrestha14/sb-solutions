@@ -40,4 +40,9 @@ public class CustomerLoanFlagServiceImpl extends BaseServiceImpl<CustomerLoanFla
     public List<CustomerLoanFlag> findAllByCustomerInfoId(Long id) {
         return repository.findAllByCustomerInfoId(id);
     }
+
+    @Override
+    public void updateEmailStatus(boolean flag, Long flagId) {
+        repository.updateEmailStatus(flag, flagId);
+    }
 }
