@@ -106,7 +106,7 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="province_id" type="BIGINT">`
+      <column name="province_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_district_province_id"
           referencedTableName="province"
@@ -3284,58 +3284,6 @@
                              referencedTableName="crg-question"/>
   </changeSet>
 
-
-
-  <changeSet id="117-alter-customer-info-column" author="rujan">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="customer_info" columnName="profile_pic"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="customer_info">
-      <column name="profile_pic" type="VARCHAR(256)"/>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="150-crg-group" author="sunil">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <tableExists tableName="crg-group"/>
-      </not>
-    </preConditions>
-
-    <createTable tableName="crg-group">
-      <column name="id" type="BIGINT" autoIncrement="true">
-        <constraints nullable="false" primaryKey="true"/>
-      </column>
-      <column name="created_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="modified_by_id" type="BIGINT">
-        <constraints nullable="true"/>
-      </column>
-      <column name="created_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_at" type="DATE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="label" type="VARCHAR(256)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="description" type="VARCHAR(256)">
-        <constraints nullable="true"/>
-      </column>
-      <column name="weightage" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="status" type="INT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="version" type="INT" defaultValueNumeric="0"/>
-
-    </createTable>
-  </changeSet>
 
   <changeSet id="151-alter-customer_loan_flag-remove-fk_customer_loan" author="elvin">
     <preConditions onFail="MARK_RAN">
