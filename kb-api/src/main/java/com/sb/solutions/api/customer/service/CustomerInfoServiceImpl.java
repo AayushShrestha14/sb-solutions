@@ -35,8 +35,11 @@ import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
+import com.sb.solutions.api.helper.HelperDto;
+import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
+import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -70,6 +73,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final InsuranceService insuranceService;
     private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
     private final CreditRiskGradingService creditRiskGradingService;
+    private final CustomerLoanFlagService loanFlagService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -81,7 +85,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         UserService userService,
         InsuranceService insuranceService,
         CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-        CreditRiskGradingService creditRiskGradingService) {
+        CreditRiskGradingService creditRiskGradingService,
+        CustomerLoanFlagService loanFlagService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -93,6 +98,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.insuranceService = insuranceService;
         this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
         this.creditRiskGradingService = creditRiskGradingService;
+        this.loanFlagService = loanFlagService;
     }
 
 
@@ -165,6 +171,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final ShareSecurity shareSecurity = shareSecurityService
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
+            HelperDto<Long> helperDto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
+            shareSecurityService.execute(Optional.of(helperDto));
         } else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
@@ -172,9 +180,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         } else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
             ObjectMapper mapper = new ObjectMapper();
             List<Insurance> insurances = Arrays.asList(mapper.convertValue(o, Insurance[].class));
-            final List<Insurance> insurance = insuranceService
-                .saveAll(insurances);
+            final List<Insurance> insurance = insuranceService.saveAll(insurances);
             customerInfo1.setInsurance(insurance);
+            insuranceService
+                .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
         } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
             customerInfo1.setCustomerGroup(objectMapper().convertValue(o, CustomerGroup.class));
         } else if ((template.equalsIgnoreCase(TemplateName.CRG_ALPHA))) {
@@ -186,6 +195,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .save(objectMapper().convertValue(o, CreditRiskGrading.class));
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
         }
+        customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
     }
 

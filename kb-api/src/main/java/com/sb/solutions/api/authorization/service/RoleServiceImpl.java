@@ -101,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> getApproval() {
-        return roleRepository.getByRoleTypeAndStatus(RoleType.APPROVAL, Status.ACTIVE);
+    public List<Role> getByRoleTypeAndStatus(RoleType roleType, Status status) {
+        return roleRepository.getAllByRoleTypeEqualsAndStatus(roleType, Status.ACTIVE);
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.insurance.entity.Insurance;
+import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -113,4 +115,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     private CustomerGroup customerGroup;
 
     private String profilePic;
+
+    @OneToMany(mappedBy = "customerInfo")
+    @JsonManagedReference
+    private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
 }

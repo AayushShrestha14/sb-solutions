@@ -40,7 +40,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
         + " WHERE c.roleType = :roleType")
     boolean chkByRoleType(@Param("roleType") RoleType roleType);
 
-    List<Role> getByRoleTypeAndStatus(RoleType roleType, Status status);
+    List<Role> getAllByRoleTypeEqualsAndStatus(RoleType roleType, Status status);
 
     @Query("select new com.sb.solutions.api.authorization.dto.RoleDto(r.id,r.roleName)  from Role r")
     List<RoleDto> getRoleDto();

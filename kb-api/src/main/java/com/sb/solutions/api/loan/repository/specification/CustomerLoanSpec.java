@@ -241,11 +241,16 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_EXPIRY), true);
 
             case FILTER_BY_HAS_INSURANCE:
-                return criteriaBuilder.isNotNull(root.get("insurance"));
+                return criteriaBuilder.and(criteriaBuilder.isMember(AppConstant.TEMPLATE_INSURANCE,
+                    root.join("loan").get("templateList")));
 
             case FILTER_BY_IS_CLOSE_RENEW:
-                return criteriaBuilder
+                Predicate notNull = criteriaBuilder.isNotNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
+                Predicate isNull = criteriaBuilder.isNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
+                Predicate equal = criteriaBuilder
                     .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
+                return Boolean.parseBoolean(value) ? criteriaBuilder.and(notNull, equal)
+                    : criteriaBuilder.or(isNull, equal);
 
             case FILTER_BY_IS_NOT_COMBINED:
                 return criteriaBuilder.isNull(root.get("combinedLoan"));

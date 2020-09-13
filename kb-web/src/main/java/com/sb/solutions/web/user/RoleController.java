@@ -18,6 +18,8 @@ import com.sb.solutions.api.authorization.entity.RoleHierarchy;
 import com.sb.solutions.api.authorization.service.RoleHierarchyService;
 import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 
 /**
  * @author Rujan Maharjan on 3/28/2019
@@ -95,6 +97,6 @@ public class RoleController {
 
     @GetMapping("getApproval")
     public ResponseEntity<?> getApproval() {
-        return new RestResponseDto().successModel(roleService.getApproval());
+        return new RestResponseDto().successModel(roleService.getByRoleTypeAndStatus(RoleType.APPROVAL, Status.ACTIVE));
     }
 }

@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +51,8 @@ import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
+import com.sb.solutions.api.helper.HelperDto;
+import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.LoanStage;
@@ -70,8 +71,6 @@ import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.mawCreditRiskGrading.service.MawCreditRiskGradingService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
-import com.sb.solutions.api.preference.notificationMaster.entity.NotificationMaster;
-import com.sb.solutions.api.preference.notificationMaster.repository.spec.NotificationMasterSpec;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
@@ -81,13 +80,11 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
-import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.core.enums.NotificationMasterType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -826,14 +823,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public void postLoanConditionCheck(CustomerLoan loan) {
         // check if proposed amount is equal to ZERO
         if (loan.getProposal() != null) {
-            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
-                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.ZERO_PROPOSAL_AMOUNT))
-                .collect(CustomerLoanFlag.toSingleton());
+            CustomerLoanFlag customerLoanFlag = loan.getLoanHolder().getLoanFlags().stream()
+                .filter(loanFlag -> (
+                    loanFlag.getFlag().equals(LoanFlag.ZERO_PROPOSAL_AMOUNT)
+                        && loanFlag.getCustomerLoanId().equals(loan.getId())
+                )).collect(CustomerLoanFlag.toSingleton());
 
             boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
             if (flag && customerLoanFlag == null) {
                 customerLoanFlag = new CustomerLoanFlag();
-                customerLoanFlag.setCustomerLoan(loan);
+                customerLoanFlag.setCustomerInfo(loan.getLoanHolder());
+                customerLoanFlag.setCustomerLoanId(loan.getId());
                 customerLoanFlag.setFlag(LoanFlag.ZERO_PROPOSAL_AMOUNT);
                 customerLoanFlag.setDescription(LoanFlag.ZERO_PROPOSAL_AMOUNT.getValue()[1]);
                 customerLoanFlag
@@ -845,56 +845,20 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         // check if company VAT/PAN registration will expire
         if (loan.getCompanyInfo() != null) {
-            CustomerLoanFlag customerLoanFlag = loan.getLoanFlags().stream()
-                .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.COMPANY_VAT_PAN_EXPIRY))
-                .collect(CustomerLoanFlag.toSingleton());
-
-            Map<String, String> insuranceFilter = new HashMap<>();
-            insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
-                NotificationMasterType.COMPANY_REGISTRATION_EXPIRY_BEFORE.toString());
-            NotificationMaster notificationMaster = notificationMasterService
-                .findOneBySpec(insuranceFilter).orElse(null);
-            if (notificationMaster != null) {
-                try {
-                    int daysToExpiryBefore = notificationMaster.getValue();
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(new Date());
-                    c.add(Calendar.DAY_OF_MONTH, daysToExpiryBefore);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.MM_DD_YYYY);
-                    Date today = dateFormat.parse(dateFormat.format(c.getTime()));
-                    Date expiry = dateFormat.parse(dateFormat.format(
-                        loan.getCompanyInfo().getLegalStatus().getRegistrationExpiryDate()
-                    ));
-                    boolean flag = expiry.before(today);
-                    if (flag && customerLoanFlag == null) {
-                        customerLoanFlag = new CustomerLoanFlag();
-                        customerLoanFlag.setCustomerLoan(loan);
-                        customerLoanFlag.setFlag(LoanFlag.COMPANY_VAT_PAN_EXPIRY);
-                        customerLoanFlag.setDescription(String
-                            .format(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[1],
-                                daysToExpiryBefore));
-                        customerLoanFlag.setOrder(
-                            Integer.parseInt(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[0]));
-                        customerLoanFlagService.save(customerLoanFlag);
-                    } else if (!flag && customerLoanFlag != null) {
-                        customerLoanFlagService
-                            .deleteCustomerLoanFlagById(customerLoanFlag.getId());
-                    }
-                } catch (ParseException e) {
-                    logger.error("Error parsing company registration expiry date");
-                }
-            }
+            companyInfoService.execute(loan.getLoanHolder().getId());
         }
 
         // check proposed limit VS considered amount
-        ShareSecurity shareSecurity = loan.getShareSecurity();
+        ShareSecurity shareSecurity = loan.getLoanHolder().getShareSecurity();
         if (shareSecurity != null) {
-            shareSecurityService.execute(Optional.ofNullable(loan.getId()));
+            HelperDto<Long> dto = new HelperDto<>(loan.getId(), HelperIdType.LOAN);
+            shareSecurityService.execute(Optional.of(dto));
         }
         // insurance expiry verification
-        List<Insurance> insurance = loan.getInsurance();
+        List<Insurance> insurance = loan.getLoanHolder().getInsurance();
         if (insurance != null) {
-            insuranceService.execute(Optional.ofNullable(loan.getId()));
+            HelperDto<Long> dto = new HelperDto<>(loan.getId(), HelperIdType.LOAN);
+            insuranceService.execute(Optional.of(dto));
         }
     }
 
