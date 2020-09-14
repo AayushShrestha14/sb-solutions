@@ -736,22 +736,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (ObjectUtils.isEmpty(customerGroup.getId())) {
             throw new NullPointerException("group id cannot be null");
         }
-      /*  Map<String, String> map = new HashMap<>();
-        map.put("groupCode", customerGroup.getGroupCode());
-        map.values().removeIf(Objects::isNull);
-        logger.info("get loan by kyc search parm{}", map);
-        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
-            map);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();*/
         List<CustomerLoan> customerLoans = customerLoanRepository.
             getCustomerLoansByDocumentStatusAndCurrentStage(customerGroup.getId());
         Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
         customerLoans.forEach(customerLoan -> {
-            if (!filterList.containsKey(String.valueOf(customerLoan.getCustomerInfo().getId()))) {
+            if (!filterList.containsKey(String.valueOf(customerLoan.getLoanHolder().getId()))) {
                 CustomerLoanGroupDto customerLoanGroupDto = new CustomerLoanGroupDto();
                 customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
                 List<CustomerLoan> loans = customerLoans.stream().filter(c -> Objects
-                    .equals(c.getCustomerInfo().getId(), customerLoan.getCustomerInfo().getId())
+                    .equals(c.getLoanHolder().getId(), customerLoan.getLoanHolder().getId())
                     && c.getProposal() != null).collect(Collectors.toList());
                 BigDecimal totalApprovedLimit = loans.stream()
                     .filter(c -> c.getDocumentStatus() == DocStatus.APPROVED)
