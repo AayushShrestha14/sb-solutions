@@ -205,3 +205,37 @@ BEGIN
         END
 END;
 -- ************************Reporting Info*******************************************
+
+-- ************************Credit Risk Grading (Gamma)*******************************************
+BEGIN
+    DECLARE @configCount smallint
+    SET @configCount =
+            (select count(*) from permission where permission_name = 'Credit Risk Grading (Gamma)')
+    if (@configCount = 0)
+        BEGIN
+            DECLARE @acConfig smallint
+            INSERT INTO permission (permission_name, fa_icon, front_url, orders, status)
+            VALUES ('Credit Risk Grading (Gamma)', 'settings-outline',
+                    '/home/crg',
+                    107, 1)
+            SET @acConfig =
+                    (SELECT id FROM permission WHERE permission_name = 'Credit Risk Grading (Gamma)')
+
+            SET IDENTITY_INSERT sub_nav ON
+            INSERT INTO sub_nav (id, sub_nav_name, front_url, fa_icon)
+            VALUES (11, 'Question setup', '/home/crg/setup',
+                    'settings-outline'),
+                    (12, 'Group', '/home/crg/group',
+                    'settings-outline')
+            SET IDENTITY_INSERT sub_nav Off
+
+            INSERT INTO permission_sub_navs (permission_id, sub_navs_id)
+            VALUES (@acConfig, 11),
+                    (@acConfig, 12)
+
+
+            INSERT INTO role_permission_rights (created_at, last_modified_at, permission_id, role_id)
+            VALUES ('2019-04-04 13:17:01', '2019-04-04 13:17:07', @acConfig, 1)
+
+        END
+END;
