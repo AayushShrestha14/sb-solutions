@@ -40,7 +40,7 @@
                       style="margin:0;color:#008cc9;display:inline-block;text-decoration:none">
                     <span
                         style="word-wrap:break-word;color:#4c4c4c;word-break:break-word;font-weight:400;font-size:14px;line-height:1.429"><span
-                        th:text="${data.getTo()}"></span></span>
+                        th:text="${data.getTo()}">user@mail.com</span></span>
                   </a></td>
                   <td width="1">&nbsp;</td>
                 </tr>
@@ -64,27 +64,26 @@
                       <tr>
                         <td style="padding-bottom:20px">
                           <p class="custom-para">
-                            Please be advised about the following update regarding your client <b>Mr/Mrs/Miss.</b> <b><span th:text="${data.getName()}"></span> </b></p>
-                          <table class="table-bordered table-responsive table">
-                            <tr>
-                              <th>Loan:</th>
-                              <td><span th:text="${data.getLoanTypes()}"></span></td>
-                            </tr>
-                            <tr>
-                              <th>Insurance Company Name:</th>
-                              <td><span th:text="${data.getInsuranceCompanyName()}"></span></td>
-                            </tr>
-                            <tr>
-                              <th>Date of Expiry:</th>
-                              <td><span th:text="${data.getExpiryDate()}"></span></td>
-                            </tr>
+                            Please be advised about the following update regarding your client <b>Mr/Mrs/Miss.</b> <b><span th:text="${data.getName()}">Client Name</span> </b></p>
+                          <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
                             <tr>
                               <th>Client Phone Number:</th>
-                              <td><span th:text="${data.getPhoneNumber()}"></span></td>
+                              <td><span th:text="${data.getPhoneNumber()}">1234567890</span></td>
                             </tr>
                             <tr>
                               <th>Client Email:</th>
-                              <td><span th:text="${data.getEmail()}"></span></td>
+                              <td><span th:text="${data.getEmail()}">client@mail.com</span></td>
+                            </tr>
+                          </table>
+                          <br/>
+                          <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
+                            <tr>
+                              <th>Insurance Company Name</th>
+                              <th>Date of Expiry</th>
+                            </tr>
+                            <tr th:each="insurance:${data.getInsurances()}">
+                              <td><span th:text="${insurance.getCompanyName()}"></span></td>
+                              <td><span th:text="${insurance.getExpiryDate()}"></span></td>
                             </tr>
                           </table>
                           <br>

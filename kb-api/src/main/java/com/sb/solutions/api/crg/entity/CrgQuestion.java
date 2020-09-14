@@ -1,11 +1,16 @@
 package com.sb.solutions.api.crg.entity;
 
-import com.sb.solutions.api.eligibility.question.entity.Question;
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sunil Babu Shrestha on 9/10/2020
@@ -14,6 +19,19 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CrgQuestion extends Question {
-    private String group;
+public class CrgQuestion extends BaseEntity<Long> {
+    private String description;
+
+    private long maximumPoints;
+
+    private long appearanceOrder;
+
+    private Status status;
+
+    private long crgGroupId;
+
+    private LoanApprovalType loanApprovalType;
+
+    @OneToMany(mappedBy = "crgQuestion")
+    private List<CrgAnswer> answers = new ArrayList<>();
 }

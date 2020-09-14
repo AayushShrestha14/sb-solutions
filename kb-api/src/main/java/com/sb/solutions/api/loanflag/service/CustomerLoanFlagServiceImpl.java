@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loanflag.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -33,5 +34,15 @@ public class CustomerLoanFlagServiceImpl extends BaseServiceImpl<CustomerLoanFla
     @Override
     public void deleteCustomerLoanFlagById(Long id) {
         repository.deleteCustomerLoanFlagById(id);
+    }
+
+    @Override
+    public List<CustomerLoanFlag> findAllByCustomerInfoId(Long id) {
+        return repository.findAllByCustomerInfoId(id);
+    }
+
+    @Override
+    public void updateEmailStatus(boolean flag, Long flagId) {
+        repository.updateEmailStatus(flag, flagId);
     }
 }

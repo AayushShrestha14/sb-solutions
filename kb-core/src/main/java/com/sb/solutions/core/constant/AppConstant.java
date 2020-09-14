@@ -12,6 +12,7 @@ public class AppConstant {
     public static final String MM_DD_YYYY = "MM-dd-yyyy";
     // List available template id
     public static final int TEMPLATE_SHARE_SECURITY = 13;
+    public static final int TEMPLATE_INSURANCE = 17;
 
     // Role Constant
     public static final String ADMIN_ROLE = "admin";

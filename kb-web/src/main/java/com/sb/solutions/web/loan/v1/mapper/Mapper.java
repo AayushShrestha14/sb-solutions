@@ -147,11 +147,14 @@ public class Mapper {
                 throw new RuntimeException("No user present of selected To:");
             }
             // Check loan flags
-            if (!customerLoan.getLoanFlags().isEmpty()) {
-                customerLoan.getLoanFlags()
-                    .sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
-                logger.error(customerLoan.getLoanFlags().get(0).getDescription());
-                throw new RuntimeException(customerLoan.getLoanFlags().get(0).getDescription());
+            List<CustomerLoanFlag> loanFlags = customerLoan.getLoanHolder().getLoanFlags()
+                .stream()
+                .filter(f -> f.getCustomerLoanId().equals(customerLoan.getId()))
+                .collect(Collectors.toList());
+            if (!loanFlags.isEmpty()) {
+                loanFlags.sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
+                logger.error(loanFlags.get(0).getDescription());
+                throw new RuntimeException(loanFlags.get(0).getDescription());
             }
         }
         return stageMapper

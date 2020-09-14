@@ -106,7 +106,7 @@
       <column name="name" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="province_id" type="BIGINT">`
+      <column name="province_id" type="BIGINT">
         <constraints nullable="true"
           foreignKeyName="fk_district_province_id"
           referencedTableName="province"
@@ -3215,6 +3215,109 @@
     </preConditions>
 
     <dropTable tableName="maw_credit_risk_grading"/>
+  </changeSet>
+
+  <changeSet id="153-create-crg-question" author="sunil">
+    <createTable tableName="crg-question">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="maximum_points" type="BIGINT"/>
+      <column name="appearance_order" type="BIGINT"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="crg_group_id" type="BIGINT"/>
+      <column name="loan_approval_type" type="BIGINT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="154-create-crg-answer" author="sunil">
+    <createTable tableName="crg-answer">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="description" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="points" type="BIGINT"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="crg_question_id" type="BIGINT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="crg_question_id"
+                             baseTableName="crg-answer"
+                             constraintName="fk_crg_answer_crg_question_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE"
+                             referencedColumnNames="id"
+                             referencedTableName="crg-question"/>
+  </changeSet>
+
+
+  <changeSet id="151-alter-customer_loan_flag-remove-fk_customer_loan" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists
+        foreignKeyTableName="customer_loan_flag"
+        foreignKeyName="fk_customer_loan_flag_customer_loan_id_customer_loan_id"/>
+    </preConditions>
+
+    <dropForeignKeyConstraint
+      baseTableName="customer_loan_flag"
+      constraintName="fk_customer_loan_flag_customer_loan_id_customer_loan_id"/>
+  </changeSet>
+
+  <changeSet id="151-alter-customer_loan_flag-add-customer_info_id" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan_flag" columnName="customer_info_id"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan_flag">
+      <column name="customer_info_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_flag_customer_info_id_customer_info_id"
+          referencedTableName="customer_info"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="151-alter-customer_loan_flag_allow_customer_loan_id_null" author="elvin">
+    <dropNotNullConstraint
+      tableName="customer_loan_flag"
+      columnName="customer_loan_id"
+      columnDataType="BIGINT"/>
   </changeSet>
 
 </databaseChangeLog>

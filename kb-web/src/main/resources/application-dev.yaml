@@ -1,6 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;database=las
+    url: jdbc:sqlserver://localhost:1433;database=las_v2
     username: sa
     password: root
+  jpa:
+    show-sql: true
 
