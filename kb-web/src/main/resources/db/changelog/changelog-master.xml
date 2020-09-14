@@ -3320,6 +3320,27 @@
       columnDataType="BIGINT"/>
   </changeSet>
 
+    <changeSet id="155-alter-loan-config-add-short_names" author="Sadaiba">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <columnExists tableName="loan_config" columnName="short_names"/>
+        </not>
+    </preConditions>
+      <addColumn tableName="loan_config">
+        <column name="short_names" type="VARCHAR(256)"/>
+      </addColumn>
+    </changeSet>
+
+    <changeSet id="156-alter-loan-config-add-collateral_requirement" author="Sadaiba">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="loan_config" columnName="collateral_requirement"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="loan_config">
+            <column name="collateral_requirement" type="Float" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
