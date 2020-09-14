@@ -1,14 +1,18 @@
 package com.sb.solutions.api.crg.service;
 
 import com.sb.solutions.api.crg.entity.CrgGroup;
-import com.sb.solutions.core.enums.Status;
-import com.sb.solutions.core.service.BaseService;
+import com.sb.solutions.core.service.Service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Map;
 
 /**
  * @author Sunil Babu Shrestha on 9/10/2020
  */
-public interface CrgGroupService extends BaseService<CrgGroup> {
+public interface CrgGroupService extends Service<CrgGroup, Long> {
 
-    CrgGroup findByStatus(Status status);
+    Page<CrgGroup> findPageable(Map<String, String> filterParams, Pageable pageable);
 
 }
