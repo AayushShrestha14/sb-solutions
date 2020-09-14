@@ -2,7 +2,7 @@ package com.sb.solutions.api.sharesecurity.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.helper.HelperDto;
+import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpec;
+import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.nepseCompany.entity.CustomerShareData;
@@ -79,7 +83,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
     }
 
     @Override
-    public void execute(Optional<Long> optional) {
+    public void execute(Optional<HelperDto<Long>> helperDto) {
         final NepseMaster master = nepseMasterRepository.findByStatus(Status.ACTIVE);
         final Map<ShareType, Double> masterMap = new HashMap<>();
         masterMap.put(ShareType.ORDINARY, master.getOrdinary() / 100);
@@ -87,12 +91,19 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
         final Map<String, Double> marketPriceMap = nepseCompanyRepository.findAll().stream()
             .collect(
                 Collectors.toMap(NepseCompany::getCompanyCode, NepseCompany::getAmountPerUnit));
-        List<CustomerLoan> loan;
-        if (optional.isPresent()) {
-            loan = new ArrayList<>(
-                Arrays.asList(customerLoanRepository.getOne(optional.get())));
+        List<CustomerLoan> loan = new ArrayList<>();
+        if (helperDto.isPresent()) {
+            // share under customer info loans having share template
+            if (helperDto.get().getIdType().equals(HelperIdType.CUSTOMER_INFO)) {
+                loan = getLoanHavingShareTemplate(helperDto.get().getId());
+            } else if (helperDto.get().getIdType().equals(HelperIdType.LOAN)) {
+                // share template under customer info
+                loan = Collections
+                    .singletonList(customerLoanRepository.getOne(helperDto.get().getId()));
+            }
         } else {
-            loan = getLoanHavingShareTemplate();
+            // share under all loans having share template
+            loan = this.getLoanHavingShareTemplate();
         }
         loan.stream()
             .filter(customerLoan -> (null != customerLoan.getProposal().getProposedLimit()
@@ -100,7 +111,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                 > 0))
             .forEach(customerLoan -> {
                 logger.info("Customer loan id {} ", customerLoan.getId());
-                ShareSecurity shareSecurity = customerLoan.getShareSecurity();
+                ShareSecurity shareSecurity = customerLoan.getLoanHolder().getShareSecurity();
                 if (null != shareSecurity) {
                     List<CustomerShareData> shareDataList = shareSecurity.getCustomerShareData();
                     AtomicReference<BigDecimal> reCalculateAmount = new AtomicReference<>(
@@ -122,15 +133,18 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                     logger.info("Recalculate amount {} ===  {} proposal limit",
                         reCalculateAmount.get(), customerLoan.getProposal().getProposedLimit());
 
-                    CustomerLoanFlag customerLoanFlag = customerLoan.getLoanFlags().stream()
-                        .filter(loanFlag -> loanFlag.getFlag()
-                            .equals(LoanFlag.INSUFFICIENT_SHARE_AMOUNT))
-                        .collect(CustomerLoanFlag.toSingleton());
+                    CustomerLoanFlag customerLoanFlag = customerLoan.getLoanHolder().getLoanFlags()
+                        .stream()
+                        .filter(loanFlag -> (
+                            loanFlag.getFlag().equals(LoanFlag.INSUFFICIENT_SHARE_AMOUNT)
+                                && loanFlag.getCustomerLoanId().equals(customerLoan.getId())
+                        )).collect(CustomerLoanFlag.toSingleton());
                     boolean flag = customerLoan.getProposal().getProposedLimit()
                         .compareTo(reCalculateAmount.get()) >= 1;
                     if (flag && customerLoanFlag == null) {
                         customerLoanFlag = new CustomerLoanFlag();
-                        customerLoanFlag.setCustomerLoan(customerLoan);
+                        customerLoanFlag.setCustomerInfo(customerLoan.getLoanHolder());
+                        customerLoanFlag.setCustomerLoanId(customerLoan.getId());
                         customerLoanFlag.setFlag(LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
                         customerLoanFlag.setDescription(String
                             .format(LoanFlag.INSUFFICIENT_SHARE_AMOUNT.getValue()[1],
@@ -144,7 +158,6 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                     }
                 }
             });
-
     }
 
     @Override
@@ -153,21 +166,29 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
     }
 
     private List<CustomerLoan> getLoanHavingShareTemplate() {
-        final Specification<CustomerLoan> specification = (Specification<CustomerLoan>)
-            (root, criteriaQuery, criteriaBuilder) -> {
-                Predicate nonClosedLoanFilter = criteriaBuilder
-                    .and(criteriaBuilder
-                        .notEqual(root.get("documentStatus"),
-                            DocStatus.CLOSED));
-                Predicate nonRejectedLoanFilter = criteriaBuilder
-                    .and(criteriaBuilder.notEqual(root.get("documentStatus"),
-                        DocStatus.REJECTED));
-                Predicate predicateForShareTemplate = criteriaBuilder
-                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
-                        root.join("loan").get("templateList"));
-                return criteriaBuilder
-                    .and(nonClosedLoanFilter, nonRejectedLoanFilter, predicateForShareTemplate);
-            };
-        return customerLoanRepository.findAll(specification);
+        return customerLoanRepository.findAll(getLoanHavingShareSpecs());
+    }
+
+    private List<CustomerLoan> getLoanHavingShareTemplate(Long customerInfoId) {
+        Specification<CustomerLoan> specs = getLoanHavingShareSpecs();
+        Map<String, String> filter = new HashMap<>();
+        filter.put(CustomerLoanSpec.FILTER_BY_LOAN_HOLDER_ID, String.valueOf(customerInfoId));
+        return customerLoanRepository
+            .findAll(specs.and(new CustomerLoanSpecBuilder(filter).build()));
+    }
+
+    private Specification<CustomerLoan> getLoanHavingShareSpecs() {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate nonClosedLoanFilter = criteriaBuilder
+                .and(criteriaBuilder.notEqual(root.get("documentStatus"), DocStatus.CLOSED));
+            Predicate nonRejectedLoanFilter = criteriaBuilder
+                .and(criteriaBuilder.notEqual(root.get("documentStatus"),
+                    DocStatus.REJECTED));
+            Predicate predicateForShareTemplate = criteriaBuilder
+                .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
+                    root.join("loan").get("templateList"));
+            return criteriaBuilder
+                .and(nonClosedLoanFilter, nonRejectedLoanFilter, predicateForShareTemplate);
+        };
     }
 }

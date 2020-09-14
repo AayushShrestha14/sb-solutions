@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -51,80 +48,52 @@ public class MailSenderService {
             String content = templateEngine.process(EmailConstant.MAIL.get(template), ctx);
             message.setText(content, true);
         });
-
     }
 
+    public void sendComplexMail(EmailConstant.Template template, Email dto)
+        throws MessagingException, IOException {
 
-    public void sendMailWithAttachmentBcc(Email email) throws MessagingException, IOException {
-
-        Properties props = javaMailSender.getJavaMailProperties();
-
-        // check the authentication
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(javaMailSender.getUsername(),
-                    javaMailSender.getPassword());
-            }
-        });
-        MimeMessage message = new MimeMessage(session);
-
-        // Set From: header field of the header.
+        MimeMessage message = javaMailSender.createMimeMessage();
         message.setFrom(new InternetAddress(javaMailSender.getUsername()));
-        // Set To: header field of the header.
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email.getTo()));
-
-        List<String> items = email.getBcc() == null ? new ArrayList<>() : email.getBcc();
-        if (!items.isEmpty()) {
-
-            for (String recipient : items) {
-                message.addRecipient(Message.RecipientType.CC, new InternetAddress(
-                    recipient));
-            }
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(dto.getTo()));
+        List<String> ccList = dto.getCc() == null ? new ArrayList<>() : dto.getCc();
+        for (String cc : ccList) {
+            message.addRecipient(RecipientType.CC, new InternetAddress(cc));
         }
-
-        // Set Subject: header field
-        message.setSubject(email.getSubject());
-
-        // Create the message part
-        BodyPart messageBodyPart = new MimeBodyPart();
-
-        // Fill the message
-        messageBodyPart.setContent(email.getBody(), "text/html");
+        List<String> bccList = dto.getBcc() == null ? new ArrayList<>() : dto.getBcc();
+        for (String bcc : bccList) {
+            message.addRecipient(RecipientType.BCC, new InternetAddress(bcc));
+        }
+        message.setSubject(template.get());
 
         // Create a multipart message
         Multipart multipart = new MimeMultipart();
 
-        // Set text message part
+        BodyPart messageBodyPart = new MimeBodyPart();
+        final Context ctx = new Context();
+        ctx.setVariable("data", dto);
+        messageBodyPart
+            .setContent(templateEngine.process(EmailConstant.MAIL.get(template), ctx), "text/html");
+
         multipart.addBodyPart(messageBodyPart);
 
-        // Part two is attachment
-        messageBodyPart = new MimeBodyPart();
+        List<String> items =
+            dto.getAttachment() == null ? new ArrayList<>() : dto.getAttachment();
 
-        List<String> item =
-            email.getAttachment() == null ? new ArrayList<>() : email.getAttachment();
-
-        for (String attached : item) {
+        for (String attached : items) {
             if (attached != null) {
-                Part attachment = new MimeBodyPart();
+                BodyPart attachment = new MimeBodyPart();
                 URL url = new URL(attached);
 
                 attachment.setDataHandler(new DataHandler(url));
                 attachment.setDisposition(Part.ATTACHMENT);
-
-                /*List<String> files = Arrays.asList(attached.split("/"));
-                String fileName = "";
-                for (String a : files) {
-                    fileName = a;
-                }*/
-
                 attachment.setFileName("test");
-                multipart.addBodyPart((BodyPart) attachment);
+                multipart.addBodyPart(attachment);
             }
         }
-        // Send the complete message parts
         message.setContent(multipart);
 
         // Send message
-        Transport.send(message);
+        javaMailSender.send(message);
     }
 }

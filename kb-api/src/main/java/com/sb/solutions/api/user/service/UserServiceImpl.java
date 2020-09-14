@@ -183,6 +183,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findByRoleIdAndBranch(Long role, List<Long> branch) {
+        return userRepository.findByRoleIdAndBranch(role, branch);
+    }
+
+    @Override
     public String csv(Object searchDto) {
         final CsvMaker csvMaker = new CsvMaker();
         final ObjectMapper objectMapper = new ObjectMapper();

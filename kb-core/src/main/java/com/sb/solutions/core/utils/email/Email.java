@@ -8,12 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.utils.email.dto.InsuranceEmailDto;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Email {
 
+    private List<String> cc;
     private List<String> bcc;
     private String body;
     private List<String> attachment;
@@ -29,11 +31,10 @@ public class Email {
     private String loanType;
     private String name;
     private String email;
-    private Date expiryDate;
     private String phoneNumber;
     private LoanType loanTypes;
     private String clientCitizenshipNumber;
-    private String insuranceCompanyName;
+    private List<InsuranceEmailDto> insurances;
     private String accountNumber;
 
 }
