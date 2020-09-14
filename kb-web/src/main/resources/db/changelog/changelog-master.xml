@@ -3218,7 +3218,7 @@
   </changeSet>
 
   <changeSet id="153-create-crg-question" author="sunil">
-    <createTable tableName="crg-question">
+    <createTable tableName="crg_question">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -3249,7 +3249,7 @@
   </changeSet>
 
   <changeSet id="154-create-crg-answer" author="sunil">
-    <createTable tableName="crg-answer">
+    <createTable tableName="crg_answer">
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
@@ -3276,12 +3276,12 @@
       <column name="version" type="INT" defaultValueNumeric="0"/>
     </createTable>
     <addForeignKeyConstraint baseColumnNames="crg_question_id"
-                             baseTableName="crg-answer"
+                             baseTableName="crg_answer"
                              constraintName="fk_crg_answer_crg_question_id"
                              onDelete="CASCADE"
                              onUpdate="CASCADE"
                              referencedColumnNames="id"
-                             referencedTableName="crg-question"/>
+                             referencedTableName="crg_question"/>
   </changeSet>
 
 
