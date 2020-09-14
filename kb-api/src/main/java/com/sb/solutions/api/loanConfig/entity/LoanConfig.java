@@ -36,6 +36,10 @@ public class LoanConfig extends BaseEntity<Long> {
 
     private Boolean isFundable;
 
+    private String shortNames;
+
+    private Double collateralRequirement;
+
     private Status status;
 
     private Boolean isRenewable;
