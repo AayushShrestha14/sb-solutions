@@ -2550,9 +2550,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="124-alter-customer-loan-remove-maw-credit-risk-grading-id-foreign-key" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="customer_loan" foreignKeyName="fk_customer_loan_maw_credit_risk_grading_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="customer_loan" constraintName="fk_customer_loan_maw_credit_risk_grading_id"/>
+    </changeSet>
+
     <changeSet id="125-alter-customer_loan_remove_maw_credit_risk_grading_id" author="sunil">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="account_category" columnName="maw_credit_risk_grading_id"/>
+            <columnExists tableName="customer_loan" columnName="maw_credit_risk_grading_id"/>
         </preConditions>
 
         <dropColumn tableName="customer_loan" columnName="maw_credit_risk_grading_id"/>
@@ -2565,6 +2572,44 @@
         </preConditions>
 
         <dropTable tableName="maw_credit_risk_grading"/>
+    </changeSet>
+
+    <changeSet id="262-alter-legal-status-drop-corporate-structure" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="legal_status" columnName="corporate_structure"/>
+        </preConditions>
+        <dropColumn tableName="legal_status" columnName="corporate_structure"/>
+    </changeSet>
+    <changeSet id="263-alter-legal-status-add-corporate-structure-id" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status" columnName="corporate_structure_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status">
+            <column name="corporate_structure_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_legal_status_corporate_structure_id_company_id"
+                  referencedTableName="company"
+                  referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="264-alter-legal-status-audit-drop-corporate_structure" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="legal_status_audit" columnName="corporate_structure"/>
+        </preConditions>
+        <dropColumn tableName="legal_status_audit" columnName="corporate_structure"/>
+    </changeSet>
+    <changeSet id="265-alter-legal-status-audit-drop-add-corporate_structure_id" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status_audit" columnName="corporate_structure_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status_audit">
+            <column name="corporate_structure_id" type="BIGINT"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
 
