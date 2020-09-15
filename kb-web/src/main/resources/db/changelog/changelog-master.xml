@@ -3319,6 +3319,24 @@
       columnName="customer_loan_id"
       columnDataType="BIGINT"/>
   </changeSet>
+  
+  <changeSet id="152-create-associate-table-customer-loan-tagged" author="bibash">
+    <preConditions onFail="MARK_RAN">
+     <not>
+       <tableExists tableName="customer_loan_guarantor"/>
+     </not>
+    </preConditions>
+    <createTable tableName="customer_loan_guarantor">
+      <column name="customer_loan_id" type="BIGINT">
+        <constraints foreignKeyName="fk_customer_loan_id_combined_loan_id"
+          referencedTableName="customer_loan" referencedColumnNames="id"/>
+      </column>
+      <column name="guarantor_id" type="BIGINT">
+        <constraints foreignKeyName="fk_guarantor_customer_loan_id"
+          referencedTableName="guarantor" referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
 
     <changeSet id="155-alter-loan-config-add-short_names" author="Sadaiba">
     <preConditions onFail="MARK_RAN">
