@@ -2601,7 +2601,7 @@
         </preConditions>
         <dropColumn tableName="legal_status_audit" columnName="corporate_structure"/>
     </changeSet>
-    <changeSet id="265-alter-legal-status-audit-drop-add-corporate_structure_id" author="buddha">
+    <changeSet id="265-alter-legal-status-audit-add-corporate_structure_id" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="legal_status_audit" columnName="corporate_structure_id"/>
@@ -2609,6 +2609,30 @@
         </preConditions>
         <addColumn tableName="legal_status_audit">
             <column name="corporate_structure_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="266-alter-legal-status-add-registered-district" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status" columnName="registered_district_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status">
+            <column name="registered_district_id" type="BIGINT">
+                <constraints foreignKeyName="fk_legal_status_registered_district_id_district_id" nullable="true" referencedTableName="district" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="267-alter-legal-status-audit-add-registered_district_id" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="legal_status_audit" columnName="registered_district_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="legal_status_audit">
+            <column name="registered_district_id" type="BIGINT"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

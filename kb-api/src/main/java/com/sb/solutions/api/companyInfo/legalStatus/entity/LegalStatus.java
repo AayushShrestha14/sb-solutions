@@ -16,6 +16,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
+import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.company.entity.Company;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
@@ -44,6 +45,10 @@ public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
     private Date panRegistrationDate;
 
     private Date registrationExpiryDate;
+
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne
+    private District registeredDistrict;
 
     @Override
     public Pair<Boolean, String> valid() {
