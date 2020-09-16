@@ -146,4 +146,11 @@ public class CustomerInfoController {
         }
         return responseEntity;
     }
+
+
+    @PostMapping("/csv")
+    public ResponseEntity<?> getDownload(@RequestBody Object searchDto) {
+        return new RestResponseDto()
+            .successModel(customerInfoService.csv(searchDto));
+    }
 }

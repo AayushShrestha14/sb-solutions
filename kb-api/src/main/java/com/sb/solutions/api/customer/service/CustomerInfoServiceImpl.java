@@ -1,5 +1,8 @@
 package com.sb.solutions.api.customer.service;
 
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,11 +17,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
@@ -49,9 +56,16 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
+import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.report.core.bean.ReportParam;
+import com.sb.solutions.report.core.enums.ExportType;
+import com.sb.solutions.report.core.enums.ReportType;
+import com.sb.solutions.report.core.factory.ReportFactory;
+import com.sb.solutions.report.core.model.Report;
 
 /**
  * @author : Rujan Maharjan on  8/10/2020
@@ -186,7 +200,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                 .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
         } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
             CustomerGroup customerGroup = objectMapper().convertValue(o, CustomerGroup.class);
-            if(customerGroup.getId() == null && customerGroup.getGroupCode() == null){
+            if (customerGroup.getId() == null && customerGroup.getGroupCode() == null) {
                 customerInfo1.setCustomerGroup(null);
             } else {
                 customerInfo1.setCustomerGroup(customerGroup);
@@ -239,6 +253,114 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         objectMapper.setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
         return objectMapper;
     }
+
+    @Override
+    public String title() {
+        return "Customer Report";
+    }
+
+    @Override
+    public List<AbstractColumn> columns() {
+
+        Format format = new Format() {
+            @Override
+            public StringBuffer format(Object o, StringBuffer stringBuffer,
+                FieldPosition fieldPosition) {
+                return stringBuffer.append(o.toString().toUpperCase());
+            }
+
+            @Override
+            public Object parseObject(String s, ParsePosition parsePosition) {
+                return null;
+            }
+        };
+        AbstractColumn columnBranch = ColumnBuilder.getNew()
+            .setColumnProperty("branch.name", String.class.getName())
+            .setTitle("Branch").setWidth(100)
+            .build();
+
+        AbstractColumn columnName = ColumnBuilder.getNew()
+            .setColumnProperty("name", String.class.getName())
+            .setTitle("Name").setWidth(100)
+            .build();
+        AbstractColumn customerType = ColumnBuilder.getNew()
+            .setColumnProperty("customerType", CustomerType.class.getName())
+            .setTitle("Customer Type").setWidth(100).setTextFormatter(format)
+            .build();
+
+        AbstractColumn idType = ColumnBuilder.getNew()
+            .setColumnProperty("idType", CustomerIdType.class.getName())
+            .setTitle("  ID Type  ").setWidth(100).setTextFormatter(format)
+            .build();
+        AbstractColumn idNumber = ColumnBuilder.getNew()
+            .setColumnProperty("idNumber", String.class.getName())
+            .setTitle("ID Number").setWidth(100)
+            .build();
+
+        AbstractColumn issuePlace = ColumnBuilder.getNew()
+            .setColumnProperty("idRegPlace", String.class.getName())
+            .setTitle("ID Issue Place").setWidth(100)
+            .build();
+        AbstractColumn email = ColumnBuilder.getNew()
+            .setColumnProperty("email", String.class.getName())
+            .setTitle("Email").setWidth(100)
+            .build();
+        AbstractColumn contactNumber = ColumnBuilder.getNew()
+            .setColumnProperty("contactNo", String.class.getName())
+            .setTitle("Contact No.").setWidth(100)
+            .build();
+        AbstractColumn columnAssociate = ColumnBuilder.getNew()
+            .setColumnProperty("createdAt", Date.class.getName())
+            .setTitle("Associate Since").setWidth(100).setPattern("dd MMM, YYYY")
+            .build();
+        return Arrays
+            .asList(columnBranch, columnName, customerType, idType, idNumber, issuePlace, email,
+                contactNumber, columnAssociate);
+    }
+
+    @Override
+    public ReportParam populate(Optional optional) {
+        String filePath = new PathBuilder(UploadDir.initialDocument)
+            .buildBuildFormDownloadPath("customer");
+        Map<String, String> map = objectMapper().convertValue(optional.get(), Map.class);
+        Specification<CustomerInfo> specification = getSpec(map).build();
+        List customerInfoList = customerInfoRepository.findAll(specification);
+        String filterBy = "";
+        StringBuilder sb = new StringBuilder();
+        map.values().removeIf(Objects::isNull);
+        map.entrySet().forEach(a -> {
+            String k = a.getKey();
+            String v = a.getValue();
+            if (!k.equalsIgnoreCase("branchIds")) {
+                StringBuilder spaceCamelCase = new StringBuilder();
+                String[] camelCase = StringUtils.splitByCharacterTypeCamelCase(k);
+                for (String s : camelCase) {
+                    spaceCamelCase.append(StringUtils.capitalize(s)).append(" ");
+                }
+                sb.append(spaceCamelCase).append(" = ").append(v).append(", ");
+            }
+
+        });
+        if (!ObjectUtils.isEmpty(sb.toString())) {
+            filterBy = " Filter By : " + sb.toString().substring(0, sb.toString().length() - 2);
+        }
+        return ReportParam.builder().reportName("Customer Report").title(title())
+            .subTitle(filterBy).columns(columns()).data(customerInfoList)
+            .reportType(ReportType.FORM_REPORT)
+            .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
+            .build();
+
+    }
+
+    @Override
+
+    public String csv(Object searchDto) {
+        Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
+        return new PathBuilder(UploadDir.initialDocument)
+            .buildBuildFormDownloadPath("customer") + report.getFileName();
+
+    }
+
 }
 
 
