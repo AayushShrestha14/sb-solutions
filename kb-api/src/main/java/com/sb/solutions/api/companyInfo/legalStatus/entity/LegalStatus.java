@@ -5,15 +5,19 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
+import com.sb.solutions.api.address.district.entity.District;
+import com.sb.solutions.api.company.entity.Company;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
 
@@ -26,7 +30,9 @@ import com.sb.solutions.core.enitity.EntityValidator;
 @Audited
 public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
 
-    private String corporateStructure;
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne
+    private Company corporateStructure;
 
     private String registeredOffice;
 
@@ -40,6 +46,10 @@ public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
 
     private Date registrationExpiryDate;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne
+    private District registeredDistrict;
+
     @Override
     public Pair<Boolean, String> valid() {
         final String validationMsg = "Company Info -None of Legal Status Section Field can be left empty.";
@@ -47,7 +57,7 @@ public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
         Boolean anyAttributeNull = Stream.of(this.corporateStructure,
             this.registeredOffice, this.registeredUnderAct,
             this.registrationDate, this.panRegistrationOffice,
-            this.panRegistrationDate, this.registrationExpiryDate).anyMatch(Objects::isNull);
+            this.panRegistrationDate, this.registrationExpiryDate,this.registeredDistrict).anyMatch(Objects::isNull);
         if (anyAttributeNull) {
             pair = Pair.of(Boolean.FALSE,
                 validationMsg);
