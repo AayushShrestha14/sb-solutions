@@ -4,8 +4,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -363,13 +361,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
     }
 
-    public static void main(String[] args) {
-        String dateTest = "2020-08-27T15:32:00.810+0000";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        LocalDateTime localdate = LocalDateTime.parse("2020-08-27T15:32:00.810+0000", formatter);
-
-        System.out.println(localdate);
-    }
 }
 
 
