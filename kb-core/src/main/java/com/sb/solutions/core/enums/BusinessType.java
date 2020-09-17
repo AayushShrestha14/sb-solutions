@@ -9,7 +9,9 @@ public enum BusinessType {
     TRADING("Trading"),
     SERVICE_PROVIDER("Service Provider"),
     CONSULTANCY("Consultancy"),
-    CONSTRUCTION_SERVICE("Construction Service");
+    CONSTRUCTION_SERVICE("Construction Service"),
+    AGRICULTURE("Agriculture"),
+    OTHER("Other");
 
     private String businessType;
 
