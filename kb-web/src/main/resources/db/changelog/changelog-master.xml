@@ -2635,6 +2635,13 @@
             <column name="registered_district_id" type="BIGINT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="271-alter-legal-status-drop-not-null-constrain-registered_under_act" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="legal_status" columnName="registered_under_act"/>
+        </preConditions>
+        <dropNotNullConstraint tableName="legal_status" columnName="registered_under_act" columnDataType="VARCHAR(256)"/>
+    </changeSet>
 </databaseChangeLog>
 
 
