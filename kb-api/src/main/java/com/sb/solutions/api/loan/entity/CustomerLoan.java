@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -49,6 +50,7 @@ import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.group.entity.Group;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loan.LoanStage;
@@ -188,6 +190,13 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     @OneToOne(cascade = CascadeType.ALL)
     private GuarantorDetail guarantor;
+
+    @NotAudited
+    @ManyToMany
+    @JoinTable(name = "customer_loan_guarantor" ,
+    joinColumns = @JoinColumn(name = "customer_loan_id"),
+    inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
+    private Set<Guarantor> taggedGuarantors;
 
     @Lob
     private String previousStageList;
