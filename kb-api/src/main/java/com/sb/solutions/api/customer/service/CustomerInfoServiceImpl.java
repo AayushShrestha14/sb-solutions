@@ -37,6 +37,8 @@ import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.financial.service.FinancialService;
@@ -160,6 +162,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         return this.save(customerInfo);
     }
 
+    @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
     @Transactional
     @Override
     public CustomerInfo saveLoanInformation(Object o, Long customerInfoId, String template) {

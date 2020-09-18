@@ -65,6 +65,7 @@ public class CustomerInfoController {
                 .pageable(page, size)));
     }
 
+
     @PostMapping("/{customerInfoId}/{template}")
     public ResponseEntity<?> saveCustomerLoanInfo(@RequestBody Object loanInfo,
         @PathVariable("customerInfoId") Long customerInfoId,
