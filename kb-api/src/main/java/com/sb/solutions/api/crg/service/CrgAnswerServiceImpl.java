@@ -66,7 +66,7 @@ public class CrgAnswerServiceImpl implements CrgAnswerService {
     @Override
     public List<CrgAnswer> update(List<CrgAnswer> answers, CrgQuestion question) {
         final List<CrgAnswer> savedAnswers = answerRepository
-                .findAllByCrgQuestionAndStatusNot(question.getId(),
+                .findAllByCrgQuestionIdAndStatusNot(question.getId(),
                         Status.DELETED);
         final List<CrgAnswer> newAnswers = answers.stream()
                 .filter(answer -> answer.getId() == null || answer.getId() == 0)

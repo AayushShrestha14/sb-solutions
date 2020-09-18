@@ -1,5 +1,6 @@
 package com.sb.solutions.api.crg.service;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.crg.entity.CrgAnswer;
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.api.crg.repository.CrgQuestionRepository;
@@ -72,8 +73,8 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
     }
 
     @Override
-    public List<CrgQuestion> findByLoanTypeId(Long loanTypeId) {
-        return questionRepository.findByLoanApprovalTypeAndStatusNot(loanTypeId, Status.DELETED);
+    public List<CrgQuestion> findByLoanApprovalType(LoanApprovalType loanApprovalType) {
+        return questionRepository.findByLoanApprovalTypeAndStatusNot(loanApprovalType, Status.DELETED);
     }
 
     @Override
