@@ -47,10 +47,10 @@ public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
 
     @Override
     public Pair<Boolean, String> valid() {
-        final String validationMsg = "Company Info -None of Legal Status Section Field can be left empty.";
+        final String validationMsg = "Company Info -None of Legal Status Section Field can be left empty except registered under act";
         Pair pair = Pair.of(Boolean.TRUE, "");
         Boolean anyAttributeNull = Stream.of(this.corporateStructure,
-            this.registeredOffice, this.registeredUnderAct,
+            this.registeredOffice,
             this.registrationDate, this.panRegistrationOffice,
             this.panRegistrationDate, this.registrationExpiryDate).anyMatch(Objects::isNull);
         if (anyAttributeNull) {
