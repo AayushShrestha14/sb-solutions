@@ -3359,6 +3359,50 @@
             <column name="collateral_requirement" type="Float" />
         </addColumn>
     </changeSet>
+
+  <changeSet id="157-drop-insurance-remarks" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="insurance" columnName="remarks"/>
+    </preConditions>
+
+    <dropColumn tableName="insurance" columnName="remarks"/>
+  </changeSet>
+
+  <changeSet id="157-drop-insurance_history" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="insurance_history"/>
+    </preConditions>
+
+    <dropTable tableName="insurance_history"/>
+  </changeSet>
+
+  <changeSet id="157-create-customer_activity_log" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_activity_log"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="customer_activity_log">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT"/>
+      <column name="modified_by_id" type="BIGINT"/>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="true"/>
+      </column>
+      <column name="version" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="customer_info_id" type="BIGINT"/>
+      <column name="detail" type="LONGTEXT"/>
+      <column name="log_type" type="INT"/>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
 
 
