@@ -3360,6 +3360,116 @@
         </addColumn>
     </changeSet>
 
+  <changeSet id="157-drop-insurance-remarks" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="insurance" columnName="remarks"/>
+    </preConditions>
+
+    <dropColumn tableName="insurance" columnName="remarks"/>
+  </changeSet>
+
+  <changeSet id="157-drop-insurance_history" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="insurance_history"/>
+    </preConditions>
+
+    <dropTable tableName="insurance_history"/>
+  </changeSet>
+
+  <changeSet id="157-create-customer_activity_log" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_activity_log"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="customer_activity_log">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="created_by_id" type="BIGINT"/>
+      <column name="modified_by_id" type="BIGINT"/>
+      <column name="created_at" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATETIME">
+        <constraints nullable="true"/>
+      </column>
+      <column name="version" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="customer_info_id" type="BIGINT"/>
+      <column name="detail" type="LONGTEXT"/>
+      <column name="log_type" type="INT"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="262-alter-legal-status-drop-corporate-structure" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status" columnName="corporate_structure"/>
+    </preConditions>
+    <dropColumn tableName="legal_status" columnName="corporate_structure"/>
+  </changeSet>
+  <changeSet id="263-alter-legal-status-add-corporate-structure-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="legal_status" columnName="corporate_structure_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="legal_status">
+      <column name="corporate_structure_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_legal_status_corporate_structure_id_company_id"
+          referencedTableName="company"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet id="264-alter-legal-status-audit-drop-corporate_structure" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status_audit" columnName="corporate_structure"/>
+    </preConditions>
+    <dropColumn tableName="legal_status_audit" columnName="corporate_structure"/>
+  </changeSet>
+  <changeSet id="265-alter-legal-status-audit-drop-add-corporate_structure_id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="legal_status_audit" columnName="corporate_structure_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="legal_status_audit">
+      <column name="corporate_structure_id" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="271-alter-legal-status-drop-not-null-constrain-registered_under_act" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="legal_status" columnName="registered_under_act"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="legal_status" columnName="registered_under_act" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="277-alter-proprietor-add-column-type" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proprietor" columnName="type"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proprietor">
+      <column name="type" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="278-alter-proprietor_audit-add-column-type" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proprietor_audit" columnName="type"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proprietor_audit">
+      <column name="type" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="157-create-table-customer-activity" author="rujan">
 
     <preConditions onFail="MARK_RAN">

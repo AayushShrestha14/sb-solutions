@@ -47,6 +47,7 @@ public class Proprietor extends BaseEntity<Long> implements EntityValidator {
     private MunicipalityVdc municipalityVdc;
 
     private double share;
+    private String type;
 
     @Override
     public Pair<Boolean, String> valid() {
