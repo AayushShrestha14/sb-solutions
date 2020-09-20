@@ -1,4 +1,4 @@
-package com.sb.solutions.api.insurance.repository.spec;
+package com.sb.solutions.api.customer.repository.specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -7,23 +7,23 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.sb.solutions.api.insurance.entity.InsuranceHistory;
+import com.sb.solutions.api.customer.entity.CustomerActivityLog;
 
 /**
- * @author Elvin Shrestha on 4/19/2020
+ * @author Elvin Shrestha on 9/19/2020
  */
-public class InsuranceHistorySpec implements Specification<InsuranceHistory> {
+public class CustomerActivityLogSpec implements Specification<CustomerActivityLog> {
 
     private final String property;
     private final String value;
 
-    public InsuranceHistorySpec(String property, String value) {
+    public CustomerActivityLogSpec(String property, String value) {
         this.property = property;
         this.value = value;
     }
 
     @Override
-    public Predicate toPredicate(Root<InsuranceHistory> root, CriteriaQuery<?> query,
+    public Predicate toPredicate(Root<CustomerActivityLog> root, CriteriaQuery<?> query,
         CriteriaBuilder criteriaBuilder) {
         return null;
     }

@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: qa
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -69,7 +69,7 @@ mailproperty:
       smtp:
         auth: true
         starttls:
-          enable: false
+          enable: true
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
       debug: true
