@@ -152,6 +152,9 @@ public class CustomerAspect {
 
             case TemplateNameConstant.SHARE_SECURITY:
                 return mapper.writeValueAsString(customerInfo.getShareSecurity());
+
+            case TemplateNameConstant.CUSTOMER_GROUP:
+                return mapper.writeValueAsString(customerInfo.getCustomerGroup());
             default:
                 return null;
         }
@@ -176,6 +179,9 @@ public class CustomerAspect {
 
             case TemplateNameConstant.SHARE_SECURITY:
                 return Activity.SHARE_SECURITY;
+
+            case TemplateNameConstant.CUSTOMER_GROUP:
+                return Activity.CUSTOMER_GROUP_UPDATE;
             default:
                 return Activity.CUSTOMER_UPDATE;
         }

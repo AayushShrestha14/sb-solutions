@@ -11,7 +11,8 @@ public enum Activity {
     FINANCIAL_UPDATE("Site Visit Update"),
     CRG_UPDATE("Site Visit Update"),
     SECURITY("Security Update"),
-    SHARE_SECURITY("Share Security Update");
+    SHARE_SECURITY("Share Security Update"),
+    CUSTOMER_GROUP_UPDATE("Customer Group Update");
 
 
     private final String value;

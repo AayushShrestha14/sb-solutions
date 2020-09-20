@@ -1,5 +1,6 @@
 package com.sb.solutions.web.insurance.v1;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,16 +16,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.customer.entity.CustomerActivityLog;
-import com.sb.solutions.api.customer.service.CustomerActivityLogService;
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
+import com.sb.solutions.api.customerActivity.enums.ActivityType;
+import com.sb.solutions.api.customerActivity.service.CustomerActivityService;
 import com.sb.solutions.api.helper.HelperDto;
 import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.enums.CustomerActivityLogType;
 
 /**
  * @author Elvin Shrestha on 4/19/2020
@@ -35,18 +38,21 @@ import com.sb.solutions.core.enums.CustomerActivityLogType;
 public class InsuranceController {
 
     static final String URL = "/v1/insurance";
-
+    private static final String DESCRIPTION_UPDATE = "%s has been updated Successfully";
     private final InsuranceService insuranceService;
     private final CustomerLoanService customerLoanService;
-    private final CustomerActivityLogService customerActivityLogService;
+    private final CustomerActivityService customerActivityLogService;
+    private final UserService userService;
 
     public InsuranceController(
         InsuranceService insuranceService,
         CustomerLoanService customerLoanService,
-        CustomerActivityLogService customerActivityLogService) {
+        CustomerActivityService customerActivityLogService,
+        UserService userService) {
         this.insuranceService = insuranceService;
         this.customerLoanService = customerLoanService;
         this.customerActivityLogService = customerActivityLogService;
+        this.userService = userService;
     }
 
     @PostMapping("/history")
@@ -58,15 +64,19 @@ public class InsuranceController {
             return new RestResponseDto().failureModel(HttpStatus.NOT_FOUND, "Loan not found");
         }
 
-        CustomerActivityLog activityLog = new CustomerActivityLog();
-        activityLog.setCustomerInfoId(customerLoan.getLoanHolder().getId());
-        activityLog.setLogType(CustomerActivityLogType.INSURANCE_UPDATE);
+        CustomerActivity activityLog = new CustomerActivity();
+        activityLog.setProfile(customerLoan.getLoanHolder());
+        activityLog.setActivity(Activity.INSURANCE_UPDATE);
+        activityLog.setActivityType(ActivityType.MANUAL);
+        activityLog.setDescription(String.format(DESCRIPTION_UPDATE, "Insurance"));
+        activityLog.setModifiedOn(new Date());
+        activityLog.setModifiedBy(userService.getAuthenticatedUser());
         List<Insurance> existingInsurances = insurances.stream()
             .map(i -> insuranceService.findOne(i.getId()).get())
             .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            activityLog.setDetail(objectMapper.writeValueAsString(existingInsurances));
+            activityLog.setData(objectMapper.writeValueAsString(existingInsurances));
         } catch (JsonProcessingException e) {
             log.error("Error saving insurance history {}", e.getMessage());
             return new RestResponseDto()

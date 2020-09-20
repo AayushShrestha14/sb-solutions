@@ -3470,7 +3470,7 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="157-create-table-customer-activity" author="rujan">
+  <changeSet id="279-create-table-customer-activity" author="rujan">
 
     <preConditions onFail="MARK_RAN">
       <not>
@@ -3509,6 +3509,13 @@
       </column>
 
     </createTable>
+  </changeSet>
+  <changeSet id="280-drop-customer-activity-log" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="customer_activity_log"/>
+    </preConditions>
+
+    <dropTable tableName="customer_activity_log"/>
   </changeSet>
 </databaseChangeLog>
 
