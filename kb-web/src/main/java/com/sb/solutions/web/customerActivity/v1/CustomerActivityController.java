@@ -41,7 +41,7 @@ public class CustomerActivityController {
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(customerActivityService.findPageableBySpec(searchDto, PaginationUtils
-                .pageable(page, size)));
+                .pageableWithSort(page, size, "modifiedOn")));
     }
 
 

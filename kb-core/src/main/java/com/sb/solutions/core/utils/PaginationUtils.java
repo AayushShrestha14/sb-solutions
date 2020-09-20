@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Rujan Maharjan on 2/18/2019
@@ -32,5 +34,9 @@ public class PaginationUtils {
         return requestParam.keySet().stream()
             .filter(k -> !pageableProperties.contains(k))
             .collect(Collectors.toMap(k -> k, requestParam::get));
+    }
+
+    public static Pageable pageableWithSort(int page, int size, String sort) {
+        return PageRequest.of(page - 1, size, new Sort(Direction.DESC, sort));
     }
 }

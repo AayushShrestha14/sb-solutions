@@ -27,6 +27,7 @@ import com.sb.solutions.api.user.entity.User;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class CustomerActivity {
 
     @Id
