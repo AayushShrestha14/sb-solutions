@@ -47,4 +47,9 @@ public class CompanyController {
     public ResponseEntity<?> getCompanyStatusCount() {
         return new RestResponseDto().successModel(companyService.companyStatusCount());
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllCompany() {
+        return new RestResponseDto().successModel(companyService.findAll());
+    }
 }
