@@ -1,42 +1,40 @@
 package com.sb.solutions.api.customerActivity.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
 import com.sb.solutions.api.customerActivity.repository.CustomerActivityRepository;
+import com.sb.solutions.api.customerActivity.repository.specification.CustomerActivitySpecBuilder;
+import com.sb.solutions.core.repository.BaseSpecBuilder;
+import com.sb.solutions.core.service.BaseServiceImpl;
 
 /**
  * @author : Rujan Maharjan on  9/18/2020
  **/
 @Service
-public class CustomerActivityServiceImpl implements CustomerActivityService {
+public class CustomerActivityServiceImpl extends BaseServiceImpl<CustomerActivity, Long> implements
+    CustomerActivityService {
 
     private final CustomerActivityRepository activityRepository;
 
-    @Autowired
-    public CustomerActivityServiceImpl(
+    protected CustomerActivityServiceImpl(
         CustomerActivityRepository activityRepository) {
+        super(activityRepository);
         this.activityRepository = activityRepository;
     }
 
     @Override
-    public List<CustomerActivity> findAll() {
-        return this.activityRepository.findAll();
-    }
-
-    @Override
-    public CustomerActivity findOne(Long id) {
+    public Optional<CustomerActivity> findOne(Long id) {
         Optional<CustomerActivity> customerActivity = activityRepository.findById(id);
         if (customerActivity.isPresent()) {
-            return customerActivity.get();
+            return customerActivity;
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -44,13 +42,16 @@ public class CustomerActivityServiceImpl implements CustomerActivityService {
         return activityRepository.save(customerActivity);
     }
 
-    @Override
-    public Page<CustomerActivity> findAllPageable(Object t, Pageable pageable) {
-        return null;
-    }
 
     @Override
     public List<CustomerActivity> saveAll(List<CustomerActivity> list) {
         return null;
+    }
+
+    @Override
+    protected BaseSpecBuilder<CustomerActivity> getSpec(Map<String, String> filterParams) {
+        filterParams.values().removeIf(Objects::isNull);
+        filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
+        return new CustomerActivitySpecBuilder(filterParams);
     }
 }

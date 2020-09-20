@@ -28,6 +28,8 @@ import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -65,7 +67,7 @@ public class CustomerInfoController {
                 .pageable(page, size)));
     }
 
-
+    @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
     @PostMapping("/{customerInfoId}/{template}")
     public ResponseEntity<?> saveCustomerLoanInfo(@RequestBody Object loanInfo,
         @PathVariable("customerInfoId") Long customerInfoId,
