@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.crg.entity.CrgGamma;
+import com.sb.solutions.api.crg.service.CrgGammaService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +89,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final InsuranceService insuranceService;
     private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
     private final CreditRiskGradingService creditRiskGradingService;
+    private final CrgGammaService crgGammaService;
     private final CustomerLoanFlagService loanFlagService;
 
     public CustomerInfoServiceImpl(
@@ -100,6 +103,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         InsuranceService insuranceService,
         CreditRiskGradingAlphaService creditRiskGradingAlphaService,
         CreditRiskGradingService creditRiskGradingService,
+        CrgGammaService crgGammaService,
         CustomerLoanFlagService loanFlagService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
@@ -112,6 +116,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.insuranceService = insuranceService;
         this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
         this.creditRiskGradingService = creditRiskGradingService;
+        this.crgGammaService = crgGammaService;
         this.loanFlagService = loanFlagService;
     }
 
@@ -213,6 +218,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final CreditRiskGrading creditRiskGrading = creditRiskGradingService
                 .save(objectMapper().convertValue(o, CreditRiskGrading.class));
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
+        } else if ((template.equalsIgnoreCase(TemplateName.CRG_GAMMA))) {
+            final CrgGamma crgGamma = crgGammaService
+                    .save(objectMapper().convertValue(o, CrgGamma.class));
+            customerInfo1.setCrgGamma(crgGamma);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
@@ -365,7 +374,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
 
 class TemplateName {
-
     static final String SITE_VISIT = "SiteVisit";
     static final String FINANCIAL = "Financial";
     static final String SECURITY = "Security";
@@ -375,6 +383,7 @@ class TemplateName {
     static final String CUSTOMER_GROUP = "customerGroup";
     static final String CRG_ALPHA = "CrgAlpha";
     static final String CRG = "Crg";
+    static final String CRG_GAMMA = "CrgGamma";
 }
 
 

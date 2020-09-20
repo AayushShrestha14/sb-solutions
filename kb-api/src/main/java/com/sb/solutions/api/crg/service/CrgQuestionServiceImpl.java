@@ -74,7 +74,7 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
 
     @Override
     public List<CrgQuestion> findByLoanApprovalType(LoanApprovalType loanApprovalType) {
-        return questionRepository.findByLoanApprovalTypeAndStatusNot(loanApprovalType, Status.DELETED);
+        return questionRepository.findByLoanApprovalTypeAndStatusNotOrderByCrgGroupIdAsc(loanApprovalType, Status.DELETED);
     }
 
     @Override
