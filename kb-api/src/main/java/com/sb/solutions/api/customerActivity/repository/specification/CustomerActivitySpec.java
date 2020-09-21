@@ -19,6 +19,7 @@ public class CustomerActivitySpec implements Specification<CustomerActivity> {
     private static final String FILTER_BY_NAME = "name";
     private static final String FILTER_BY_ACTIVITY = "activity";
     private static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
+    private static final String FILTER_BY_PROFILE_ID = "profileId";
     private final String property;
     private final String value;
 
@@ -44,6 +45,13 @@ public class CustomerActivitySpec implements Specification<CustomerActivity> {
                     .and(criteriaBuilder
                         .equal(root.get("profile").get(FILTER_BY_CUSTOMER_TYPE),
                             CustomerType.valueOf(value)
+                        ));
+
+            case FILTER_BY_PROFILE_ID:
+                return criteriaBuilder
+                    .and(criteriaBuilder
+                        .equal(root.join("profile").get("id"),
+                            Long.valueOf(value)
                         ));
             default:
                 return null;

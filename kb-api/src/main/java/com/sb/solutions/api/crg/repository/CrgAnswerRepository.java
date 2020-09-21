@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CrgAnswerRepository extends JpaRepository<CrgAnswer, Long> {
 
-    List<CrgAnswer> findAllByCrgQuestionAndStatusNot(long questionId, Status status);
+    List<CrgAnswer> findAllByCrgQuestionIdAndStatusNot(long questionId, Status status);
 
     List<CrgAnswer> findByIdIn(List<Long> ids);
 

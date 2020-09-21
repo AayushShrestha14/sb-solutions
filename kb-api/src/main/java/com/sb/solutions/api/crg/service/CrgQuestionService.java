@@ -1,5 +1,6 @@
 package com.sb.solutions.api.crg.service;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.core.service.BaseService;
 
@@ -9,7 +10,7 @@ public interface CrgQuestionService extends BaseService<CrgQuestion> {
 
     List<CrgQuestion> save(List<CrgQuestion> questions);
 
-    List<CrgQuestion> findByLoanTypeId(Long loanTypeId);
+    List<CrgQuestion> findByLoanApprovalType(LoanApprovalType loanApprovalType);
 
     CrgQuestion update(CrgQuestion question);
 

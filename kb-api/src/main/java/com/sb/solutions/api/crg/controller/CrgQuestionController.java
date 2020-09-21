@@ -1,5 +1,6 @@
 package com.sb.solutions.api.crg.controller;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.api.crg.service.CrgQuestionService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author Sunil Babu Shrestha on 9/10/2020
  */
 @RestController
-@RequestMapping("/v1/{loanTypeId}/crg-questions")
+@RequestMapping("/v1/{loanApprovalType}/crg-questions")
 @RequiredArgsConstructor
 public class CrgQuestionController {
     private final CrgQuestionService questionService;
@@ -34,8 +35,8 @@ public class CrgQuestionController {
     }
 
     @GetMapping
-    public final ResponseEntity<?> getQuestionsOfLoanConfig(@PathVariable long loanTypeId) {
-        final List<CrgQuestion> questions = questionService.findByLoanTypeId(loanTypeId);
+    public final ResponseEntity<?> getQuestionsOfLoanApprovalType(@PathVariable LoanApprovalType loanApprovalType) {
+        final List<CrgQuestion> questions = questionService.findByLoanApprovalType(loanApprovalType);
         return new RestResponseDto().successModel(questions);
     }
 
