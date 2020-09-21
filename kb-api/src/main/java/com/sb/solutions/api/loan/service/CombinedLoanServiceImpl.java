@@ -58,6 +58,9 @@ public class CombinedLoanServiceImpl extends BaseServiceImpl<CombinedLoan, Long>
             }
         });
         customerLoanService.saveAll(loans);
+        if (combinedLoan.getLoans().isEmpty()) {
+            repository.deleteById(saved.getId());
+        }
         return addCombinedLoanList(saved);
     }
 
