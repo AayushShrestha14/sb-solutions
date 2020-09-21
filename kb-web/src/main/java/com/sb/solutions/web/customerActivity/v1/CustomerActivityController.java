@@ -39,6 +39,7 @@ public class CustomerActivityController {
     @PostMapping("/list")
     public ResponseEntity<?> getPageable(@RequestBody Map<String, String> searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
+        logger.info("search customer activity by {}", searchDto);
         return new RestResponseDto()
             .successModel(customerActivityService.findPageableBySpec(searchDto, PaginationUtils
                 .pageableWithSort(page, size, "modifiedOn")));
