@@ -3470,6 +3470,54 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="279-create-table-customer-activity" author="rujan">
+
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="customer_activity"/>
+      </not>
+    </preConditions>
+
+    <createTable tableName="customer_activity">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="profile_id" type="BIGINT">
+        <constraints nullable="false"
+          foreignKeyName="fk_customer_activity_customer_info"
+          referencedTableName="customer_info"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="data" type="LONGTEXT"/>
+      <column name="description" type="LONGTEXT"/>
+      <column name="activity" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activity_type" type="INT">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_activity_modified_by"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+
+      <column name="modified_on" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+
+    </createTable>
+  </changeSet>
+  <changeSet id="280-drop-customer-activity-log" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="customer_activity_log"/>
+    </preConditions>
+
+    <dropTable tableName="customer_activity_log"/>
+  </changeSet>
+
   <changeSet id="178-create-crg-gamma" author="Amulya">
     <preConditions onFail="MARK_RAN">
       <not>

@@ -29,6 +29,7 @@ import org.springframework.util.ObjectUtils;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.constant.TemplateNameConstant;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
@@ -171,54 +172,54 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Optional<CustomerInfo> customerInfo = customerInfoRepository.findById(customerInfoId);
         Preconditions.checkArgument(customerInfo.isPresent(), NULL_MESSAGE);
         final CustomerInfo customerInfo1 = customerInfo.get();
-        if ((template.equalsIgnoreCase(TemplateName.SITE_VISIT))) {
+        if ((template.equalsIgnoreCase(TemplateNameConstant.SITE_VISIT))) {
             final SiteVisit siteVisit = siteVisitService
                 .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
-        } else if ((template.equalsIgnoreCase(TemplateName.FINANCIAL))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.FINANCIAL))) {
 
             final Financial financial = financialService
                 .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
-        } else if ((template.equalsIgnoreCase(TemplateName.SECURITY))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.SECURITY))) {
 
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
-        } else if ((template.equalsIgnoreCase(TemplateName.SHARE_SECURITY))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
                 .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
             HelperDto<Long> helperDto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
             shareSecurityService.execute(Optional.of(helperDto));
-        } else if ((template.equalsIgnoreCase(TemplateName.GUARANTOR))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
                 .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
-        } else if ((template.equalsIgnoreCase(TemplateName.INSURANCE))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.INSURANCE))) {
             ObjectMapper mapper = new ObjectMapper();
             List<Insurance> insurances = Arrays.asList(mapper.convertValue(o, Insurance[].class));
             final List<Insurance> insurance = insuranceService.saveAll(insurances);
             customerInfo1.setInsurance(insurance);
             insuranceService
                 .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
-        } else if ((template.equalsIgnoreCase(TemplateName.CUSTOMER_GROUP))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CUSTOMER_GROUP))) {
             CustomerGroup customerGroup = objectMapper().convertValue(o, CustomerGroup.class);
             if (customerGroup.getId() == null && customerGroup.getGroupCode() == null) {
                 customerInfo1.setCustomerGroup(null);
             } else {
                 customerInfo1.setCustomerGroup(customerGroup);
             }
-        } else if ((template.equalsIgnoreCase(TemplateName.CRG_ALPHA))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG_ALPHA))) {
             final CreditRiskGradingAlpha creditRiskGradingAlpha = creditRiskGradingAlphaService
                 .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
             customerInfo1.setCreditRiskGradingAlpha(creditRiskGradingAlpha);
-        } else if ((template.equalsIgnoreCase(TemplateName.CRG))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG))) {
             final CreditRiskGrading creditRiskGrading = creditRiskGradingService
                 .save(objectMapper().convertValue(o, CreditRiskGrading.class));
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
-        } else if ((template.equalsIgnoreCase(TemplateName.CRG_GAMMA))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG_GAMMA))) {
             final CrgGamma crgGamma = crgGammaService
                     .save(objectMapper().convertValue(o, CrgGamma.class));
             customerInfo1.setCrgGamma(crgGamma);
@@ -362,7 +363,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     }
 
     @Override
-
     public String csv(Object searchDto) {
         Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
         return new PathBuilder(UploadDir.initialDocument)
@@ -373,17 +373,5 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 }
 
 
-class TemplateName {
-    static final String SITE_VISIT = "SiteVisit";
-    static final String FINANCIAL = "Financial";
-    static final String SECURITY = "Security";
-    static final String SHARE_SECURITY = "Share Security";
-    static final String GUARANTOR = "Guarantor";
-    static final String INSURANCE = "Insurance";
-    static final String CUSTOMER_GROUP = "customerGroup";
-    static final String CRG_ALPHA = "CrgAlpha";
-    static final String CRG = "Crg";
-    static final String CRG_GAMMA = "CrgGamma";
-}
 
 
