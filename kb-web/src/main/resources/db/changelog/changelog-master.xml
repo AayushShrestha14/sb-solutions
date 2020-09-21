@@ -3319,7 +3319,7 @@
       columnName="customer_loan_id"
       columnDataType="BIGINT"/>
   </changeSet>
-  
+
   <changeSet id="152-create-associate-table-customer-loan-tagged" author="bibash">
     <preConditions onFail="MARK_RAN">
      <not>
@@ -3516,6 +3516,55 @@
     </preConditions>
 
     <dropTable tableName="customer_activity_log"/>
+  </changeSet>
+
+  <changeSet id="178-create-crg-gamma" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="crg_gamma"/>
+      </not>
+    </preConditions>
+    <createTable tableName="crg_gamma">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_crg_gamma_created_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_crg_gamma_modified_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="178-alter-customer-info-add-crg_gamma" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="crg_gamma_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="crg_gamma_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_crg_gamma_id"
+                     referencedTableName="crg_gamma"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
   </changeSet>
 </databaseChangeLog>
 
