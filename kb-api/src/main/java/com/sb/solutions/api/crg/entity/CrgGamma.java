@@ -19,8 +19,6 @@ import javax.persistence.EntityListeners;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@EntityListeners({AuditingEntityListener.class})
-@Audited
 public class CrgGamma extends BaseEntity<Long> {
     private String data;
 
