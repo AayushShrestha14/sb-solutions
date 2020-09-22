@@ -175,6 +175,15 @@ public class CustomerAspect {
 
             case TemplateNameConstant.CUSTOMER_GROUP:
                 return mapper.writeValueAsString(customerInfo.getCustomerGroup());
+
+            case TemplateNameConstant.CRG:
+                return mapper.writeValueAsString(customerInfo.getCreditRiskGrading());
+
+            case TemplateNameConstant.CRG_ALPHA:
+                return mapper.writeValueAsString(customerInfo.getCreditRiskGradingAlpha());
+
+            case TemplateNameConstant.CRG_GAMMA:
+                return null;
             default:
                 return null;
         }
@@ -202,6 +211,15 @@ public class CustomerAspect {
 
             case TemplateNameConstant.CUSTOMER_GROUP:
                 return Activity.CUSTOMER_GROUP_UPDATE;
+
+            case TemplateNameConstant.CRG:
+                return Activity.CRG_UPDATE;
+
+            case TemplateNameConstant.CRG_ALPHA:
+                return Activity.CRG_ALPHA_UPDATE;
+
+            case TemplateNameConstant.CRG_GAMMA:
+                return Activity.CRG_GAMMA_UPDATE;
             default:
                 return Activity.CUSTOMER_UPDATE;
         }
