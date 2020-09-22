@@ -8,11 +8,12 @@ public enum Activity {
     INSURANCE_UPDATE("Insurance Update"),
     SITE_VISIT_UPDATE("Site Visit Update"),
     GUARANTOR_UPDATE("Guarantor Update"),
-    FINANCIAL_UPDATE("Site Visit Update"),
-    CRG_UPDATE("Site Visit Update"),
+    FINANCIAL_UPDATE("Financial Update"),
+    CRG_UPDATE("CRG Update"),
     SECURITY("Security Update"),
     SHARE_SECURITY("Share Security Update"),
-    CUSTOMER_GROUP_UPDATE("Customer Group Update");
+    CUSTOMER_GROUP_UPDATE("Customer Group Update"),
+    LOAN_APPROVED("Loan Approved");
 
 
     private final String value;

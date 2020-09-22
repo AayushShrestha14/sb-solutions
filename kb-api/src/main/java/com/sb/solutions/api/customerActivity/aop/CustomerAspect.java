@@ -21,9 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
+import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.constant.TemplateNameConstant;
+import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
+import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
 import com.sb.solutions.api.customerActivity.enums.ActivityType;
 import com.sb.solutions.api.customerActivity.service.CustomerActivityService;
@@ -41,11 +46,15 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 public class CustomerAspect {
 
 
-    private CustomerInfoService customerInfoService;
+    private final CustomerInfoService customerInfoService;
 
-    private CustomerActivityService customerActivityService;
+    private final CustomerActivityService customerActivityService;
 
-    private UserService userService;
+    private final CustomerService customerService;
+
+    private final CompanyInfoService companyInfoService;
+
+    private final UserService userService;
 
     private static final String DESCRIPTION_UPDATE = "%s has been updated Successfully";
     private static final String DESCRIPTION_NEW = "New %s has been Saved Successfully";
@@ -58,10 +67,14 @@ public class CustomerAspect {
     @Autowired
     public CustomerAspect(CustomerInfoService customerInfoService,
         UserService userService,
-        CustomerActivityService customerActivityService) {
+        CustomerActivityService customerActivityService,
+        CustomerService customerService,
+        CompanyInfoService companyInfoService) {
         this.customerInfoService = customerInfoService;
         this.customerActivityService = customerActivityService;
         this.userService = userService;
+        this.customerService = customerService;
+        this.companyInfoService = companyInfoService;
     }
 
 
@@ -79,7 +92,8 @@ public class CustomerAspect {
     public Object trackAroundCustomerInfoProperty(ProceedingJoinPoint pjp, Object batch,
         CustomerActivityLog customerActionTrack, Long id, String template)
         throws Throwable {
-
+        log.info(" previous customer info property on basis of id {} template {}", id,
+            template);
         Optional<CustomerInfo> prevData = customerInfoService.findOne(id);
         CustomerInfo customerInfoPrev;
         if (prevData.isPresent()) {
@@ -87,8 +101,7 @@ public class CustomerAspect {
         } else {
             throw new ServiceValidationException("No Customer Found");
         }
-        CustomerInfo profile = new CustomerInfo();
-        profile.setId(customerInfoPrev.getId());
+        CustomerInfo profile = customerInfoPrev;
         String previousData = getPreviousDataByTemplateSelected(template, customerInfoPrev);
         String description = String.format(DESCRIPTION_UPDATE, template);
         if (ObjectUtils.isEmpty(previousData) || previousData.equalsIgnoreCase("null")) {
@@ -106,15 +119,7 @@ public class CustomerAspect {
             .build();
 
         Object retVal = pjp.proceed();
-        ResponseEntity<?> restResponseDto;
-        if (retVal instanceof ResponseEntity) {
-            restResponseDto = (ResponseEntity<?>) retVal;
-            if (restResponseDto.getStatusCode() == HttpStatus.OK) {
-                saveCustomerActivity(customerActivity);
-                log.info("saving customer Activity {} of customer {} and id {}", activity(template),
-                    customerInfoPrev.getName(), customerInfoPrev.getId());
-            }
-        }
+        saveCustomerActivityByResponseSuccess(customerActivity, retVal);
 
         return retVal;
 
@@ -129,6 +134,21 @@ public class CustomerAspect {
                 log.error("error saving customer activity", e);
             }
         }).start();
+    }
+
+    private void saveCustomerActivityByResponseSuccess(CustomerActivity customerActivity,
+        Object retVal) {
+        ResponseEntity<?> restResponseDto;
+        if (retVal instanceof ResponseEntity) {
+            restResponseDto = (ResponseEntity<?>) retVal;
+            if (restResponseDto.getStatusCode() == HttpStatus.OK) {
+                saveCustomerActivity(customerActivity);
+                log.info("saving customer Activity {} of customer {} and id {} with associateId {}",
+                    customerActivity.getActivity(),
+                    customerActivity.getProfile().getName(), customerActivity.getProfile().getId(),
+                    customerActivity.getProfile().getAssociateId());
+            }
+        }
     }
 
 
@@ -189,6 +209,59 @@ public class CustomerAspect {
 
     private User getCurrentUser() {
         return userService.getAuthenticatedUser();
+    }
+
+    @Around(value = "serviceLayer() && @annotation(customerActionTrack) && args(batch,..)")
+    public Object trackAroundCustomer(ProceedingJoinPoint pjp, Object batch,
+        CustomerActivityLog customerActionTrack)
+        throws Throwable {
+        final CustomerActivity activity = mapObjectToEntityCustomerOrCompany(batch);
+        Object retVal = pjp.proceed();
+        if (!ObjectUtils.isEmpty(activity.getProfile())) {
+            saveCustomerActivityByResponseSuccess(activity, retVal);
+        }
+        return retVal;
+
+
+    }
+
+    private CustomerActivity mapObjectToEntityCustomerOrCompany(Object o)
+        throws JsonProcessingException {
+        CustomerActivity customerActivity = new CustomerActivity();
+        customerActivity.setModifiedBy(getCurrentUser());
+        customerActivity.setModifiedOn(new Date());
+        customerActivity.setActivity(Activity.CUSTOMER_UPDATE);
+        customerActivity.setActivityType(ActivityType.MANUAL);
+        customerActivity.setDescription(String.format(DESCRIPTION_UPDATE, "Customer"));
+        String data = null;
+        if (o instanceof Customer) {
+            Customer c = (Customer) o;
+            if (!ObjectUtils.isEmpty(c.getId())) {
+                CustomerInfo customerInfo = customerInfoService
+                    .findByAssociateIdAndCustomerType(c.getId(), CustomerType.INDIVIDUAL);
+                c = customerService.findOne(c.getId());
+                data = mapper.writeValueAsString(c);
+                customerActivity.setProfile(customerInfo);
+                customerActivity.setData(data);
+
+            }
+        }
+
+        if (o instanceof CompanyInfo) {
+            CompanyInfo c = (CompanyInfo) o;
+            if (!ObjectUtils.isEmpty(c.getId())) {
+                CustomerInfo customerInfo = customerInfoService
+                    .findByAssociateIdAndCustomerType(c.getId(), CustomerType.COMPANY);
+                c = companyInfoService.findOne(c.getId());
+                data = mapper.writeValueAsString(c);
+                customerActivity.setProfile(customerInfo);
+                customerActivity.setData(data);
+
+            }
+        }
+
+        return customerActivity;
+
     }
 
 
