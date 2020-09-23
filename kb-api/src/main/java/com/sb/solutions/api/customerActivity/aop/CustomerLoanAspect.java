@@ -63,7 +63,7 @@ public class CustomerLoanAspect {
     public Object trackAroundCustomerLoan(ProceedingJoinPoint pjp, Object batch,
         CustomerLoanLog customerLoanLog)
         throws Throwable {
-        CustomerLoan customerLoanPrev;
+        CustomerLoan customerLoanPrev = new CustomerLoan();
         String data = null;
         String description = null;
         CustomerActivity customerActivity = null;
@@ -72,13 +72,15 @@ public class CustomerLoanAspect {
 
             switch (customerLoanLog.value()) {
                 case LOAN_UPDATE:
+                    String loanName = c.getLoan().getName();
                     if (!ObjectUtils.isEmpty(c.getId())) {
                         customerLoanPrev = customerLoanService.findOne(c.getId());
+                        loanName = customerLoanPrev.getLoan().getName();
                         data = mapper.writeValueAsString(customerLoanPrev);
                     }
                     description =
-                        data == null ? String.format(DESCRIPTION_NEW, c.getLoan().getName())
-                            : String.format(DESCRIPTION_UPDATE, c.getLoan().getName());
+                        data == null ? String.format(DESCRIPTION_NEW, loanName)
+                            : String.format(DESCRIPTION_UPDATE, loanName);
                     break;
                 case LOAN_APPROVED:
                     data = mapper.writeValueAsString(c);
