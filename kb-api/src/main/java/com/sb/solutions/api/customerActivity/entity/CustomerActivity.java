@@ -27,7 +27,6 @@ import com.sb.solutions.api.user.entity.User;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CustomerActivity {
 
     @Id
@@ -50,6 +49,9 @@ public class CustomerActivity {
 
     @Column(name = "activity", nullable = false, updatable = false)
     private Activity activity;
+
+    @Column(name = "customer_loan_id", updatable = false)
+    private Long customerLoanId;
 
     @CreatedDate
     @Column(name = "modified_on", updatable = false)
