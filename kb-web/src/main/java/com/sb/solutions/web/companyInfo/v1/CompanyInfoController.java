@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
-
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 
@@ -29,6 +30,7 @@ public class CompanyInfoController {
         this.companyInfoService = companyInfoService;
     }
 
+    @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
     @PostMapping
     public ResponseEntity<?> saveCompanyInfo(@Valid @RequestBody CompanyInfo companyInfo) {
         return new RestResponseDto().successModel(companyInfoService.save(companyInfo));

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author : Rujan Maharjan on  9/16/2020
  **/
-@Target({ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CustomerActivityLog {
 

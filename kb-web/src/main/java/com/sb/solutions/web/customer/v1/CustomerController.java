@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
@@ -41,6 +43,7 @@ public class CustomerController {
         this.userService = userService;
     }
 
+    @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Customer customer) {
         Customer savedCustomer = customerService.save(customer);

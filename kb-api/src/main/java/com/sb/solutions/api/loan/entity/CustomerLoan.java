@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.crg.entity.CrgGamma;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -223,6 +224,11 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
+
+    @Audited
+    @Transient
+    @OneToOne
+    private CrgGamma crgGamma;
 
     @Transient
     private List<NepaliTemplateDto> nepaliTemplates = new ArrayList<>();
