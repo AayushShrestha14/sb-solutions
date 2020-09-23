@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sb.solutions.api.crg.service.CrgGammaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -120,6 +121,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final GroupServices groupService;
     private final CustomerOfferService customerOfferService;
     private final CreditRiskGradingService creditRiskGradingService;
+    private final CrgGammaService crgGammaService;
     private final VehicleSecurityService vehicleSecurityService;
     private final ShareSecurityService shareSecurityService;
     private final NepaliTemplateService nepaliTemplateService;
@@ -142,6 +144,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ProposalService proposalService,
         CustomerOfferService customerOfferService,
         CreditRiskGradingService creditRiskGradingService,
+        CrgGammaService crgGammaService,
         GroupServices groupService,
         VehicleSecurityService vehicleSecurityService,
         ShareSecurityService shareSecurityService,
@@ -164,6 +167,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
         this.creditRiskGradingService = creditRiskGradingService;
+        this.crgGammaService = crgGammaService;
         this.groupService = groupService;
         this.vehicleSecurityService = vehicleSecurityService;
         this.shareSecurityService = shareSecurityService;
@@ -318,6 +322,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
             customerLoan.setCreditRiskGradingAlpha(
                 this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
+        }
+        if (customerLoan.getCrgGamma() != null) {
+            customerLoan.setCrgGamma(
+                    this.crgGammaService.save(customerLoan.getCrgGamma()));
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
@@ -670,6 +678,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.getCreditRiskGradingAlpha().setId(null);
             previousLoan.setCreditRiskGradingAlpha(
                 creditRiskGradingAlphaService.save(previousLoan.getCreditRiskGradingAlpha()));
+        }
+        if (previousLoan.getCrgGamma() != null) {
+            previousLoan.getCrgGamma().setId(null);
+            previousLoan.setCrgGamma(
+                    crgGammaService.save(previousLoan.getCrgGamma()));
         }
         if (previousLoan.getShareSecurity() != null) {
             previousLoan.getShareSecurity().setId(null);
@@ -1058,6 +1071,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerInfo customerInfo = customerLoan.getLoanHolder();
         customerLoan.setSecurity(customerInfo.getSecurity());
         customerLoan.setFinancial(customerInfo.getFinancial());
+        customerLoan.setCrgGamma(customerInfo.getCrgGamma());
+        customerLoan.setCreditRiskGrading(customerInfo.getCreditRiskGrading());
+        customerLoan.setCreditRiskGradingAlpha(customerInfo.getCreditRiskGradingAlpha());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
         customerLoan.setGuarantor(customerInfo.getGuarantors());
         customerLoan.setInsurance(customerInfo.getInsurance());
