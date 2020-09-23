@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.Sets.SetView;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,6 +27,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
 import com.sb.solutions.api.customerActivity.enums.ActivityType;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.user.service.UserService;
@@ -41,7 +42,7 @@ import com.sb.solutions.core.utils.string.StringUtil;
 @Slf4j
 public class CustomerLoanAspect {
 
-    private static final String DESCRIPTION_UPDATE = "%s has been updated Successfully";
+    private static final String DESCRIPTION_UPDATE = "%s of %s has been updated Successfully";
     private static final String DESCRIPTION_NEW = "New %s has been Saved Successfully";
     private final ActivityService activityService;
     private final CustomerLoanService customerLoanService;
@@ -82,10 +83,22 @@ public class CustomerLoanAspect {
         return values;
     }
 
-    private static SetView<?> getDifferenceBetweenSet(Set<?> newData,
-        Set<?> oldData) {
-        return com.google.common.collect.Sets.difference(oldData, newData);
+    private static boolean getDifferenceBetweenSet(Set<Guarantor> newData,
+        Set<Guarantor> oldData) {
+        if (newData.isEmpty() && oldData.isEmpty()) {
+            return false;
+        } else if (newData.size() != oldData.size()) {
+            return true;
+        } else {
+            List<Long> newList = newData.stream().map(Guarantor::getId)
+                .collect(Collectors.toList());
+            List<Long> oldList = newData.stream().map(Guarantor::getId)
+                .collect(Collectors.toList());
+            return !newList.containsAll(oldList);
+        }
+
     }
+
 
     @Pointcut("execution(* com.sb.solutions..*.*(..))")
     public void serviceLayer() {
@@ -101,7 +114,10 @@ public class CustomerLoanAspect {
     public Object trackAroundCustomerLoan(ProceedingJoinPoint pjp, Object batch,
         CustomerLoanLog customerLoanLog)
         throws Throwable {
+        Long id = null;
         CustomerLoan customerLoanPrev;
+        List<String> propertyList = new ArrayList<>();
+        String changedProperty = null;
         String data = null;
         String description = null;
         CustomerActivity customerActivity = null;
@@ -112,7 +128,9 @@ public class CustomerLoanAspect {
                 case LOAN_UPDATE:
                     String loanName = c.getLoan().getName();
                     if (!ObjectUtils.isEmpty(c.getId())) {
+                        id = c.getId();
                         Map<String, Object> diff = new LinkedHashMap<>();
+
                         customerLoanPrev = customerLoanService.findOne(c.getId());
 
                         loanName = customerLoanPrev.getLoan().getName();
@@ -121,25 +139,49 @@ public class CustomerLoanAspect {
                                 ProposalData.class);
                         ProposalData newProposal = mapper
                             .readValue(c.getProposal().getData(), ProposalData.class);
-
-                        diff.put("proposal", getDifference(prevProposal, newProposal));
-                        SetView<?> setView = getDifferenceBetweenSet(c.getTaggedGuarantors(),
+                        List<Object> proposalChanges = getDifference(prevProposal, newProposal);
+                        if (!proposalChanges.isEmpty()) {
+                            propertyList.add("PROPOSAL");
+                        }
+                        diff.put("proposal", proposalChanges);
+                        boolean isChanged = getDifferenceBetweenSet(c.getTaggedGuarantors(),
                             customerLoanPrev.getTaggedGuarantors());
-                        if (!setView.isEmpty()) {
+                        if (isChanged) {
                             diff.put("guarantor", customerLoanPrev.getTaggedGuarantors());
+                            propertyList.add("GUARANTOR");
+                        }
+                        if (!customerLoanPrev.getPriority().equals(c.getPriority())) {
+                            diff.put("priority", customerLoanPrev.getPriority());
+                            propertyList.add("PRIORITY");
+                        }
+                        if (!customerLoanPrev.getDocumentStatus().equals(c.getDocumentStatus())) {
+                            diff.put("documentStatus", customerLoanPrev.getPriority());
+                            propertyList.add("DOCUMENT STATUS");
                         }
                         diff.values().removeIf(Objects::isNull);
                         diff.values()
                             .removeIf(value -> value.equals("null") || value.equals("undefined"));
                         data = mapper.writeValueAsString(diff);
                     }
+                    if (propertyList.isEmpty()) {
+                        changedProperty = "LOAN DOCUMENT";
+                    } else if (propertyList.size() == 1) {
+                        changedProperty = propertyList.get(0);
+                    } else {
+                        String lastIndex = propertyList.get(propertyList.size() - 1);
+                        propertyList.remove(propertyList.size() - 1);
+                        String list = String.join(", ", propertyList);
+                        changedProperty = list + " AND " + lastIndex;
+                    }
                     description =
                         c.getId() == null ? String.format(DESCRIPTION_NEW, loanName)
-                            : String.format(DESCRIPTION_UPDATE, loanName);
+                            : String.format(DESCRIPTION_UPDATE, changedProperty, loanName);
                     break;
                 case LOAN_APPROVED:
                     data = mapper.writeValueAsString(c);
                     break;
+
+                default:
 
             }
             customerActivity = CustomerActivity.builder()
@@ -154,7 +196,9 @@ public class CustomerLoanAspect {
                 .build();
         }
         Object retVal = pjp.proceed();
-        this.activityService.saveCustomerActivityByResponseSuccess(customerActivity, retVal);
+        if (!ObjectUtils.isEmpty(id)) {
+            this.activityService.saveCustomerActivityByResponseSuccess(customerActivity, retVal);
+        }
         return retVal;
 
 
