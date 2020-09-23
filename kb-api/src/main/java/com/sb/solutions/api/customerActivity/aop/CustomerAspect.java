@@ -16,8 +16,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -31,7 +29,6 @@ import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
 import com.sb.solutions.api.customerActivity.enums.ActivityType;
-import com.sb.solutions.api.customerActivity.service.CustomerActivityService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
@@ -45,10 +42,9 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 @Slf4j
 public class CustomerAspect {
 
+    private final ActivityService activityService;
 
     private final CustomerInfoService customerInfoService;
-
-    private final CustomerActivityService customerActivityService;
 
     private final CustomerService customerService;
 
@@ -65,13 +61,13 @@ public class CustomerAspect {
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
 
     @Autowired
-    public CustomerAspect(CustomerInfoService customerInfoService,
+    public CustomerAspect(ActivityService activityService,
+        CustomerInfoService customerInfoService,
         UserService userService,
-        CustomerActivityService customerActivityService,
         CustomerService customerService,
         CompanyInfoService companyInfoService) {
+        this.activityService = activityService;
         this.customerInfoService = customerInfoService;
-        this.customerActivityService = customerActivityService;
         this.userService = userService;
         this.customerService = customerService;
         this.companyInfoService = companyInfoService;
@@ -119,36 +115,10 @@ public class CustomerAspect {
             .build();
 
         Object retVal = pjp.proceed();
-        saveCustomerActivityByResponseSuccess(customerActivity, retVal);
-
+        this.activityService.saveCustomerActivityByResponseSuccess(customerActivity, retVal);
         return retVal;
 
 
-    }
-
-    private void saveCustomerActivity(CustomerActivity customerActivity) {
-        new Thread(() -> {
-            try {
-                this.customerActivityService.save(customerActivity);
-            } catch (Exception e) {
-                log.error("error saving customer activity", e);
-            }
-        }).start();
-    }
-
-    private void saveCustomerActivityByResponseSuccess(CustomerActivity customerActivity,
-        Object retVal) {
-        ResponseEntity<?> restResponseDto;
-        if (retVal instanceof ResponseEntity) {
-            restResponseDto = (ResponseEntity<?>) retVal;
-            if (restResponseDto.getStatusCode() == HttpStatus.OK) {
-                saveCustomerActivity(customerActivity);
-                log.info("saving customer Activity {} of customer {} and id {} with associateId {}",
-                    customerActivity.getActivity(),
-                    customerActivity.getProfile().getName(), customerActivity.getProfile().getId(),
-                    customerActivity.getProfile().getAssociateId());
-            }
-        }
     }
 
 
@@ -236,7 +206,7 @@ public class CustomerAspect {
         final CustomerActivity activity = mapObjectToEntityCustomerOrCompany(batch);
         Object retVal = pjp.proceed();
         if (!ObjectUtils.isEmpty(activity.getProfile())) {
-            saveCustomerActivityByResponseSuccess(activity, retVal);
+            this.activityService.saveCustomerActivityByResponseSuccess(activity, retVal);
         }
         return retVal;
 

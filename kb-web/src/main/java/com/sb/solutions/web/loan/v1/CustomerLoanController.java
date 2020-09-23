@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerLoanLog;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
@@ -108,6 +110,7 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(actionDtoList);
     }
 
+    @CustomerLoanLog(Activity.LOAN_UPDATE)
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 

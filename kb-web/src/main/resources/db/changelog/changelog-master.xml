@@ -3566,6 +3566,17 @@
       </column>
     </addColumn>
   </changeSet>
+  <changeSet id="179-alter-customer-activity-add-customer-loan-id" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_activity" columnName="customer_loan_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_activity">
+      <column name="customer_loan_id" type="BIGINT">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
