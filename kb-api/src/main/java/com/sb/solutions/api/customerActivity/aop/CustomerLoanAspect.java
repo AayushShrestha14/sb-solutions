@@ -22,6 +22,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -30,8 +32,10 @@ import com.sb.solutions.api.customerActivity.enums.ActivityType;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
+import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.string.StringUtil;
 
 /**
@@ -43,9 +47,10 @@ import com.sb.solutions.core.utils.string.StringUtil;
 public class CustomerLoanAspect {
 
     private static final String DESCRIPTION_UPDATE = "%s of %s has been updated Successfully";
-    private static final String DESCRIPTION_NEW = "New %s has been Saved Successfully";
+    private static final String DESCRIPTION_NEW = "%s : %s has been raised Successfully";
     private final ActivityService activityService;
     private final CustomerLoanService customerLoanService;
+    private final LoanConfigService loanConfigService;
     private final UserService userService;
     private ObjectMapper mapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
@@ -55,9 +60,11 @@ public class CustomerLoanAspect {
     public CustomerLoanAspect(
         ActivityService activityService,
         CustomerLoanService customerLoanService,
+        LoanConfigService loanConfigService,
         UserService userService) {
         this.activityService = activityService;
         this.customerLoanService = customerLoanService;
+        this.loanConfigService = loanConfigService;
         this.userService = userService;
     }
 
@@ -120,13 +127,14 @@ public class CustomerLoanAspect {
         String changedProperty = null;
         String data = null;
         String description = null;
-        CustomerActivity customerActivity = null;
+        CustomerActivity customerActivity = new CustomerActivity();
         if (batch instanceof CustomerLoan) {
             CustomerLoan c = (CustomerLoan) batch;
 
             switch (customerLoanLog.value()) {
                 case LOAN_UPDATE:
-                    String loanName = c.getLoan().getName();
+                    String loanName = loanConfigService.findOne(c.getLoan().getId()).getName();
+                    String loanType = c.getLoanType().name();
                     if (!ObjectUtils.isEmpty(c.getId())) {
                         id = c.getId();
                         Map<String, Object> diff = new LinkedHashMap<>();
@@ -155,7 +163,7 @@ public class CustomerLoanAspect {
                             propertyList.add("PRIORITY");
                         }
                         if (!customerLoanPrev.getDocumentStatus().equals(c.getDocumentStatus())) {
-                            diff.put("documentStatus", customerLoanPrev.getPriority());
+                            diff.put("documentStatus", customerLoanPrev.getDocumentStatus());
                             propertyList.add("DOCUMENT STATUS");
                         }
                         diff.values().removeIf(Objects::isNull);
@@ -174,7 +182,9 @@ public class CustomerLoanAspect {
                         changedProperty = list + " AND " + lastIndex;
                     }
                     description =
-                        c.getId() == null ? String.format(DESCRIPTION_NEW, loanName)
+                        c.getId() == null ? String.format(DESCRIPTION_NEW, StringUtil
+                            .getStringWithWhiteSpaceAndWithAllFirstLetterCapitalize(
+                                loanType.toLowerCase().replace("_", " ")), loanName)
                             : String.format(DESCRIPTION_UPDATE, changedProperty, loanName);
                     break;
                 case LOAN_APPROVED:
@@ -196,7 +206,24 @@ public class CustomerLoanAspect {
                 .build();
         }
         Object retVal = pjp.proceed();
-        if (!ObjectUtils.isEmpty(id)) {
+        try {
+            if (ObjectUtils.isEmpty(id)) {
+                if (retVal instanceof ResponseEntity) {
+                    ResponseEntity<?> restResponseDto = (ResponseEntity<?>) retVal;
+                    if (restResponseDto.getStatusCode() == HttpStatus.OK) {
+                        RestResponseDto mapResponse = mapper
+                            .convertValue(restResponseDto.getBody(), RestResponseDto.class);
+                        CustomerLoan customerLoan = mapper
+                            .convertValue(mapResponse.getDetail(), CustomerLoan.class);
+                        assert customerActivity != null;
+                        customerActivity.setCustomerLoanId(customerLoan.getId());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("unable to save customer");
+        }
+        if (!ObjectUtils.isEmpty(customerActivity.getCustomerLoanId())) {
             this.activityService.saveCustomerActivityByResponseSuccess(customerActivity, retVal);
         }
         return retVal;
