@@ -21,6 +21,7 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.LoanType;
 
 /**
@@ -229,17 +230,16 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                             value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
-                Predicate predicateForLimitExceed = criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.get("limitExceed"),
-                            1));
+                Predicate predicateForLimitExceed = criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
+                LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
                 Predicate predicateForShareTemplate = criteriaBuilder
                     .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
                         root.join("loan").get("templateList"));
                 return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 
             case FILTER_BY_INSURANCE_EXPIRY:
-                return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_EXPIRY), true);
+                return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
+                    LoanFlag.INSURANCE_EXPIRY);
 
             case FILTER_BY_HAS_INSURANCE:
                 return criteriaBuilder.and(criteriaBuilder.isMember(AppConstant.TEMPLATE_INSURANCE,
