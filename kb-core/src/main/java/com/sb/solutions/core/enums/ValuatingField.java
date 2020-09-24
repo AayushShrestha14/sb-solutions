@@ -5,7 +5,8 @@ package com.sb.solutions.core.enums;
  */
 public enum ValuatingField {
     LAND("Land"),
-    VEHICLE("Vehicle");
+    VEHICLE("Vehicle"),
+    LAND_BUILDING("Land & Building");
 
     private final String value;
 
