@@ -230,12 +230,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                             value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
-                Predicate predicateForLimitExceed = criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
+                return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
                 LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
-                Predicate predicateForShareTemplate = criteriaBuilder
-                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
-                        root.join("loan").get("templateList"));
-                return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
 
             case FILTER_BY_INSURANCE_EXPIRY:
                 return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
