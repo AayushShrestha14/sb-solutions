@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loanflag.entity;
 
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
@@ -53,7 +54,8 @@ public class CustomerLoanFlag extends AbstractPersistable<Long> {
                     return null;
                 }
                 if (list.size() > 1) {
-                    throw new IllegalStateException("Cannot have same flag more than once");
+                    List<CustomerLoanFlag> listDto = (List<CustomerLoanFlag>) list;
+                    throw new IllegalStateException(listDto.get(0).description);
                 }
                 return list.get(0);
             }

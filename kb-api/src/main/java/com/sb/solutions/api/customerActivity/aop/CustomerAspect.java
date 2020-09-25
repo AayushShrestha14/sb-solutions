@@ -88,7 +88,7 @@ public class CustomerAspect {
     public Object trackAroundCustomerInfoProperty(ProceedingJoinPoint pjp, Object batch,
         CustomerActivityLog customerActionTrack, Long id, String template)
         throws Throwable {
-        log.info(" previous customer info property on basis of id {} template {}", id,
+        log.info(" previous customer info property on basis of customerInfoId {} template {}", id,
             template);
         Optional<CustomerInfo> prevData = customerInfoService.findOne(id);
         CustomerInfo customerInfoPrev;
@@ -153,7 +153,7 @@ public class CustomerAspect {
                 return mapper.writeValueAsString(customerInfo.getCreditRiskGradingAlpha());
 
             case TemplateNameConstant.CRG_GAMMA:
-                return null;
+                return mapper.writeValueAsString(customerInfo.getCrgGamma());
             default:
                 return null;
         }
