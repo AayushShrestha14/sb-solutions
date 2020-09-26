@@ -22,6 +22,7 @@ import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanFlag;
+import com.sb.solutions.core.enums.LoanTag;
 import com.sb.solutions.core.enums.LoanType;
 
 /**
@@ -230,8 +231,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                             value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
-                return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
-                LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
+                Predicate isIdNull = criteriaBuilder.
+                    isNotNull(root.join("loanHolder").join("loanFlags").get("customerLoanId"));
+                Predicate flagExist = criteriaBuilder.equal(root.join("loanHolder").
+                    join("loanFlags").get("flag"), LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
+                Predicate isShareLoan = criteriaBuilder.equal(root.join("loan").get("loanTag") ,
+                    LoanTag.SHARE_SECURITY);
+                return criteriaBuilder.and(isIdNull , flagExist , isShareLoan);
 
             case FILTER_BY_INSURANCE_EXPIRY:
                 return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
@@ -243,6 +249,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_IS_CLOSE_RENEW:
                 Predicate notNull = criteriaBuilder.isNotNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
+
                 Predicate isNull = criteriaBuilder.isNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
                 Predicate equal = criteriaBuilder
                     .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
