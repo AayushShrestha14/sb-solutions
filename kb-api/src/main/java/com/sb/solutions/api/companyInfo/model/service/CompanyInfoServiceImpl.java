@@ -17,11 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.repository.CompanyInfoRepository;
 import com.sb.solutions.api.companyInfo.model.repository.specification.CompanyInfoSpecBuilder;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.CustomerIdType;
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
@@ -72,6 +76,20 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
             throw new ServiceValidationException(
                 companyInfo.getValidationMsg());
         }
+        if (ObjectUtils.isEmpty(companyInfo.getId())) {
+            CustomerInfo isExist = customerInfoService
+                .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
+                    CustomerType.COMPANY, companyInfo.getPanNumber(),
+                    companyInfo.getIssuePlace(),
+                    CustomerIdType.PAN, companyInfo.getLegalStatus().getRegistrationDate());
+            if (!ObjectUtils.isEmpty(isExist)) {
+                Branch branch = isExist.getBranch();
+                throw new ServiceValidationException(
+                    "Customer Exist!" + "This Customer is associate with branch " + branch
+                        .getName());
+            }
+        }
+
         final CompanyInfo info = companyInfoRepository.save(companyInfo);
         CustomerInfo customerInfo = customerInfoService.saveObject(info);
         execute(customerInfo.getId());
@@ -101,7 +119,9 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
     public void execute(Long customerInfoId) {
         Optional<CustomerInfo> customerInfo = customerInfoService.findOne(customerInfoId);
         if (!customerInfo.isPresent()) {
-            log.error("Error checking company VAT/PAN expiry. Customer Info with id {} not found", customerInfoId);
+            log.error(
+                "Error checking company VAT/PAN expiry. Customer Info with id {} not found",
+                customerInfoId);
             return;
         }
 
