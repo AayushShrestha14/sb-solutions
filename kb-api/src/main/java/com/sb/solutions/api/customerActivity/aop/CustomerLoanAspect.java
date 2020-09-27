@@ -166,6 +166,7 @@ public class CustomerLoanAspect {
                             diff.put("documentStatus", customerLoanPrev.getDocumentStatus());
                             propertyList.add("DOCUMENT STATUS");
                         }
+
                         diff.values().removeIf(Objects::isNull);
                         diff.values()
                             .removeIf(value -> value.equals("null") || value.equals("undefined"));
