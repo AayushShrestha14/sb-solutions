@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.crg.entity.CrgGamma;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,6 +45,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.crg.entity.CrgGamma;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
@@ -248,6 +248,9 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @ManyToOne
     private CombinedLoan combinedLoan;
+
+    @Transient
+    private Object customerGroup;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

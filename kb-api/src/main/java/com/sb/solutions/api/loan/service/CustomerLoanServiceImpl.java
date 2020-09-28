@@ -3,7 +3,11 @@ package com.sb.solutions.api.loan.service;
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,8 +28,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.api.crg.service.CrgGammaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -43,11 +48,16 @@ import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
+import com.sb.solutions.api.crg.service.CrgGammaService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.ActivityService;
+import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
+import com.sb.solutions.api.customerActivity.enums.ActivityType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
@@ -83,6 +93,8 @@ import com.sb.solutions.api.siteVisit.service.SiteVisitService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
+import com.sb.solutions.core.constant.AppConstant;
+import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
@@ -108,6 +120,7 @@ import com.sb.solutions.report.core.model.Report;
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanServiceImpl.class);
+    private static final String DESCRIPTION_APPROVED = "%s has been approved Successfully";
     private final CustomerLoanRepository customerLoanRepository;
     private final UserService userService;
     private final CustomerService customerService;
@@ -130,6 +143,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final NotificationMasterService notificationMasterService;
     private final CustomerLoanFlagService customerLoanFlagService;
     private final CustomerInfoService customerInfoService;
+    private final ActivityService activityService;
+    private ObjectMapper objectMapper = new ObjectMapper()
+        .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
+
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -154,7 +173,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         NotificationMasterService notificationMasterService,
         CustomerLoanFlagService customerLoanFlagService,
 
-        CustomerInfoService customerInfoService) {
+        CustomerInfoService customerInfoService,
+        ActivityService activityService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -177,6 +197,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.notificationMasterService = notificationMasterService;
         this.customerLoanFlagService = customerLoanFlagService;
         this.customerInfoService = customerInfoService;
+        this.activityService = activityService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -316,7 +337,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getVehicleSecurity() != null) {
             customerLoan
-                .setVehicleSecurity(vehicleSecurityService.save(customerLoan.getVehicleSecurity()));
+                .setVehicleSecurity(null);
         }
 
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
@@ -325,7 +346,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getCrgGamma() != null) {
             customerLoan.setCrgGamma(
-                    this.crgGammaService.save(customerLoan.getCrgGamma()));
+                this.crgGammaService.save(customerLoan.getCrgGamma()));
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
@@ -364,7 +385,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> findAllPageable(Object t, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
+
         Map<String, String> s = objectMapper.convertValue(t, Map.class);
         User u = userService.getAuthenticatedUser();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
@@ -382,7 +403,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<CustomerLoan> findAll(Object search) {
-        ObjectMapper objectMapper = new ObjectMapper();
+
         Map<String, String> s = objectMapper.convertValue(search, Map.class);
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
@@ -402,7 +423,62 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
-        customerLoanRepository.save(customerLoan);
+        final CustomerLoan customerLoan1 = customerLoanRepository.save(customerLoan);
+        if (customerLoan1.getDocumentStatus().equals(DocStatus.APPROVED)) {
+            try {
+                if (!ObjectUtils.isEmpty(customerLoan1.getLoanHolder().getCustomerGroup())) {
+                    Object customerGroup = this
+                        .getLoanByCustomerGroup(customerLoan1.getLoanHolder().getCustomerGroup());
+                    customerLoan1
+                        .setCustomerGroup(objectMapper.convertValue(customerGroup, List.class));
+                }
+
+                String basePath = new PathBuilder(UploadDir.initialDocument)
+                    .buildLoanDocumentUploadBasePath(customerLoan1.getLoanHolder().getId(),
+                        customerLoan1.getLoanHolder().getName(),
+                        customerLoan1.getLoanHolder().getBranch().getName(),
+                        customerLoan1.getLoanHolder().getCustomerType().name(),
+                        customerLoan1
+                            .getLoanType().name(), customerLoan1.getLoan().getName());
+                String filePath = FilePath.getOSPath() + basePath;
+                Path path = Paths.get(filePath);
+                if (!Files.exists(path)) {
+                    new File(filePath).mkdirs();
+                }
+                Map<String, String> map = new HashMap<>();
+                map.put("filePath", basePath + "approved.json");
+                new Thread(() -> {
+                    try {
+                        objectMapper.writeValue(
+                            Paths.get(filePath + "approved.json")
+                                .toFile(), customerLoan1);
+                    } catch (Exception e) {
+                        logger.error(
+                            "unable to write json file of customer {} loan {} with path {} with ex ::{}",
+                            customerLoan1.getLoanHolder().getName(),
+                            customerLoan1.getLoan().getName(),
+                            filePath, e);
+                    }
+                }).start();
+                CustomerActivity customerActivity = CustomerActivity.builder()
+                    .customerLoanId(customerLoan1.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.LOAN_APPROVED)
+                    .modifiedOn(new Date())
+                    .modifiedBy(userService.getAuthenticatedUser())
+                    .profile(customerLoan1.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(map))
+                    .description(
+                        String.format(DESCRIPTION_APPROVED, customerLoan1.getLoan().getName()))
+                    .build();
+
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (Exception e) {
+                logger.error("unable to log approved file of {} and loan {} ",
+                    customerLoan1.getLoanHolder().getName(), customerLoan1.getLoan().getName());
+            }
+        }
+
     }
 
     @Override
@@ -475,7 +551,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> getCatalogues(Object searchDto, Pageable pageable) {
-        final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -491,7 +566,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> getCommitteePull(Object searchDto, Pageable pageable) {
-        final ObjectMapper objectMapper = new ObjectMapper();
         User u = userService.getAuthenticatedUser();
         if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
             Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
@@ -527,7 +601,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
-        final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
             .map(Object::toString).collect(Collectors.joining(","));
@@ -682,7 +755,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getCrgGamma() != null) {
             previousLoan.getCrgGamma().setId(null);
             previousLoan.setCrgGamma(
-                    crgGammaService.save(previousLoan.getCrgGamma()));
+                crgGammaService.save(previousLoan.getCrgGamma()));
         }
         if (previousLoan.getShareSecurity() != null) {
             previousLoan.getShareSecurity().setId(null);
@@ -783,7 +856,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable) {
-        final ObjectMapper objectMapper = new ObjectMapper();
+
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
         s.put("distinctByCustomer", "true");
         s.values().removeIf(Objects::isNull);
@@ -991,7 +1064,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public ReportParam populate(Optional optional) {
-        final ObjectMapper objectMapper = new ObjectMapper();
         final User u = userService.getAuthenticatedUser();
         Map<String, String> s = objectMapper.convertValue(optional.get(), Map.class);
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
@@ -1054,12 +1126,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         String filePath = getDownloadPath();
-        ReportParam reportParam = ReportParam.builder().reportName("Catalogue Report")
+        return ReportParam.builder().reportName("Catalogue Report")
             .title(title())
             .subTitle(subTitle()).columns(columns()).data(csvDto).reportType(ReportType.FORM_REPORT)
             .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
             .build();
-        return reportParam;
+
     }
 
     public String getDownloadPath() {
@@ -1075,7 +1147,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.setCreditRiskGrading(customerInfo.getCreditRiskGrading());
         customerLoan.setCreditRiskGradingAlpha(customerInfo.getCreditRiskGradingAlpha());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
-        customerLoan.setGuarantor(customerInfo.getGuarantors());
+        //customerLoan.setGuarantor(customerInfo.getGuarantors());
         customerLoan.setInsurance(customerInfo.getInsurance());
         customerLoan.setShareSecurity(customerInfo.getShareSecurity());
         if (customerInfo.getCustomerType().equals(CustomerType.COMPANY)) {
