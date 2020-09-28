@@ -218,7 +218,7 @@ public class CustomerLoanController {
     }
 
     @GetMapping(path = "/stats")
-    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
+    public ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
         @RequestParam(required = false) String startDate,
         @RequestParam(required = false) String endDate) throws ParseException {
         logger.debug("REST request to get the statistical data about the loans.");
