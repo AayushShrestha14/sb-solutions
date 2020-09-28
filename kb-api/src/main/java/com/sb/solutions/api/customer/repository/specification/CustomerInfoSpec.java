@@ -26,6 +26,7 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
     private static final String FILTER_BY_CUSTOMER_ID_NUMBER = "idNumber";
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_ID_REG_PLACE = "idRegPlace";
+    private static final String FILTER_BY_GROUP_ID = "groupId";
     private final String property;
     private final String value;
 
@@ -66,6 +67,10 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
                 Expression<String> exp = root.join("branch").get("id");
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
+
+            case FILTER_BY_GROUP_ID:
+                return criteriaBuilder
+                    .equal(root.join("customerGroup").get("id"), Long.valueOf(value));
             default:
                 return null;
         }
