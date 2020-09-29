@@ -3225,7 +3225,7 @@
       <column name="description" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="maximum_points" type="BIGINT"/>
+      <column name="maximum_points" type="DECIMAL(12, 2)"/>
       <column name="appearance_order" type="BIGINT"/>
       <column name="status" type="INT">
         <constraints nullable="false"/>
@@ -3256,7 +3256,7 @@
       <column name="description" type="VARCHAR(256)">
         <constraints nullable="false"/>
       </column>
-      <column name="points" type="BIGINT"/>
+      <column name="points" type="DECIMAL(12, 2)"/>
       <column name="status" type="INT">
         <constraints nullable="false"/>
       </column>

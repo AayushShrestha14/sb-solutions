@@ -23,7 +23,7 @@ public class CrgAnswer extends BaseEntity<Long> {
     @NotNull(message = "Description is required.")
     private String description;
 
-    private long points;
+    private double points;
 
     private Status status;
 

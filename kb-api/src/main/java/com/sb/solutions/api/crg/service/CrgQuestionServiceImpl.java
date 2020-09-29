@@ -54,8 +54,7 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
             final CrgQuestion savedQuestion = questionRepository.save(question);
             question.getAnswers().forEach(answer -> answer.setCrgQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
-            savedQuestion.setMaximumPoints(question.getAnswers().stream()
-                    .map(CrgAnswer::getPoints).max(Comparator.comparing(Long::valueOf)).get());
+            savedQuestion.setMaximumPoints(question.getAnswers().stream().mapToDouble(value -> value.getPoints()).sum());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
 
@@ -88,8 +87,7 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
             answer.setCrgQuestion(updatedQuestion);
         }
         final List<CrgAnswer> updatedAnswers = answerService.update(answers, updatedQuestion);
-        updatedQuestion.setMaximumPoints(updatedAnswers.stream().map(CrgAnswer::getPoints)
-                .max(Comparator.comparing(Long::valueOf)).orElse(0L));
+        updatedQuestion.setMaximumPoints(updatedAnswers.stream().mapToDouble(value -> value.getPoints()).sum());
         updatedQuestion.setAnswers(updatedAnswers);
         updatedQuestion = questionRepository.save(updatedQuestion);
 

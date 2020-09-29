@@ -24,7 +24,7 @@ import java.util.List;
 public class CrgQuestion extends BaseEntity<Long> {
     private String description;
 
-    private long maximumPoints;
+    private double maximumPoints;
 
     private long appearanceOrder;
 
