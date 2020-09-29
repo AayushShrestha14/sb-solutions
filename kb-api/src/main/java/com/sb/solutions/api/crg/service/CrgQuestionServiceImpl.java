@@ -87,7 +87,7 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
             answer.setCrgQuestion(updatedQuestion);
         }
         final List<CrgAnswer> updatedAnswers = answerService.update(answers, updatedQuestion);
-        updatedQuestion.setMaximumPoints(updatedAnswers.stream().mapToDouble(value -> value.getPoints()).sum());
+        updatedQuestion.setMaximumPoints(updatedAnswers.stream().mapToDouble(value -> value.getPoints()).max().orElse(0d));
         updatedQuestion.setAnswers(updatedAnswers);
         updatedQuestion = questionRepository.save(updatedQuestion);
 
