@@ -73,12 +73,14 @@ import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
+import com.sb.solutions.api.loan.dto.CustomerLoanDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.api.loan.repository.CustomerLoanRepositoryJdbcTemplate;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
@@ -144,11 +146,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanFlagService customerLoanFlagService;
     private final CustomerInfoService customerInfoService;
     private final ActivityService activityService;
+    private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
     private ObjectMapper objectMapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
-
+    private List customerGroupLogList = new ArrayList();
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -174,7 +177,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerLoanFlagService customerLoanFlagService,
 
         CustomerInfoService customerInfoService,
-        ActivityService activityService) {
+        ActivityService activityService,
+        CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -198,6 +202,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanFlagService = customerLoanFlagService;
         this.customerInfoService = customerInfoService;
         this.activityService = activityService;
+        this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -423,14 +428,37 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
             throw new ServiceValidationException("Unable to perform Task");
         }
-        final CustomerLoan customerLoan1 = customerLoanRepository.save(customerLoan);
+        CustomerLoan customerLoan1 = customerLoanRepository.save(customerLoan);
+        final User user = userService.findOne(customerLoan1.getModifiedBy());
         if (customerLoan1.getDocumentStatus().equals(DocStatus.APPROVED)) {
             try {
-                if (!ObjectUtils.isEmpty(customerLoan1.getLoanHolder().getCustomerGroup())) {
-                    Object customerGroup = this
-                        .getLoanByCustomerGroup(customerLoan1.getLoanHolder().getCustomerGroup());
+                if (!ObjectUtils.isEmpty(customerLoan1.getLoanHolder().getCustomerGroup())
+                    && this.customerGroupLogList.isEmpty()) {
+                    List<CustomerLoanDto> customerGroup = customerLoanRepositoryJdbcTemplate
+                        .findByLoanHolderCustomerGroupAndNotToCurrentLoanHolder(
+                            customerLoan1.getLoanHolder().getCustomerGroup().getId(),
+                            customerLoan1.getLoanHolder().getId());
+
                     customerLoan1
-                        .setCustomerGroup(objectMapper.convertValue(customerGroup, List.class));
+                        .setCustomerGroupLog(
+                            objectMapper
+                                .convertValue(customerGroup, List.class));
+                } else {
+
+                    customerLoan1
+                        .setCustomerGroupLog(
+                            objectMapper
+                                .convertValue(this.customerGroupLogList, List.class));
+                }
+                if (!customerLoan1.getReportingInfoLevels().isEmpty()) {
+                    try {
+                        List report = customerLoan1.getReportingInfoLevels();
+                        String reportingString = objectMapper.writeValueAsString(report);
+                        customerLoan1.setReportingInfoLevels(new ArrayList<>());
+                        customerLoan1.setReportingInfoLog(reportingString);
+                    } catch (Exception e) {
+                        logger.error("unable to parse reporting Info");
+                    }
                 }
 
                 String basePath = new PathBuilder(UploadDir.initialDocument)
@@ -465,7 +493,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .activityType(ActivityType.MANUAL)
                     .activity(Activity.LOAN_APPROVED)
                     .modifiedOn(new Date())
-                    .modifiedBy(userService.getAuthenticatedUser())
+                    .modifiedBy(user)
                     .profile(customerLoan1.getLoanHolder())
                     .data(objectMapper.writeValueAsString(map))
                     .description(
@@ -474,8 +502,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
                 activityService.saveCustomerActivity(customerActivity);
             } catch (Exception e) {
-                logger.error("unable to log approved file of {} and loan {} ",
-                    customerLoan1.getLoanHolder().getName(), customerLoan1.getLoan().getName());
+                logger.error("unable to log approved file of {} and loan {} with error e {} ",
+                    customerLoan1.getLoanHolder().getName(), customerLoan1.getLoan().getName(), e);
             }
         }
 
@@ -483,7 +511,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public void sendForwardBackwardLoan(List<CustomerLoan> customerLoans) {
+        if (customerLoans.get(0).getDocumentStatus().equals(DocStatus.APPROVED) && !ObjectUtils
+            .isEmpty(customerLoans.get(0).getLoanHolder().getCustomerGroup())) {
+            List<CustomerLoanDto> customerGroup = customerLoanRepositoryJdbcTemplate
+                .findByLoanHolderCustomerGroupAndNotToCurrentLoanHolder(
+                    customerLoans.get(0).getLoanHolder().getCustomerGroup().getId(),
+                    customerLoans.get(0).getLoanHolder().getId());
+            this.customerGroupLogList = customerGroup;
+        }
         customerLoans.forEach(this::sendForwardBackwardLoan);
+        this.customerGroupLogList = new ArrayList();
     }
 
     @Override

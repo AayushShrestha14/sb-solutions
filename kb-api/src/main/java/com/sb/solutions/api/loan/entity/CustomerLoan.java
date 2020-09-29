@@ -194,9 +194,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @NotAudited
     @ManyToMany
-    @JoinTable(name = "customer_loan_guarantor" ,
-    joinColumns = @JoinColumn(name = "customer_loan_id"),
-    inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
+    @JoinTable(name = "customer_loan_guarantor",
+        joinColumns = @JoinColumn(name = "customer_loan_id"),
+        inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
     private Set<Guarantor> taggedGuarantors;
 
     @Lob
@@ -250,7 +250,11 @@ public class CustomerLoan extends BaseEntity<Long> {
     private CombinedLoan combinedLoan;
 
     @Transient
-    private Object customerGroup;
+    private Object customerGroupLog;
+
+
+    @Transient
+    private Object reportingInfoLog;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
