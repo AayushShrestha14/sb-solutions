@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sb.solutions.api.crg.entity.CrgGamma;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,8 +23,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.cicl.entity.Cicl;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.crg.entity.CrgGamma;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
@@ -123,4 +124,8 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToMany(mappedBy = "customerInfo")
     @JsonManagedReference
     private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
+
+
+    @OneToOne
+    private Cicl cicl;
 }

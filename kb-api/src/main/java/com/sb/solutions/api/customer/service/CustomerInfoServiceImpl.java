@@ -16,8 +16,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.crg.entity.CrgGamma;
-import com.sb.solutions.api.crg.service.CrgGammaService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,16 @@ import org.springframework.util.ObjectUtils;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
+import com.sb.solutions.api.cicl.entity.Cicl;
+import com.sb.solutions.api.cicl.service.CIclService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.constant.TemplateNameConstant;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
+import com.sb.solutions.api.crg.entity.CrgGamma;
+import com.sb.solutions.api.crg.service.CrgGammaService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
@@ -92,6 +94,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final CreditRiskGradingService creditRiskGradingService;
     private final CrgGammaService crgGammaService;
     private final CustomerLoanFlagService loanFlagService;
+    private final CIclService cIclService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -105,7 +108,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         CreditRiskGradingAlphaService creditRiskGradingAlphaService,
         CreditRiskGradingService creditRiskGradingService,
         CrgGammaService crgGammaService,
-        CustomerLoanFlagService loanFlagService) {
+        CustomerLoanFlagService loanFlagService,
+        CIclService cIclService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -119,6 +123,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.creditRiskGradingService = creditRiskGradingService;
         this.crgGammaService = crgGammaService;
         this.loanFlagService = loanFlagService;
+        this.cIclService = cIclService;
     }
 
 
@@ -221,8 +226,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG_GAMMA))) {
             final CrgGamma crgGamma = crgGammaService
-                    .save(objectMapper().convertValue(o, CrgGamma.class));
+                .save(objectMapper().convertValue(o, CrgGamma.class));
             customerInfo1.setCrgGamma(crgGamma);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CICL))) {
+            final Cicl cicl = cIclService
+                .save(objectMapper().convertValue(o, Cicl.class));
+            customerInfo1.setCicl(cicl);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
