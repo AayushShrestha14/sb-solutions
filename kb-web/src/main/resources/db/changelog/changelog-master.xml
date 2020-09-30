@@ -3577,6 +3577,58 @@
       </column>
     </addColumn>
   </changeSet>
+
+
+  <changeSet id="180-create-cicl" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="cicl"/>
+      </not>
+    </preConditions>
+    <createTable tableName="cicl">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_cicl_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_cicl_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="remarks" type="LONGTEXT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="181-alter-customer-info-add-cicl" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="cicl_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="cicl_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_cicl_id"
+          referencedTableName="cicl"
+          referencedColumnNames="id"/>
+      </column>
+
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

@@ -298,3 +298,21 @@ BEGIN
             SET IDENTITY_INSERT loan_template OFF
         END
 END;
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 20)
+    if (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_template ON
+
+            INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
+                                       created_by_id, modified_by_id, created_at, last_modified_at,
+                                       version)
+            VALUES (20, 'CICL', '#crgGamma', 20, 1, NULL, NULL, NULL,
+                    '2020-07-30', '2020-07-30', 0)
+
+            SET IDENTITY_INSERT loan_template OFF
+        END
+END;

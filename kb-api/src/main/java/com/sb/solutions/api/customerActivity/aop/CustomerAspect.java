@@ -154,6 +154,9 @@ public class CustomerAspect {
 
             case TemplateNameConstant.CRG_GAMMA:
                 return mapper.writeValueAsString(customerInfo.getCrgGamma());
+
+            case TemplateNameConstant.CICL:
+                return mapper.writeValueAsString(customerInfo.getCicl());
             default:
                 return null;
         }
@@ -190,6 +193,9 @@ public class CustomerAspect {
 
             case TemplateNameConstant.CRG_GAMMA:
                 return Activity.CRG_GAMMA_UPDATE;
+
+            case TemplateNameConstant.CICL:
+                return Activity.CICL_UPDATE;
             default:
                 return Activity.CUSTOMER_UPDATE;
         }
