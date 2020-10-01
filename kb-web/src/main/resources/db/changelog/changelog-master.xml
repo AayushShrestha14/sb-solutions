@@ -3577,6 +3577,17 @@
       </column>
     </addColumn>
   </changeSet>
+  
+  <changeSet id="298-alter-table-guarantor-add-doc-path" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="doc_path"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="doc_path" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

@@ -57,5 +57,7 @@ public class Guarantor extends BaseEntity<Long> {
 
     private String relationship;
 
+    private String docPath;
+
 
 }

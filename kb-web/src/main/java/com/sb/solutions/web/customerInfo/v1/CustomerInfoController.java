@@ -30,6 +30,7 @@ import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customerActivity.aop.Activity;
 import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -48,15 +49,19 @@ public class CustomerInfoController {
     private final Logger logger = LoggerFactory.getLogger(CustomerInfoController.class);
     private final CustomerInfoService customerInfoService;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
+    private final UserService userService;
 
 
     @Autowired
     public CustomerInfoController(
         CustomerInfoService customerInfoService,
-        CustomerGeneralDocumentService customerGeneralDocumentService) {
+        CustomerGeneralDocumentService customerGeneralDocumentService,
+        UserService userService) {
         this.customerInfoService = customerInfoService;
 
         this.customerGeneralDocumentService = customerGeneralDocumentService;
+        this.userService = userService;
+
     }
 
     @PostMapping("/list")
@@ -148,6 +153,41 @@ public class CustomerInfoController {
             }
         }
         return responseEntity;
+    }
+
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("customerName") String name,
+        @RequestParam("documentName") String documentName,
+        @RequestParam("customerInfoId") Long id,
+        @RequestParam("customerType") String customerType,
+        @RequestParam("folderName") String folderName
+    ) {
+        String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
+        Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
+            : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
+            + "is required to upload file.");
+        Preconditions.checkNotNull(documentName.equals("undefined") || documentName.equals("null") ? null
+            : (StringUtils.isEmpty(documentName) ? null : documentName), "Doc Name "
+            + "is required to upload file.");
+
+        String uploadPath = new StringBuilder(UploadDir.initialDocument)
+            .append("customers")
+            .append("/")
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branchName))
+            .append("/")
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append("/")
+            .append(id + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
+            .append("/")
+            .append(folderName)
+            .append("/")
+            .toString();
+        logger.info("File Upload Path {}", uploadPath);
+        ResponseEntity<?> responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, uploadPath, documentName);
+        return new RestResponseDto().successModel(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
     }
 
 
