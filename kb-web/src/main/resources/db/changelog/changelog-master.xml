@@ -3629,6 +3629,18 @@
 
     </addColumn>
   </changeSet>
+
+  <changeSet id="182-alter-document-add-check_type" author="elvin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="document" columnName="check_type"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="document">
+      <column name="check_type" type="INT"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
