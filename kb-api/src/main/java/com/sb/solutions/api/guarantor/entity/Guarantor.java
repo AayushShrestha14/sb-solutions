@@ -61,5 +61,7 @@ public class Guarantor extends BaseEntity<Long> {
 
     private Double netWorth;
 
+    private Boolean consentOfLegalHeirs;
+
 
 }

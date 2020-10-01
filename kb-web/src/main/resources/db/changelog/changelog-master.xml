@@ -3642,13 +3642,24 @@
   </changeSet>
 
   <changeSet id="301-alter-table-guarantor-add-net-worth" author="buddha">
+  <preConditions onFail="MARK_RAN">
+    <not>
+      <columnExists tableName="guarantor" columnName="net_worth"/>
+    </not>
+  </preConditions>
+  <addColumn tableName="guarantor">
+    <column name="net_worth" type="DOUBLE"/>
+  </addColumn>
+</changeSet>
+
+  <changeSet id="302-alter-table-guarantor-add-consentOfLegalHeirs" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists tableName="guarantor" columnName="net_worth"/>
+        <columnExists tableName="guarantor" columnName="consent_of_legal_heirs"/>
       </not>
     </preConditions>
     <addColumn tableName="guarantor">
-      <column name="net_worth" type="DOUBLE"/>
+      <column name="consent_of_legal_heirs" type="BOOLEAN"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>
