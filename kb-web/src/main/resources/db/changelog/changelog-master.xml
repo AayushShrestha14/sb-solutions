@@ -3640,6 +3640,17 @@
       <column name="doc_path" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="301-alter-table-guarantor-add-net-worth" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="net_worth"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="net_worth" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

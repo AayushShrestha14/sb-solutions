@@ -59,5 +59,7 @@ public class Guarantor extends BaseEntity<Long> {
 
     private String docPath;
 
+    private Double netWorth;
+
 
 }
