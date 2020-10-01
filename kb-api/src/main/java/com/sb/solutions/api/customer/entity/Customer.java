@@ -74,6 +74,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     private Date citizenshipIssuedDate;
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
+    private String introduction;
 
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

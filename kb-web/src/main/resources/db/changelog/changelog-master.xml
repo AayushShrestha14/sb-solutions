@@ -2642,6 +2642,27 @@
         </preConditions>
         <dropNotNullConstraint tableName="legal_status" columnName="registered_under_act" columnDataType="VARCHAR(256)"/>
     </changeSet>
+
+    <changeSet id="272-alter-customer-add-introduction" author="sadaiba">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="introduction"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="introduction" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="273-alter-customer-audit-add-introduction" author="sadaiba">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_audit" columnName="introduction"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_audit">
+            <column name="introduction" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
