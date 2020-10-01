@@ -21,6 +21,8 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.LoanFlag;
+import com.sb.solutions.core.enums.LoanTag;
 import com.sb.solutions.core.enums.LoanType;
 
 /**
@@ -53,6 +55,10 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_INSURANCE_EXPIRY = "isInsuranceExpired";
     public static final String FILTER_BY_HAS_INSURANCE = "hasInsurance";
     public static final String FILTER_BY_IS_CLOSE_RENEW = "isCloseRenew";
+    public static final String FILTER_BY_IS_NOT_COMBINED = "isNotCombined";
+    public static final String FILTER_BY_LOAN_HOLDER_ID = "loanHolderId";
+    public static final String FILTER_BY_IS_STAGED = "isStaged";
+    private static final String FILTER_BY_CUSTOMER_GROUP_CODE = "groupCode";
 
     private final String property;
     private final String value;
@@ -225,24 +231,45 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                             value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
-                Predicate predicateForLimitExceed = criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.get("limitExceed"),
-                            1));
-                Predicate predicateForShareTemplate = criteriaBuilder
-                    .isMember(AppConstant.TEMPLATE_SHARE_SECURITY,
-                        root.join("loan").get("templateList"));
-                return criteriaBuilder.and(predicateForLimitExceed, predicateForShareTemplate);
+                Predicate idEqual = criteriaBuilder.
+                    equal(root.join("loanHolder").join("loanFlags").get("customerLoanId") , root.get("id"));
+                Predicate shareFlagExist = criteriaBuilder.equal(root.join("loanHolder").
+                    join("loanFlags").get("flag"), LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
+                Predicate hasShareLoanTag = criteriaBuilder.equal(root.join("loan").get("loanTag"),
+                    LoanTag.SHARE_SECURITY);
+                return criteriaBuilder
+                    .and(idEqual, shareFlagExist,hasShareLoanTag);
 
             case FILTER_BY_INSURANCE_EXPIRY:
-                return criteriaBuilder.equal(root.get(FILTER_BY_INSURANCE_EXPIRY), true);
+                return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
+                    LoanFlag.INSURANCE_EXPIRY);
 
             case FILTER_BY_HAS_INSURANCE:
-                return criteriaBuilder.isNotNull(root.get("insurance"));
+                return criteriaBuilder.and(criteriaBuilder.isMember(AppConstant.TEMPLATE_INSURANCE,
+                    root.join("loan").get("templateList")));
 
             case FILTER_BY_IS_CLOSE_RENEW:
-                return criteriaBuilder
+                Predicate notNull = criteriaBuilder.isNotNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
+
+                Predicate isNull = criteriaBuilder.isNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
+                Predicate equal = criteriaBuilder
                     .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
+                return Boolean.parseBoolean(value) ? criteriaBuilder.and(notNull, equal)
+                    : criteriaBuilder.or(isNull, equal);
+
+            case FILTER_BY_IS_NOT_COMBINED:
+                return criteriaBuilder.isNull(root.get("combinedLoan"));
+            case FILTER_BY_LOAN_HOLDER_ID:
+                return criteriaBuilder
+                    .equal(root.join("loanHolder").get("id"), Long.valueOf(value));
+
+            case FILTER_BY_IS_STAGED:
+                boolean isStaged = Boolean.parseBoolean(value);
+                Expression<?> ex = root.get("previousStageList");
+                return isStaged ? criteriaBuilder.isNotNull(ex) : criteriaBuilder.isNull(ex);
+
+            case FILTER_BY_CUSTOMER_GROUP_CODE:
+                return criteriaBuilder.equal(root.join("loanHolder").join("customerGroup").get("groupCode"), value);
 
             default:
                 return null;

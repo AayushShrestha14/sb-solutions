@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,7 @@ import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.string.NameFormatter;
 
 @Entity
 @Data
@@ -45,6 +47,8 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
 
     @NotAudited
     private String profilePic;
+
+    @JsonDeserialize(using = NameFormatter.class)
     private String customerName;
 
     @Temporal(TemporalType.DATE)

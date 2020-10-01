@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -190,4 +191,12 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.refNo = :refId  WHERE c.id = :id")
     void updateReferenceNo(@Param("refId") String refId, @Param("id") Long id);
+
+    @Query("select c from CustomerLoan c where c.loanHolder.customerGroup.id = :groupId and c.documentStatus <> 2 and c.previousStageList is not null ")
+    List<CustomerLoan> getCustomerLoansByDocumentStatusAndCurrentStage(@Param("groupId") Long groupId);
+
+    List<CustomerLoan> getCustomerLoanByAndLoanHolderId(Long id);
+
+    List<CustomerLoan> findAllByCombinedLoanId(long id);
+
 }

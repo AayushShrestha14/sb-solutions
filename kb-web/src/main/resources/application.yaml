@@ -58,8 +58,8 @@ file:
   upload-directory: C:/
 
 bank:
-  name: United Finance Ltd
-  website: http://www.ufl.com.np/
+  name: SB Solutions Pvt Ltd
+  website: http://www.sbsolutionsnepal.com.np/
 
 mailproperty:
   additionalHeaders:
@@ -69,7 +69,7 @@ mailproperty:
       smtp:
         auth: true
         starttls:
-          enable: false
+          enable: true
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
       debug: true

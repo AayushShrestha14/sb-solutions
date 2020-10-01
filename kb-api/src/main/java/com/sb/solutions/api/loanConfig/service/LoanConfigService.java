@@ -3,6 +3,7 @@ package com.sb.solutions.api.loanConfig.service;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.service.BaseService;
@@ -19,4 +20,6 @@ public interface LoanConfigService extends BaseService<LoanConfig> {
     List<LoanConfig> getLoanConfigsActivatedForEligibility();
 
     LoanConfig getLoanConfigActivatedForEligibility(Long loanConfigId);
+
+    List<LoanConfig> getByLoanCategoryAndStatus(LoanApprovalType loanApprovalType);
 }

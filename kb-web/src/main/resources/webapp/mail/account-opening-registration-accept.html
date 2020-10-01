@@ -11,6 +11,10 @@
     font-size: 16px;
     line-height: 1.25
   }
+
+  .account-number {
+    font-weight: bold;
+  }
 </style>
 <body>
 
@@ -74,7 +78,9 @@
                         <td style="padding-bottom:20px">
                           <p class="custom-para">
                             Your account request for account type: <b><span
-                              th:text="${data.getAccountType()}"></span></b> has been accepted.
+                              th:text="${data.getAccountType()}"></span></b> has been accepted. Your
+                            account number is:<span
+                              th:text="${data.getAccountNumber()}" class="account-number"></span>.
                           </p>
                           <p class="custom-para">
                             For more information regarding our products

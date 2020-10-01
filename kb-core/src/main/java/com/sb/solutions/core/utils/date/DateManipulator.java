@@ -1,9 +1,15 @@
 package com.sb.solutions.core.utils.date;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DateManipulator {
+    private static final Logger logger = LoggerFactory.getLogger(DateManipulator.class);
 
     private Date date;
 
@@ -54,6 +60,17 @@ public class DateManipulator {
         c.setTime(this.date);
         c.add(Calendar.SECOND, seconds);
         return c.getTime();
+    }
+
+    public static boolean isValidDate(Object inDate) {
+        String date = inDate.toString().replaceAll("^[\"']+|[\"']+$", "");
+        try {
+            Date dates = new Date(date);
+            logger.debug("valid date {}", dates);
+        } catch (Exception ex) {
+            return false;
+        }
+        return true;
     }
 
 }

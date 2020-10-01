@@ -1,6 +1,11 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
@@ -8,7 +13,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +25,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.customerActivity.aop.Activity;
+import com.sb.solutions.api.customerActivity.aop.CustomerLoanLog;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpec;
+import com.sb.solutions.api.loan.service.CombinedLoanService;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
+import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
@@ -49,19 +61,21 @@ public class CustomerLoanController {
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanController.class);
 
     private final CustomerLoanService service;
-
     private final UserService userService;
-
     private final Mapper mapper;
+    private final CombinedLoanService combinedLoanService;
 
     public CustomerLoanController(
-        @Autowired CustomerLoanService service,
-        @Autowired Mapper mapper,
-        @Autowired UserService userService) {
+        CustomerLoanService service,
+        Mapper mapper,
+        UserService userService,
+        CombinedLoanService combinedLoanService
+    ) {
 
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
+        this.combinedLoanService = combinedLoanService;
     }
 
     @PostMapping(value = "/action")
@@ -73,6 +87,30 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(actionDto);
     }
 
+    @PostMapping(value = "/action/combined")
+    public ResponseEntity<?> loanAction(@Valid @RequestBody List<StageDto> actionDtoList,
+        @RequestParam boolean stageSingle) {
+        User user = userService.getAuthenticatedUser();
+        List<CustomerLoan> loans = actionDtoList.stream()
+            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
+            .collect(Collectors.toList());
+        Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
+        // remove from combined loan if loans are staged individually
+        // or loans are combined and approved
+        boolean removeCombined = stageSingle || actionDtoList.stream()
+            .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
+        if (removeCombined) {
+            loans.forEach(l -> l.setCombinedLoan(null));
+        }
+        service.sendForwardBackwardLoan(loans);
+        // remove unassociated combined loan entry
+        if (removeCombined) {
+            combinedLoanService.deleteById(combinedLoanId);
+        }
+        return new RestResponseDto().successModel(actionDtoList);
+    }
+
+    @CustomerLoanLog(Activity.LOAN_UPDATE)
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 
@@ -120,6 +158,11 @@ public class CustomerLoanController {
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
             .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<?> getAllBySearch(@RequestBody Object searchDto) {
+        return new RestResponseDto().successModel(service.findAll(searchDto));
     }
 
     @GetMapping(value = "/statusCount")
@@ -175,7 +218,7 @@ public class CustomerLoanController {
     }
 
     @GetMapping(path = "/stats")
-    public final ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
+    public ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
         @RequestParam(required = false) String startDate,
         @RequestParam(required = false) String endDate) throws ParseException {
         logger.debug("REST request to get the statistical data about the loans.");
@@ -272,4 +315,35 @@ public class CustomerLoanController {
             .successModel(service.getLoanByCustomerGuarantor(guarantor));
     }
 
+    @GetMapping("/loan-holder/{id}")
+    public ResponseEntity<?> getLoanByLoanHolderId(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
+    }
+
+    @GetMapping("/loan-holder/{id}/for-combine")
+    public ResponseEntity<?> getInitialLoanByLoanHolderId(@PathVariable("id") Long id) {
+        Map<String, String> filter = new HashMap<>();
+        User u = userService.getAuthenticatedUser();
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        filter.put("branchIds", branchAccess);
+        filter.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
+        filter.put("toUser", u.getId().toString());
+        filter.put("loanHolderId", String.valueOf(id));
+        filter.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, "initial");
+        List<CustomerLoan> loans = new ArrayList<>(service.findAllBySpec(filter));
+        filter
+            .put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.PENDING.toString().toUpperCase());
+        loans.addAll(service.findAllBySpec(filter));
+        return new RestResponseDto().successModel(loans);
+    }
+
+
+    @PostMapping("/customer-group")
+    public ResponseEntity<?> getLoanByCustomerGroup(
+        @RequestBody CustomerGroup customerGroup) {
+        logger.info("getting Customer Loan by CustomerGroup {}", customerGroup);
+        return new RestResponseDto()
+            .successModel(service.getLoanByCustomerGroup(customerGroup));
+    }
 }

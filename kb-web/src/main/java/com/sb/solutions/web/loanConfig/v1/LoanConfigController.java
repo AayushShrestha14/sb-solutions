@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -108,6 +109,13 @@ public class LoanConfigController {
         final LoanConfigDto loanConfigDto = eligibilityLoanConfigMapper
             .mapEntityToDto(loanConfigService.getLoanConfigActivatedForEligibility(loanConfigId));
         return new RestResponseDto().successModel(loanConfigDto);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{loanCategory}/all")
+    public ResponseEntity<?> getLoanAllByLoanApprovalType(
+        @PathVariable LoanApprovalType loanCategory) {
+        return new RestResponseDto()
+            .successModel(loanConfigService.getByLoanCategoryAndStatus(loanCategory));
     }
 
 }

@@ -211,32 +211,6 @@ END;
 
 BEGIN
     DECLARE
-        @count_shareSecurity smallint
-    SET @count_shareSecurity = (Select count(*) from loan_template where id = 13)
-    if (@count_shareSecurity = 0)
-        BEGIN
-
-            SET IDENTITY_INSERT loan_template on
-
-            INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
-                                       created_by_id, modified_by_id, created_at, last_modified_at,
-                                       version)
-            VALUES (13, 'Share Security', '#shareSecurity', 13, 1, NULL, NULL, NULL, '2020-01-05',
-                    '2020-01-05', 0)
-
-            SET IDENTITY_INSERT loan_template off
-
-        END
-
-    SET IDENTITY_INSERT loan_template on
-    UPDATE loan_template SET order_url = 100 WHERE id = 10
-    SET IDENTITY_INSERT loan_template off
-END;
-
-
-
-BEGIN
-    DECLARE
         @count SMALLINT
     SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 15)
     if (@count = 0)
@@ -300,6 +274,43 @@ BEGIN
                                        created_by_id, modified_by_id, created_at, last_modified_at,
                                        version)
             VALUES (18, 'Credit Risk Grading - Alpha', '#creditRiskGradingAlpha', 18, 1, NULL, NULL, NULL,
+                    '2020-07-30', '2020-07-30', 0)
+
+            SET IDENTITY_INSERT loan_template OFF
+        END
+END;
+
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 19)
+    if (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_template ON
+
+            INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
+                                       created_by_id, modified_by_id, created_at, last_modified_at,
+                                       version)
+            VALUES (19, 'Credit Risk Grading - Gamma', '#crgGamma', 19, 1, NULL, NULL, NULL,
+                    '2020-07-30', '2020-07-30', 0)
+
+            SET IDENTITY_INSERT loan_template OFF
+        END
+END;
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_template WHERE id = 20)
+    if (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_template ON
+
+            INSERT INTO loan_template (id, name, template_url, order_url, status, template_view,
+                                       created_by_id, modified_by_id, created_at, last_modified_at,
+                                       version)
+            VALUES (20, 'CICL', '#crgGamma', 20, 1, NULL, NULL, NULL,
                     '2020-07-30', '2020-07-30', 0)
 
             SET IDENTITY_INSERT loan_template OFF

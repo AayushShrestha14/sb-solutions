@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.PieChartDto;
@@ -24,6 +25,9 @@ import com.sb.solutions.report.core.service.FormReportGeneratorService;
 public interface CustomerLoanService extends BaseService<CustomerLoan>, FormReportGeneratorService {
 
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
+
+    @Transactional
+    void sendForwardBackwardLoan(List<CustomerLoan> customerLoans);
 
     Map<String, Integer> statusCount();
 
@@ -57,7 +61,11 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     List<CustomerLoan> getLoanByCustomerId(Long id);
 
+    List<CustomerLoan> getLoanByLoanHolderId(Long id);
+
     List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative);
+
+    Object getLoanByCustomerGroup(CustomerGroup customerGroup);
 
     Page<Customer> getCustomerFromCustomerLoan(Object searchDto, Pageable pageable);
 
@@ -65,5 +73,9 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     @Transactional
     void postLoanConditionCheck(CustomerLoan loan);
+
+    List<CustomerLoan> findAllBySpec(Map<String, String> filterParams);
+
+    List<CustomerLoan> findByCombinedLoanId(long id);
 
 }

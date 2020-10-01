@@ -1,5 +1,9 @@
 package com.sb.solutions.core.utils;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.sb.solutions.core.utils.string.StringUtil;
+
 /**
  * this utility method is use for chaining folder path for json file or document file
  *
@@ -7,6 +11,7 @@ package com.sb.solutions.core.utils;
  */
 public class PathBuilder {
 
+    private static final String FILE_SEPARATOR = "/";
     private String basePath;
     private String branchName;
     private String customerName;
@@ -64,30 +69,66 @@ public class PathBuilder {
 
     public String build() {
         StringBuilder sb = new StringBuilder(this.basePath);
-        return sb.append(branchName).append("/")
-                .append(customerName.trim().replace(" ", "_")).append("_")
-                .append(getDigitsFromString(customerCitizenship)).append("/")
-                .append(loanType.trim().replace(" ", "_")).append("/")
-                .append(action).append("/")
-                .append(jsonPath ? "json/" : "doc/").toString();
+        return sb.append(branchName).append(FILE_SEPARATOR)
+            .append(customerName.trim().replace(" ", "_")).append("_")
+            .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
+            .append(loanType.trim().replace(" ", "_")).append(FILE_SEPARATOR)
+            .append(action).append(FILE_SEPARATOR)
+            .append(jsonPath ? "json/" : "doc/").toString();
     }
 
     public String buildAccountOpening() {
         StringBuilder sb = new StringBuilder(this.basePath);
         return sb.append(branchName)
-                .append("/")
-                .append(customerName.trim().replace(" ", "_"))
-                .append("_")
-                .append(getDigitsFromString(customerCitizenship)).append("/")
-                .append("AccountOpening")
-                .append("/")
-                .append(jsonPath ? "json/" : "doc/")
-                .toString();
+            .append(FILE_SEPARATOR)
+            .append(customerName.trim().replace(" ", "_"))
+            .append("_")
+            .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
+            .append("AccountOpening")
+            .append(FILE_SEPARATOR)
+            .append(jsonPath ? "json/" : "doc/")
+            .toString();
     }
 
     public String buildBuildFormDownloadPath(String formName) {
         StringBuilder sb = new StringBuilder(this.basePath);
-        sb.append("download/").append(formName).append("/");
+        sb.append("download/").append(formName).append(FILE_SEPARATOR);
         return sb.toString();
+    }
+
+    public String buildCustomerInfoBasePath(Long customerInfoId, String name, String branch,
+        String customerType) {
+        return new StringBuilder(this.basePath)
+            .append("customers")
+            .append(FILE_SEPARATOR)
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
+            .append(FILE_SEPARATOR)
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append(FILE_SEPARATOR)
+            .append(
+                customerInfoId + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
+            .append(FILE_SEPARATOR)
+            .toString();
+    }
+
+    public String buildLoanDocumentUploadBasePath(Long customerInfoId, String customerName,
+        String branch,
+        String customerType, String loanType, String loanName) {
+        return new StringBuilder(this.basePath)
+            .append("customers")
+            .append(FILE_SEPARATOR)
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
+            .append(FILE_SEPARATOR)
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append(FILE_SEPARATOR)
+            .append(
+                customerInfoId + "-" + StringUtil
+                    .getStringWithoutWhiteSpaceAndWithCapitalize(customerName))
+            .append(FILE_SEPARATOR)
+            .append(StringUtils.deleteWhitespace(loanType).toUpperCase())
+            .append(FILE_SEPARATOR)
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
+            .append(FILE_SEPARATOR)
+            .toString();
     }
 }

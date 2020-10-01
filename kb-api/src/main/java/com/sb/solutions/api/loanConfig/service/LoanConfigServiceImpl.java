@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.loanConfig.repository.LoanConfigRepository;
 import com.sb.solutions.core.dto.SearchDto;
@@ -82,5 +83,10 @@ public class LoanConfigServiceImpl implements LoanConfigService {
     public LoanConfig getLoanConfigActivatedForEligibility(Long loanConfigId) {
         logger.debug("Getting Loan configuration activated for eligibility.");
         return loanConfigRepository.findLoanConfigByIdAndEnableEligibility(loanConfigId, true);
+    }
+
+    @Override
+    public List<LoanConfig> getByLoanCategoryAndStatus(LoanApprovalType loanApprovalType) {
+        return loanConfigRepository.findAllByLoanCategoryAndStatus(loanApprovalType, Status.ACTIVE);
     }
 }

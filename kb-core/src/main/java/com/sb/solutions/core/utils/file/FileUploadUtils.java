@@ -109,8 +109,10 @@ public class FileUploadUtils {
         String branch, String type, String name, String citizenship, String customerName) {
         if (multipartFile.isEmpty()) {
             return new RestResponseDto().failureModel("Select Signature Image");
-        } else if (!FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("jpg")
-            && !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("png")) {
+        } else if (
+            !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase()).equals("jpg")
+                && !FileUtils.getExtension(multipartFile.getOriginalFilename().toLowerCase())
+                .equals("png")) {
             return new RestResponseDto().failureModel("Invalid file format");
         }
         try {
@@ -126,7 +128,7 @@ public class FileUploadUtils {
                 new File(FilePath.getOSPath() + url).mkdirs();
             }
             String imagePath = url + name + "_" + System.currentTimeMillis() + "_" + type + "."
-                    + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+                + FileUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
             path = Paths.get(FilePath.getOSPath() + imagePath);
             Files.write(path, bytes);
             return new RestResponseDto().successModel(imagePath);
@@ -142,17 +144,18 @@ public class FileUploadUtils {
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
             Files.walk(pp)
-                    .filter(path -> !Files.isDirectory(path))
-                    .forEach(path -> {
-                        ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
-                        try {
-                            zs.putNextEntry(zipEntry);
-                            Files.copy(path, zs);
-                            zs.closeEntry();
-                        } catch (IOException e) {
-                            System.err.println(e);
-                        }
-                    });
+                .filter(path -> !Files.isDirectory(path))
+                .forEach(path -> {
+                    ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                    try {
+                        zs.putNextEntry(zipEntry);
+                        Files.copy(path, zs);
+                        zs.closeEntry();
+                    } catch (IOException e) {
+                        logger.info("error creating zip of source {} with error {}", sourceDirPath,
+                            e.getMessage());
+                    }
+                });
         }
     }
 
@@ -167,7 +170,6 @@ public class FileUploadUtils {
         }
 
     }
-
 
 
 }

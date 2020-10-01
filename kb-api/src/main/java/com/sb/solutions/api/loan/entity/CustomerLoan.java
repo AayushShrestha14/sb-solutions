@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -28,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,10 +44,14 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
+import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.crg.entity.CrgGamma;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.group.entity.Group;
+import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loan.LoanStage;
@@ -55,7 +59,6 @@ import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.dto.NepaliTemplateDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
-import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.api.security.entity.Security;
@@ -80,9 +83,14 @@ import com.sb.solutions.core.enums.Priority;
 @Audited
 public class CustomerLoan extends BaseEntity<Long> {
 
-    @Audited
+    @NotAudited
     @ManyToOne
     private Customer customerInfo;
+
+
+    @NotAudited
+    @ManyToOne
+    private CustomerInfo loanHolder;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToOne
@@ -104,15 +112,18 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<CustomerDocument> customerDocument;
 
     @NotAudited
+    @Transient
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
 
     @Audited
+    @Transient
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "site_visit_id")
     private SiteVisit siteVisit;
 
     @NotAudited
+    @Transient
     @OneToOne
     private ShareSecurity shareSecurity;
 
@@ -152,30 +163,41 @@ public class CustomerLoan extends BaseEntity<Long> {
     private Proposal proposal;
 
     @Audited
+    @Transient
     @OneToOne
     private Financial financial;
 
     @Audited
+    @Transient
     @OneToOne
     private Security security;
 
     @NotAudited
+    @Transient
     @OneToOne
     private Group group;
 
     @NotAudited
+    @Transient
     @OneToOne
     private VehicleSecurity vehicleSecurity;
 
-
-
     @NotAudited
+    @Transient
     @OneToOne
     private CreditRiskGradingAlpha creditRiskGradingAlpha;
 
     @NotAudited
+    @Transient
     @OneToOne(cascade = CascadeType.ALL)
     private GuarantorDetail guarantor;
+
+    @NotAudited
+    @ManyToMany
+    @JoinTable(name = "customer_loan_guarantor",
+        joinColumns = @JoinColumn(name = "customer_loan_id"),
+        inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
+    private Set<Guarantor> taggedGuarantors;
 
     @Lob
     private String previousStageList;
@@ -199,8 +221,14 @@ public class CustomerLoan extends BaseEntity<Long> {
     private int uploadedOfferLetterStat = 0;
 
     @Audited
+    @Transient
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
+
+    @Audited
+    @Transient
+    @OneToOne
+    private CrgGamma crgGamma;
 
     @Transient
     private List<NepaliTemplateDto> nepaliTemplates = new ArrayList<>();
@@ -210,16 +238,23 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<ReportingInfoLevel> reportingInfoLevels;
 
     @NotAudited
-    @OneToOne
-    private Insurance insurance;
+    @Transient
+    @OneToMany
+    private List<Insurance> insurance;
 
     @NotAudited
     private String refNo;
 
     @NotAudited
-    @OneToMany
-    @JoinColumn(name = "customer_loan_id")
-    private List<CustomerLoanFlag> loanFlags = new ArrayList<>();
+    @ManyToOne
+    private CombinedLoan combinedLoan;
+
+    @Transient
+    private Object customerGroupLog;
+
+
+    @Transient
+    private Object reportingInfoLog;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

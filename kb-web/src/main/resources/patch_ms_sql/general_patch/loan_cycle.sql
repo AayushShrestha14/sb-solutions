@@ -70,3 +70,36 @@ BEGIN
             SET IDENTITY_INSERT loan_cycle OFF
         END
 END;
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_cycle lc WHERE lc.cycle = 'Individual Customer')
+    IF (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_cycle ON
+            INSERT INTO loan_cycle (id, cycle, label, created_by_id, modified_by_id, created_at,
+                                    last_modified_at,
+                                    version)
+            VALUES ('9', 'Individual Customer', 'Document required for individual customer', null,
+                    null,
+                    '2019-06-20', '2019-06-26', '0')
+            SET IDENTITY_INSERT loan_cycle OFF
+        END
+END;
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_cycle lc WHERE lc.cycle = 'Company Customer')
+    IF (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_cycle ON
+            INSERT INTO loan_cycle (id, cycle, label, created_by_id, modified_by_id, created_at,
+                                    last_modified_at,
+                                    version)
+            VALUES ('10', 'Company Customer', 'Document required for company customer', null, null,
+                    '2019-06-20', '2019-06-26', '0')
+            SET IDENTITY_INSERT loan_cycle OFF
+        END
+END;

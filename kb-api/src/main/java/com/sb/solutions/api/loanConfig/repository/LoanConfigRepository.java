@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enums.Status;
 
@@ -31,4 +32,6 @@ public interface LoanConfigRepository extends JpaRepository<LoanConfig, Long> {
     List<LoanConfig> findAllByEnableEligibility(boolean enableEligibility);
 
     LoanConfig findLoanConfigByIdAndEnableEligibility(Long loanConfigId, Boolean enableEligibility);
+
+    List<LoanConfig> findAllByLoanCategoryAndStatus(LoanApprovalType approvalType, Status status);
 }
