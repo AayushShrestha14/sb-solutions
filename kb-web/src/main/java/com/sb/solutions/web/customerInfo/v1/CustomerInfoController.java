@@ -171,16 +171,8 @@ public class CustomerInfoController {
         Preconditions.checkNotNull(documentName.equals("undefined") || documentName.equals("null") ? null
             : (StringUtils.isEmpty(documentName) ? null : documentName), "Doc Name "
             + "is required to upload file.");
-
-        String uploadPath = new StringBuilder(UploadDir.initialDocument)
-            .append("customers")
-            .append("/")
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branchName))
-            .append("/")
-            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
-            .append("/")
-            .append(id + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
-            .append("/")
+        String basicPath = new PathBuilder(UploadDir.initialDocument).buildCustomerInfoBasePath(id,name,branchName,customerType);
+        String uploadPath = new StringBuilder(basicPath)
             .append(folderName)
             .append("/")
             .toString();
