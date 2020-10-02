@@ -164,7 +164,7 @@ public class CustomerInfoController {
         @RequestParam("customerType") String customerType,
         @RequestParam("folderName") String folderName
     ) {
-        String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
+        final String  branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
@@ -173,9 +173,8 @@ public class CustomerInfoController {
             + "is required to upload file.");
         documentName = documentName.replaceAll("\\\\","-");
         documentName = documentName.replace("/","-");
-
-
-        String basicPath = new PathBuilder(UploadDir.initialDocument).buildCustomerInfoBasePath(id,name,branchName,customerType);
+        String basicPath = new PathBuilder(UploadDir.initialDocument)
+            .buildCustomerInfoBasePath(id,name,branchName,customerType);
         String uploadPath = new StringBuilder(basicPath)
             .append(folderName)
             .append("/")
