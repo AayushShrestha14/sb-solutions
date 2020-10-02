@@ -61,6 +61,7 @@ import com.sb.solutions.api.customerActivity.enums.ActivityType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.dms.dmsloanfile.service.DmsLoanFileService;
+import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.financial.service.FinancialService;
 import com.sb.solutions.api.group.service.GroupServices;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
@@ -76,6 +77,7 @@ import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
@@ -100,6 +102,7 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.DocumentCheckType;
 import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.RoleType;
@@ -1011,6 +1014,58 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (insurance != null) {
             HelperDto<Long> dto = new HelperDto<>(loan.getId(), HelperIdType.LOAN);
             insuranceService.execute(Optional.of(dto));
+        }
+        // check customer document
+        List<Document> requiredDocuments;
+        switch (loan.getLoanType()) {
+            case NEW_LOAN:
+                requiredDocuments = loan.getLoan().getInitial();
+                break;
+            case RENEWED_LOAN:
+                requiredDocuments = loan.getLoan().getRenew();
+                break;
+            case ENHANCED_LOAN:
+                requiredDocuments = loan.getLoan().getEnhance();
+                break;
+            case CLOSURE_LOAN:
+                requiredDocuments = loan.getLoan().getClosure();
+                break;
+            case PARTIAL_SETTLEMENT_LOAN:
+                requiredDocuments = loan.getLoan().getPartialSettlement();
+                break;
+            case FULL_SETTLEMENT_LOAN:
+                requiredDocuments = loan.getLoan().getFullSettlement();
+                break;
+            default:
+                requiredDocuments = new ArrayList<>();
+        }
+        requiredDocuments = requiredDocuments
+            .stream()
+            .filter(d -> d.getCheckType() != null)
+            .filter(d -> d.getCheckType().equals(DocumentCheckType.REQUIRED))
+            .collect(Collectors.toList());
+        List<Long> uploadedDocIds = loan.getCustomerDocument().stream()
+            .map(CustomerDocument::getDocument)
+            .map(Document::getId)
+            .collect(Collectors.toList());
+        boolean missingRequired = !requiredDocuments.stream()
+            .allMatch(d -> uploadedDocIds.contains(d.getId()));
+
+        CustomerLoanFlag customerLoanFlag = loan.getLoanHolder().getLoanFlags().stream()
+            .filter(loanFlag -> (loanFlag.getFlag().equals(LoanFlag.MISSING_REQUIRED_DOCUMENT)
+                && loanFlag.getCustomerLoanId().equals(loan.getId())
+            )).collect(CustomerLoanFlag.toSingleton());
+
+        if (missingRequired && customerLoanFlag == null) {
+            customerLoanFlag = new CustomerLoanFlag();
+            customerLoanFlag.setCustomerInfo(loan.getLoanHolder());
+            customerLoanFlag.setCustomerLoanId(loan.getId());
+            customerLoanFlag.setFlag(LoanFlag.MISSING_REQUIRED_DOCUMENT);
+            customerLoanFlag.setDescription(LoanFlag.MISSING_REQUIRED_DOCUMENT.getValue()[1]);
+            customerLoanFlag.setOrder(Integer.parseInt(LoanFlag.MISSING_REQUIRED_DOCUMENT.getValue()[0]));
+            customerLoanFlagService.save(customerLoanFlag);
+        } else if (!missingRequired && customerLoanFlag != null) {
+            customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
         }
     }
 
