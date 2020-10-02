@@ -3662,6 +3662,122 @@
       <column name="introduction" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="298-alter-table-guarantor-add-doc-path" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="doc_path"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="doc_path" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="301-alter-table-guarantor-add-net-worth" author="buddha">
+  <preConditions onFail="MARK_RAN">
+    <not>
+      <columnExists tableName="guarantor" columnName="net_worth"/>
+    </not>
+  </preConditions>
+  <addColumn tableName="guarantor">
+    <column name="net_worth" type="DOUBLE"/>
+  </addColumn>
+</changeSet>
+
+  <changeSet id="302-alter-table-guarantor-add-consentOfLegalHeirs" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="consent_of_legal_heirs"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="consent_of_legal_heirs" type="BOOLEAN"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="303-alter-table-guarantor-add-provinceTemporary" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="province_temporary_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="province_temporary_id" type="BIGINT">
+        <constraints referencedTableName="province" referencedColumnNames="id" foreignKeyName="fk_guarantor_province_province_temporary_id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="304-alter-table-guarantor-add-districtTemporary" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="district_temporary_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="district_temporary_id" type="BIGINT">
+        <constraints referencedTableName="district" referencedColumnNames="id" foreignKeyName="fk_guarantor_district_district_temporary_id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="305-alter-table-guarantor-add-column-municipalitiesTemporary" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="guarantor" columnName="municipalities_temporary_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="municipalities_temporary_id" type="BIGINT">
+        <constraints referencedTableName="municipality_vdc" referencedColumnNames="id" foreignKeyName="fk_guarantor_municipality_vdc_municipalities_temporary_id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="306-alter-table-guarantor-add-streetName" author="buddha">
+    <preConditions>
+      <not>
+        <columnExists tableName="guarantor" columnName="street_name"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="street_name" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="307-alter-table-guarantor-add-column-wardNumber" author="buddha">
+    <preConditions>
+      <not>
+        <columnExists tableName="guarantor" columnName="ward_number"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="ward_number" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="308-alter-table-guarantor-add-column-wardNumberTemporary" author="buddha">
+    <preConditions>
+      <not>
+        <columnExists tableName="guarantor" columnName="ward_number_temporary"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="ward_number_temporary" type="BIGINT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="309-alter-table-guarantor-add-column-streetNameTemporary" author="buddha">
+    <preConditions>
+      <not>
+        <columnExists tableName="guarantor" columnName="street_name_temporary"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="guarantor">
+      <column name="street_name_temporary" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

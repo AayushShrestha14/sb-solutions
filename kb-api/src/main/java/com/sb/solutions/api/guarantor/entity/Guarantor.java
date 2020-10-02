@@ -57,5 +57,29 @@ public class Guarantor extends BaseEntity<Long> {
 
     private String relationship;
 
+    private String docPath;
+
+    private Double netWorth;
+
+    private Boolean consentOfLegalHeirs;
+
+    @NotAudited
+    @ManyToOne
+    private Province provinceTemporary;
+
+    @NotAudited
+    @ManyToOne
+    private District districtTemporary;
+
+    @NotAudited
+    @ManyToOne
+    private MunicipalityVdc municipalitiesTemporary;
+
+    private String streetName;
+    private Integer wardNumber;
+    private String streetNameTemporary;
+    private Integer wardNumberTemporary;
+
+
 
 }
