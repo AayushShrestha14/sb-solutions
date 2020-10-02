@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.core.enums.DocumentCheckType;
 import com.sb.solutions.core.enums.Status;
 
 @Data
@@ -19,5 +20,8 @@ public class DocumentDto extends BaseDto<Long> {
     private String url;
 
     private Status status;
+
+    private DocumentCheckType checkType;
+
 
 }
