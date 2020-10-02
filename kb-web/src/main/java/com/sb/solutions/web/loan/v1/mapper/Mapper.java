@@ -26,6 +26,7 @@ import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
@@ -114,7 +115,13 @@ public class Mapper {
         }
         if (loanActionDto.getDocAction().equals(DocAction.FORWARD)
             || loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
-            customerLoan.setDocumentStatus(DocStatus.PENDING);
+            if (customerLoan.getDocumentStatus().equals(DocStatus.UNDER_REVIEW) || customerLoan
+                .getDocumentStatus().equals(DocStatus.PENDING)) {
+                customerLoan.setDocumentStatus(DocStatus.PENDING);
+            } else {
+                throw new ServiceValidationException(
+                    "Forward Failed:Document Status should be under Review or Pending!!");
+            }
         }
         customerLoan.setPreviousStageList(previousListTemp.toString());
         customerLoan.setDocumentStatus(loanActionDto.getDocumentStatus());
