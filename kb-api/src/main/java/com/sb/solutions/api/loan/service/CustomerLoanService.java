@@ -24,6 +24,7 @@ import com.sb.solutions.report.core.service.FormReportGeneratorService;
  */
 public interface CustomerLoanService extends BaseService<CustomerLoan>, FormReportGeneratorService {
 
+    @Transactional
     void sendForwardBackwardLoan(CustomerLoan customerLoan);
 
     @Transactional
