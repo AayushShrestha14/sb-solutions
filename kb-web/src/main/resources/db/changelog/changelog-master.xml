@@ -3642,6 +3642,27 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="272-alter-customer-add-introduction" author="sadaiba">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="introduction"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="introduction" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="272-alter-customer_audit-add-introduction" author="sadaiba">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_audit" columnName="introduction"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_audit">
+      <column name="introduction" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="298-alter-table-guarantor-add-doc-path" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
