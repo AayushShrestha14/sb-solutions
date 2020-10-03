@@ -1019,37 +1019,49 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         List<Document> requiredDocuments;
         switch (loan.getLoanType()) {
             case NEW_LOAN:
-                requiredDocuments = loan.getLoan().getInitial();
+                requiredDocuments = loan.getLoan().getInitial() == null ? new ArrayList<>()
+                    : loan.getLoan().getInitial();
                 break;
             case RENEWED_LOAN:
-                requiredDocuments = loan.getLoan().getRenew();
+                requiredDocuments = loan.getLoan().getRenew() == null ? new ArrayList<>()
+                    : loan.getLoan().getRenew();
                 break;
             case ENHANCED_LOAN:
-                requiredDocuments = loan.getLoan().getEnhance();
+                requiredDocuments = loan.getLoan().getEnhance() == null ? new ArrayList<>()
+                    : loan.getLoan().getEnhance();
                 break;
             case CLOSURE_LOAN:
-                requiredDocuments = loan.getLoan().getClosure();
+                requiredDocuments = loan.getLoan().getClosure() == null ? new ArrayList<>()
+                    : loan.getLoan().getClosure();
                 break;
             case PARTIAL_SETTLEMENT_LOAN:
-                requiredDocuments = loan.getLoan().getPartialSettlement();
+                requiredDocuments =
+                    loan.getLoan().getPartialSettlement() == null ? new ArrayList<>()
+                        : loan.getLoan().getPartialSettlement();
                 break;
             case FULL_SETTLEMENT_LOAN:
-                requiredDocuments = loan.getLoan().getFullSettlement();
+                requiredDocuments = loan.getLoan().getFullSettlement() == null ? new ArrayList<>()
+                    : loan.getLoan().getFullSettlement();
                 break;
             default:
                 requiredDocuments = new ArrayList<>();
         }
+
         requiredDocuments = requiredDocuments
             .stream()
             .filter(d -> d.getCheckType() != null)
             .filter(d -> d.getCheckType().equals(DocumentCheckType.REQUIRED))
             .collect(Collectors.toList());
-        List<Long> uploadedDocIds = loan.getCustomerDocument().stream()
-            .map(CustomerDocument::getDocument)
-            .map(Document::getId)
-            .collect(Collectors.toList());
+        List<Long> uploadedDocIds = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(loan.getCustomerDocument())) {
+            uploadedDocIds = loan.getCustomerDocument().stream()
+                .map(CustomerDocument::getDocument)
+                .map(Document::getId)
+                .collect(Collectors.toList());
+        }
+        List<Long> finalUploadedDocIds = uploadedDocIds;
         boolean missingRequired = !requiredDocuments.stream()
-            .allMatch(d -> uploadedDocIds.contains(d.getId()));
+            .allMatch(d -> finalUploadedDocIds.contains(d.getId()));
 
         CustomerLoanFlag customerLoanFlag = loan.getLoanHolder().getLoanFlags().stream()
             .filter(loanFlag -> (loanFlag.getFlag().equals(LoanFlag.MISSING_REQUIRED_DOCUMENT)
@@ -1062,11 +1074,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanFlag.setCustomerLoanId(loan.getId());
             customerLoanFlag.setFlag(LoanFlag.MISSING_REQUIRED_DOCUMENT);
             customerLoanFlag.setDescription(LoanFlag.MISSING_REQUIRED_DOCUMENT.getValue()[1]);
-            customerLoanFlag.setOrder(Integer.parseInt(LoanFlag.MISSING_REQUIRED_DOCUMENT.getValue()[0]));
+            customerLoanFlag
+                .setOrder(Integer.parseInt(LoanFlag.MISSING_REQUIRED_DOCUMENT.getValue()[0]));
             customerLoanFlagService.save(customerLoanFlag);
         } else if (!missingRequired && customerLoanFlag != null) {
             customerLoanFlagService.deleteCustomerLoanFlagById(customerLoanFlag.getId());
         }
+
     }
 
     @Override
