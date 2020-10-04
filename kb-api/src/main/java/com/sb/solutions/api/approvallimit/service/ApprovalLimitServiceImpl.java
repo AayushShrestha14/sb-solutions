@@ -47,7 +47,19 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
                     "Already Exist : Approval Limit Already Exist");
             }
         } else {
-            ApprovalLimit approvalLimit2 = approvalLimitRepository.getOne(approvalLimit.getId());
+            ApprovalLimit approvalLimit2 = approvalLimitRepository
+                .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(
+                    approvalLimit.getAuthorities().getId(),
+                    approvalLimit.getLoanCategory().getId(),
+                    approvalLimit.getLoanApprovalType());
+            if (!approvalLimit2.getId().equals(approvalLimit.getId())) {
+                throw new ServiceValidationException(
+                    String.format(
+                        "Already Exist : Approval Limit Already Exist of %s ,Loan catagory : %s and Approval Type : %s",
+                        approvalLimit2.getAuthorities().getRoleName(),
+                        approvalLimit2.getLoanCategory().getName(),
+                        approvalLimit2.getLoanApprovalType()));
+            }
 
         }
         return approvalLimitRepository.save(approvalLimit);
@@ -59,7 +71,7 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
     public Page<ApprovalLimit> findAllPageable(Object object, Pageable pageable) {
         ObjectMapper objectMapper = new ObjectMapper();
         SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return approvalLimitRepository. approvalLimitFilter(pageable);
+        return approvalLimitRepository.approvalLimitFilter(pageable);
     }
 
     @Override
@@ -69,9 +81,9 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
 
     @Override
     public ApprovalLimit getByRoleAndLoan(Long roleId, Long loanConfigId,
-                                          LoanApprovalType loanCategory) {
+        LoanApprovalType loanCategory) {
         return approvalLimitRepository
             .getByAuthoritiesIdAndLoanCategoryIdAndLoanApprovalType(roleId, loanConfigId,
-                    loanCategory);
+                loanCategory);
     }
 }
