@@ -4,7 +4,7 @@ package com.sb.solutions.api.customer.enums;
  * @author : Rujan Maharjan on  8/10/2020
  **/
 public enum CustomerType {
-    INDIVIDUAL("individual"), COMPANY("company");
+    INDIVIDUAL("individual"), INSTITUTION("institution");
 
     private final String value;
 

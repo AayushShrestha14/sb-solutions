@@ -79,7 +79,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
         if (ObjectUtils.isEmpty(companyInfo.getId())) {
             CustomerInfo isExist = customerInfoService
                 .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
-                    CustomerType.COMPANY, companyInfo.getPanNumber(),
+                    CustomerType.INSTITUTION, companyInfo.getPanNumber(),
                     companyInfo.getIssuePlace(),
                     CustomerIdType.PAN, companyInfo.getLegalStatus().getRegistrationDate());
             if (!ObjectUtils.isEmpty(isExist)) {
