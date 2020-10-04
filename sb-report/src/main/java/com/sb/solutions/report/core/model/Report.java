@@ -4,12 +4,11 @@ import static com.sb.solutions.report.core.util.StyleUtil.oddRowStyle;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.Collection;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -140,11 +139,14 @@ public abstract class Report {
     }
 
     private String getAbsolutePathForLogoImage() {
-        URL res = getClass().getClassLoader().getResource("images/logo.png");
+        ClassPathResource imgResource = new ClassPathResource(
+            "img/logo.png");
+//        URL res = getClass().getClassLoader().getResource("images/logo.png");
         File file = null;
         try {
-            file = Paths.get(res.toURI()).toFile();
-        } catch (URISyntaxException e) {
+            //file = Paths.get(res.toURI()).toFile();
+            file = imgResource.getFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return file.getAbsolutePath();

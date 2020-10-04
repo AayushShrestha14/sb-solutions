@@ -7,6 +7,7 @@ import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
@@ -26,6 +27,8 @@ public class CustomerLoanCsvDto {
     private LoanConfig loan;
 
     private CompanyInfo companyInfo;
+
+    private CustomerInfo loanHolder;
 
     private LoanType loanType = LoanType.NEW_LOAN;
 
