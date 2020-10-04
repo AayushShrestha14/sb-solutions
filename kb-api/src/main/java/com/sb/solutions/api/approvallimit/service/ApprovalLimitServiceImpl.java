@@ -3,7 +3,6 @@ package com.sb.solutions.api.approvallimit.service;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,7 @@ import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.approvallimit.entity.ApprovalLimit;
 import com.sb.solutions.api.approvallimit.repository.ApprovalLimitRepository;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.exception.ServiceValidationException;
 
 @Service
 public class ApprovalLimitServiceImpl implements ApprovalLimitService {
@@ -43,8 +43,8 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
                     approvalLimit.getLoanCategory().getId(),
                     approvalLimit.getLoanApprovalType());
             if (approvalLimit1 != null) {
-                throw new ConstraintViolationException("Already Exist", null,
-                    "Approval Limit Already Exist");
+                throw new ServiceValidationException(
+                    "Already Exist : Approval Limit Already Exist");
             }
         } else {
             ApprovalLimit approvalLimit2 = approvalLimitRepository.getOne(approvalLimit.getId());

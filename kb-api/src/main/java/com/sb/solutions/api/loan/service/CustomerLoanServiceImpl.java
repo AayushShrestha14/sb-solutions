@@ -254,7 +254,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CompanyInfo companyInfo = null;
         boolean isNewLoan = false;
         Customer customer = customerLoan.getCustomerInfo();
-        if (customerLoan.getLoanCategory() == LoanApprovalType.BUSINESS_TYPE) {
+        if (customerLoan.getLoanCategory() == LoanApprovalType.INSTITUTION) {
             companyInfo = customerLoan.getCompanyInfo();
             if (!companyInfo.isValid()) {
                 throw new ServiceValidationException(
