@@ -3782,7 +3782,7 @@
   <changeSet id="300-alter-table-crg-question-add-column-customer-type" author="sunil">
     <preConditions>
       <not>
-        <columnExists tableName="crg_question" columnName="crg_question"/>
+        <columnExists tableName="crg_question" columnName="customer_type"/>
       </not>
     </preConditions>
     <addColumn tableName="crg_question">
