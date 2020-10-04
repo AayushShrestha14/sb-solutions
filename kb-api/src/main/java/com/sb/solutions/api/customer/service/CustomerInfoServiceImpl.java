@@ -152,13 +152,13 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         }
         if (o instanceof CompanyInfo) {
             customerInfo = customerInfoRepository
-                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.COMPANY);
+                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.INSTITUTION);
             log.info("Saving company into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
             }
             customerInfo.setAssociateId(((CompanyInfo) o).getId());
-            customerInfo.setCustomerType(CustomerType.COMPANY);
+            customerInfo.setCustomerType(CustomerType.INSTITUTION);
             customerInfo.setName(((CompanyInfo) o).getCompanyName());
             customerInfo.setIdType(CustomerIdType.PAN);
             customerInfo.setIdRegDate(((CompanyInfo) o).getLegalStatus().getRegistrationDate());

@@ -3778,6 +3778,18 @@
       <column name="street_name_temporary" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="300-alter-table-crg-question-add-column-customer-type" author="sunil">
+    <preConditions>
+      <not>
+        <columnExists tableName="crg_question" columnName="crg_question"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="crg_question">
+      <column name="customer_type" type="BIGINT"/>
+    </addColumn>
+    <dropColumn tableName="crg_question" columnName="loan_approval_type"/>
+  </changeSet>
 </databaseChangeLog>
 
 

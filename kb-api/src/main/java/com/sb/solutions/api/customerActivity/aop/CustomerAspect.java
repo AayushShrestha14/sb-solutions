@@ -245,7 +245,7 @@ public class CustomerAspect {
             CompanyInfo c = (CompanyInfo) o;
             if (!ObjectUtils.isEmpty(c.getId())) {
                 CustomerInfo customerInfo = customerInfoService
-                    .findByAssociateIdAndCustomerType(c.getId(), CustomerType.COMPANY);
+                    .findByAssociateIdAndCustomerType(c.getId(), CustomerType.INSTITUTION);
                 c = companyInfoService.findOne(c.getId());
                 data = mapper.writeValueAsString(c);
                 customerActivity.setProfile(customerInfo);

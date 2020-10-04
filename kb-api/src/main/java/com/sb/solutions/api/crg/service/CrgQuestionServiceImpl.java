@@ -1,10 +1,10 @@
 package com.sb.solutions.api.crg.service;
 
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.crg.entity.CrgAnswer;
-import com.sb.solutions.api.crg.entity.CrgQuestion;
-import com.sb.solutions.api.crg.repository.CrgQuestionRepository;
-import com.sb.solutions.core.enums.Status;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import com.sb.solutions.api.crg.entity.CrgAnswer;
+import com.sb.solutions.api.crg.entity.CrgQuestion;
+import com.sb.solutions.api.crg.repository.CrgQuestionRepository;
+import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.core.enums.Status;
 
 @Service
 @Transactional
@@ -54,7 +54,8 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
             final CrgQuestion savedQuestion = questionRepository.save(question);
             question.getAnswers().forEach(answer -> answer.setCrgQuestion(savedQuestion));
             savedQuestion.setAnswers(answerService.save(question.getAnswers()));
-            savedQuestion.setMaximumPoints(question.getAnswers().stream().mapToDouble(value -> value.getPoints()).sum());
+            savedQuestion.setMaximumPoints(
+                question.getAnswers().stream().mapToDouble(value -> value.getPoints()).sum());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
 
@@ -72,8 +73,9 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
     }
 
     @Override
-    public List<CrgQuestion> findByLoanApprovalType(LoanApprovalType loanApprovalType) {
-        return questionRepository.findByLoanApprovalTypeAndStatusNotOrderByCrgGroupIdAsc(loanApprovalType, Status.DELETED);
+    public List<CrgQuestion> findByCustomerType(CustomerType customerType) {
+        return questionRepository
+            .findByCustomerTypeAndStatusNotOrderByCrgGroupIdAsc(customerType, Status.DELETED);
     }
 
     @Override
@@ -87,7 +89,8 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
             answer.setCrgQuestion(updatedQuestion);
         }
         final List<CrgAnswer> updatedAnswers = answerService.update(answers, updatedQuestion);
-        updatedQuestion.setMaximumPoints(updatedAnswers.stream().mapToDouble(value -> value.getPoints()).max().orElse(0d));
+        updatedQuestion.setMaximumPoints(
+            updatedAnswers.stream().mapToDouble(value -> value.getPoints()).max().orElse(0d));
         updatedQuestion.setAnswers(updatedAnswers);
         updatedQuestion = questionRepository.save(updatedQuestion);
 

@@ -1242,7 +1242,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         //customerLoan.setGuarantor(customerInfo.getGuarantors());
         customerLoan.setInsurance(customerInfo.getInsurance());
         customerLoan.setShareSecurity(customerInfo.getShareSecurity());
-        if (customerInfo.getCustomerType().equals(CustomerType.COMPANY)) {
+        if (customerInfo.getCustomerType().equals(CustomerType.INSTITUTION)) {
             customerLoan.setCompanyInfo(
                 companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
         } else {
