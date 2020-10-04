@@ -1107,7 +1107,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .build();
 
         AbstractColumn columnName = ColumnBuilder.getNew()
-            .setColumnProperty("customerInfo.customerName", String.class.getName())
+            .setColumnProperty("loanHolder.name", String.class.getName())
             .setTitle("Name").setWidth(100)
             .build();
 
@@ -1128,9 +1128,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setColumnProperty("createdAt", String.class.getName())
             .setTitle("Created At").setWidth(85)
             .build();
-        AbstractColumn columnCompanyName = ColumnBuilder.getNew()
-            .setColumnProperty("companyInfo.companyName", String.class.getName())
-            .setTitle("Company Name").setWidth(100)
+        AbstractColumn columnCustomerType = ColumnBuilder.getNew()
+            .setColumnProperty("loanHolder.customerType", CustomerType.class.getName())
+            .setTitle("Customer Type").setWidth(100)
             .build();
         AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
             .setColumnProperty("loanPendingSpan", Long.class.getName())
@@ -1161,7 +1161,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setTitle("Status").setWidth(85)
             .build();
 
-        return Arrays.asList(columnBranch, columnName, columnCompanyName, columnLoanName,
+        return Arrays.asList(columnBranch, columnName, columnCustomerType, columnLoanName,
             columnProposedAmount, columnTypes, columnLoanCategory, columnStatus,
             columnCurrentPosition, columnDesignation,
             columnCreatedAt, columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays);
@@ -1198,6 +1198,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setBranch(c.getBranch());
             customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
             customerLoanCsvDto.setCompanyInfo(c.getCompanyInfo());
+            customerLoanCsvDto.setLoanHolder(c.getLoanHolder());
             customerLoanCsvDto.setLoan(c.getLoan());
             customerLoanCsvDto.setProposal(c.getProposal());
             customerLoanCsvDto.setLoanType(c.getLoanType());
