@@ -3824,7 +3824,7 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="301-alter-table-customer-info-add-column-additional-company-info" author="bibash">
+  <changeSet id="321-alter-table-customer-info-add-column-additional-company-info" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="company_info" columnName="additional_company_info"/>
@@ -3845,7 +3845,7 @@
       <column name="additional_company_info" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="301-alter-table-customer-info-add-column-succession-planning" author="bibash">
+  <changeSet id="321-alter-table-customer-info-add-column-succession-planning" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="company_info" columnName="succession_planning"/>
@@ -3855,7 +3855,7 @@
       <column name="succession_planning" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="301-alter-table-customer-info-add-column-succession-planning-audit"
+  <changeSet id="321-alter-table-customer-info-add-column-succession-planning-audit"
     author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -3866,7 +3866,7 @@
       <column name="succession_planning" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="301-alter-table-customer-info-add-column-contact-persons" author="bibash">
+  <changeSet id="321-alter-table-customer-info-add-column-contact-persons" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="company_info" columnName="contact_persons"/>
@@ -3876,7 +3876,7 @@
       <column name="contact_persons" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="301-alter-table-customer-info-add-column-contact-persons-audit" author="bibash">
+  <changeSet id="321-alter-table-customer-info-add-column-contact-persons-audit" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="company_info_audit" columnName="contact_persons"/>
@@ -3886,7 +3886,7 @@
       <column name="contact_persons" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="302-drop-column-contact-person" author="bibash">
+  <changeSet id="322-drop-column-contact-person" author="bibash">
     <preConditions onFail="MARK_RAN">
         <columnExists tableName="company_info" columnName="contact_person_id"/>
     </preConditions>
@@ -3894,7 +3894,7 @@
       constraintName="fk_company_info_contact_person_id"/>
     <dropColumn tableName="company_info" columnName="contact_person_id"/>
   </changeSet>
-  <changeSet id="303-drop-table-contact-person" author="bibash">
+  <changeSet id="323-drop-table-contact-person" author="bibash">
     <preConditions onFail="MARK_RAN">
       <tableExists tableName="contact_person"/>
     </preConditions>
