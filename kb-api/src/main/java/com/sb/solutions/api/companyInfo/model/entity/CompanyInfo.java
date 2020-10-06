@@ -1,6 +1,7 @@
 package com.sb.solutions.api.companyInfo.model.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -64,13 +65,13 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private String issuePlace;
     private String email;
     private String contactNum;
+    private String additionalCompanyInfo;
+    private String successionPlanning;
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;
 
-    @NotAudited
-    @OneToOne(cascade = CascadeType.ALL)
-    private ContactPerson contactPerson;
+    private String contactPersons;
 
     @Override
     public Pair<Boolean, String> valid() {
