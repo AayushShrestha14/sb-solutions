@@ -3790,6 +3790,39 @@
     </addColumn>
     <dropColumn tableName="crg_question" columnName="loan_approval_type"/>
   </changeSet>
+  
+  <changeSet id="318-alter-Insurance-table-add-column-policyDocumentPath" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="insurance" columnName="policy_document_path"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="insurance">
+      <column name="policy_document_path" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="319-alter-Insurance-table-add-column-remark" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="insurance" columnName="remark"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="insurance">
+      <column name="remark" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="320-alter-Insurance-table-add-column-assetInsured" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="insurance" columnName="asset_insured"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="insurance">
+      <column name="asset_insured" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
