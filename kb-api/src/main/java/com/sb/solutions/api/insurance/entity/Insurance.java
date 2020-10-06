@@ -46,4 +46,8 @@ public class Insurance extends BaseEntity<Long> {
     private String policyType;
 
     private String policyNumber;
+
+    private String policyDocumentPath;
+    private String remark;
+    private String assetInsured;
 }
