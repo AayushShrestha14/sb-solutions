@@ -3900,6 +3900,13 @@
     </preConditions>
     <dropTable tableName="contact_person"/>
   </changeSet>
+
+  <changeSet id="322-alter-Insurance-table-alter-column-datatype-remark" author="buddha">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="insurance" columnName="remark"/>
+    </preConditions>
+    <modifyDataType tableName="insurance" columnName="remark" newDataType="LONGTEXT"/>
+  </changeSet>
 </databaseChangeLog>
 
 
