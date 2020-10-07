@@ -244,6 +244,8 @@ public class CustomerLoanController {
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") Long documentId,
+        @RequestParam("loanHolderId") Long loanHolderId,
+        @RequestParam("customerType") String customerType,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         CustomerDocument customerDocument = new CustomerDocument();
@@ -258,9 +260,16 @@ public class CustomerLoanController {
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
-        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
-            .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
-            .withCustomerName(name).withLoanType(type).build();
+        String uploadPath = new PathBuilder(UploadDir.initialDocument)
+            .buildLoanDocumentUploadBasePath(loanHolderId,
+                name,
+                branchName,
+                customerType,
+                action, type);
+
+//        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
+//            .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
+//            .withCustomerName(name).withLoanType(type).build();
         logger.info("File Upload Path {}", uploadPath);
         ResponseEntity<?> responseEntity = FileUploadUtils
             .uploadFile(multipartFile, uploadPath, documentName);

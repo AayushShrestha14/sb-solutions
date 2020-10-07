@@ -253,19 +253,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         CompanyInfo companyInfo = null;
         boolean isNewLoan = false;
-        Customer customer = customerLoan.getCustomerInfo();
-        if (customerLoan.getLoanCategory() == LoanApprovalType.INSTITUTION) {
-            companyInfo = customerLoan.getCompanyInfo();
-            if (!companyInfo.isValid()) {
-                throw new ServiceValidationException(
-                    companyInfo.getValidationMsg());
-            }
-        } else {
-            if (!customer.isValid()) {
-                throw new ServiceValidationException(
-                    customer.getValidationMsg());
-            }
-        }
+//        Customer customer = customerLoan.getCustomerInfo();
+//        if (customerLoan.getLoanCategory() == LoanApprovalType.INSTITUTION) {
+//            companyInfo = customerLoan.getCompanyInfo();
+//            if (!companyInfo.isValid()) {
+//                throw new ServiceValidationException(
+//                    companyInfo.getValidationMsg());
+//            }
+//        } else {
+//            if (!customer.isValid()) {
+//                throw new ServiceValidationException(
+//                    customer.getValidationMsg());
+//            }
+//        }
 
         // validation end
 
@@ -282,10 +282,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoan.setCurrentStage(stage);
         }
 
-        if (null != companyInfo) {
-            customerLoan
-                .setCompanyInfo(
-                    this.companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
+//        if (null != companyInfo) {
+//            customerLoan
+//                .setCompanyInfo(
+//                    this.companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
 
             /*
             if business loan , business pan/vat number will be citizenship number , companay name will be customer name
@@ -313,16 +313,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 //            }
 //
 
-        }
+//        }
 
-        if (customer != null) {
-            Customer c = this.customerService
-                .findOne(customerLoan.getLoanHolder().getAssociateId());
-            customerLoan.setCustomerInfo(c);
-            customerLoan
-                .setLoanHolder(customerInfoService.findByAssociateIdAndCustomerType(c.getId(),
-                    CustomerType.INDIVIDUAL));
-        }
+//        if (customer != null) {
+//            Customer c = this.customerService
+//                .findOne(customerLoan.getLoanHolder().getAssociateId());
+//            customerLoan.setCustomerInfo(c);
+//            customerLoan
+//                .setLoanHolder(customerInfoService.findByAssociateIdAndCustomerType(c.getId(),
+//                    CustomerType.INDIVIDUAL));
+//        }
 
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(customerLoan.getLoanHolder().getFinancial());
@@ -338,7 +338,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getCreditRiskGrading() != null) {
             customerLoan.setCreditRiskGrading(
-                creditRiskGradingService.save(customerLoan.getCreditRiskGrading()));
+                customerLoan.getLoanHolder().getCreditRiskGrading());
         }
         if (customerLoan.getGroup() != null) {
             customerLoan.setGroup(this.groupService.save(customerLoan.getGroup()));
@@ -350,11 +350,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
             customerLoan.setCreditRiskGradingAlpha(
-                this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
+                customerLoan.getLoanHolder().getCreditRiskGradingAlpha());
         }
         if (customerLoan.getCrgGamma() != null) {
             customerLoan.setCrgGamma(
-                this.crgGammaService.save(customerLoan.getCrgGamma()));
+                customerLoan.getLoanHolder().getCrgGamma());
         }
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
