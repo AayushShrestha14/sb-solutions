@@ -125,9 +125,11 @@ public class PathBuilder {
                 customerInfoId + "-" + StringUtil
                     .getStringWithoutWhiteSpaceAndWithCapitalize(customerName))
             .append(FILE_SEPARATOR)
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
+            .append(FILE_SEPARATOR)
             .append(StringUtils.deleteWhitespace(loanType).toUpperCase())
             .append(FILE_SEPARATOR)
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
+            .append("doc")
             .append(FILE_SEPARATOR)
             .toString();
     }
