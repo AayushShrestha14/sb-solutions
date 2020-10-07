@@ -3907,6 +3907,17 @@
     </preConditions>
     <modifyDataType tableName="insurance" columnName="remark" newDataType="LONGTEXT"/>
   </changeSet>
+
+  <changeSet id="323-alter-cicl-add-column-cibCharge" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="cicl" columnName="cib_charge"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="cicl">
+      <column name="cib_charge" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
