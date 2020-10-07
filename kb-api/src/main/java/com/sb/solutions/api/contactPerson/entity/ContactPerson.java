@@ -22,6 +22,7 @@ public class ContactPerson extends BaseEntity<Long> {
     private String name;
     private String contactNumber;
     private String email;
+    private String functionalPosition;
 
     @ManyToOne
     private Province province;

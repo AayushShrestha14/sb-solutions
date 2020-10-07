@@ -3790,7 +3790,7 @@
     </addColumn>
     <dropColumn tableName="crg_question" columnName="loan_approval_type"/>
   </changeSet>
-  
+
   <changeSet id="318-alter-Insurance-table-add-column-policyDocumentPath" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -3822,6 +3822,83 @@
     <addColumn tableName="insurance">
       <column name="asset_insured" type="VARCHAR(256)"/>
     </addColumn>
+  </changeSet>
+
+  <changeSet id="321-alter-table-customer-info-add-column-additional-company-info" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="additional_company_info"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="additional_company_info" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="301-alter-table-customer-info-add-column-additional-company-info-audit"
+    author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="additional_company_info"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="additional_company_info" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="321-alter-table-customer-info-add-column-succession-planning" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="succession_planning"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="succession_planning" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="321-alter-table-customer-info-add-column-succession-planning-audit"
+    author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="succession_planning"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="succession_planning" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="321-alter-table-customer-info-add-column-contact-persons" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="contact_persons"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="contact_persons" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="321-alter-table-customer-info-add-column-contact-persons-audit" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="contact_persons"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="contact_persons" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="322-drop-column-contact-person" author="bibash">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="company_info" columnName="contact_person_id"/>
+    </preConditions>
+    <dropForeignKeyConstraint baseTableName="company_info"
+      constraintName="fk_company_info_contact_person_id"/>
+    <dropColumn tableName="company_info" columnName="contact_person_id"/>
+  </changeSet>
+  <changeSet id="323-drop-table-contact-person" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="contact_person"/>
+    </preConditions>
+    <dropTable tableName="contact_person"/>
   </changeSet>
 
   <changeSet id="322-alter-Insurance-table-alter-column-datatype-remark" author="buddha">
