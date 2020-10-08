@@ -16,5 +16,6 @@ public class TemplateNameConstant {
     public static final String CRG_GAMMA = "CrgGamma";
     public static final String CRG = "Crg";
     public static final String CICL = "CICL";
+    public static final String INCOME_FROM_ACCOUNT = "Income From Account";
 
 }

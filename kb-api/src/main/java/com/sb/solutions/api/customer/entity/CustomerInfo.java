@@ -32,6 +32,7 @@ import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
+import com.sb.solutions.api.incomeFromAccount.entity.IncomeFromAccount;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.security.entity.Security;
@@ -128,4 +129,7 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private Cicl cicl;
+
+    @OneToOne
+    private IncomeFromAccount incomeFromAccount;
 }
