@@ -49,6 +49,8 @@ import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.guarantor.service.GuarantorDetailService;
 import com.sb.solutions.api.helper.HelperDto;
 import com.sb.solutions.api.helper.HelperIdType;
+import com.sb.solutions.api.incomeFromAccount.entity.IncomeFromAccount;
+import com.sb.solutions.api.incomeFromAccount.service.IncomeFromAccountServices;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
@@ -95,6 +97,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final CrgGammaService crgGammaService;
     private final CustomerLoanFlagService loanFlagService;
     private final CIclService cIclService;
+    private final IncomeFromAccountServices incomeFromAccountServices;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -109,7 +112,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         CreditRiskGradingService creditRiskGradingService,
         CrgGammaService crgGammaService,
         CustomerLoanFlagService loanFlagService,
-        CIclService cIclService) {
+        IncomeFromAccountServices incomeFromAccountServices,
+        CIclService cIclService
+        ) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -124,6 +129,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.crgGammaService = crgGammaService;
         this.loanFlagService = loanFlagService;
         this.cIclService = cIclService;
+        this.incomeFromAccountServices = incomeFromAccountServices;
     }
 
 
@@ -232,6 +238,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Cicl cicl = cIclService
                 .save(objectMapper().convertValue(o, Cicl.class));
             customerInfo1.setCicl(cicl);
+        }
+        else if ((template.equalsIgnoreCase(TemplateNameConstant.INCOME_FROM_ACCOUNT))) {
+            final IncomeFromAccount incomeFromAccount = incomeFromAccountServices
+                .save(objectMapper().convertValue(o, IncomeFromAccount.class));
+            customerInfo1.setIncomeFromAccount(incomeFromAccount);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);

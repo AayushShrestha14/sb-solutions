@@ -3918,6 +3918,56 @@
       <column name="cib_charge" type="DOUBLE"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="325-add-table-income_from_account" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="income_from_account"/>
+      </not>
+    </preConditions>
+    <createTable tableName="income_from_account">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_income_from_account_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_income_from_account_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="326-alter-customer-info-add-column-income-from-account-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="income_from_account_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="income_from_account_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_income_from_account_id"
+          referencedTableName="income_from_account"
+          referencedColumnNames="id"/>
+      </column>
+
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
