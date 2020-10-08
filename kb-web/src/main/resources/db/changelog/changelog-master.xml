@@ -3900,6 +3900,24 @@
     </preConditions>
     <dropTable tableName="contact_person"/>
   </changeSet>
+
+  <changeSet id="322-alter-Insurance-table-alter-column-datatype-remark" author="buddha">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="insurance" columnName="remark"/>
+    </preConditions>
+    <modifyDataType tableName="insurance" columnName="remark" newDataType="LONGTEXT"/>
+  </changeSet>
+
+  <changeSet id="323-alter-cicl-add-column-cibCharge" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="cicl" columnName="cib_charge"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="cicl">
+      <column name="cib_charge" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

@@ -23,4 +23,6 @@ public class Cicl extends BaseEntity<Long> {
 
     private String remarks;
 
+    private Double cibCharge;
+
 }
