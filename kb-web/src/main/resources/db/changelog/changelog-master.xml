@@ -3952,7 +3952,7 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="327-alter-customer-info-add-column-income-from-account-id" author="buddha">
+  <changeSet id="326-alter-customer-info-add-column-income-from-account-id" author="buddha">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="customer_info" columnName="income_from_account_id"/>
@@ -3969,7 +3969,7 @@
     </addColumn>
   </changeSet>
 
-  <changeSet id="324-create-table-fiscal-year" author="bibash">
+  <changeSet id="327-create-table-fiscal-year" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <tableExists tableName="fiscal_year"/>
