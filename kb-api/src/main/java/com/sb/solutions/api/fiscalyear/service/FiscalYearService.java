@@ -5,4 +5,6 @@ import com.sb.solutions.core.service.BaseService;
 
 public interface FiscalYearService extends BaseService<FiscalYear> {
 
+    void deActiveFiscalYears();
+
 }

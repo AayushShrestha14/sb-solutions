@@ -3918,6 +3918,72 @@
       <column name="cib_charge" type="DOUBLE"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="324-create-table-fiscal-year" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="fiscal_year"/>
+      </not>
+    </preConditions>
+    <createTable tableName="fiscal_year">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="year" type="VARCHAR(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="is_current_year" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_one_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_one_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_two_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_two_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_three_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_three_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_four_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_four_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_fiscal_year_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_fiscal_year_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
 
 
