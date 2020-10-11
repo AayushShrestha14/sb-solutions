@@ -4050,7 +4050,7 @@
       <column name="business_and_industry" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
-  <changeSet id="328-alter-table-customer-info-audit-add-column-business-industry"
+  <changeSet id="328-alter-table-company-info-audit-add-column-business-industry"
     author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
