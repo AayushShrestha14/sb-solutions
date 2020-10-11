@@ -132,4 +132,7 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private IncomeFromAccount incomeFromAccount;
+
+    private String bankingRelationship;
+    /*private String customerUniqueId;*/
 }

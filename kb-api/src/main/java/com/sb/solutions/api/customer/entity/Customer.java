@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
@@ -79,6 +80,13 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
     private String introduction;
+
+    @Transient
+    private String bankingRelationship;
+
+    /*@Transient
+    private String customerUniqueId;*/
+
 
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

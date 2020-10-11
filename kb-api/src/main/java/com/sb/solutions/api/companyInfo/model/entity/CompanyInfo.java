@@ -1,15 +1,14 @@
 package com.sb.solutions.api.companyInfo.model.entity;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
-import com.sb.solutions.api.contactPerson.entity.ContactPerson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +16,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
@@ -67,6 +65,13 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private String contactNum;
     private String additionalCompanyInfo;
     private String successionPlanning;
+
+    @Transient
+    private String bankingRelationship;
+    private String industryGrowth;
+    private String marketCompetition;
+    private String experience;
+    private String businessAndIndustry;
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;
