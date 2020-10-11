@@ -155,6 +155,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdRegDate(((Customer) o).getCitizenshipIssuedDate());
             customerInfo.setContactNo(((Customer) o).getContactNumber());
             customerInfo.setEmail(((Customer) o).getEmail());
+           /* customerInfo.setCustomerUniqueId(((Customer) o).getCustomerUniqueId());*/
+            customerInfo.setBankingRelationship(((Customer) o).getBankingRelationship());
         }
         if (o instanceof CompanyInfo) {
             customerInfo = customerInfoRepository
@@ -172,9 +174,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdRegPlace(((CompanyInfo) o).getIssuePlace());
             customerInfo.setContactNo(((CompanyInfo) o).getContactNum());
             customerInfo.setEmail(((CompanyInfo) o).getEmail());
+            customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
         }
         customerInfo.setBranch(user.getBranch().get(0));
-        return this.save(customerInfo);
+            return this.save(customerInfo);
     }
 
     @Transactional
