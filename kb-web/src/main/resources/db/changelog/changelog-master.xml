@@ -4034,7 +4034,7 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet id="328-alter-table-customer-info-add-column-business-industry" author="bibash">
+  <changeSet id="328-alter-table-company-info-add-column-business-industry" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="company_info" columnName="industry_growth"/>
