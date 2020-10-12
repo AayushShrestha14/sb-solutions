@@ -3834,7 +3834,7 @@
       <column name="additional_company_info" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
-  <changeSet id="301-alter-table-customer-info-add-column-additional-company-info-audit"
+  <changeSet id="321-alter-table-customer-info-add-column-additional-company-info-audit"
     author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -3899,6 +3899,244 @@
       <tableExists tableName="contact_person"/>
     </preConditions>
     <dropTable tableName="contact_person"/>
+  </changeSet>
+
+  <changeSet id="322-alter-Insurance-table-alter-column-datatype-remark" author="buddha">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="insurance" columnName="remark"/>
+    </preConditions>
+    <modifyDataType tableName="insurance" columnName="remark" newDataType="LONGTEXT"/>
+  </changeSet>
+
+  <changeSet id="323-alter-cicl-add-column-cibCharge" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="cicl" columnName="cib_charge"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="cicl">
+      <column name="cib_charge" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="325-add-table-income_from_account" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="income_from_account"/>
+      </not>
+    </preConditions>
+    <createTable tableName="income_from_account">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_income_from_account_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_income_from_account_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="326-alter-customer-info-add-column-income-from-account-id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="income_from_account_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="income_from_account_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_income_from_account_id"
+          referencedTableName="income_from_account"
+          referencedColumnNames="id"/>
+      </column>
+
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="327-create-table-fiscal-year" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="fiscal_year"/>
+      </not>
+    </preConditions>
+    <createTable tableName="fiscal_year">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="year" type="VARCHAR(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="is_current_year" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_one_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_one_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_two_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_two_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_three_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_three_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_four_start_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="q_four_end_date" type="Date">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_fiscal_year_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_fiscal_year_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="status" type="INT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="328-alter-table-company-info-add-column-business-industry" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="industry_growth"/>
+        <columnExists tableName="company_info" columnName="market_competition"/>
+        <columnExists tableName="company_info" columnName="experience"/>
+        <columnExists tableName="company_info" columnName="business_and_industry"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="industry_growth" type="VARCHAR(100)"/>
+      <column name="market_competition" type="VARCHAR(150)"/>
+      <column name="experience" type="VARCHAR(256)"/>
+      <column name="business_and_industry" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="328-alter-table-company-info-audit-add-column-business-industry"
+    author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="industry_growth"/>
+        <columnExists tableName="company_info_audit" columnName="market_competition"/>
+        <columnExists tableName="company_info_audit" columnName="experience"/>
+        <columnExists tableName="company_info_audit" columnName="business_and_industry"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="industry_growth" type="VARCHAR(100)"/>
+      <column name="market_competition" type="VARCHAR(150)"/>
+      <column name="experience" type="VARCHAR(256)"/>
+      <column name="business_and_industry" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+   <!--todo create unique id for customer-->
+
+  <!--  <changeSet id="329-alter-customer-table-add-column-customer-unique-constraint-id" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="customer_unique_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="customer_unique_id" type="VARCHAR(256)">
+        <constraints unique="true" uniqueConstraintName="customer_unique_id"/>
+      </column>
+    </addColumn>
+  </changeSet>-->
+
+  <changeSet id="328-alter-customer-table-add-column-banking-relationship" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="banking_relationship"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="banking_relationship" type="LongText">
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="330-alter-proposal-add-column-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="existing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="existing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="331-alter-proposal-add-column-out_standing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="out_standing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="out_standing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="332-alter-proposal-audit-add-column-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="existing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="333-alter-proposal-audit-add-column-out_standing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="out_standing_limit" type="DECIMAL"/>
+    </addColumn>
   </changeSet>
   <changeSet id="330-alter-loan-config-add-loan_nature" author="Sadaiba">
     <preConditions onFail="MARK_RAN">
