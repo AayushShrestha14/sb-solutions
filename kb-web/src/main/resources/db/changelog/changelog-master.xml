@@ -4138,6 +4138,28 @@
       <column name="out_standing_limit" type="DECIMAL"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="336-alter-proposal-add-column-collateralRequirement" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="collateral_requirement"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="collateral_requirement" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="337-alter-proposal-audit-add-column-collateral_requirement" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="collateral_requirement"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="collateral_requirement" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
