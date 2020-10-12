@@ -17,6 +17,10 @@ public class LoanConfigDto {
 
     private String shortNames;
 
+    private String loanNature;
+
+    private String financedAssets;
+
     private Double collateralRequirement;
 
     private long totalPoints;

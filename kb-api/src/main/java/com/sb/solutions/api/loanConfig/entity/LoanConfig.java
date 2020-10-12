@@ -38,6 +38,10 @@ public class LoanConfig extends BaseEntity<Long> {
 
     private String shortNames;
 
+    private String loanNature;
+
+    private String financedAssets;
+
     private Double collateralRequirement;
 
     private Status status;

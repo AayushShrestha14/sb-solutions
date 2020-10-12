@@ -3900,6 +3900,26 @@
     </preConditions>
     <dropTable tableName="contact_person"/>
   </changeSet>
+  <changeSet id="330-alter-loan-config-add-loan_nature" author="Sadaiba">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="loan_config" columnName="loan_nature"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="loan_config">
+      <column name="loan_nature" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="331-alter-loan-config-add-financed_assets" author="Sadaiba">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="loan_config" columnName="financed_assets"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="loan_config">
+      <column name="financed_assets" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
