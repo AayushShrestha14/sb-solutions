@@ -4160,6 +4160,118 @@
       <column name="collateral_requirement" type="DOUBLE"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="339-alter-proposal-add-column-limit-of-expiry-method" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="limit_expiry_method"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="limit_expiry_method" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="339-alter-proposal-add-column-duration" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="duration"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="duration" type="DOUBLE"/>
+    </addColumn>
+
+  </changeSet>
+
+  <changeSet id="339-alter-proposal-add-column-condition" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="condition"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="condition" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="339-alter-proposal-add-column-date-of-expiry" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="date_of_expiry"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="date_of_expiry" type="DATE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="339-alter-proposal-add-column-frequency" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="frequency"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="frequency" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="340-alter-proposal-audit-add-column-limit-of-expiry-method" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="limit_expiry_method"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="limit_expiry_method" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="340-alter-proposal-audit-add-column-duration" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="duration"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="duration" type="DOUBLE"/>
+    </addColumn>
+
+  </changeSet>
+
+  <changeSet id="340-alter-proposal-audit-add-column-condition" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="condition"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="condition" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="340-alter-proposal-audit-add-column-date-of-expiry" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="date_of_expiry"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="date_of_expiry" type="DATE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="339-alter-proposal-audit-add-column-frequency" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="frequency"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="frequency" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
