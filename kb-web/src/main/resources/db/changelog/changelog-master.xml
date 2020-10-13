@@ -4272,6 +4272,28 @@
       <column name="frequency" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="340--alter-company_info-add-columns" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="succession"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="succession" type="VARCHAR(255)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="341--alter-company_info-add-columns" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="succession"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="succession" type="VARCHAR(255)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
