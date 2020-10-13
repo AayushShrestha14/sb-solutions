@@ -108,6 +108,8 @@ public class PathBuilder {
             .append(
                 customerInfoId + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
             .append(FILE_SEPARATOR)
+            .append("Customer_Document")
+            .append(FILE_SEPARATOR)
             .toString();
     }
 
@@ -124,6 +126,8 @@ public class PathBuilder {
             .append(
                 customerInfoId + "-" + StringUtil
                     .getStringWithoutWhiteSpaceAndWithCapitalize(customerName))
+            .append(FILE_SEPARATOR)
+            .append("Loan_Document")
             .append(FILE_SEPARATOR)
             .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
             .append(FILE_SEPARATOR)
