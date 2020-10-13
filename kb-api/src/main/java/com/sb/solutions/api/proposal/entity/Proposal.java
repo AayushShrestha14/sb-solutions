@@ -28,6 +28,10 @@ public class Proposal extends BaseEntity<Long> {
     private BigDecimal proposedLimit;
     private Double tenureDurationInMonths;
     private String checkedData;
+    private BigDecimal existingLimit;
+    private BigDecimal outStandingLimit;
+    private Double collateralRequirement;
+
     @Transient
     private String proposedAmountInWords;
 

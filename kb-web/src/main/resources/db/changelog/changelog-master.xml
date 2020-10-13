@@ -4094,6 +4094,72 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="330-alter-proposal-add-column-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="existing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="existing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="331-alter-proposal-add-column-out_standing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="out_standing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="out_standing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="332-alter-proposal-audit-add-column-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="existing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="333-alter-proposal-audit-add-column-out_standing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="out_standing_limit" type="DECIMAL"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="336-alter-proposal-add-column-collateralRequirement" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="collateral_requirement"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="collateral_requirement" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="337-alter-proposal-audit-add-column-collateral_requirement" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal_audit" columnName="collateral_requirement"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal_audit">
+      <column name="collateral_requirement" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
