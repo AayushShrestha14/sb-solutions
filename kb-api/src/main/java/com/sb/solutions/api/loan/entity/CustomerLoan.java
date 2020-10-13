@@ -183,7 +183,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private VehicleSecurity vehicleSecurity;
 
     @NotAudited
-    @Transient
     @OneToOne
     private CreditRiskGradingAlpha creditRiskGradingAlpha;
 
