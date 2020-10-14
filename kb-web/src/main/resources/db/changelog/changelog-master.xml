@@ -4314,6 +4314,34 @@
       <column name="succession" type="VARCHAR(255)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="342-alter-proposal-alter-datatype-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proposal" columnName="existing_limit"/>
+    </preConditions>
+    <modifyDataType tableName="proposal" columnName="existing_limit" newDataType="DOUBLE"/>
+  </changeSet>
+
+  <changeSet id="342-alter-proposal-alter-datatype-out_existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proposal" columnName="out_standing_limit"/>
+    </preConditions>
+    <modifyDataType tableName="proposal" columnName="out_standing_limit" newDataType="DOUBLE"/>
+  </changeSet>
+
+  <changeSet id="343-alter-proposal-audit-alter-datatype-existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+    </preConditions>
+    <modifyDataType tableName="proposal_audit" columnName="existing_limit" newDataType="DOUBLE"/>
+  </changeSet>
+
+  <changeSet id="343-alter-proposal-audit-alter-datatype-out_existing_limit" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+    </preConditions>
+    <modifyDataType tableName="proposal_audit" columnName="out_standing_limit" newDataType="DOUBLE"/>
+  </changeSet>
 </databaseChangeLog>
 
 
