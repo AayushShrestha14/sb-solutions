@@ -1,6 +1,7 @@
 package com.sb.solutions.api.proposal.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Transient;
@@ -30,6 +31,13 @@ public class Proposal extends BaseEntity<Long> {
     private String checkedData;
     private BigDecimal existingLimit;
     private BigDecimal outStandingLimit;
+    private Double collateralRequirement;
+    private String limitExpiryMethod;
+    private Double duration;
+    private String condition;
+    private String frequency;
+    private Date dateOfExpiry;
+
 
     @Transient
     private String proposedAmountInWords;
