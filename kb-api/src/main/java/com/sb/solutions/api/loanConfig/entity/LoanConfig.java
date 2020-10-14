@@ -7,6 +7,8 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.loanConfig.enums.FinancedAssets;
+import com.sb.solutions.api.loanConfig.enums.LoanNature;
 import com.sb.solutions.core.enums.LoanTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,9 +40,9 @@ public class LoanConfig extends BaseEntity<Long> {
 
     private String shortNames;
 
-    private String loanNature;
+    private LoanNature loanNature;
 
-    private String financedAssets;
+    private FinancedAssets financedAssets;
 
     private Double collateralRequirement;
 

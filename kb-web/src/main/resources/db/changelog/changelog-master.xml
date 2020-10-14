@@ -4145,7 +4145,7 @@
       </not>
     </preConditions>
     <addColumn tableName="loan_config">
-      <column name="loan_nature" type="VARCHAR(256)"/>
+      <column name="loan_nature" type="BININT"/>
     </addColumn>
   </changeSet>
   <changeSet id="331-alter-loan-config-add-financed_assets" author="Sadaiba">
@@ -4155,7 +4155,7 @@
       </not>
     </preConditions>
     <addColumn tableName="loan_config">
-      <column name="financed_assets" type="VARCHAR(256)"/>
+      <column name="financed_assets" type="BIGINT"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>

@@ -2,6 +2,8 @@ package com.sb.solutions.web.eligibility.v1.loanconfig.dto;
 
 import java.util.List;
 
+import com.sb.solutions.api.loanConfig.enums.FinancedAssets;
+import com.sb.solutions.api.loanConfig.enums.LoanNature;
 import lombok.Data;
 
 @Data
@@ -17,9 +19,9 @@ public class LoanConfigDto {
 
     private String shortNames;
 
-    private String loanNature;
+    private LoanNature loanNature;
 
-    private String financedAssets;
+    private FinancedAssets financedAssets;
 
     private Double collateralRequirement;
 
