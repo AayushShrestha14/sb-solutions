@@ -39,6 +39,4 @@ public class FiscalYear extends BaseEntity<Long> {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date qFourEndDate;
 
-    private String ntaData;
-
 }
