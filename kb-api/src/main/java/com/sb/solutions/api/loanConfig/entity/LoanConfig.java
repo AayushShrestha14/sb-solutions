@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loanConfig.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +8,8 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.loanConfig.enums.FinancedAssets;
+import com.sb.solutions.api.loanConfig.enums.LoanNature;
 import com.sb.solutions.core.enums.LoanTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,6 +41,10 @@ public class LoanConfig extends BaseEntity<Long> {
 
     private String shortNames;
 
+    private LoanNature loanNature;
+
+    private FinancedAssets financedAssets;
+
     private Double collateralRequirement;
 
     private Status status;
@@ -52,7 +59,7 @@ public class LoanConfig extends BaseEntity<Long> {
     @ManyToMany
     @Where(clause = "status = 1")
     // here the status 1 means Active status
-    private List<Document> renew;
+    private List<Document> renew = new ArrayList<>();
 
     @ManyToMany
     @Where(clause = "status = 1")

@@ -73,6 +73,7 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private String industryGrowth;
     private String marketCompetition;
     private String experience;
+    private String succession;
     private String businessAndIndustry;
 
     private String companyJsonData;

@@ -109,7 +109,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @AuditJoinTable(name = "customer_document_path_customer_loan_audit")
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "customer_document_path_customer_loan")
-    private List<CustomerDocument> customerDocument;
+    private List<CustomerDocument> customerDocument = new ArrayList<>();
 
     @NotAudited
     @Transient
@@ -183,7 +183,6 @@ public class CustomerLoan extends BaseEntity<Long> {
     private VehicleSecurity vehicleSecurity;
 
     @NotAudited
-    @Transient
     @OneToOne
     private CreditRiskGradingAlpha creditRiskGradingAlpha;
 

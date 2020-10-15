@@ -19,9 +19,14 @@ import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.service.DocumentService;
 import com.sb.solutions.api.document.service.LoanCycleService;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.service.CustomerLoanServiceImpl;
+import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
+import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.web.document.v1.dto.DocumentDto;
 import com.sb.solutions.web.document.v1.mapper.DocumentMapper;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -34,15 +39,17 @@ public class DocumentController {
     private final DocumentService documentService;
     private final LoanCycleService loanCycleService;
     private final DocumentMapper documentMapper;
+    private final CustomerLoanServiceImpl customerLoanService;
 
     public DocumentController(
         @Autowired DocumentService documentService,
         @Autowired LoanCycleService loanCycleService,
-        @Autowired DocumentMapper documentMapper
-    ) {
+        @Autowired DocumentMapper documentMapper,
+        CustomerLoanServiceImpl customerLoanService) {
         this.documentService = documentService;
         this.loanCycleService = loanCycleService;
         this.documentMapper = documentMapper;
+        this.customerLoanService = customerLoanService;
     }
 
     @PostMapping
@@ -107,13 +114,48 @@ public class DocumentController {
         return new RestResponseDto().successModel(documentService.getByStatus(statusValue));
     }
 
-    @PostMapping(value = "/downloadDoc")
-    public ResponseEntity<?> downloadDoc(@RequestBody String path) {
-        String finalPath = String.join("/",
-                (Arrays.asList(path.split("/"))
-                        .subList(0, Arrays.asList(path.split("/"))
-                                .size() - 1)));
-        return new RestResponseDto().successModel(documentService.downloadAllDoc(finalPath));
+    @PostMapping(value = "/downloadDoc/{id}")
+    public ResponseEntity<?> downloadDoc(@RequestBody String path, @PathVariable Long id) {
+        String loanPath = String.join("/",
+            (Arrays.asList(path.split("/"))
+                .subList(0, Arrays.asList(path.split("/"))
+                    .size() - 1)));
+        final CustomerLoan customerLoan = customerLoanService.findOne(id);
+        String action = actionType(customerLoan.getLoanType());
+        String customerLoanDocumentPath = new PathBuilder(UploadDir.initialDocument)
+            .buildLoanDocumentUploadBasePath(customerLoan.getLoanHolder().getId(),
+                customerLoan.getLoanHolder().getName(),
+                customerLoan.getBranch().getName(),
+                customerLoan.getLoanHolder().getCustomerType().name(),
+                action, customerLoan.getLoan().getName());
+
+        String customerPath = new PathBuilder(UploadDir.initialDocument)
+            .buildCustomerInfoBasePath(customerLoan.getLoanHolder().getId(),
+                customerLoan.getLoanHolder().getName(),
+                customerLoan.getBranch().getName(),
+                customerLoan.getLoanHolder().getCustomerType().name()
+            );
+        return new RestResponseDto()
+            .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath));
+    }
+
+    private String actionType(LoanType loanType) {
+        switch (loanType) {
+            case NEW_LOAN:
+                return "NEW";
+            case RENEWED_LOAN:
+                return "RENEW";
+            case CLOSURE_LOAN:
+                return "close";
+            case ENHANCED_LOAN:
+                return "ENHANCE";
+            case FULL_SETTLEMENT_LOAN:
+                return "FULL_SETTLEMENT";
+            case PARTIAL_SETTLEMENT_LOAN:
+                return "PARTIAL_SETTLEMENT";
+            default:
+                return "";
+        }
     }
 
 }

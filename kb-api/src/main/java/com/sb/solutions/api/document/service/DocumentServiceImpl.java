@@ -1,6 +1,10 @@
 package com.sb.solutions.api.document.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +19,7 @@ import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
 import com.sb.solutions.api.document.repository.DocumentRepository;
 import com.sb.solutions.api.document.repository.LoanCycleRepository;
+import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
@@ -86,7 +91,8 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
         Status status = Status.valueOf("ACTIVE");
-        for (Document document : documentRepository.findByLoanCycleContainingAndStatus(loanCycle, status)) {
+        for (Document document : documentRepository
+            .findByLoanCycleContainingAndStatus(loanCycle, status)) {
             document.getLoanCycle().remove(loanCycle);
         }
         for (Long id : ids) {
@@ -104,17 +110,39 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public String downloadAllDoc(String sourcepath) {
-        String destinationPath = String.join("/",
-                (Arrays.asList(sourcepath.split("/"))
-                        .subList(0, Arrays.asList(sourcepath
-                                .split("/")).size() - 1)))
-                + "/loanDocument.zip";
+    public String downloadAllDoc(String sourcepath, String SourcePathCustomer) {
+        String rootth = String.join("/",
+            (Arrays.asList(sourcepath.split("/"))
+                .subList(0, Arrays.asList(sourcepath
+                    .split("/")).size() - 1)));
+
+        String destinationPath = rootth
+            + "/zipFolder/customerDocument.zip";
+
+        String destinationCustomerDocumentPath = rootth
+            + "/zipFolder/loanDocument.zip";
+
+        String parentDocumentPath = rootth
+            + "/allDocument.zip";
+
+        String sourcePathParent = rootth
+            + "/zipFolder/";
+
+        Path path = Paths.get(FilePath.getOSPath() + sourcePathParent);
+        if (!Files.exists(path)) {
+            new File(FilePath.getOSPath() + sourcePathParent).mkdirs();
+        }
+
         try {
-            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcepath, UploadDir.WINDOWS_PATH + destinationPath);
+            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcepath,
+                UploadDir.WINDOWS_PATH + destinationPath);
+            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourcePathCustomer,
+                UploadDir.WINDOWS_PATH + destinationCustomerDocumentPath);
+            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcePathParent,
+                UploadDir.WINDOWS_PATH + parentDocumentPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return destinationPath;
+        return parentDocumentPath;
     }
 }
