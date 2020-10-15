@@ -1,16 +1,15 @@
 package com.sb.solutions.api.fiscalyear.entity;
 
-import java.util.Date;
-import javax.persistence.Entity;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.Status;
+import javax.persistence.Entity;
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -22,6 +21,7 @@ public class FiscalYear extends BaseEntity<Long> {
     private String year;
     private Boolean isCurrentYear;
     private Status status;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date qOneStartDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -38,5 +38,7 @@ public class FiscalYear extends BaseEntity<Long> {
     private Date qFourStartDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date qFourEndDate;
+
+    private String ntaData;
 
 }

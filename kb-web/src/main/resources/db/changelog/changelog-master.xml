@@ -4420,6 +4420,17 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="283-alter-fiscal-year-add-column-nta_data" author="Amulya">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="fiscal_year" columnName="nta_data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="fiscal_year">
+      <column name="nta_data" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
