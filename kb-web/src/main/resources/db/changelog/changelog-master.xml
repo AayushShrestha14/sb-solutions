@@ -4173,7 +4173,7 @@
       </not>
     </preConditions>
     <addColumn tableName="loan_config">
-      <column name="loan_nature" type="BININT"/>
+      <column name="loan_nature" type="BIGINT"/>
     </addColumn>
   </changeSet>
   <changeSet id="331-alter-loan-config-add-financed_assets" author="Sadaiba">
