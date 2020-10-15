@@ -134,5 +134,6 @@ public class CustomerInfo extends BaseEntity<Long> {
     private IncomeFromAccount incomeFromAccount;
 
     private String bankingRelationship;
-    /*private String customerUniqueId;*/
+
+    private String customerCode;
 }

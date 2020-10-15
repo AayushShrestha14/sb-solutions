@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.sb.solutions.api.customerActivity.aop.Activity;
 import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
@@ -53,5 +54,10 @@ public class CustomerActivityServiceImpl extends BaseServiceImpl<CustomerActivit
         filterParams.values().removeIf(Objects::isNull);
         filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
         return new CustomerActivitySpecBuilder(filterParams);
+    }
+
+    @Override
+    public List<CustomerActivity> findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(Activity activity, Long id) {
+        return activityRepository.findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(activity,id);
     }
 }

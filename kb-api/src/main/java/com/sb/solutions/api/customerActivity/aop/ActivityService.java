@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.customerActivity.entity.CustomerActivity;
 import com.sb.solutions.api.customerActivity.service.CustomerActivityService;
 
+import java.util.List;
+
 /**
  * @author : Rujan Maharjan on  9/22/2020
  **/
@@ -19,7 +21,7 @@ public class ActivityService {
     private final CustomerActivityService customerActivityService;
 
     public ActivityService(
-        CustomerActivityService customerActivityService) {
+            CustomerActivityService customerActivityService) {
         this.customerActivityService = customerActivityService;
     }
 
@@ -34,18 +36,23 @@ public class ActivityService {
     }
 
     public void saveCustomerActivityByResponseSuccess(CustomerActivity customerActivity,
-        Object retVal) {
+                                                      Object retVal) {
         ResponseEntity<?> restResponseDto;
         if (retVal instanceof ResponseEntity) {
             restResponseDto = (ResponseEntity<?>) retVal;
             if (restResponseDto.getStatusCode() == HttpStatus.OK) {
                 saveCustomerActivity(customerActivity);
                 log.info("saving customer Activity {} of customer {} and id {} with associateId {}",
-                    customerActivity.getActivity(),
-                    customerActivity.getProfile().getName(), customerActivity.getProfile().getId(),
-                    customerActivity.getProfile().getAssociateId());
+                        customerActivity.getActivity(),
+                        customerActivity.getProfile().getName(), customerActivity.getProfile().getId(),
+                        customerActivity.getProfile().getAssociateId());
             }
         }
     }
+
+    public List<CustomerActivity> findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(Activity activity, Long id) {
+      return  customerActivityService.findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(activity, id);
+    }
+
 
 }

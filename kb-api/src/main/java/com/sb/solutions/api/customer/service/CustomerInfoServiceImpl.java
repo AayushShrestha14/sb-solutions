@@ -155,7 +155,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdRegDate(((Customer) o).getCitizenshipIssuedDate());
             customerInfo.setContactNo(((Customer) o).getContactNumber());
             customerInfo.setEmail(((Customer) o).getEmail());
-           /* customerInfo.setCustomerUniqueId(((Customer) o).getCustomerUniqueId());*/
+            customerInfo.setCustomerCode(((Customer) o).getCustomerCode());
             customerInfo.setBankingRelationship(((Customer) o).getBankingRelationship());
         }
         if (o instanceof CompanyInfo) {
@@ -174,6 +174,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setIdRegPlace(((CompanyInfo) o).getIssuePlace());
             customerInfo.setContactNo(((CompanyInfo) o).getContactNum());
             customerInfo.setEmail(((CompanyInfo) o).getEmail());
+            customerInfo.setCustomerCode(((CompanyInfo) o).getCustomerCode());
             customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
         }
         customerInfo.setBranch(user.getBranch().get(0));

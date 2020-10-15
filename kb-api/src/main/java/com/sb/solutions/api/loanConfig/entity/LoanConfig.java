@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loanConfig.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,7 +59,7 @@ public class LoanConfig extends BaseEntity<Long> {
     @ManyToMany
     @Where(clause = "status = 1")
     // here the status 1 means Active status
-    private List<Document> renew;
+    private List<Document> renew = new ArrayList<>();
 
     @ManyToMany
     @Where(clause = "status = 1")

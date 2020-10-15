@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,7 +53,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @JsonDeserialize(using = NameFormatter.class)
     private String customerName;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dob;
 
 
@@ -84,8 +85,8 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @Transient
     private String bankingRelationship;
 
-    /*@Transient
-    private String customerUniqueId;*/
+    @Transient
+    private String customerCode;
 
 
     @AuditJoinTable
