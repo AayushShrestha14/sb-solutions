@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -132,6 +133,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private IncomeFromAccount incomeFromAccount;
+
+    @OneToOne
+    private NetTradingAssets netTradingAssets;
 
     private String bankingRelationship;
 

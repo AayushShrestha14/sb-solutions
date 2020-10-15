@@ -24,7 +24,7 @@ public class FiscalYearServiceImpl implements FiscalYearService {
 
     @Override
     public List<FiscalYear> findAll() {
-        return fiscalYearRepository.findAll();
+        return fiscalYearRepository.findAllByOrderByIsCurrentYearDesc();
     }
 
     @Override
