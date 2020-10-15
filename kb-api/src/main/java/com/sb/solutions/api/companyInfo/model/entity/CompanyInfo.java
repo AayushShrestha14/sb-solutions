@@ -68,11 +68,15 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @Transient
     private String bankingRelationship;
+    @Transient
+    private String customerCode;
     private String industryGrowth;
     private String marketCompetition;
     private String experience;
     private String succession;
     private String businessAndIndustry;
+
+    private String companyJsonData;
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;

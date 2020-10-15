@@ -92,6 +92,7 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
 
         final CompanyInfo info = companyInfoRepository.save(companyInfo);
         info.setBankingRelationship(companyInfo.getBankingRelationship());
+        info.setCustomerCode(companyInfo.getCustomerCode());
         CustomerInfo customerInfo = customerInfoService.saveObject(info);
         execute(customerInfo.getId());
         return info;

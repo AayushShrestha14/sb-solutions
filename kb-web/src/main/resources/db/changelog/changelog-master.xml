@@ -4067,22 +4067,6 @@
       <column name="business_and_industry" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
-
-   <!--todo create unique id for customer-->
-
-  <!--  <changeSet id="329-alter-customer-table-add-column-customer-unique-constraint-id" author="bibash">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="customer_info" columnName="customer_unique_id"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="customer_info">
-      <column name="customer_unique_id" type="VARCHAR(256)">
-        <constraints unique="true" uniqueConstraintName="customer_unique_id"/>
-      </column>
-    </addColumn>
-  </changeSet>-->
-
   <changeSet id="328-alter-customer-table-add-column-banking-relationship" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -4092,6 +4076,50 @@
     <addColumn tableName="customer_info">
       <column name="banking_relationship" type="LongText">
       </column>
+    </addColumn>
+  </changeSet>
+ <!-- <changeSet id="329-alter-customer-table-add-column-customer-code" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="customer_code"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="customer_code" type="VARCHAR(256)">
+        <constraints unique="true"/>
+      </column>
+    </addColumn>
+  </changeSet>-->
+  <changeSet id="329-alter-customer-add-column-customer-code" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="customer_code"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="customer_code" type="VARCHAR(256)">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet id="329-alter-customer-add-column-company-json-data" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="company_json_data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="company_json_data" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="329-alter-company-audit-add-column-company-json-data-audit" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info_audit" columnName="company_json_data"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info_audit">
+      <column name="company_json_data" type="LONGTEXT"/>
     </addColumn>
   </changeSet>
 

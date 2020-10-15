@@ -85,8 +85,8 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @Transient
     private String bankingRelationship;
 
-    /*@Transient
-    private String customerUniqueId;*/
+    @Transient
+    private String customerCode;
 
 
     @AuditJoinTable
