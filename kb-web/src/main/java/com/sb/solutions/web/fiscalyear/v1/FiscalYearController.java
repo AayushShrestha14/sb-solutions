@@ -3,12 +3,7 @@ package com.sb.solutions.web.fiscalyear.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.fiscalyear.entity.FiscalYear;
 import com.sb.solutions.api.fiscalyear.service.FiscalYearService;
@@ -44,6 +39,11 @@ public class FiscalYearController {
     public ResponseEntity<?> getAllFiscalYear() {
         logger.info("getting all fiscal year");
         return new RestResponseDto().successModel(fiscalYearService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return new RestResponseDto().successModel(fiscalYearService.findOne(id));
     }
 
     @PostMapping(value = "/list")

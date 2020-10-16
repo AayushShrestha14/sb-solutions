@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
+import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +100,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final CustomerLoanFlagService loanFlagService;
     private final CIclService cIclService;
     private final IncomeFromAccountServices incomeFromAccountServices;
+    private final NetTradingAssetsService netTradingAssetsService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -113,6 +116,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         CrgGammaService crgGammaService,
         CustomerLoanFlagService loanFlagService,
         IncomeFromAccountServices incomeFromAccountServices,
+        NetTradingAssetsService netTradingAssetsService,
         CIclService cIclService
         ) {
         super(customerInfoRepository);
@@ -130,6 +134,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.loanFlagService = loanFlagService;
         this.cIclService = cIclService;
         this.incomeFromAccountServices = incomeFromAccountServices;
+        this.netTradingAssetsService = netTradingAssetsService;
     }
 
 
@@ -247,6 +252,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final IncomeFromAccount incomeFromAccount = incomeFromAccountServices
                 .save(objectMapper().convertValue(o, IncomeFromAccount.class));
             customerInfo1.setIncomeFromAccount(incomeFromAccount);
+        }
+        else if ((template.equalsIgnoreCase(TemplateNameConstant.NET_TRADING_ASSETS))) {
+            final NetTradingAssets netTradingAssets = netTradingAssetsService
+                    .save(objectMapper().convertValue(o, NetTradingAssets.class));
+            customerInfo1.setNetTradingAssets(netTradingAssets);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
