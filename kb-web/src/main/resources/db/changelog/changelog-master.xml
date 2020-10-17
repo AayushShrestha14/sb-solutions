@@ -4368,7 +4368,21 @@
     <preConditions onFail="MARK_RAN">
       <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
     </preConditions>
-    <modifyDataType tableName="proposal_audit" columnName="out_standing_limit" newDataType="DOUBLE"/>
+    <modifyDataType tableName="proposal_audit" columnName="out_standing_limit"
+      newDataType="DOUBLE"/>
+  </changeSet>
+
+  <changeSet id="344-alter-table-change-swot-data-type-company-data" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="company_info" columnName="strength"/>
+      <columnExists tableName="company_info" columnName="weakness"/>
+      <columnExists tableName="company_info" columnName="opportunity"/>
+      <columnExists tableName="company_info" columnName="threats"/>
+    </preConditions>
+    <modifyDataType tableName="company_info" columnName="strength" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="company_info" columnName="weakness" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="company_info" columnName="opportunity" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="company_info" columnName="threats" newDataType="LONGTEXT"/>
   </changeSet>
 </databaseChangeLog>
 
