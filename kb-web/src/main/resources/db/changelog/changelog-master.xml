@@ -4372,19 +4372,6 @@
       newDataType="DOUBLE"/>
   </changeSet>
 
-  <changeSet id="344-alter-table-change-swot-data-type-company-data" author="bibash">
-    <preConditions onFail="MARK_RAN">
-      <columnExists tableName="company_info" columnName="strength"/>
-      <columnExists tableName="company_info" columnName="weakness"/>
-      <columnExists tableName="company_info" columnName="opportunity"/>
-      <columnExists tableName="company_info" columnName="threats"/>
-    </preConditions>
-    <modifyDataType tableName="company_info" columnName="strength" newDataType="LONGTEXT"/>
-    <modifyDataType tableName="company_info" columnName="weakness" newDataType="LONGTEXT"/>
-    <modifyDataType tableName="company_info" columnName="opportunity" newDataType="LONGTEXT"/>
-    <modifyDataType tableName="company_info" columnName="threats" newDataType="LONGTEXT"/>
-  </changeSet>
-
   <changeSet id="283-add-table-net_trading_assets" author="Amulya">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -4432,6 +4419,31 @@
                      referencedColumnNames="id"/>
       </column>
     </addColumn>
+  </changeSet>
+
+  <changeSet id="346-alter-table-swot-change-data-type" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="swot" columnName="strength"/>
+      <columnExists tableName="swot" columnName="weakness"/>
+      <columnExists tableName="swot" columnName="opportunity"/>
+      <columnExists tableName="swot" columnName="threats"/>
+    </preConditions>
+    <modifyDataType tableName="swot" columnName="strength" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="weakness" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="opportunity" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="threats" newDataType="LONGTEXT"/>
+  </changeSet>
+  <changeSet id="346-alter-table-swot-audit-change-data-type" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="swot_audit" columnName="strength"/>
+      <columnExists tableName="swot_audit" columnName="weakness"/>
+      <columnExists tableName="swot_audit" columnName="opportunity"/>
+      <columnExists tableName="swot_audit" columnName="threats"/>
+    </preConditions>
+    <modifyDataType tableName="swot_audit" columnName="strength" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="weakness" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="opportunity" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="threats" newDataType="LONGTEXT"/>
   </changeSet>
 
 </databaseChangeLog>
