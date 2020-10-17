@@ -4368,7 +4368,8 @@
     <preConditions onFail="MARK_RAN">
       <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
     </preConditions>
-    <modifyDataType tableName="proposal_audit" columnName="out_standing_limit" newDataType="DOUBLE"/>
+    <modifyDataType tableName="proposal_audit" columnName="out_standing_limit"
+      newDataType="DOUBLE"/>
   </changeSet>
 
   <changeSet id="283-add-table-net_trading_assets" author="Amulya">
@@ -4418,6 +4419,31 @@
                      referencedColumnNames="id"/>
       </column>
     </addColumn>
+  </changeSet>
+
+  <changeSet id="346-alter-table-swot-change-data-type" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="swot" columnName="strength"/>
+      <columnExists tableName="swot" columnName="weakness"/>
+      <columnExists tableName="swot" columnName="opportunity"/>
+      <columnExists tableName="swot" columnName="threats"/>
+    </preConditions>
+    <modifyDataType tableName="swot" columnName="strength" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="weakness" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="opportunity" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot" columnName="threats" newDataType="LONGTEXT"/>
+  </changeSet>
+  <changeSet id="346-alter-table-swot-audit-change-data-type" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="swot_audit" columnName="strength"/>
+      <columnExists tableName="swot_audit" columnName="weakness"/>
+      <columnExists tableName="swot_audit" columnName="opportunity"/>
+      <columnExists tableName="swot_audit" columnName="threats"/>
+    </preConditions>
+    <modifyDataType tableName="swot_audit" columnName="strength" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="weakness" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="opportunity" newDataType="LONGTEXT"/>
+    <modifyDataType tableName="swot_audit" columnName="threats" newDataType="LONGTEXT"/>
   </changeSet>
 
 </databaseChangeLog>
