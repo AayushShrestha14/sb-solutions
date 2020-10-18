@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -37,6 +38,21 @@ public class Proposal extends BaseEntity<Long> {
     private String condition;
     private String frequency;
     private Date dateOfExpiry;
+
+    @NotAudited
+    private Double cashMargin;
+    @NotAudited
+    private Double commissionPercentage;
+    @NotAudited
+    private String commissionFrequency;
+    @NotAudited
+    private Double couponRate;
+    @NotAudited
+    private Double premiumOnCouponRate;
+    @NotAudited
+    private String tenorOfEachDeal;
+    @NotAudited
+    private String cashMarginMethod;
 
 
     @Transient
