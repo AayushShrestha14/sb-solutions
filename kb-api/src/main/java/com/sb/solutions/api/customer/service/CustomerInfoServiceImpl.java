@@ -16,6 +16,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+
+import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
+import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 import lombok.extern.slf4j.Slf4j;
@@ -101,6 +104,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final CIclService cIclService;
     private final IncomeFromAccountServices incomeFromAccountServices;
     private final NetTradingAssetsService netTradingAssetsService;
+    private final CreditChecklistService creditChecklistService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -117,7 +121,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         CustomerLoanFlagService loanFlagService,
         IncomeFromAccountServices incomeFromAccountServices,
         NetTradingAssetsService netTradingAssetsService,
-        CIclService cIclService
+        CIclService cIclService,
+        CreditChecklistService creditChecklistService
         ) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
@@ -135,6 +140,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.cIclService = cIclService;
         this.incomeFromAccountServices = incomeFromAccountServices;
         this.netTradingAssetsService = netTradingAssetsService;
+        this.creditChecklistService = creditChecklistService;
     }
 
 
@@ -257,6 +263,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final NetTradingAssets netTradingAssets = netTradingAssetsService
                     .save(objectMapper().convertValue(o, NetTradingAssets.class));
             customerInfo1.setNetTradingAssets(netTradingAssets);
+        }
+        else if ((template.equalsIgnoreCase(TemplateNameConstant.CREDIT_CHECKlIST))) {
+            final CreditChecklist creditChecklist = creditChecklistService
+                .save(objectMapper().convertValue(o, CreditChecklist.class));
+            customerInfo1.setCreditChecklist(creditChecklist);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
