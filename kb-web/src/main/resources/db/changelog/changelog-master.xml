@@ -4446,6 +4446,133 @@
     <modifyDataType tableName="swot_audit" columnName="threats" newDataType="LONGTEXT"/>
   </changeSet>
 
+  <changeSet id="346-alter-proposal-add-column-cash_margin" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="cash_margin"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="cash_margin" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="347-alter-proposal-add-commission_percentage" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="commission_percentage"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="commission_percentage" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="348-alter-proposal-add-column-commission_frequency" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="commission_frequency"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="commission_frequency" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="349-alter-proposal-add-column-coupon_rate" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="coupon_rate"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="coupon_rate" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="350-alter-proposal-add-column-premium_on_coupon_rate" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="premium_on_coupon_rate"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="premium_on_coupon_rate" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="351-alter-proposal-add-column-tenor_of_each_deal" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="tenor_of_each_deal"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="tenor_of_each_deal" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="352-alter-proposal-add-column-cash_margin_method" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="proposal" columnName="cash_margin_method"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="proposal">
+      <column name="cash_margin_method" type="VARCHAR(256)"/>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet id="353-add-table-credit-checklist" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="credit_checklist"/>
+      </not>
+    </preConditions>
+    <createTable tableName="credit_checklist">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_checklist_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_checklist_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="354-alter-customer-info-add-credit_checklist_id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="credit_checklist_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="credit_checklist_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_credit_checklist_id"
+          referencedTableName="credit_checklist"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+
 </databaseChangeLog>
 
 

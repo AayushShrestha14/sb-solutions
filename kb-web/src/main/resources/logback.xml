@@ -22,7 +22,7 @@
     </rollingPolicy>
     <triggeringPolicy
       class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>1048576KB</maxFileSize>
+      <maxFileSize>5MB</maxFileSize>
     </triggeringPolicy>
     <encoder>
       <pattern>${default-pattern}</pattern>
@@ -34,4 +34,27 @@
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="ROOT_LOGGER"/>
   </root>
+  <!-- loggin for connection-->
+  <appender name="connectionRollingFile"
+    class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.dir}/conn/connection.log</file>
+    <encoder
+      class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+    </encoder>
+
+    <rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily and when the file reaches 5 MegaBytes -->
+      <fileNamePattern>${log.dir}/conn/archived/connection-%d{yyyy-MM-dd}.%i.log
+      </fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>1MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+  </appender>
+  <logger name="com.zaxxer.hikari" level="debug" additivity="false">
+    <appender-ref ref="connectionRollingFile"/>
+  </logger>
 </configuration>

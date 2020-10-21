@@ -137,14 +137,14 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_CUSTOMER_NAME:
                 return criteriaBuilder
                     .like(criteriaBuilder
-                            .lower(root.join("customerInfo").get(FILTER_BY_CUSTOMER_NAME)),
+                            .lower(root.join("loanHolder").get("name")),
                         value.toLowerCase() + "%");
 
-            case FILTER_BY_COMPANY_NAME:
-                return criteriaBuilder
-                    .like(criteriaBuilder
-                            .lower(root.join("companyInfo").get(FILTER_BY_COMPANY_NAME)),
-                        "%" + value.toLowerCase() + "%");
+//            case FILTER_BY_COMPANY_NAME:
+//                return criteriaBuilder
+//                    .like(criteriaBuilder
+//                            .lower(root.join("companyInfo").get(FILTER_BY_COMPANY_NAME)),
+//                        "%" + value.toLowerCase() + "%");
 
             case FILTER_BY_DOC_ACTION:
                 return criteriaBuilder
