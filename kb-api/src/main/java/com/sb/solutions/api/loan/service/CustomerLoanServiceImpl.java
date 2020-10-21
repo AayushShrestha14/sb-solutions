@@ -5,7 +5,6 @@ import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +13,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -23,10 +31,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sb.solutions.core.utils.jsonConverter.JsonConverter;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,13 +72,14 @@ import com.sb.solutions.api.helper.HelperDto;
 import com.sb.solutions.api.helper.HelperIdType;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.insurance.service.InsuranceService;
-import com.sb.solutions.api.loan.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanDto;
+import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
+import com.sb.solutions.api.loan.dto.GroupDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -86,6 +93,7 @@ import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
 import com.sb.solutions.api.nepalitemplate.service.NepaliTemplateService;
 import com.sb.solutions.api.preference.notificationMaster.service.NotificationMasterService;
+import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.proposal.service.ProposalService;
 import com.sb.solutions.api.security.service.SecurityService;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -232,21 +240,26 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             Map<String, String> filterParams = new HashMap<>();
             filterParams.put("customerLoan.id", String.valueOf(id));
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateService
-                    .findAllBySpec(filterParams);
+                .findAllBySpec(filterParams);
             if (!nepaliTemplates.isEmpty()) {
                 customerLoan
-                        .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
+                    .setNepaliTemplates(nepaliTemplateMapper.mapEntitiesToDtos(nepaliTemplates));
             }
+        }
+        if (!ObjectUtils.isEmpty(customerLoan.getLoanHolder().getCustomerGroup())) {
+            customerLoan.setCustomerLoanGroupDto(
+                getLoanByCustomerGroup(customerLoan.getLoanHolder().getCustomerGroup()));
         }
         if (customerLoan.getDocumentStatus().equals(DocStatus.APPROVED)) {
             String basePath = new PathBuilder(UploadDir.initialDocument)
-                    .buildLoanDocumentUploadBasePath(customerLoan.getLoanHolder().getId(),
-                            customerLoan.getLoanHolder().getName(),
-                            customerLoan.getLoanHolder().getBranch().getName(),
-                            customerLoan.getLoanHolder().getCustomerType().name(),
-                            customerLoan
-                                    .getLoanType().name(), customerLoan.getLoan().getName());
-            String filePath = FilePath.getOSPath() + basePath + customerLoan.getId() + "-approved.json";
+                .buildLoanDocumentUploadBasePath(customerLoan.getLoanHolder().getId(),
+                    customerLoan.getLoanHolder().getName(),
+                    customerLoan.getLoanHolder().getBranch().getName(),
+                    customerLoan.getLoanHolder().getCustomerType().name(),
+                    customerLoan
+                        .getLoanType().name(), customerLoan.getLoan().getName());
+            String filePath =
+                FilePath.getOSPath() + basePath + customerLoan.getId() + "-approved.json";
             JSONParser jsonParser = new JSONParser();
             try {
                 logger.info("reading json file of path :: {}", filePath);
@@ -256,7 +269,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
             } catch (Exception e) {
                 logger.error("unable to parse json file of customerLoanId {}", id);
-                List<CustomerActivity> activity = activityService.findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(Activity.LOAN_APPROVED, id);
+                List<CustomerActivity> activity = activityService
+                    .findCustomerActivityByActivityAndCustomerLoanIdOrderByModifiedOnAsc(
+                        Activity.LOAN_APPROVED, id);
                 if (!ObjectUtils.isEmpty(activity)) {
                     CustomerActivity activity1 = activity.get(0);
                     try {
@@ -471,15 +486,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                                     customerLoan1.getLoanHolder().getId());
 
                     customerLoan1
-                            .setCustomerGroupLog(
-                                    objectMapper
-                                            .convertValue(customerGroup, List.class));
+                        .setCustomerLoanGroupDto(
+                            objectMapper
+                                .convertValue(customerGroup, List.class));
                 } else {
 
                     customerLoan1
-                            .setCustomerGroupLog(
-                                    objectMapper
-                                            .convertValue(this.customerGroupLogList, List.class));
+                        .setCustomerLoanGroupDto(
+                            objectMapper
+                                .convertValue(this.customerGroupLogList, List.class));
                 }
                 if (!customerLoan1.getReportingInfoLevels().isEmpty()) {
                     try {
@@ -899,36 +914,68 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (ObjectUtils.isEmpty(customerGroup.getId())) {
             throw new NullPointerException("group id cannot be null");
         }
-        List<CustomerLoan> customerLoans = customerLoanRepository.
-                getCustomerLoansByDocumentStatusAndCurrentStage(customerGroup.getId());
+        GroupDto groupDetailDto = new GroupDto();
+        // getting all loans in dto form
+        List<CustomerLoanGroupDto> customerLoanGroupDtos = customerLoanRepository
+            .getGroupDetailByCustomer(customerGroup.getId());
+        // set group todo- replace with  mapper
+        groupDetailDto.setGroupCode(customerGroup.getGroupCode());
+        groupDetailDto.setGroupLimit(customerGroup.getGroupLimit());
+        // get funded , non funded data
+        groupDetailDto.setFundedData(customerLoanGroupDtos.stream().filter(s -> s.getLoanConfig()
+            .getIsFundable()).collect(Collectors.toList()));
+        groupDetailDto
+            .setNonFundedData(customerLoanGroupDtos.stream().filter(s -> !s.getLoanConfig()
+                .getIsFundable()).collect(Collectors.toList()));
+
+        // calculate funded , non funded data
+        groupDetailDto.setTotalFunded(calculateFundLimit(groupDetailDto.getFundedData(), true));
+        groupDetailDto
+            .setTotalNonFunded(calculateFundLimit(groupDetailDto.getNonFundedData(), false));
+
         Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
-        customerLoans.forEach(customerLoan -> {
-            if (!filterList.containsKey(String.valueOf(customerLoan.getLoanHolder().getId()))) {
-                CustomerLoanGroupDto customerLoanGroupDto = new CustomerLoanGroupDto();
-                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
-                List<CustomerLoan> loans = customerLoans.stream().filter(c -> Objects
-                        .equals(c.getLoanHolder().getId(), customerLoan.getLoanHolder().getId())
+
+        // iterate all loan dto to set unique as per customer
+        // remove if unique customer detail is not needed
+        customerLoanGroupDtos.forEach(groupDto -> {
+            if (!filterList.containsKey(String.valueOf(groupDto.getCustomerLoanId()))) {
+                // getting current customer related loan dto
+                List<CustomerLoanGroupDto> currentIdDtos = customerLoanGroupDtos.stream()
+                    .filter(c -> Objects
+                        .equals(c.getLoanHolderId(), groupDto.getLoanHolderId())
                         && c.getProposal() != null).collect(Collectors.toList());
-                BigDecimal totalApprovedLimit = loans.stream()
-                        .filter(c -> c.getDocumentStatus() == DocStatus.APPROVED)
-                        .map(c -> c.getProposal().getProposedLimit())
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                BigDecimal totalPendingLimit = loans.stream()
-                        .filter(c -> c.getDocumentStatus() != DocStatus.APPROVED)
-                        .map(c -> c.getProposal().getProposedLimit())
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                customerLoanGroupDto.setLoanHolder(customerLoan.getLoanHolder());
-                customerLoanGroupDto.setTotalApprovedLimit(totalApprovedLimit);
-                customerLoanGroupDto.setTotalPendingLimit(totalPendingLimit);
-                customerLoanGroupDto.setCustomerLoans(customerLoans);
-                filterList.put(String.valueOf(customerLoanGroupDto.getLoanHolder().getId()),
-                        customerLoanGroupDto);
+                // calculate total approved limit
+                BigDecimal totalApprovedLimit = calculateProposalLimit(
+                    currentIdDtos.stream().filter(c -> c.getDocStatus() == DocStatus.APPROVED)
+                        .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+                // calculate total pending limit
+                BigDecimal totalPendingLimit = calculateProposalLimit(
+                    currentIdDtos.stream().filter(c -> c.getDocStatus() != DocStatus.APPROVED)
+                        .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+                groupDto.setTotalApprovedLimit(totalApprovedLimit);
+                groupDto.setTotalPendingLimit(totalPendingLimit);
+                filterList.put(String.valueOf(groupDto.getLoanHolderId()),
+                    groupDto);
             }
 
         });
+        groupDetailDto
+            .setCustomerLoanGroupDto(new ArrayList<CustomerLoanGroupDto>(filterList.values()));
 
-        return filterList.values();
+        return groupDetailDto;
 
+    }
+
+    BigDecimal calculateFundLimit(List<CustomerLoanGroupDto> customerLoanGroupDtos,
+        boolean isFunded) {
+        return customerLoanGroupDtos.stream().filter(s -> s.getLoanConfig()
+            .getIsFundable() == isFunded).map(s -> s.getProposal().getProposedLimit())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    BigDecimal calculateProposalLimit(List<Proposal> proposals) {
+        return proposals.stream().map(Proposal::getProposedLimit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override

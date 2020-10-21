@@ -249,11 +249,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     private CombinedLoan combinedLoan;
 
     @Transient
-    private Object customerGroupLog;
-
+    private Object reportingInfoLog;
 
     @Transient
-    private Object reportingInfoLog;
+    private Object customerLoanGroupDto;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
