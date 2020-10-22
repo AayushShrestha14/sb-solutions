@@ -948,7 +948,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 groupDto.setTotalFunded(calculateFundLimit(groupDto.getFundedData(), true));
                 grandTotalFundedAmount.updateAndGet(v -> v.add(groupDto.getTotalFunded()));
                 groupDto.setTotalNonFunded(calculateFundLimit(groupDto.getNonFundedData(), false));
-                grandTotalNotFundedAmount.updateAndGet(v -> v.add(groupDto.getTotalFunded()));
+                grandTotalNotFundedAmount.updateAndGet(v -> v.add(groupDto.getTotalNonFunded()));
 
                 // calculate total approved limit
             BigDecimal totalApprovedLimit = calculateProposalLimit(
