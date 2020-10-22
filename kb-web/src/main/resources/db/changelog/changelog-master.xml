@@ -4572,6 +4572,26 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="360-alter-management-team-table-drop-null-constrain-of-designation" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="management_team" columnName="designation"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="management_team" columnName="designation" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="361-alter-management-team-table-drop-null-constrain-of-name" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="management_team" columnName="name"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="management_team" columnName="name" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="362-alter-proprietor-table-drop-null-constrain-of-contact_no" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proprietor" columnName="contact_no"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="proprietor" columnName="contact_no" columnDataType="VARCHAR(256)"/>
+  </changeSet>
 
 </databaseChangeLog>
 
