@@ -14,9 +14,9 @@ public class GroupDto {
 
     private BigDecimal totalFunded;
     private BigDecimal totalNonFunded;
-    private String groupCode;
-    private BigDecimal groupLimit;
     private List<CustomerLoanGroupDto> customerLoanGroupDto;
     private List<CustomerLoanGroupDto> fundedData;
     private List<CustomerLoanGroupDto> nonFundedData;
+    private BigDecimal totalApprovedLimit;
+    private BigDecimal totalPendingLimit;
 }

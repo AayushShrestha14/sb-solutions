@@ -1,16 +1,8 @@
 package com.sb.solutions.api.loan.dto;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.persistence.Transient;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.customer.entity.CustomerInfo;
-import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.proposal.entity.Proposal;
 import com.sb.solutions.api.security.entity.Security;
@@ -26,10 +18,6 @@ public class CustomerLoanGroupDto {
     private Long loanHolderId;
 
     private Long associateId;
-
-    private BigDecimal totalApprovedLimit;
-
-    private BigDecimal totalPendingLimit;
 
     private Proposal proposal;
 

@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -80,6 +81,7 @@ import com.sb.solutions.api.loan.dto.CustomerLoanDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.GroupDto;
+import com.sb.solutions.api.loan.dto.GroupSummaryDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -247,8 +249,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
         }
         if (!ObjectUtils.isEmpty(customerLoan.getLoanHolder().getCustomerGroup())) {
-            customerLoan.setCustomerLoanGroupDto(
-                getLoanByCustomerGroup(customerLoan.getLoanHolder().getCustomerGroup()));
+            customerLoan.setGroupSummaryDto(
+                (Object) getLoanByCustomerGroup(customerLoan.getLoanHolder().getCustomerGroup()));
         }
         if (customerLoan.getDocumentStatus().equals(DocStatus.APPROVED)) {
             String basePath = new PathBuilder(UploadDir.initialDocument)
@@ -486,13 +488,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                                     customerLoan1.getLoanHolder().getId());
 
                     customerLoan1
-                        .setCustomerLoanGroupDto(
+                        .setGroupSummaryDto(
                             objectMapper
                                 .convertValue(customerGroup, List.class));
                 } else {
 
                     customerLoan1
-                        .setCustomerLoanGroupDto(
+                        .setGroupSummaryDto(
                             objectMapper
                                 .convertValue(this.customerGroupLogList, List.class));
                 }
@@ -910,59 +912,72 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public Object getLoanByCustomerGroup(CustomerGroup customerGroup) {
+    public GroupSummaryDto getLoanByCustomerGroup(CustomerGroup customerGroup) {
         if (ObjectUtils.isEmpty(customerGroup.getId())) {
             throw new NullPointerException("group id cannot be null");
         }
-        GroupDto groupDetailDto = new GroupDto();
+        GroupSummaryDto groupSummaryDto = new GroupSummaryDto();
+        AtomicReference<BigDecimal> grandTotalFundedAmount = new AtomicReference<>(BigDecimal.ZERO);
+        AtomicReference<BigDecimal> grandTotalNotFundedAmount = new AtomicReference<>(BigDecimal.ZERO);
+        AtomicReference<BigDecimal> grandTotalApprovedLimit = new AtomicReference<>(BigDecimal.ZERO);
+        AtomicReference<BigDecimal> grandTotalPendingLimit = new AtomicReference<>(BigDecimal.ZERO);
         // getting all loans in dto form
         List<CustomerLoanGroupDto> customerLoanGroupDtos = customerLoanRepository
             .getGroupDetailByCustomer(customerGroup.getId());
-        // set group todo- replace with  mapper
-        groupDetailDto.setGroupCode(customerGroup.getGroupCode());
-        groupDetailDto.setGroupLimit(customerGroup.getGroupLimit());
-        // get funded , non funded data
-        groupDetailDto.setFundedData(customerLoanGroupDtos.stream().filter(s -> s.getLoanConfig()
-            .getIsFundable()).collect(Collectors.toList()));
-        groupDetailDto
-            .setNonFundedData(customerLoanGroupDtos.stream().filter(s -> !s.getLoanConfig()
-                .getIsFundable()).collect(Collectors.toList()));
 
-        // calculate funded , non funded data
-        groupDetailDto.setTotalFunded(calculateFundLimit(groupDetailDto.getFundedData(), true));
-        groupDetailDto
-            .setTotalNonFunded(calculateFundLimit(groupDetailDto.getNonFundedData(), false));
-
-        Map<String, CustomerLoanGroupDto> filterList = new HashMap<>();
+        Map<String, GroupDto> filterList = new HashMap<>();
 
         // iterate all loan dto to set unique as per customer
-        // remove if unique customer detail is not needed
-        customerLoanGroupDtos.forEach(groupDto -> {
-            if (!filterList.containsKey(String.valueOf(groupDto.getCustomerLoanId()))) {
+        customerLoanGroupDtos.stream().map(CustomerLoanGroupDto::getLoanHolderId).distinct().forEach(id -> {
+                GroupDto groupDto = new GroupDto();
                 // getting current customer related loan dto
                 List<CustomerLoanGroupDto> currentIdDtos = customerLoanGroupDtos.stream()
                     .filter(c -> Objects
-                        .equals(c.getLoanHolderId(), groupDto.getLoanHolderId())
-                        && c.getProposal() != null).collect(Collectors.toList());
+                        .equals(c.getLoanHolderId(), id)
+                        && c.getProposal() != null && c.getDocStatus().equals(DocStatus.APPROVED)).collect(Collectors.toList());
+                groupDto.setCustomerLoanGroupDto(currentIdDtos);
+
+                // get funded , non funded data
+                groupDto.setFundedData(currentIdDtos.stream().filter(s -> s.getLoanConfig()
+                    .getIsFundable()).collect(Collectors.toList()));
+
+                groupDto.setNonFundedData(currentIdDtos.stream().filter(s -> !s.getLoanConfig()
+                     .getIsFundable()).collect(Collectors.toList()));
+
+                // calculate funded , non funded data
+                groupDto.setTotalFunded(calculateFundLimit(groupDto.getFundedData(), true));
+                grandTotalFundedAmount.updateAndGet(v -> v.add(groupDto.getTotalFunded()));
+                groupDto.setTotalNonFunded(calculateFundLimit(groupDto.getNonFundedData(), false));
+                grandTotalNotFundedAmount.updateAndGet(v -> v.add(groupDto.getTotalFunded()));
+
                 // calculate total approved limit
-                BigDecimal totalApprovedLimit = calculateProposalLimit(
-                    currentIdDtos.stream().filter(c -> c.getDocStatus() == DocStatus.APPROVED)
-                        .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
-                // calculate total pending limit
-                BigDecimal totalPendingLimit = calculateProposalLimit(
-                    currentIdDtos.stream().filter(c -> c.getDocStatus() != DocStatus.APPROVED)
-                        .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
-                groupDto.setTotalApprovedLimit(totalApprovedLimit);
-                groupDto.setTotalPendingLimit(totalPendingLimit);
-                filterList.put(String.valueOf(groupDto.getLoanHolderId()),
-                    groupDto);
-            }
+            BigDecimal totalApprovedLimit = calculateProposalLimit(
+                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() == DocStatus.APPROVED)
+                    .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+            // calculate total pending limit
+            BigDecimal totalPendingLimit = calculateProposalLimit(
+                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() != DocStatus.APPROVED)
+                    .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+
+            groupDto.setTotalApprovedLimit(totalApprovedLimit);
+            grandTotalApprovedLimit.updateAndGet(v -> v.add(groupDto.getTotalApprovedLimit()));
+            groupDto.setTotalPendingLimit(totalPendingLimit);
+            grandTotalPendingLimit.updateAndGet(v -> v.add(groupDto.getTotalPendingLimit()));
+
+
+            filterList.put(id.toString(), groupDto);
 
         });
-        groupDetailDto
-            .setCustomerLoanGroupDto(new ArrayList<CustomerLoanGroupDto>(filterList.values()));
+        groupSummaryDto.setGrandTotalFundedAmount(grandTotalFundedAmount.get());
+        groupSummaryDto.setGrandTotalNotFundedAmount(grandTotalNotFundedAmount.get());
+        groupSummaryDto.setGrandTotalPendingLimit(grandTotalPendingLimit.get());
+        groupSummaryDto.setGrandTotalApprovedLimit(grandTotalApprovedLimit.get());
+        groupSummaryDto.setGroupCode(customerGroup.getGroupCode());
+        groupSummaryDto.setGroupId(customerGroup.getId());
+        groupSummaryDto.setGroupLimit(customerGroup.getGroupLimit());
+        groupSummaryDto.setGroupDtoList(new ArrayList<>(filterList.values()));
 
-        return groupDetailDto;
+        return groupSummaryDto;
 
     }
 
