@@ -23,23 +23,24 @@ import com.sb.solutions.core.enitity.EntityValidator;
 @EqualsAndHashCode(callSuper = true)
 @EntityListeners({AuditingEntityListener.class})
 @Audited
-public class ManagementTeam extends BaseEntity<Long> implements EntityValidator {
+public class ManagementTeam extends BaseEntity<Long>  {
 
     private String name;
     private String description;
     private String designation;
 
-    @Override
-    public Pair<Boolean, String> valid() {
-        final String validationMsg = "Company Info - Management Team Name or Designation cannot be left empty.";
-        Pair pair = Pair.of(Boolean.TRUE, "");
-        Boolean anyAttributeNull = Stream.of(this.name,
-            this.designation).anyMatch(Objects::isNull);
-        if (anyAttributeNull) {
-            pair = Pair.of(Boolean.FALSE,
-                validationMsg);
-        }
-        return pair;
-    }
+//    validation removed as per mega requirement
+//    @Override
+//    public Pair<Boolean, String> valid() {
+//        final String validationMsg = "Company Info - Management Team Name or Designation cannot be left empty.";
+//        Pair pair = Pair.of(Boolean.TRUE, "");
+//        Boolean anyAttributeNull = Stream.of(this.name,
+//            this.designation).anyMatch(Objects::isNull);
+//        if (anyAttributeNull) {
+//            pair = Pair.of(Boolean.FALSE,
+//                validationMsg);
+//        }
+//        return pair;
+//    }
 
 }

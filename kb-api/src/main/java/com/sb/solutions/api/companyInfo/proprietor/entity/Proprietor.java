@@ -51,10 +51,10 @@ public class Proprietor extends BaseEntity<Long> implements EntityValidator {
 
     @Override
     public Pair<Boolean, String> valid() {
-        final String validationMsg = "Company Info - Proprietor Information Section Name or contactNo cannot be left empty.";
+        final String validationMsg = "Company Info - Proprietor Information Section Name ,Type,Share cannot be left empty.";
         Pair pair = Pair.of(Boolean.TRUE, "");
         Boolean anyAttributeNull = Stream.of(this.name,
-            this.contactNo).anyMatch(Objects::isNull);
+            this.type,this.share).anyMatch(Objects::isNull);
         if (anyAttributeNull) {
             pair = Pair.of(Boolean.FALSE,
                 validationMsg);
