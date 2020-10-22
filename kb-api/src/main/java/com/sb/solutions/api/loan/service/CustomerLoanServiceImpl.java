@@ -952,12 +952,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
                 // calculate total approved limit
             BigDecimal totalApprovedLimit = calculateProposalLimit(
-                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() == DocStatus.APPROVED)
-                    .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() == DocStatus.APPROVED
+                    && c.getLoanHolderId().equals(id)).map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
             // calculate total pending limit
             BigDecimal totalPendingLimit = calculateProposalLimit(
-                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() != DocStatus.APPROVED)
-                    .map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
+                customerLoanGroupDtos.stream().filter(c -> c.getDocStatus() != DocStatus.APPROVED &&
+                    c.getLoanHolderId().equals(id)).map(CustomerLoanGroupDto::getProposal).collect(Collectors.toList()));
 
             groupDto.setTotalApprovedLimit(totalApprovedLimit);
             grandTotalApprovedLimit.updateAndGet(v -> v.add(groupDto.getTotalApprovedLimit()));
