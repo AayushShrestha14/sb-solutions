@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
@@ -82,6 +83,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private CompanyLocations companyLocations;
 
     private String contactPersons;
+
+    @NotAudited
+    private String withinLimitRemarks;
 
     @Override
     public Pair<Boolean, String> valid() {

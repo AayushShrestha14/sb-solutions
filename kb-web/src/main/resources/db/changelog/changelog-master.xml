@@ -4593,6 +4593,28 @@
     <dropNotNullConstraint tableName="proprietor" columnName="contact_no" columnDataType="VARCHAR(256)"/>
   </changeSet>
 
+  <changeSet id="363-alter-company-info-add-within_limit_remarks" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="within_limit_remarks"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="within_limit_remarks" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="364-alter-customer-add-within_limit_remarks" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="within_limit_remarks"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="within_limit_remarks" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 
