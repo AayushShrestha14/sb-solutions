@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.web.common.stage.dto.StageDto;
+import org.springframework.util.ObjectUtils;
 
 @Component
 public class OfferLetterStageMapper {
@@ -34,24 +36,24 @@ public class OfferLetterStageMapper {
     private final UserService userService;
 
     public OfferLetterStageMapper(
-        @Autowired RoleService roleService,
-        @Autowired UserService userService) {
+            @Autowired RoleService roleService,
+            @Autowired UserService userService) {
         this.roleService = roleService;
         this.userService = userService;
     }
 
     public CustomerOfferLetter actionMapper(StageDto stageDto,
-        CustomerOfferLetter customerOfferLetter, User user, Long loanCreatedBranch) {
+                                            CustomerOfferLetter customerOfferLetter, User user, Long loanCreatedBranch) {
         if (customerOfferLetter == null) {
             logger
-                .error("customerOfferLetter has not been created for action", customerOfferLetter);
+                    .error("customerOfferLetter has not been created for action", customerOfferLetter);
             throw new ServiceValidationException(
-                "Cannot perform action offer letter is not saved yet!!");
+                    "Cannot perform action offer letter is not saved yet!!");
         }
         if (customerOfferLetter.getIsOfferLetterApproved()) {
             logger.error("Restrict to take action on approved offer letter{}", customerOfferLetter);
             throw new ServiceValidationException(
-                "Cannot perform action offer letter is already approved");
+                    "Cannot perform action offer letter is already approved");
         }
         final OfferLetterStage offerLetterStage = customerOfferLetter.getOfferLetterStage();
 
@@ -65,7 +67,7 @@ public class OfferLetterStageMapper {
         if (offerLetterStage != null) {
 
             Map<String, String> tempLoanStage = objectMapper
-                .convertValue(offerLetterStage, Map.class);
+                    .convertValue(offerLetterStage, Map.class);
             try {
                 previousList.forEach(p -> {
                     try {
@@ -87,7 +89,7 @@ public class OfferLetterStageMapper {
         customerOfferLetter.setDocStatus(stageDto.getDocumentStatus());
         customerOfferLetter.setOfferLetterStageList(previousListTemp.toString());
         OfferLetterStage newStage = this
-            .offerLetterStage(stageDto, user, offerLetterStage, loanCreatedBranch, previousList);
+                .offerLetterStage(stageDto, user, offerLetterStage, loanCreatedBranch, previousList);
         customerOfferLetter.setOfferLetterStage(newStage);
         if (stageDto.getDocumentStatus().equals(DocStatus.APPROVED)) {
             customerOfferLetter.setIsOfferLetterApproved(true);
@@ -97,14 +99,16 @@ public class OfferLetterStageMapper {
 
 
     private OfferLetterStage offerLetterStage(StageDto stageDto, User user,
-        OfferLetterStage currentStage, Long loanCreatedBranchId, List previousList) {
+                                              OfferLetterStage currentStage, Long loanCreatedBranchId, List previousList) {
         currentStage.setFromUser(user);
         currentStage.setFromRole(user.getRole());
         currentStage.setComment(stageDto.getComment());
         currentStage.setDocAction(stageDto.getDocAction());
         switch (stageDto.getDocAction()) {
             case FORWARD:
-                Role r = roleService.getRoleCAD();
+                Role r = new Role();
+                Preconditions.checkArgument(!ObjectUtils.isEmpty(stageDto.getToRole().getId()),"To Role Cannot Be null");
+                r.setId(stageDto.getToRole().getId());
                 currentStage.setToRole(r);
                 User u = new User();
                 u.setId(stageDto.getToUser().getId());
@@ -123,20 +127,20 @@ public class OfferLetterStageMapper {
                             currentStage.setToRole(maker.getFromRole());
                             try {
                                 final List<User> users = userService
-                                    .findByRoleAndBranchId(maker.getFromRole().getId(),
-                                        loanCreatedBranchId);
+                                        .findByRoleAndBranchId(maker.getFromRole().getId(),
+                                                loanCreatedBranchId);
                                 final List<Long> userIdList = users.stream().map(User::getId)
-                                    .collect(Collectors.toList());
+                                        .collect(Collectors.toList());
                                 if (userIdList.contains(currentStage.getCreatedBy())) {
                                     java.util.Optional<User> userOptional = users.stream()
-                                        .filter(p -> p.getId().equals(currentStage.getCreatedBy()))
-                                        .findFirst();
+                                            .filter(p -> p.getId().equals(currentStage.getCreatedBy()))
+                                            .findFirst();
                                     currentStage.setToUser(
-                                        objectMapper.convertValue(userOptional.get(), User.class));
+                                            objectMapper.convertValue(userOptional.get(), User.class));
                                 } else {
                                     currentStage
-                                        .setToUser(
-                                            objectMapper.convertValue(users.get(0), User.class));
+                                            .setToUser(
+                                                    objectMapper.convertValue(users.get(0), User.class));
                                 }
 
 

@@ -110,18 +110,18 @@ public class DmsLoanFileController {
             resource = new InputStreamResource(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             logger.error("File not found {}", e.getMessage());
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new RestResponseDto().failureModel(HttpStatus.NOT_FOUND, "File not found ::" + e.getMessage());
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
-            String.format("attachment; filename=\"%s\"", file.getName()));
+                String.format("attachment; filename=\"%s\"", file.getName()));
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
 
         return ResponseEntity.ok().headers(headers)
-            .contentLength(file.length()).contentType(
-                MediaType.parseMediaType("application/txt")).<Object>body(resource);
+                .contentLength(file.length()).contentType(
+                        MediaType.parseMediaType("application/txt")).<Object>body(resource);
     }
 
 
