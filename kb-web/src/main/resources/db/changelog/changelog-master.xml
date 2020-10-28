@@ -4522,7 +4522,98 @@
       <column name="cash_margin_method" type="VARCHAR(256)"/>
     </addColumn>
   </changeSet>
+  
+  <changeSet id="353-add-table-credit-checklist" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="credit_checklist"/>
+      </not>
+    </preConditions>
+    <createTable tableName="credit_checklist">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+      <column name="data" type="LONGTEXT"/>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_checklist_created_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_credit_checklist_modified_by_id"
+          referencedTableName="users"
+          referencedColumnNames="id"/>
+      </column>
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
 
+  <changeSet id="354-alter-customer-info-add-credit_checklist_id" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="credit_checklist_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="credit_checklist_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_customer_info_credit_checklist_id"
+          referencedTableName="credit_checklist"
+          referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="360-alter-management-team-table-drop-null-constrain-of-designation" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="management_team" columnName="designation"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="management_team" columnName="designation" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="361-alter-management-team-table-drop-null-constrain-of-name" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="management_team" columnName="name"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="management_team" columnName="name" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="362-alter-proprietor-table-drop-null-constrain-of-contact_no" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proprietor" columnName="contact_no"/>
+    </preConditions>
+    <dropNotNullConstraint tableName="proprietor" columnName="contact_no" columnDataType="VARCHAR(256)"/>
+  </changeSet>
+
+  <changeSet id="363-alter-company-info-add-within_limit_remarks" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="company_info" columnName="within_limit_remarks"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="company_info">
+      <column name="within_limit_remarks" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="364-alter-customer-add-within_limit_remarks" author="buddha">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="within_limit_remarks"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="within_limit_remarks" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>
 

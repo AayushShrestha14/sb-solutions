@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.util.Pair;
 
@@ -83,6 +84,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     private String contactPersons;
 
+    @NotAudited
+    private String withinLimitRemarks;
+
     @Override
     public Pair<Boolean, String> valid() {
         Boolean validator = Boolean.TRUE;
@@ -106,20 +110,20 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
             validationMsg.append(swot.getValidationMsg());
         }
 
-        // validate management team
-        if (null == managementTeamList || managementTeamList.size() == 0) {
-            validator = Boolean.FALSE;
-            validationMsg
-                .append("Company Info -At least one member required on Management Team Section.");
-        } else {
-            for (ManagementTeam managementTeam : managementTeamList) {
-                if (!managementTeam.isValid()) {
-                    validator = Boolean.FALSE;
-                    validationMsg.append(managementTeam.getValidationMsg());
-                    break;
-                }
-            }
-        }
+        // validate management team but validation removed as per mega requirement
+//        if (null == managementTeamList || managementTeamList.size() == 0) {
+//            validator = Boolean.FALSE;
+//            validationMsg
+//                .append("Company Info -At least one member required on Management Team Section.");
+//        } else {
+//            for (ManagementTeam managementTeam : managementTeamList) {
+//                if (!managementTeam.isValid()) {
+//                    validator = Boolean.FALSE;
+//                    validationMsg.append(managementTeam.getValidationMsg());
+//                    break;
+//                }
+//            }
+//        }
 
         // validate Proprietor Information
         if (null == proprietorsList || proprietorsList.size() == 0) {

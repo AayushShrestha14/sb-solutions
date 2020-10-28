@@ -82,6 +82,9 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     private Status status = Status.ACTIVE;
     private String introduction;
 
+    @NotAudited
+    private String withinLimitRemarks;
+
     @Transient
     private String bankingRelationship;
 
