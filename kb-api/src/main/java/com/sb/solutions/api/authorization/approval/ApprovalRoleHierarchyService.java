@@ -22,6 +22,7 @@ public interface ApprovalRoleHierarchyService extends BaseService<ApprovalRoleHi
         ApprovalType approvalType, Long refId);
 
     List<ApprovalRoleHierarchy> getRoles(ApprovalType approvalType, Long refId);
-
     List<ApprovalRoleHierarchy> getDefaultRoleHierarchies(ApprovalType approvalType, Long refId);
+
+    boolean checkRoleContainInHierarchies(Long id,ApprovalType approvalType,Long refId);
 }
