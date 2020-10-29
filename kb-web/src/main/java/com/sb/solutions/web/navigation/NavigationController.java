@@ -82,7 +82,7 @@ public class NavigationController {
             boolean isPresentInCadHierarchy = approvalRoleHierarchyService.checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
             if (isPresentInCadHierarchy) {
                 MenuDto menuDto = new MenuDto();
-                menuDto.setTitle("Offer Letter");
+                menuDto.setTitle("Post Approval Documentation");
                 menuDto.setLink("/home/loan/loan-offer-letter");
                 menuDto.setIcon("arrowhead-down-outline");
                 menuList.add(menuDto);
