@@ -18,6 +18,8 @@ import com.sb.solutions.core.enums.Status;
 public class UserSpec implements Specification<User> {
 
     private static final String FILTER_BY_NAME = "name";
+    private static final String FILTER_BY_USER_NAME = "username";
+    private static final String FILTER_BY_EMAIL = "email";
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_ROLE = "roleId";
     private static final String FILTER_BY_STATUS = "status";
@@ -35,6 +37,12 @@ public class UserSpec implements Specification<User> {
         CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_NAME:
+
+            case FILTER_BY_EMAIL:
+                return criteriaBuilder
+                        .equal(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
+
+            case FILTER_BY_USER_NAME:
                 return criteriaBuilder
                     .like(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
 
