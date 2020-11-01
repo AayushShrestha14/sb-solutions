@@ -4615,6 +4615,27 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="365-alter-security-add-table-total-security-amount" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="security" columnName="total_security_amount"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="security">
+      <column name="total_security_amount" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="365-alter-security-audit-add-table-total-security-amount" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="security_audit" columnName="total_security_amount"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="security_audit">
+      <column name="total_security_amount" type="DOUBLE"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
 
 

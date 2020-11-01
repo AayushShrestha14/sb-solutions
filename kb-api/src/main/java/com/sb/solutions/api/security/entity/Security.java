@@ -24,6 +24,8 @@ public class Security extends BaseEntity<Long> {
 
     private String data;
 
+    private Double totalSecurityAmount;
+
 
     @NotAudited
     private Integer valuatorId;
