@@ -37,10 +37,12 @@ public class UserSpec implements Specification<User> {
         CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_NAME:
+                return criteriaBuilder
+                        .equal(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
 
             case FILTER_BY_EMAIL:
                 return criteriaBuilder
-                        .equal(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
+                        .equal(root.get(property) , value + "%");
 
             case FILTER_BY_USER_NAME:
                 return criteriaBuilder
