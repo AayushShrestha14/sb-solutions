@@ -70,7 +70,7 @@ mailproperty:
       smtp:
         auth: true
         starttls:
-          enable: false
+          enable: true
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
       debug: true
