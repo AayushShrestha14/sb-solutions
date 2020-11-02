@@ -60,6 +60,9 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Value("${server.port}")
     private String port;
 
+    @Value("${bank.id}")
+    private String BankId;
+
     @Value("${spring.datasource.url}")
     private String dbValue;
 
@@ -150,7 +153,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
             if (ProductUtils.OFFER_LETTER) {
                 ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/general_patch/offer_letter.sql");
+                        baseServerFolder + "/general_patch/offer_letter/"+BankId+".sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                 populator.execute(dataSource);

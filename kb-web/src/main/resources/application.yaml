@@ -1,5 +1,5 @@
 server:
-  port: 8086
+  port: 8087
   compression:
     enabled: true
 spring:
@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: dev
+    active: qa
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -58,8 +58,9 @@ file:
   upload-directory: C:/
 
 bank:
-  name: SB Solutions Pvt Ltd
-  website: http://www.sbsolutionsnepal.com.np/
+  id: mega
+  name: United Finance Ltd
+  website: http://www.ufl.com.np/
 
 mailproperty:
   additionalHeaders:
@@ -69,7 +70,7 @@ mailproperty:
       smtp:
         auth: true
         starttls:
-          enable: true
+          enable: false
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
       debug: true
