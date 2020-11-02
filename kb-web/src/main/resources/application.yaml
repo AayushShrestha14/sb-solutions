@@ -1,5 +1,5 @@
 server:
-  port: 8087
+  port: 8086
   compression:
     enabled: true
 spring:
@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: qa
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -58,7 +58,7 @@ file:
   upload-directory: C:/
 
 bank:
-  id: mega
+  afilliateid: mega
   name: United Finance Ltd
   website: http://www.ufl.com.np/
 
