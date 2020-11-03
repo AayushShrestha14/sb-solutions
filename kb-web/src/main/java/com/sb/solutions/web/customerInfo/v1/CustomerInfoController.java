@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +55,9 @@ public class CustomerInfoController {
 
     @Autowired
     public CustomerInfoController(
-        CustomerInfoService customerInfoService,
-        CustomerGeneralDocumentService customerGeneralDocumentService,
-        UserService userService) {
+            CustomerInfoService customerInfoService,
+            CustomerGeneralDocumentService customerGeneralDocumentService,
+            UserService userService) {
         this.customerInfoService = customerInfoService;
 
         this.customerGeneralDocumentService = customerGeneralDocumentService;
@@ -66,84 +67,88 @@ public class CustomerInfoController {
 
     @PostMapping("/list")
     public ResponseEntity<?> getPageable(@RequestBody Map<String, String> searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(customerInfoService.findPageableBySpec(searchDto, PaginationUtils
-                .pageable(page, size)));
+                .successModel(customerInfoService.findPageableBySpec(searchDto, PaginationUtils
+                        .pageable(page, size)));
     }
 
     @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
     @PostMapping("/{customerInfoId}/{template}")
     public ResponseEntity<?> saveCustomerLoanInfo(@RequestBody Object loanInfo,
-        @PathVariable("customerInfoId") Long customerInfoId,
-        @PathVariable("template") String template) {
+                                                  @PathVariable("customerInfoId") Long customerInfoId,
+                                                  @PathVariable("template") String template) {
         return new RestResponseDto()
-            .successModel(
-                customerInfoService.saveLoanInformation(loanInfo, customerInfoId, template));
+                .successModel(
+                        customerInfoService.saveLoanInformation(loanInfo, customerInfoId, template));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCustomerInfoByID(
-        @PathVariable("id") Long id) {
+            @PathVariable("id") Long id) {
         CustomerInfo customerInfo = customerInfoService.findOne(id).get();
         List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
-            .findByCustomerInfoId(id);
+                .findByCustomerInfoId(id);
         if (!generalDocuments.isEmpty()) {
             customerInfo.setCustomerGeneralDocuments(generalDocuments);
         }
         return new RestResponseDto()
-            .successModel(customerInfo);
+                .successModel(customerInfo);
     }
 
     @PostMapping("/customer")
     public ResponseEntity getCustomerByTypeIdNumberIdTypeRegDate(
-        @RequestBody CustomerInfo customerInfo) {
+            @RequestBody CustomerInfo customerInfo) {
         final CustomerInfo customerInfo1 = customerInfoService
-            .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
-                customerInfo.getCustomerType(), customerInfo.getIdNumber(),
-                customerInfo.getIdRegPlace(), customerInfo.getIdType(),
-                customerInfo.getIdRegDate());
+                .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
+                        customerInfo.getCustomerType(), customerInfo.getIdNumber(),
+                        customerInfo.getIdRegPlace(), customerInfo.getIdType(),
+                        customerInfo.getIdRegDate());
         if (ObjectUtils.isEmpty(customerInfo1)) {
             return new RestResponseDto().failureModel("no Customer Found");
         }
         return new RestResponseDto().successModel(
-            customerInfo1
+                customerInfo1
         );
     }
 
     @PostMapping("/upload-photo")
     public ResponseEntity profilePicUploader(
-        @RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("customerInfoId") Long customerInfoId,
-        @RequestParam("name") String name,
-        @RequestParam("branch") String branch,
-        @RequestParam("customerType") String customerType) {
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("customerInfoId") Long customerInfoId,
+            @RequestParam("name") String name,
+            @RequestParam("branch") String branch,
+            @RequestParam("customerType") String customerType) {
         Preconditions.checkNotNull(name.equals("null") ? null
-                : (StringUtils.isEmpty(name) ? null : name),
-            "Customer Name is required to upload file.");
+                        : (StringUtils.isEmpty(name) ? null : name),
+                "Customer Name is required to upload file.");
         Preconditions.checkNotNull(branch.equals("null") ? null
-                : (StringUtils.isEmpty(branch) ? null : branch),
-            "Branch Name is required to upload file.");
+                        : (StringUtils.isEmpty(branch) ? null : branch),
+                "Branch Name is required to upload file.");
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
 
         String formattedDateTime = currentDateTime.format(formatter);
+        final Optional<CustomerInfo> customerInfo = customerInfoService.findOne(customerInfoId);
+        if (!customerInfo.isPresent()) {
+            throw new ServiceValidationException("Invalid customer id");
+        }
         String uploadPath = new PathBuilder(UploadDir.initialDocument)
-            .buildCustomerInfoBasePath(customerInfoId, name, branch, customerType);
+                .buildCustomerInfoBasePathWithId(customerInfoId, customerInfo.get().getBranch().getId(),
+                        customerType);
+
         ResponseEntity responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, uploadPath,
-                formattedDateTime + "-" + StringUtil
-                    .getStringWithoutWhiteSpaceAndWithCapitalize(name)
-                    .toLowerCase());
+                .uploadFile(multipartFile, uploadPath,
+                        formattedDateTime + "-" + StringUtil
+                                .getStringWithoutWhiteSpaceAndWithCapitalize(name)
+                                .toLowerCase());
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Object body = responseEntity.getBody();
             RestResponseDto restResponseDto = new RestResponseDto();
             if (!ObjectUtils.isEmpty(body)) {
                 BeanUtils.copyProperties(body, restResponseDto);
                 String path = (String) restResponseDto.getDetail();
-                final Optional<CustomerInfo> customerInfo = customerInfoService
-                    .findOne(customerInfoId);
                 if (customerInfo.isPresent()) {
                     logger.info("updating profile picture::{}", customerInfo.get().getName());
                     CustomerInfo c = customerInfo.get();
@@ -158,30 +163,36 @@ public class CustomerInfoController {
 
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("customerName") String name,
-        @RequestParam("documentName") String documentName,
-        @RequestParam("customerInfoId") Long id,
-        @RequestParam("customerType") String customerType,
-        @RequestParam("folderName") String folderName
+                                    @RequestParam("customerName") String name,
+                                    @RequestParam("documentName") String documentName,
+                                    @RequestParam("customerInfoId") Long id,
+                                    @RequestParam("customerType") String customerType,
+                                    @RequestParam("folderName") String folderName
     ) {
-        final String  branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
+        final String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
-            : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
-            + "is required to upload file.");
+                : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
+                + "is required to upload file.");
         Preconditions.checkNotNull(documentName.equals("undefined") || documentName.equals("null") ? null
-            : (StringUtils.isEmpty(documentName) ? null : documentName), "Doc Name "
-            + "is required to upload file.");
-        documentName = documentName.replaceAll("\\\\","-");
-        documentName = documentName.replace("/","-");
+                : (StringUtils.isEmpty(documentName) ? null : documentName), "Doc Name "
+                + "is required to upload file.");
+        documentName = documentName.replaceAll("\\\\", "-");
+        documentName = documentName.replace("/", "-");
+
+        Optional<CustomerInfo> customerInfo = customerInfoService.findOne(id);
+        if (!customerInfo.isPresent()) {
+            throw new ServiceValidationException("Invalid customer id");
+        }
         String basicPath = new PathBuilder(UploadDir.initialDocument)
-            .buildCustomerInfoBasePath(id,name,branchName,customerType);
+                .buildCustomerInfoBasePathWithId(id, customerInfo.get().getBranch().getId(),
+                        customerType);
         String uploadPath = new StringBuilder(basicPath)
-            .append(folderName)
-            .append("/")
-            .toString();
+                .append(folderName)
+                .append("/")
+                .toString();
         logger.info("File Upload Path {}", uploadPath);
         ResponseEntity<?> responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, documentName);
+                .uploadFile(multipartFile, uploadPath, documentName);
         return new RestResponseDto().successModel(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
     }
 
@@ -189,6 +200,6 @@ public class CustomerInfoController {
     @PostMapping("/csv")
     public ResponseEntity<?> getDownload(@RequestBody Object searchDto) {
         return new RestResponseDto()
-            .successModel(customerInfoService.csv(searchDto));
+                .successModel(customerInfoService.csv(searchDto));
     }
 }

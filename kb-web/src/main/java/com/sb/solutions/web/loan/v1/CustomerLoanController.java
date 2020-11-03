@@ -9,11 +9,14 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,10 +69,10 @@ public class CustomerLoanController {
     private final CombinedLoanService combinedLoanService;
 
     public CustomerLoanController(
-        CustomerLoanService service,
-        Mapper mapper,
-        UserService userService,
-        CombinedLoanService combinedLoanService
+            CustomerLoanService service,
+            Mapper mapper,
+            UserService userService,
+            CombinedLoanService combinedLoanService
     ) {
 
         this.service = service;
@@ -81,24 +84,24 @@ public class CustomerLoanController {
     @PostMapping(value = "/action")
     public ResponseEntity<?> loanAction(@Valid @RequestBody StageDto actionDto) {
         final CustomerLoan c = mapper
-            .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
-                userService.getAuthenticatedUser());
+                .actionMapper(actionDto, service.findOne(actionDto.getCustomerLoanId()),
+                        userService.getAuthenticatedUser());
         service.sendForwardBackwardLoan(c);
         return new RestResponseDto().successModel(actionDto);
     }
 
     @PostMapping(value = "/action/combined")
     public ResponseEntity<?> loanAction(@Valid @RequestBody List<StageDto> actionDtoList,
-        @RequestParam boolean stageSingle) {
+                                        @RequestParam boolean stageSingle) {
         User user = userService.getAuthenticatedUser();
         List<CustomerLoan> loans = actionDtoList.stream()
-            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
-            .collect(Collectors.toList());
+                .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
+                .collect(Collectors.toList());
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
         // remove from combined loan if loans are staged individually
         // or loans are combined and approved
         boolean removeCombined = stageSingle || actionDtoList.stream()
-            .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
+                .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
         if (removeCombined) {
             loans.forEach(l -> l.setCombinedLoan(null));
         }
@@ -138,26 +141,26 @@ public class CustomerLoanController {
     public ResponseEntity<?> delByIdRoleMaker(@PathVariable("id") Long id) {
         logger.info("deleting Customer Loan {}", id);
         return new RestResponseDto()
-            .successModel(service.delCustomerLoan(id));
+                .successModel(service.delCustomerLoan(id));
     }
 
     @PostMapping("/status")
     public ResponseEntity<?> getfirst5ByDocStatus(@RequestBody CustomerLoan customerLoan) {
         logger.debug("getByDocStatus Customer Loan {}", customerLoan);
         return new RestResponseDto().successModel(
-            service.getFirst5CustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
+                service.getFirst5CustomerLoanByDocumentStatus(customerLoan.getDocumentStatus()));
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping("/all")
@@ -172,58 +175,58 @@ public class CustomerLoanController {
 
     @GetMapping(value = "/proposed-amount")
     public ResponseEntity<?> getProposedAmount(@RequestParam(required = false) String startDate,
-        @RequestParam(required = false) String endDate) throws ParseException {
+                                               @RequestParam(required = false) String endDate) throws ParseException {
         return new RestResponseDto().successModel(service.proposedAmount(startDate, endDate));
     }
 
     @GetMapping(value = "/loan-amount/{id}")
     public ResponseEntity<?> getProposedAmountByBranch(@PathVariable Long id,
-        @RequestParam(required = false) String startDate,
-        @RequestParam(required = false) String endDate) throws ParseException {
+                                                       @RequestParam(required = false) String startDate,
+                                                       @RequestParam(required = false) String endDate) throws ParseException {
         return new RestResponseDto().successModel(service.proposedAmountByBranch(id, startDate,
-            endDate));
+                endDate));
     }
 
     @GetMapping(value = "/searchByCitizenship/{number}")
     public ResponseEntity<?> getLoansByCitizenship(
-        @PathVariable("number") String citizenshipNumber) {
+            @PathVariable("number") String citizenshipNumber) {
         logger.info("GET:/searchByCitizenship/{}", citizenshipNumber);
         return new RestResponseDto()
-            .successModel(service.getByCitizenshipNumber(citizenshipNumber));
+                .successModel(service.getByCitizenshipNumber(citizenshipNumber));
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/catalogue")
     public ResponseEntity<?> getCatalogues(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                           @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(service.getCatalogues(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/committee-pull")
     public ResponseEntity<?> getCommitteePull(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                              @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(
-                service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(
+                        service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(path = "/stats")
     public ResponseEntity<?> getStats(@RequestParam(value = "branchId") Long branchId,
-        @RequestParam(required = false) String startDate,
-        @RequestParam(required = false) String endDate) throws ParseException {
+                                      @RequestParam(required = false) String startDate,
+                                      @RequestParam(required = false) String endDate) throws ParseException {
         logger.debug("REST request to get the statistical data about the loans.");
         return new RestResponseDto().successModel(mapper.toBarchartDto(service.getStats(branchId,
-            startDate, endDate)));
+                startDate, endDate)));
     }
 
     @GetMapping(path = "/check-user-customer-loan/{id}")
@@ -239,89 +242,84 @@ public class CustomerLoanController {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type,
-        @RequestParam("citizenNumber") String citizenNumber,
-        @RequestParam("customerName") String name,
-        @RequestParam("documentName") String documentName,
-        @RequestParam("documentId") Long documentId,
-        @RequestParam("loanHolderId") Long loanHolderId,
-        @RequestParam("customerType") String customerType,
-        @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
+                                            @RequestParam("loanId") Long loanId,
+                                            @RequestParam("documentName") String documentName,
+                                            @RequestParam("documentId") Long documentId,
+                                            @RequestParam("loanHolderId") Long loanHolderId,
+                                            @RequestParam("customerType") String customerType,
+                                            @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         CustomerDocument customerDocument = new CustomerDocument();
         Document document = new Document();
         document.setId(documentId);
         customerDocument.setDocument(document);
-        String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName()
-            .replace(" ", "_");
-        Preconditions.checkNotNull(citizenNumber.equals("null") ? null
-                : (StringUtils.isEmpty(citizenNumber) ? null : citizenNumber),
-            "Citizenship Number is required to upload file.");
-        Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
-            : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
-            + "is required to upload file.");
-        String uploadPath = new PathBuilder(UploadDir.initialDocument)
-            .buildLoanDocumentUploadBasePath(loanHolderId,
-                name,
-                branchName,
-                customerType,
-                action, type);
+        Long branchId;
+        List<Branch> branches = userService.getAuthenticatedUser().getBranch();
+        if (branches.size() != 1) {
+            throw new ServiceValidationException("You do not have Permission to upload File!");
+        } else {
+            branchId = branches.get(0).getId();
+        }
 
-//        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
-//            .isJsonPath(false).withBranch(branchName).withCitizenship(citizenNumber)
-//            .withCustomerName(name).withLoanType(type).build();
+        String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                .buildLoanDocumentUploadBasePathWithId(loanHolderId,
+                        branchId,
+                        customerType,
+                        action,
+                        loanId);
+
         logger.info("File Upload Path {}", uploadPath);
         ResponseEntity<?> responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, documentName);
+                .uploadFile(multipartFile, uploadPath, documentName);
         customerDocument
-            .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
+                .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
         return new RestResponseDto().successModel(customerDocument);
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/issue-offer-letter")
     public ResponseEntity<?> getIssuedOfferLetter(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                  @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(
-                service.getIssuedOfferLetter(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(
+                        service.getIssuedOfferLetter(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping("/customer/{id}")
     public ResponseEntity<?> getLoanByCustomerId(@PathVariable("id") Long id) {
         logger.info("getting Customer Loan {}", id);
         return new RestResponseDto()
-            .successModel(service.getLoanByCustomerId(id));
+                .successModel(service.getLoanByCustomerId(id));
     }
 
     @PostMapping("/customer-kyc")
     public ResponseEntity<?> getLoanByCustomerAsKyc(
-        @RequestBody CustomerRelative customerRelative) {
+            @RequestBody CustomerRelative customerRelative) {
         logger.info("getting Customer Loan by Kyc {}", customerRelative);
         return new RestResponseDto()
-            .successModel(service.getLoanByCustomerKycGroup(customerRelative));
+                .successModel(service.getLoanByCustomerKycGroup(customerRelative));
     }
 
     @PostMapping("/customer-list")
     public ResponseEntity<?> getCustomerFromCustomerLoan(
-        @RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+            @RequestBody Object searchDto,
+            @RequestParam("page") int page, @RequestParam("size") int size) {
         logger.info("getting Customer  from Loan /customer-kyc {}", searchDto);
         return new RestResponseDto()
-            .successModel(service
-                .getCustomerFromCustomerLoan(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(service
+                        .getCustomerFromCustomerLoan(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping("/customer-guaranter")
     public ResponseEntity<?> getLoanByCustomerAsGuaranter(
-        @RequestBody Guarantor guarantor) {
+            @RequestBody Guarantor guarantor) {
         logger.info("getting Customer Loan by guarantor {}", guarantor);
         return new RestResponseDto()
-            .successModel(service.getLoanByCustomerGuarantor(guarantor));
+                .successModel(service.getLoanByCustomerGuarantor(guarantor));
     }
 
     @GetMapping("/loan-holder/{id}")
@@ -334,7 +332,7 @@ public class CustomerLoanController {
         Map<String, String> filter = new HashMap<>();
         User u = userService.getAuthenticatedUser();
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         filter.put("branchIds", branchAccess);
         filter.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
         filter.put("toUser", u.getId().toString());
@@ -342,7 +340,7 @@ public class CustomerLoanController {
         filter.put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, "initial");
         List<CustomerLoan> loans = new ArrayList<>(service.findAllBySpec(filter));
         filter
-            .put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.PENDING.toString().toUpperCase());
+                .put(CustomerLoanSpec.FILTER_BY_DOC_STATUS, DocStatus.PENDING.toString().toUpperCase());
         loans.addAll(service.findAllBySpec(filter));
         return new RestResponseDto().successModel(loans);
     }
@@ -350,9 +348,9 @@ public class CustomerLoanController {
 
     @PostMapping("/customer-group")
     public ResponseEntity<?> getLoanByCustomerGroup(
-        @RequestBody CustomerGroup customerGroup) {
+            @RequestBody CustomerGroup customerGroup) {
         logger.info("getting Customer Loan by CustomerGroup {}", customerGroup);
         return new RestResponseDto()
-            .successModel(service.getLoanByCustomerGroup(customerGroup));
+                .successModel(service.getLoanByCustomerGroup(customerGroup));
     }
 }

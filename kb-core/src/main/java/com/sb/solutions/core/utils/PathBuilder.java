@@ -70,24 +70,24 @@ public class PathBuilder {
     public String build() {
         StringBuilder sb = new StringBuilder(this.basePath);
         return sb.append(branchName).append(FILE_SEPARATOR)
-            .append(customerName.trim().replace(" ", "_")).append("_")
-            .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
-            .append(loanType.trim().replace(" ", "_")).append(FILE_SEPARATOR)
-            .append(action).append(FILE_SEPARATOR)
-            .append(jsonPath ? "json/" : "doc/").toString();
+                .append(customerName.trim().replace(" ", "_")).append("_")
+                .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
+                .append(loanType.trim().replace(" ", "_")).append(FILE_SEPARATOR)
+                .append(action).append(FILE_SEPARATOR)
+                .append(jsonPath ? "json/" : "doc/").toString();
     }
 
     public String buildAccountOpening() {
         StringBuilder sb = new StringBuilder(this.basePath);
         return sb.append(branchName)
-            .append(FILE_SEPARATOR)
-            .append(customerName.trim().replace(" ", "_"))
-            .append("_")
-            .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
-            .append("AccountOpening")
-            .append(FILE_SEPARATOR)
-            .append(jsonPath ? "json/" : "doc/")
-            .toString();
+                .append(FILE_SEPARATOR)
+                .append(customerName.trim().replace(" ", "_"))
+                .append("_")
+                .append(getDigitsFromString(customerCitizenship)).append(FILE_SEPARATOR)
+                .append("AccountOpening")
+                .append(FILE_SEPARATOR)
+                .append(jsonPath ? "json/" : "doc/")
+                .toString();
     }
 
     public String buildBuildFormDownloadPath(String formName) {
@@ -97,44 +97,91 @@ public class PathBuilder {
     }
 
     public String buildCustomerInfoBasePath(Long customerInfoId, String name, String branch,
-        String customerType) {
+                                            String customerType) {
         return new StringBuilder(this.basePath)
-            .append("customers")
-            .append(FILE_SEPARATOR)
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
-            .append(FILE_SEPARATOR)
-            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
-            .append(FILE_SEPARATOR)
-            .append(
-                customerInfoId + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
-            .append(FILE_SEPARATOR)
-            .append("Customer_Document")
-            .append(FILE_SEPARATOR)
-            .toString();
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append(
+                        customerInfoId + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
+                .append(FILE_SEPARATOR)
+                .append("Customer_Document")
+                .append(FILE_SEPARATOR)
+                .toString();
     }
 
     public String buildLoanDocumentUploadBasePath(Long customerInfoId, String customerName,
-        String branch,
-        String customerType, String loanType, String loanName) {
+                                                  String branch,
+                                                  String customerType, String loanType, String loanName) {
         return new StringBuilder(this.basePath)
-            .append("customers")
-            .append(FILE_SEPARATOR)
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
-            .append(FILE_SEPARATOR)
-            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
-            .append(FILE_SEPARATOR)
-            .append(
-                customerInfoId + "-" + StringUtil
-                    .getStringWithoutWhiteSpaceAndWithCapitalize(customerName))
-            .append(FILE_SEPARATOR)
-            .append("Loan_Document")
-            .append(FILE_SEPARATOR)
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
-            .append(FILE_SEPARATOR)
-            .append(StringUtils.deleteWhitespace(loanType).toUpperCase())
-            .append(FILE_SEPARATOR)
-            .append("doc")
-            .append(FILE_SEPARATOR)
-            .toString();
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branch))
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append(
+                        customerInfoId + "-" + StringUtil
+                                .getStringWithoutWhiteSpaceAndWithCapitalize(customerName))
+                .append(FILE_SEPARATOR)
+                .append("Loan_Document")
+                .append(FILE_SEPARATOR)
+                .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(loanName.toLowerCase()))
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(loanType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("doc")
+                .append(FILE_SEPARATOR)
+                .toString();
+    }
+
+    /**
+     *  this is for Loan document upload and download
+     */
+    public String buildLoanDocumentUploadBasePathWithId(Long customerInfoId,
+                                                        Long branchId,
+                                                        String customerType,
+                                                        String action,
+                                                        Long loanId) {
+        return new StringBuilder(this.basePath)
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append("Branch-" + branchId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Loan_Document")
+                .append(FILE_SEPARATOR)
+                .append("Loan-" + loanId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(action).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("doc")
+                .append(FILE_SEPARATOR)
+                .toString();
+    }
+
+    /**
+     *  this is for customer document upload and download
+     */
+    public String buildCustomerInfoBasePathWithId(Long customerInfoId, Long branchId,
+                                                  String customerType) {
+        return new StringBuilder(this.basePath)
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append("Branch-" + branchId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Customer_Document")
+                .append(FILE_SEPARATOR)
+                .toString();
     }
 }
