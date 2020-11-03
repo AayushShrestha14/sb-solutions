@@ -261,6 +261,11 @@ public class CustomerLoanController {
             branchId = branches.get(0).getId();
         }
 
+        Preconditions.checkNotNull(loanHolderId, "Loan Holder Cannot be null");
+        Preconditions.checkNotNull(branchId, "Branch Cannot be null");
+        Preconditions.checkNotNull(customerType, "Customer Type Cannot be null");
+        Preconditions.checkNotNull(loanId, "Loan  Cannot be null");
+
         String uploadPath = new PathBuilder(UploadDir.initialDocument)
                 .buildLoanDocumentUploadBasePathWithId(loanHolderId,
                         branchId,
