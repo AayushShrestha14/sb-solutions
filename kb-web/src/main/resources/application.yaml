@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: dev
+    active: qa
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -58,7 +58,7 @@ file:
   upload-directory: C:/
 
 bank:
-  afilliateid: mega
+  affiliateId: mega
   name: United Finance Ltd
   website: http://www.ufl.com.np/
 

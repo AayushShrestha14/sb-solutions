@@ -42,10 +42,10 @@ public class DocumentController {
     private final CustomerLoanServiceImpl customerLoanService;
 
     public DocumentController(
-        @Autowired DocumentService documentService,
-        @Autowired LoanCycleService loanCycleService,
-        @Autowired DocumentMapper documentMapper,
-        CustomerLoanServiceImpl customerLoanService) {
+            @Autowired DocumentService documentService,
+            @Autowired LoanCycleService loanCycleService,
+            @Autowired DocumentMapper documentMapper,
+            CustomerLoanServiceImpl customerLoanService) {
         this.documentService = documentService;
         this.loanCycleService = loanCycleService;
         this.documentMapper = documentMapper;
@@ -65,23 +65,23 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
-            documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                documentService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
 
     @GetMapping(value = "/cycle/{cycleId}/status/{statusValue}")
     public ResponseEntity<?> getByCycleContaining(@PathVariable Long cycleId,
-        @PathVariable String statusValue) {
+                                                  @PathVariable String statusValue) {
         return new RestResponseDto()
-            .successModel(documentService.getByCycleContainingAndStatus(cycleId, statusValue));
+                .successModel(documentService.getByCycleContainingAndStatus(cycleId, statusValue));
     }
 
     @GetMapping(value = "/lifeCycle")
@@ -95,11 +95,11 @@ public class DocumentController {
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)")})
+            @ApiImplicitParam(name = "loanCycleId", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)")})
     @PostMapping(value = "/saveList")
     public ResponseEntity<?> saveList(@RequestBody List<Long> integers,
-        @RequestParam("loanCycleId") long loanCycleId) {
+                                      @RequestParam("loanCycleId") long loanCycleId) {
         LoanCycle loanCycle = loanCycleService.findOne(loanCycleId);
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
@@ -117,26 +117,26 @@ public class DocumentController {
     @PostMapping(value = "/downloadDoc/{id}")
     public ResponseEntity<?> downloadDoc(@RequestBody String path, @PathVariable Long id) {
         String loanPath = String.join("/",
-            (Arrays.asList(path.split("/"))
-                .subList(0, Arrays.asList(path.split("/"))
-                    .size() - 1)));
+                (Arrays.asList(path.split("/"))
+                        .subList(0, Arrays.asList(path.split("/"))
+                                .size() - 1)));
         final CustomerLoan customerLoan = customerLoanService.findOne(id);
         String action = actionType(customerLoan.getLoanType());
+
         String customerLoanDocumentPath = new PathBuilder(UploadDir.initialDocument)
-            .buildLoanDocumentUploadBasePath(customerLoan.getLoanHolder().getId(),
-                customerLoan.getLoanHolder().getName(),
-                customerLoan.getBranch().getName(),
-                customerLoan.getLoanHolder().getCustomerType().name(),
-                action, customerLoan.getLoan().getName());
+                .buildLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
+                        customerLoan.getBranch().getId(),
+                        customerLoan.getLoanHolder().getCustomerType().name(),
+                        action,
+                        customerLoan.getLoan().getId());
 
         String customerPath = new PathBuilder(UploadDir.initialDocument)
-            .buildCustomerInfoBasePath(customerLoan.getLoanHolder().getId(),
-                customerLoan.getLoanHolder().getName(),
-                customerLoan.getBranch().getName(),
-                customerLoan.getLoanHolder().getCustomerType().name()
-            );
+                .buildCustomerInfoBasePathWithId(customerLoan.getLoanHolder().getId(),
+                        customerLoan.getLoanHolder().getBranch().getId(),
+                        customerLoan.getLoanHolder().getCustomerType().name());
+
         return new RestResponseDto()
-            .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath));
+                .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath));
     }
 
     private String actionType(LoanType loanType) {
@@ -146,7 +146,7 @@ public class DocumentController {
             case RENEWED_LOAN:
                 return "RENEW";
             case CLOSURE_LOAN:
-                return "close";
+                return "CLOSE";
             case ENHANCED_LOAN:
                 return "ENHANCE";
             case FULL_SETTLEMENT_LOAN:

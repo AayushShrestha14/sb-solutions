@@ -60,7 +60,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Value("${server.port}")
     private String port;
 
-    @Value("${bank.affiliateid}")
+    @Value("${bank.affiliateId}")
     private String affiliateId;
 
     @Value("${spring.datasource.url}")
