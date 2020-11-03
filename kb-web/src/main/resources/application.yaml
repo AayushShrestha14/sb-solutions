@@ -58,8 +58,9 @@ file:
   upload-directory: C:/
 
 bank:
-  name: SB Solutions Pvt Ltd
-  website: http://www.sbsolutionsnepal.com.np/
+  afilliateid: mega
+  name: United Finance Ltd
+  website: http://www.ufl.com.np/
 
 mailproperty:
   additionalHeaders:
