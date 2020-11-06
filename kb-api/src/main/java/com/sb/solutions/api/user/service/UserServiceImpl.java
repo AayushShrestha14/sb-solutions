@@ -364,5 +364,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<User> findByRoleTypeAndBranchIdAndStatusActive(RoleType roleType, Long branchId) {
+        return userRepository.findByRoleRoleTypeAndBranchIdAndStatus(roleType,branchId,Status.ACTIVE);
+    }
+
 
 }

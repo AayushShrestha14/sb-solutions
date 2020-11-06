@@ -184,4 +184,20 @@ public class PathBuilder {
                 .append(FILE_SEPARATOR)
                 .toString();
     }
+
+    // Customer GeneralDocument
+    public String buildCustomerGeneralDocumentBasePath(String branchName,String customerType,String name,Long id) {
+        return new StringBuilder(this.basePath)
+            .append("customers")
+            .append("/")
+            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branchName))
+            .append("/")
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append("/")
+            .append(id + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
+            .append("/")
+            .append("generalDoc")
+            .append("/")
+            .toString();
+    }
 }
