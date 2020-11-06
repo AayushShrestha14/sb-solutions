@@ -39,7 +39,7 @@ public class CustomerOfferLetter extends BaseEntity<Long> {
 
     private Boolean isOfferLetterApproved = false;
 
-    private DocStatus docStatus;
+    private DocStatus docStatus = DocStatus.PENDING;
 
     @OneToOne
     private CustomerLoan customerLoan;

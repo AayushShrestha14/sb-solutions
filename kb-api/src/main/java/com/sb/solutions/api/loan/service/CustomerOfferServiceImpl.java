@@ -1,11 +1,19 @@
 package com.sb.solutions.api.loan.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.utils.ApprovalType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.loan.OfferLetterStage;
@@ -45,23 +54,25 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerOfferService.class);
 
-    private CustomerOfferRepository customerOfferRepository;
+    private final CustomerOfferRepository customerOfferRepository;
 
-    private CustomerLoanRepository customerRepository;
+    private final CustomerLoanRepository customerRepository;
 
-    private UserService userService;
+    private final UserService userService;
 
-    private OfferLetterRepository offerLetterRepository;
+    private final OfferLetterRepository offerLetterRepository;
+    private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
     public CustomerOfferServiceImpl(
-        @Autowired CustomerOfferRepository customerOfferRepository,
-        @Autowired CustomerLoanRepository customerRepository,
-        @Autowired UserService userService,
-        @Autowired OfferLetterRepository offerLetterRepository) {
+            @Autowired CustomerOfferRepository customerOfferRepository,
+            @Autowired CustomerLoanRepository customerRepository,
+            @Autowired UserService userService,
+            @Autowired OfferLetterRepository offerLetterRepository, ApprovalRoleHierarchyService approvalRoleHierarchyService) {
         this.customerOfferRepository = customerOfferRepository;
         this.customerRepository = customerRepository;
         this.userService = userService;
         this.offerLetterRepository = offerLetterRepository;
+        this.approvalRoleHierarchyService = approvalRoleHierarchyService;
     }
 
     @Override
@@ -77,19 +88,19 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     @Override
     public CustomerOfferLetter save(CustomerOfferLetter customerOfferLetter) {
         Preconditions
-            .checkNotNull(customerOfferLetter.getCustomerLoan(), "Customer Cannot be empty");
+                .checkNotNull(customerOfferLetter.getCustomerLoan(), "Customer Cannot be empty");
         if (customerOfferLetter.getId() == null) {
             customerOfferLetter.setOfferLetterStage(this.initStage());
         }
         if (customerOfferLetter.getCustomerOfferLetterPath().isEmpty()) {
-            logger.error("customer offer letter path is empty", customerOfferLetter);
+            logger.error("customer offer letter path is empty {}", customerOfferLetter);
             throw new ServiceValidationException(
-                "Cannot perform task please fill offer letter to save");
+                    "Cannot perform task please fill offer letter to save");
         }
 
-        CustomerOfferLetter customerOfferLetter1 = customerOfferRepository
-            .save(customerOfferLetter);
-        return customerOfferLetter1;
+        return customerOfferRepository
+                .save(customerOfferLetter);
+
 
     }
 
@@ -119,8 +130,8 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -130,18 +141,18 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> loanSpecification = customerLoanSpecBuilder.build();
 
-        Page customerLoanPage = customerRepository.findAll(loanSpecification, pageable);
+        Page<CustomerLoan> customerLoanPage = customerRepository.findAll(loanSpecification, pageable);
 
         s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
         final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
-            s);
+                s);
         final Specification<CustomerOfferLetter> specification = customerLoanOfferSpecBuilder
-            .build();
+                .build();
 
         Page customerOfferLetterPage = customerOfferRepository.findAll(specification, pageable);
 
         List<CustomerOfferLetter> customerOfferLetterPageContent = customerOfferLetterPage
-            .getContent();
+                .getContent();
         List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
         List<CustomerLoan> tempLoan = new ArrayList<>();
         customerLoanList.forEach(c -> {
@@ -152,30 +163,30 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
                     customerOfferLetterDto.setId(customerOfferLetter.getId());
                     c.setCustomerOfferLetter(customerOfferLetterDto);
                     c.setUploadedOfferLetterStat(
-                        customerOfferLetter.getCustomerOfferLetterPath().size());
+                            customerOfferLetter.getCustomerOfferLetterPath().size());
                 }
             }
             c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
             tempLoan.add(c);
         });
 
-        Page tempPage = new PageImpl(tempLoan, pageable, tempLoan.size());
+        Page tempPage = new PageImpl(tempLoan, pageable, customerLoanPage.getTotalElements());
         return tempPage;
     }
 
 
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
-        Long customerLoanId, Long offerLetterId) {
+                                                     Long customerLoanId, Long offerLetterId) {
         final CustomerLoan customerLoan = customerRepository.getOne(customerLoanId);
         final OfferLetter offerLetter = offerLetterRepository.getOne(offerLetterId);
         CustomerOfferLetter customerOfferLetter = this.customerOfferRepository
-            .findByCustomerLoanId(customerLoanId);
+                .findByCustomerLoanId(customerLoanId);
         if (customerOfferLetter == null) {
             logger.info("Please select a offer letter and save before uploading file {}",
-                customerLoan);
+                    customerLoan);
             throw new ServiceValidationException(
-                "Please select a offer letter and save before uploading file");
+                    "Please select a offer letter and save before uploading file");
         }
         String action = "new";
         switch (customerLoan.getLoanType()) {
@@ -192,28 +203,28 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             default:
         }
         String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
-            .isJsonPath(false).withBranch(customerLoan.getBranch().getName())
-            .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
-            .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
-            .withLoanType(customerLoan.getLoan().getName()).build();
+                .isJsonPath(false).withBranch(customerLoan.getBranch().getName())
+                .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
+                .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
+                .withLoanType(customerLoan.getLoan().getName()).build();
 
         uploadPath = new StringBuilder()
-            .append(uploadPath)
-            .append("offer-letter/").toString();
+                .append(uploadPath)
+                .append("offer-letter/").toString();
 
         final StringBuilder nameBuilder = new StringBuilder().append(action).append("-")
-            .append(customerLoan.getBranch().getName()).append("-")
-            .append(offerLetter.getName());
-        logger.info("File Upload Path offer letter {}", uploadPath, nameBuilder);
+                .append(customerLoan.getBranch().getName()).append("-")
+                .append(offerLetter.getName());
+        logger.info("File Upload Path offer letter {} {}", uploadPath, nameBuilder);
         ResponseEntity responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, nameBuilder.toString());
+                .uploadFile(multipartFile, uploadPath, nameBuilder.toString());
         if (customerOfferLetter.getId() == null) {
             customerOfferLetter.setOfferLetterStage(this.initStage());
         }
         RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
         customerOfferLetter.setDocStatus(DocStatus.PENDING);
         List<CustomerOfferLetterPath> customerOfferLetterPathList = customerOfferLetter
-            .getCustomerOfferLetterPath();
+                .getCustomerOfferLetterPath();
 
         if (customerOfferLetterPathList.isEmpty()) {
             CustomerOfferLetterPath customerOfferLetterPath = new CustomerOfferLetterPath();
@@ -233,9 +244,117 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         customerOfferLetter.setIsOfferLetterIssued(true);
 
         return customerOfferRepository
-            .save(customerOfferLetter);
+                .save(customerOfferLetter);
 
 
+    }
+
+    @Override
+    public CustomerOfferLetter assignOfferLetter(Long customerLoanId, Long userId, Long roleId) {
+        OfferLetterStage offerLetterStageAssigned = assignStage(userId, roleId);
+        CustomerOfferLetter customerOfferLetter = customerOfferRepository.findByCustomerLoanId(customerLoanId);
+        if (ObjectUtils.isEmpty(customerOfferLetter)) {
+            customerOfferLetter = new CustomerOfferLetter();
+            CustomerLoan customerLoan = new CustomerLoan();
+            customerLoan.setId(customerLoanId);
+            customerOfferLetter.setCustomerLoan(customerLoan);
+        } else {
+            final OfferLetterStage offerLetterStage = customerOfferLetter.getOfferLetterStage();
+
+            com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            List previousList = customerOfferLetter.getPreviousList();
+            List previousListTemp = new ArrayList();
+
+            if (offerLetterStage != null) {
+
+                Map<String, String> tempLoanStage = objectMapper
+                        .convertValue(offerLetterStage, Map.class);
+                try {
+                    previousList.forEach(p -> {
+                        try {
+                            Map<String, String> previous = objectMapper.convertValue(p, Map.class);
+
+                            previousListTemp.add(objectMapper.writeValueAsString(previous));
+                        } catch (JsonProcessingException e) {
+                            logger.error("Failed to handle JSON data {}", e.getMessage());
+                            throw new RuntimeException("Failed to handle JSON data");
+                        }
+                    });
+                    String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
+                    previousListTemp.add(jsonValue);
+                } catch (JsonProcessingException e) {
+                    logger.error("Failed to Get Stage data {}", e.getMessage());
+                    throw new RuntimeException("Failed to Get Stage data");
+                }
+            }
+            customerOfferLetter.setDocStatus(DocStatus.PENDING);
+            customerOfferLetter.setOfferLetterStageList(previousListTemp.toString());
+
+            final User user = userService.getAuthenticatedUser();
+            final User toUser = userService.findOne(userId);
+            offerLetterStage.setDocAction(DocAction.ASSIGNED);
+            offerLetterStage.setFromRole(user.getRole());
+            offerLetterStage.setFromUser(user);
+            offerLetterStage.setToRole(toUser.getRole());
+            offerLetterStage.setToUser(toUser);
+            offerLetterStage.setComment("Assigned");
+            customerOfferLetter.setOfferLetterStage(offerLetterStage);
+        }
+
+        Preconditions
+                .checkNotNull(customerOfferLetter.getCustomerLoan(), "Customer Cannot be empty");
+        if (customerOfferLetter.getId() == null) {
+            customerOfferLetter.setOfferLetterStage(offerLetterStageAssigned);
+        }
+        return customerOfferRepository
+                .save(customerOfferLetter);
+    }
+
+    @Override
+    public Page<CustomerOfferLetter> getAssignedOfferLetter(Object searchDto, Pageable pageable) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        User currentUser = userService.getAuthenticatedUser();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        s.put("toUser", String.valueOf(currentUser.getId()));
+        s.put("toRole", String.valueOf(currentUser.getRole().getId()));
+        final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
+                s);
+        final Specification<CustomerOfferLetter> specification = customerLoanOfferSpecBuilder
+                .build();
+
+        return customerOfferRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Map<String, Object> userPostApprovalDocStat() {
+        Map<String, Object> map = new HashMap<>();
+        final User user = userService.getAuthenticatedUser();
+        if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
+            map.put("docCount", 30);
+            map.put("show", true);
+            return map;
+        } else {
+            boolean isUserExistInCad = approvalRoleHierarchyService.checkRoleContainInHierarchies(user.getRole().getId(), ApprovalType.CAD, 0l);
+            if (isUserExistInCad) {
+                final Long count = customerOfferRepository
+                        .countCustomerOfferLetterByOfferLetterStageToUserIdAndOfferLetterStageToRoleId
+                                (user.getId(), user.getRole().getId());
+
+                map.put("docCount", count);
+            }
+            map.put("show", isUserExistInCad);
+
+            return map;
+        }
     }
 
 
@@ -248,6 +367,21 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         offerLetterStage.setToUser(user);
         offerLetterStage.setComment("DRAFT");
         offerLetterStage.setDocAction(DocAction.DRAFT);
+        return offerLetterStage;
+    }
+
+    private OfferLetterStage assignStage(Long userId, Long roleId) {
+        User user = userService.getAuthenticatedUser();
+        final OfferLetterStage offerLetterStage = new OfferLetterStage();
+        User toUser = userService.findOne(userId);
+
+        offerLetterStage.setToRole(toUser.getRole());
+        offerLetterStage.setToUser(toUser);
+        offerLetterStage.setFromUser(user);
+        offerLetterStage.setFromRole(user.getRole());
+
+        offerLetterStage.setComment("Assigned to " + toUser.getUsername());
+        offerLetterStage.setDocAction(DocAction.ASSIGNED);
         return offerLetterStage;
     }
 

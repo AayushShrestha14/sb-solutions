@@ -3,6 +3,7 @@ package com.sb.solutions.core.exception.handler;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -48,7 +49,7 @@ public class RequestExceptionHandler {
 
         if (null != violations) {
             response.put("message",
-                "Validation failed for " + error.getBindingResult().getObjectName());
+                    "Validation failed for " + error.getBindingResult().getObjectName());
 
             response.put("errorCount", error.getBindingResult().getErrorCount());
             response.put("errors", violations);
@@ -61,7 +62,7 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> messageNotReadableExceptionHandler(
-        HttpMessageNotReadableException ex) {
+            HttpMessageNotReadableException ex) {
 
         logger.error("Can not parse request", ex);
 
@@ -91,12 +92,12 @@ public class RequestExceptionHandler {
             final BeanPropertyBindingResult propertyResult = (BeanPropertyBindingResult) rs;
 
             final List<Violation> violations = Lists
-                .newArrayListWithCapacity(ex.getBindingResult().getErrorCount());
+                    .newArrayListWithCapacity(ex.getBindingResult().getErrorCount());
 
             for (FieldError error : propertyResult.getFieldErrors()) {
                 final Violation violation = new Violation(error.getField(),
-                    error.getRejectedValue(),
-                    error.getDefaultMessage());
+                        error.getRejectedValue(),
+                        error.getDefaultMessage());
 
                 violations.add(violation);
             }
@@ -112,14 +113,14 @@ public class RequestExceptionHandler {
         if (ex.getMostSpecificCause() instanceof InvalidFormatException) {
 
             final InvalidFormatException formatException = (InvalidFormatException) ex
-                .getMostSpecificCause();
+                    .getMostSpecificCause();
 
             final String field = formatException.getPath().stream().map(Reference::getFieldName)
-                .collect(
-                    Collectors.joining(","));
+                    .collect(
+                            Collectors.joining(","));
 
             final Violation violation = new Violation(field, formatException.getValue(),
-                formatException.getOriginalMessage());
+                    formatException.getOriginalMessage());
 
             return Lists.newArrayList(violation);
         }
@@ -129,14 +130,25 @@ public class RequestExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationHandler(
-        ConstraintViolationException ex) {
+            ConstraintViolationException ex) {
 
         logger.warn("Can not parse request", ex);
+        String message = "Duplicate entry";
 
         final Map<String, Object> response = Maps.newHashMap();
-        //TODO need to identify relevant message
+
+        try {
+            List<String> messageSplit = Stream.of(ex.getSQLException().getMessage().split("\\."))
+                    .collect(Collectors.toList());
+            message = messageSplit
+                    .stream()
+                    .filter(s -> s.contains("The duplicate key value is"))
+                    .collect(Collectors.joining());
+        } catch (Exception e) {
+            logger.warn("unable to split sql error message {}", ex.getSQLException().getMessage());
+        }
         response
-            .put("message", "Some field value need to have unique. Please check and try again.");
+                .put("message", message + " ,Please check and try again.");
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
 

@@ -7,6 +7,7 @@ import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_
 import java.util.List;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.navigation.dto.MenuDto;
@@ -80,7 +81,7 @@ public class NavigationController {
         List<MenuDto> menuList = menuMapper.menuDtoList(rolePermissionRights);
         if (ProductUtils.OFFER_LETTER) {
             boolean isPresentInCadHierarchy = approvalRoleHierarchyService.checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
-            if (isPresentInCadHierarchy) {
+            if (isPresentInCadHierarchy || u.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
                 MenuDto menuDto = new MenuDto();
                 menuDto.setTitle("Post Approval Documentation");
                 menuDto.setLink("/home/loan/loan-offer-letter");
