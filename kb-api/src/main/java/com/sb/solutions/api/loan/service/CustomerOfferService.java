@@ -8,6 +8,8 @@ import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.core.service.BaseService;
 
+import java.util.Map;
+
 public interface CustomerOfferService extends BaseService<CustomerOfferLetter> {
 
     CustomerOfferLetter findByCustomerLoanId(Long id);
@@ -18,5 +20,11 @@ public interface CustomerOfferService extends BaseService<CustomerOfferLetter> {
 
     CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile, Long customerLoanId,
         Long offerLetterId);
+
+    CustomerOfferLetter assignOfferLetter(Long customerLoanId,Long userId,Long roleId);
+
+    Page<CustomerOfferLetter> getAssignedOfferLetter(Object searchDto, Pageable pageable);
+
+    Map<String,Object> userPostApprovalDocStat();
 
 }

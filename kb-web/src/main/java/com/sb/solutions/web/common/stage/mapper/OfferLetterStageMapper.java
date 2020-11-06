@@ -11,6 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +92,7 @@ public class OfferLetterStageMapper {
         customerOfferLetter.setDocStatus(stageDto.getDocumentStatus());
         customerOfferLetter.setOfferLetterStageList(previousListTemp.toString());
         OfferLetterStage newStage = this
-                .offerLetterStage(stageDto, user, offerLetterStage, loanCreatedBranch, previousList);
+                .offerLetterStage(customerOfferLetter.getCustomerLoan(), stageDto, user, offerLetterStage, loanCreatedBranch, previousList);
         customerOfferLetter.setOfferLetterStage(newStage);
         if (stageDto.getDocumentStatus().equals(DocStatus.APPROVED)) {
             customerOfferLetter.setIsOfferLetterApproved(true);
@@ -98,7 +101,7 @@ public class OfferLetterStageMapper {
     }
 
 
-    private OfferLetterStage offerLetterStage(StageDto stageDto, User user,
+    private OfferLetterStage offerLetterStage(CustomerLoan customerLoan, StageDto stageDto, User user,
                                               OfferLetterStage currentStage, Long loanCreatedBranchId, List previousList) {
         currentStage.setFromUser(user);
         currentStage.setFromRole(user.getRole());
@@ -107,7 +110,7 @@ public class OfferLetterStageMapper {
         switch (stageDto.getDocAction()) {
             case FORWARD:
                 Role r = new Role();
-                Preconditions.checkArgument(!ObjectUtils.isEmpty(stageDto.getToRole().getId()),"To Role Cannot Be null");
+                Preconditions.checkArgument(!ObjectUtils.isEmpty(stageDto.getToRole().getId()), "To Role Cannot Be null");
                 r.setId(stageDto.getToRole().getId());
                 currentStage.setToRole(r);
                 User u = new User();
@@ -121,9 +124,10 @@ public class OfferLetterStageMapper {
                     ObjectMapper objectMapper = new ObjectMapper();
                     objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
                     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-                    for (Object obj : previousList) {
+                    for (Object obj : customerLoan.getPreviousList()) {
                         Stage maker = objectMapper.convertValue(obj, Stage.class);
-                        if (maker.getFromUser().getId().equals(currentStage.getCreatedBy())) {
+                        if (((maker.getFromUser().getId().equals(currentStage.getCreatedBy()))) ||
+                                (maker.getFromRole().getRoleType().equals(RoleType.MAKER))) {
                             currentStage.setToRole(maker.getFromRole());
                             try {
                                 final List<User> users = userService
@@ -150,8 +154,13 @@ public class OfferLetterStageMapper {
                         }
                     }
                 } else {
-                    currentStage.setToUser(currentStage.getFromUser());
-                    currentStage.setToRole(currentStage.getToRole());
+
+                    List<User> userList = userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, loanCreatedBranchId);
+                    if (userList.isEmpty()) {
+                        throw new ServiceValidationException("no user present in maker Type");
+                    }
+                    currentStage.setToUser(userList.get(0));
+                    currentStage.setToRole(userList.get(0).getRole());
                 }
                 logger.info("Backward offer letter{}", currentStage);
                 break;
