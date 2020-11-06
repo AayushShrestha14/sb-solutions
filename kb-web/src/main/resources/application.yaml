@@ -1,5 +1,5 @@
 server:
-  port: 8086
+  port: 8087
   compression:
     enabled: true
 spring:
@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: qa
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true

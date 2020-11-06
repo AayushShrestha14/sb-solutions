@@ -153,7 +153,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
 
             if (ProductUtils.OFFER_LETTER) {
                 ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/general_patch/offer_letter/"+affiliateId+".sql");
+                        baseServerFolder + "/general_patch/offer_letter.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
                 populator.execute(dataSource);

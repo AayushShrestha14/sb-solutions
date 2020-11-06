@@ -11,7 +11,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (10, 'Retail Housing', 'home/loan/offer-letter/retail-housing-loan')
+            VALUES (10, 'Retail Housing', 'home/loan/mega-offer-letter/retail-housing-loan')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END
@@ -23,7 +23,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (11, 'Retail Educational', 'home/loan/offer-letter/retail-educational')
+            VALUES (11, 'Retail Educational', 'home/loan/mega-offer-letter/retail-educational')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END
@@ -35,7 +35,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (12, 'Retail Mortgage Overdraft', 'home/loan/offer-letter/retail-mortgage')
+            VALUES (12, 'Retail Mortgage Overdraft', 'home/loan/mega-offer-letter/retail-mortgage')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
@@ -47,7 +47,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (13, 'Hayer Purchase', 'home/loan/offer-letter/hayer-purchase')
+            VALUES (13, 'Hayer Purchase', 'home/loan/mega-offer-letter/hayer-purchase')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
@@ -59,7 +59,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (14, 'Retail Professional Loan', 'home/loan/offer-letter/retail-professional-loan')
+            VALUES (14, 'Retail Professional Loan', 'home/loan/mega-offer-letter/retail-professional-loan')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
@@ -71,7 +71,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (15, 'SME', 'home/loan/offer-letter/sme')
+            VALUES (15, 'SME', 'home/loan/mega-offer-letter/sme')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
@@ -82,7 +82,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (16, 'Retail Mortgage Loan', 'home/loan/offer-letter/retail-mortgage-loan')
+            VALUES (16, 'Retail Mortgage Loan', 'home/loan/mega-offer-letter/retail-mortgage-loan')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
@@ -94,7 +94,7 @@ BEGIN
         BEGIN
             SET IDENTITY_INSERT offer_letter ON
             INSERT INTO offer_letter (id, name, template_url)
-            VALUES (17, 'Retail Educational Loan English', 'home/loan/offer-letter/retail-educational-loan-english')
+            VALUES (17, 'Retail Educational Loan English', 'home/loan/mega-offer-letter/retail-educational-loan-english')
             SET IDENTITY_INSERT offer_letter OFF
         END
 END;
