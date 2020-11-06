@@ -110,7 +110,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public String downloadAllDoc(String sourcepath, String SourcePathCustomer) {
+    public String downloadAllDoc(String sourcepath, String SourcePathCustomer, String SourceOfCustomerGeneralDoc) {
         String rootth = String.join("/",
             (Arrays.asList(sourcepath.split("/"))
                 .subList(0, Arrays.asList(sourcepath
@@ -121,6 +121,9 @@ public class DocumentServiceImpl implements DocumentService {
 
         String destinationCustomerDocumentPath = rootth
             + "/zipFolder/loanDocument.zip";
+
+        String destinationCustomerGeneral = rootth
+            + "/zipFolder/customerGeneralDoc.zip";
 
         String parentDocumentPath = rootth
             + "/allDocument.zip";
@@ -138,6 +141,8 @@ public class DocumentServiceImpl implements DocumentService {
                 UploadDir.WINDOWS_PATH + destinationPath);
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourcePathCustomer,
                 UploadDir.WINDOWS_PATH + destinationCustomerDocumentPath);
+            FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourceOfCustomerGeneralDoc
+                , UploadDir.WINDOWS_PATH + destinationCustomerGeneral);
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcePathParent,
                 UploadDir.WINDOWS_PATH + parentDocumentPath);
         } catch (IOException e) {

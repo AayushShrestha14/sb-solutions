@@ -56,8 +56,10 @@ import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import com.sb.solutions.api.crg.service.CrgGammaService;
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerActivity.aop.Activity;
@@ -159,6 +161,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerInfoService customerInfoService;
     private final ActivityService activityService;
     private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
+    private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private ObjectMapper objectMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -190,7 +193,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
             CustomerInfoService customerInfoService,
             ActivityService activityService,
-            CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate) {
+            CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
+            CustomerGeneralDocumentService customerGeneralDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -215,6 +219,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerInfoService = customerInfoService;
         this.activityService = activityService;
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
+        this.customerGeneralDocumentService = customerGeneralDocumentService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -286,6 +291,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
 
+        }
+        List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
+            .findByCustomerInfoId(customerLoan.getLoanHolder().getId());
+        if (!generalDocuments.isEmpty()) {
+            customerLoan.getLoanHolder().setCustomerGeneralDocuments(generalDocuments);
         }
         return mapLoanHolderToCustomerLoan(customerLoan);
     }
