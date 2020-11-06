@@ -4078,18 +4078,6 @@
       </column>
     </addColumn>
   </changeSet>
- <!-- <changeSet id="329-alter-customer-table-add-column-customer-code" author="bibash">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="customer_info" columnName="customer_code"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="customer_info">
-      <column name="customer_code" type="VARCHAR(256)">
-        <constraints unique="true"/>
-      </column>
-    </addColumn>
-  </changeSet>-->
   <changeSet id="329-alter-customer-add-column-customer-code" author="bibash">
     <preConditions onFail="MARK_RAN">
       <not>
@@ -4636,6 +4624,40 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="366-alter-cicl-add-column-repayment_track" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="cicl" columnName="repayment_track"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="cicl">
+      <column name="repayment_track" type="Varchar(150)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="367-alter-customer-table-add-column-net-worth" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer" columnName="net_worth"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer">
+      <column name="net_worth" type="Double">
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="367-alter-customer-audit-table-add-column-net-worth" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_audit" columnName="net_worth"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_audit">
+      <column name="net_worth" type="Double">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
