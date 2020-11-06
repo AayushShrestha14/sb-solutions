@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.core.enums.RoleType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -54,5 +55,7 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     boolean checkIfValidOldPassword(User user, String password);
 
     List<UserDto>  getUserByRoleCad();
+
+    List<User> findByRoleTypeAndBranchIdAndStatusActive(RoleType roleType, Long branchId);
 
 }

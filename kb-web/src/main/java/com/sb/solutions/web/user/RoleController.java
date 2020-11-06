@@ -1,9 +1,13 @@
 package com.sb.solutions.web.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 
+import com.sb.solutions.api.authorization.entity.Permission;
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,28 +37,46 @@ public class RoleController {
 
     private final RoleHierarchyService roleHierarchyService;
 
+    private final RolePermissionRightService rolePermissionRightService;
+
     public RoleController(
-        @Autowired RoleService roleService,
-        @Autowired RoleHierarchyService roleHierarchyService) {
+            @Autowired RoleService roleService,
+            @Autowired RoleHierarchyService roleHierarchyService, RolePermissionRightService rolePermissionRightService) {
         this.roleService = roleService;
         this.roleHierarchyService = roleHierarchyService;
+        this.rolePermissionRightService = rolePermissionRightService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-
     public ResponseEntity<?> saveRole(@Valid @RequestBody Role role) {
         final Role r = roleService.save(role);
 
         if (r == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
-            if (role.getId() != null) {
+            if (role.getId() != null && (!role.getRoleType().equals(RoleType.CAD_ADMIN))) {
                 List<RoleHierarchy> roleHierarchies = roleHierarchyService.findAll();
                 RoleHierarchy roleHierarchy = new RoleHierarchy();
                 roleHierarchy.setRole(r);
                 roleHierarchy.setRoleOrder(roleHierarchies.size() + 1L);
                 roleHierarchyService.save(roleHierarchy);
             }
+            Permission permission = new Permission();
+            permission.setId(17L);
+            List<RolePermissionRights> rolePermissionRightsList = new ArrayList<>();
+            RolePermissionRights rolePermissionRights = new RolePermissionRights();
+            rolePermissionRights.setRole(r);
+            rolePermissionRights.setPermission(permission);
+            rolePermissionRights.setApiRights(new ArrayList<>());
+            rolePermissionRightsList.add(rolePermissionRights);
+            permission = new Permission();
+            permission.setId(102L);
+            rolePermissionRights = new RolePermissionRights();
+            rolePermissionRights.setRole(r);
+            rolePermissionRights.setPermission(permission);
+            rolePermissionRights.setApiRights(new ArrayList<>());
+            rolePermissionRightsList.add(rolePermissionRights);
+            rolePermissionRightService.saveList(rolePermissionRightsList);
             return new RestResponseDto().successModel(r.getRoleName());
         }
     }
