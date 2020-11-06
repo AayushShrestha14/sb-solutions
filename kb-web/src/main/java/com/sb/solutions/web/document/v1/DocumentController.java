@@ -135,8 +135,15 @@ public class DocumentController {
                         customerLoan.getLoanHolder().getBranch().getId(),
                         customerLoan.getLoanHolder().getCustomerType().name());
 
+        String customerGeneralDoc = new PathBuilder(UploadDir.initialDocument)
+            .buildCustomerGeneralDocumentBasePath(customerLoan.getBranch().getName(),
+                customerLoan.getLoanHolder().getCustomerType().name(),
+                customerLoan.getLoanHolder().getName(),
+                customerLoan.getLoanHolder().getId());
+
+
         return new RestResponseDto()
-                .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath));
+                .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath , customerGeneralDoc));
     }
 
     private String actionType(LoanType loanType) {
