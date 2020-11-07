@@ -58,4 +58,6 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<User> findByRoleTypeAndBranchIdAndStatusActive(RoleType roleType, Long branchId);
 
+    List<UserDto> findByRoleIdAndBranchIdForDocumentAction(Long roleId, Long branchId);
+
 }

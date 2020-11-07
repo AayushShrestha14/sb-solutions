@@ -1,8 +1,6 @@
 package com.sb.solutions.web.user;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -49,9 +47,9 @@ public class UserController {
 
     @Autowired
     public UserController(
-        UserService userService,
-        RoleService roleService,
-        MailSenderService mailSenderService) {
+            UserService userService,
+            RoleService roleService,
+            MailSenderService mailSenderService) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailSenderService = mailSenderService;
@@ -74,33 +72,33 @@ public class UserController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
-        @RequestParam("type") String type) {
+                                          @RequestParam("type") String type) {
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> sergetAll(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                       @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findAllPageable(searchDto, PaginationUtils
-                .pageable(page, size)));
+                .successModel(userService.findAllPageable(searchDto, PaginationUtils
+                        .pageable(page, size)));
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
     public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                           @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
+                .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")
@@ -131,7 +129,7 @@ public class UserController {
 
     @GetMapping(value = "/forgotPassword")
     public ResponseEntity<?> forgotPassword(@RequestParam("username") String username,
-        @RequestHeader("referer") final String referer) {
+                                            @RequestHeader("referer") final String referer) {
         User user = userService.getByUsername(username);
         if (user == null) {
             return new RestResponseDto().failureModel("User not found!");
@@ -149,7 +147,7 @@ public class UserController {
             email.setTo(savedUser.getEmail());
             email.setToName(savedUser.getName());
             email.setResetPasswordLink(
-                referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
+                    referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
             email.setBankName(this.bankName);
             mailSenderService.send(Template.RESET_PASSWORD, email);
@@ -161,7 +159,7 @@ public class UserController {
     @GetMapping(path = "/get-all-doc-transfer/{id}")
     public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
         return new RestResponseDto()
-            .successModel(userService.getRoleWiseBranchWiseUserList(null, null, id));
+                .successModel(userService.getRoleWiseBranchWiseUserList(null, null, id));
     }
 
     @PostMapping(value = "/resetPassword")
@@ -173,7 +171,7 @@ public class UserController {
             if (user.getResetPasswordToken() != null) {
                 if (user.getResetPasswordTokenExpiry().before(new Date())) {
                     return new RestResponseDto()
-                        .failureModel("Reset Token has been expired already");
+                            .failureModel("Reset Token has been expired already");
                 } else {
                     User updatedUser = userService.updatePassword(u.getUsername(), u.getPassword());
                     Email email = new Email();
@@ -182,7 +180,7 @@ public class UserController {
                     email.setBankName(this.bankName);
                     mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
                     return new RestResponseDto()
-                        .successModel(updatedUser);
+                            .successModel(updatedUser);
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");
@@ -205,14 +203,19 @@ public class UserController {
     public ResponseEntity<?> getUserCad() {
 
         return new RestResponseDto()
-            .successModel(userService.getUserByRoleCad());
+                .successModel(userService.getUserByRoleCad());
     }
 
     @GetMapping("/branch/all")
     public ResponseEntity<?> getAuthenticatedUserBranches() {
         return new RestResponseDto().successModel(
-            userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
-                Collectors.joining(",")));
+                userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
+                        Collectors.joining(",")));
+    }
+
+    @GetMapping(value = "/{id}/users/branch/{bId}")
+    public ResponseEntity<?> getUserListForDocument(@PathVariable Long id, @PathVariable Long bId) {
+        return new RestResponseDto().successModel(userService.findByRoleIdAndBranchIdForDocumentAction(id, bId));
     }
 
 }
