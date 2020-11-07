@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.enums.RoleType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +73,8 @@ public interface UserRepository extends JpaRepository<User, Long>,
     List<User> findByRoleRoleNameAndStatus(String roleName, Status status);
 
     List<User> findByRoleRoleTypeAndBranchIdAndStatus(RoleType roleType,Long branchId, Status status);
+
+    List<User> findByRoleIdAndBranchInAndStatus(Long roleId, List<Branch> branchId, Status status);
 
 }
 
