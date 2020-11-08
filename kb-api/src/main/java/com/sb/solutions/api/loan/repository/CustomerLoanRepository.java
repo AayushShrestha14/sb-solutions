@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
 
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -205,5 +206,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     List<CustomerLoan> getCustomerLoanByAndLoanHolderId(Long id);
 
     List<CustomerLoan> findAllByCombinedLoanId(long id);
+
+    Long countCustomerLoanByDocumentStatus(DocStatus status);
 
 }

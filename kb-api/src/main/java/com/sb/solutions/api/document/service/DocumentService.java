@@ -18,5 +18,5 @@ public interface DocumentService extends BaseService<Document> {
 
     List<Document> getByStatus(String statusName);
 
-    String downloadAllDoc(String path, String sourcePathCustomer, String sourcePathCustomerGeneralDoc);
+    String downloadAllDoc(String path, String sourcePathCustomer);
 }
