@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ApprovalType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     private final CustomerOfferRepository customerOfferRepository;
 
-    private final CustomerLoanRepository customerRepository;
+    private final CustomerLoanRepository customerLoanRepository;
 
     private final UserService userService;
 
@@ -65,11 +66,11 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     public CustomerOfferServiceImpl(
             @Autowired CustomerOfferRepository customerOfferRepository,
-            @Autowired CustomerLoanRepository customerRepository,
+            @Autowired CustomerLoanRepository customerLoanRepository,
             @Autowired UserService userService,
             @Autowired OfferLetterRepository offerLetterRepository, ApprovalRoleHierarchyService approvalRoleHierarchyService) {
         this.customerOfferRepository = customerOfferRepository;
-        this.customerRepository = customerRepository;
+        this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.offerLetterRepository = offerLetterRepository;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
@@ -141,7 +142,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> loanSpecification = customerLoanSpecBuilder.build();
 
-        Page<CustomerLoan> customerLoanPage = customerRepository.findAll(loanSpecification, pageable);
+        Page<CustomerLoan> customerLoanPage = customerLoanRepository.findAll(loanSpecification, pageable);
 
         s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
         final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
@@ -178,7 +179,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
                                                      Long customerLoanId, Long offerLetterId) {
-        final CustomerLoan customerLoan = customerRepository.getOne(customerLoanId);
+        final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
         final OfferLetter offerLetter = offerLetterRepository.getOne(offerLetterId);
         CustomerOfferLetter customerOfferLetter = this.customerOfferRepository
                 .findByCustomerLoanId(customerLoanId);
@@ -339,9 +340,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         Map<String, Object> map = new HashMap<>();
         final User user = userService.getAuthenticatedUser();
         if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
-            map.put("docCount", 30);
+           final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
+            map.put("docCount", count);
             map.put("show", true);
-            return map;
         } else {
             boolean isUserExistInCad = approvalRoleHierarchyService.checkRoleContainInHierarchies(user.getRole().getId(), ApprovalType.CAD, 0l);
             if (isUserExistInCad) {
@@ -353,8 +354,8 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             }
             map.put("show", isUserExistInCad);
 
-            return map;
         }
+        return map;
     }
 
 
