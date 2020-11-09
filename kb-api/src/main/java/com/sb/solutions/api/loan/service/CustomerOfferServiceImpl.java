@@ -131,7 +131,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
                 .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
@@ -144,20 +144,12 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
         Page<CustomerLoan> customerLoanPage = customerLoanRepository.findAll(loanSpecification, pageable);
 
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
-        final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
-                s);
-        final Specification<CustomerOfferLetter> specification = customerLoanOfferSpecBuilder
-                .build();
-
-        Page customerOfferLetterPage = customerOfferRepository.findAll(specification, pageable);
-
-        List<CustomerOfferLetter> customerOfferLetterPageContent = customerOfferLetterPage
-                .getContent();
         List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
+        final List<CustomerOfferLetter> customerOfferLetterContent = customerOfferRepository.findCustomerOfferLetterByCustomerLoanIn(customerLoanList);
+
         List<CustomerLoan> tempLoan = new ArrayList<>();
         customerLoanList.forEach(c -> {
-            for (CustomerOfferLetter customerOfferLetter : customerOfferLetterPageContent) {
+            for (CustomerOfferLetter customerOfferLetter : customerOfferLetterContent) {
                 CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
                 if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
                     BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
@@ -340,7 +332,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         Map<String, Object> map = new HashMap<>();
         final User user = userService.getAuthenticatedUser();
         if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
-           final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
+            final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
             map.put("docCount", count);
             map.put("show", true);
         } else {
