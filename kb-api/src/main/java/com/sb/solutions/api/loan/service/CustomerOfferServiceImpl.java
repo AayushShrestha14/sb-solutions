@@ -144,25 +144,26 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
         Page<CustomerLoan> customerLoanPage = customerLoanRepository.findAll(loanSpecification, pageable);
 
-        List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
-        final List<CustomerOfferLetter> customerOfferLetterContent = customerOfferRepository.findCustomerOfferLetterByCustomerLoanIn(customerLoanList);
-
         List<CustomerLoan> tempLoan = new ArrayList<>();
-        customerLoanList.forEach(c -> {
-            for (CustomerOfferLetter customerOfferLetter : customerOfferLetterContent) {
-                CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
-                if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
-                    BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
-                    customerOfferLetterDto.setId(customerOfferLetter.getId());
-                    c.setCustomerOfferLetter(customerOfferLetterDto);
-                    c.setUploadedOfferLetterStat(
-                            customerOfferLetter.getCustomerOfferLetterPath().size());
-                }
-            }
-            c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
-            tempLoan.add(c);
-        });
+        List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
+        if (!customerLoanList.isEmpty()) {
+            final List<CustomerOfferLetter> customerOfferLetterContent = customerOfferRepository.findCustomerOfferLetterByCustomerLoanIn(customerLoanList);
 
+            customerLoanList.forEach(c -> {
+                for (CustomerOfferLetter customerOfferLetter : customerOfferLetterContent) {
+                    CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
+                    if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
+                        BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
+                        customerOfferLetterDto.setId(customerOfferLetter.getId());
+                        c.setCustomerOfferLetter(customerOfferLetterDto);
+                        c.setUploadedOfferLetterStat(
+                                customerOfferLetter.getCustomerOfferLetterPath().size());
+                    }
+                }
+                c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
+                tempLoan.add(c);
+            });
+        }
         Page tempPage = new PageImpl(tempLoan, pageable, customerLoanPage.getTotalElements());
         return tempPage;
     }
