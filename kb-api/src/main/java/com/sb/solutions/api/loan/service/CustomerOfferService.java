@@ -2,6 +2,7 @@ package com.sb.solutions.api.loan.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -18,9 +19,11 @@ public interface CustomerOfferService extends BaseService<CustomerOfferLetter> {
 
     Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable);
 
+    @Transactional
     CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile, Long customerLoanId,
         Long offerLetterId);
 
+    @Transactional
     CustomerOfferLetter assignOfferLetter(Long customerLoanId,Long userId,Long roleId);
 
     Page<CustomerOfferLetter> getAssignedOfferLetter(Object searchDto, Pageable pageable);
