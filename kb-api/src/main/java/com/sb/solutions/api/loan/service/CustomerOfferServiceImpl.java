@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.utils.ApprovalType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -43,8 +43,6 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
@@ -56,7 +54,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     private final CustomerOfferRepository customerOfferRepository;
 
-    private final CustomerLoanRepository customerRepository;
+    private final CustomerLoanRepository customerLoanRepository;
 
     private final UserService userService;
 
@@ -65,11 +63,11 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     public CustomerOfferServiceImpl(
             @Autowired CustomerOfferRepository customerOfferRepository,
-            @Autowired CustomerLoanRepository customerRepository,
+            @Autowired CustomerLoanRepository customerLoanRepository,
             @Autowired UserService userService,
             @Autowired OfferLetterRepository offerLetterRepository, ApprovalRoleHierarchyService approvalRoleHierarchyService) {
         this.customerOfferRepository = customerOfferRepository;
-        this.customerRepository = customerRepository;
+        this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.offerLetterRepository = offerLetterRepository;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
@@ -130,7 +128,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     public Page<CustomerLoan> getIssuedOfferLetter(Object searchDto, Pageable pageable) {
         final ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
-         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
                 .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
@@ -141,35 +139,28 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> loanSpecification = customerLoanSpecBuilder.build();
 
-        Page<CustomerLoan> customerLoanPage = customerRepository.findAll(loanSpecification, pageable);
+        Page<CustomerLoan> customerLoanPage = customerLoanRepository.findAll(loanSpecification, pageable);
 
-        s.put("currentOfferLetterStage", String.valueOf(userService.getAuthenticatedUser().getId()));
-        final CustomerLoanOfferSpecBuilder customerLoanOfferSpecBuilder = new CustomerLoanOfferSpecBuilder(
-                s);
-        final Specification<CustomerOfferLetter> specification = customerLoanOfferSpecBuilder
-                .build();
-
-        Page customerOfferLetterPage = customerOfferRepository.findAll(specification, pageable);
-
-        List<CustomerOfferLetter> customerOfferLetterPageContent = customerOfferLetterPage
-                .getContent();
-        List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
         List<CustomerLoan> tempLoan = new ArrayList<>();
-        customerLoanList.forEach(c -> {
-            for (CustomerOfferLetter customerOfferLetter : customerOfferLetterPageContent) {
-                CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
-                if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
-                    BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
-                    customerOfferLetterDto.setId(customerOfferLetter.getId());
-                    c.setCustomerOfferLetter(customerOfferLetterDto);
-                    c.setUploadedOfferLetterStat(
-                            customerOfferLetter.getCustomerOfferLetterPath().size());
-                }
-            }
-            c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
-            tempLoan.add(c);
-        });
+        List<CustomerLoan> customerLoanList = customerLoanPage.getContent();
+        if (!customerLoanList.isEmpty()) {
+            final List<CustomerOfferLetter> customerOfferLetterContent = customerOfferRepository.findCustomerOfferLetterByCustomerLoanIn(customerLoanList);
 
+            customerLoanList.forEach(c -> {
+                for (CustomerOfferLetter customerOfferLetter : customerOfferLetterContent) {
+                    CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
+                    if (customerOfferLetter.getCustomerLoan().getId() == c.getId()) {
+                        BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
+                        customerOfferLetterDto.setId(customerOfferLetter.getId());
+                        c.setCustomerOfferLetter(customerOfferLetterDto);
+                        c.setUploadedOfferLetterStat(
+                                customerOfferLetter.getCustomerOfferLetterPath().size());
+                    }
+                }
+                c.setOfferLetterStat(c.getLoan().getOfferLetters().size());
+                tempLoan.add(c);
+            });
+        }
         Page tempPage = new PageImpl(tempLoan, pageable, customerLoanPage.getTotalElements());
         return tempPage;
     }
@@ -178,7 +169,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
                                                      Long customerLoanId, Long offerLetterId) {
-        final CustomerLoan customerLoan = customerRepository.getOne(customerLoanId);
+        final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
         final OfferLetter offerLetter = offerLetterRepository.getOne(offerLetterId);
         CustomerOfferLetter customerOfferLetter = this.customerOfferRepository
                 .findByCustomerLoanId(customerLoanId);
@@ -309,8 +300,11 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         if (customerOfferLetter.getId() == null) {
             customerOfferLetter.setOfferLetterStage(offerLetterStageAssigned);
         }
-        return customerOfferRepository
+        CustomerOfferLetter customerOfferLetter1 = customerOfferRepository
                 .save(customerOfferLetter);
+        customerLoanRepository.updatePostApprovalAssignedStatus(PostApprovalAssignStatus.ASSIGNED,
+                customerOfferLetter1.getCustomerLoan().getId());
+        return customerOfferLetter1;
     }
 
     @Override
@@ -339,9 +333,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         Map<String, Object> map = new HashMap<>();
         final User user = userService.getAuthenticatedUser();
         if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
-            map.put("docCount", 30);
+            final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
+            map.put("docCount", count);
             map.put("show", true);
-            return map;
         } else {
             boolean isUserExistInCad = approvalRoleHierarchyService.checkRoleContainInHierarchies(user.getRole().getId(), ApprovalType.CAD, 0l);
             if (isUserExistInCad) {
@@ -353,8 +347,8 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             }
             map.put("show", isUserExistInCad);
 
-            return map;
         }
+        return map;
     }
 
 

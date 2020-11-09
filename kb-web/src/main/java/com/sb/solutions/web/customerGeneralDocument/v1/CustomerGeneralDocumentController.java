@@ -18,6 +18,7 @@ import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.web.customerInfo.v1.CustomerInfoController;
@@ -61,20 +62,13 @@ public class CustomerGeneralDocumentController {
         Document document = new Document();
         document.setId(documentId);
         customerGeneralDocument.setDocument(document);
-        String branchName = userService.getAuthenticatedUser().getBranch().get(0).getName();
+        Long branchId = userService.getAuthenticatedUser().getBranch().get(0).getId();
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
 
-        String uploadPath = new StringBuilder(UploadDir.initialDocument)
-            .append("customers")
-            .append("/")
-            .append(StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(branchName))
-            .append("/")
-            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
-            .append("/")
-            .append(id + "-" + StringUtil.getStringWithoutWhiteSpaceAndWithCapitalize(name))
-            .append("/")
+        String basePath = new PathBuilder(UploadDir.initialDocument).buildCustomerInfoBasePathWithId( id, branchId , customerType);
+        String uploadPath = new StringBuilder(basePath)
             .append("generalDoc")
             .append("/")
             .toString();
