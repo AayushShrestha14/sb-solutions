@@ -45,4 +45,10 @@ public class FormsController {
         return new RestResponseDto().successModel(formsService.findPageableBySpec(search, PaginationUtils
                 .pageable(page, size)));
     }
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity<?> saveForms(@PathVariable Long id) {
+        logger.info("saving forms....");
+        return new RestResponseDto().successModel(formsService.findOne(id));
+    }
 }

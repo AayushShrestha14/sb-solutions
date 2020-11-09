@@ -1,9 +1,7 @@
 package com.sb.solutions.api.forms.service;
 
-import com.sb.solutions.api.customerActivity.repository.specification.CustomerActivitySpecBuilder;
 import com.sb.solutions.api.forms.entity.Forms;
 import com.sb.solutions.api.forms.repository.FormsRepository;
-import com.sb.solutions.api.forms.repository.specification.FormsSpec;
 import com.sb.solutions.api.forms.repository.specification.FormsSpecBuilder;
 import com.sb.solutions.core.repository.BaseSpecBuilder;
 import com.sb.solutions.core.service.BaseServiceImpl;
