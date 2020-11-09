@@ -4658,6 +4658,18 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="368-alter-customer-loan-table-add-column-post-approval-assign-status" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="post_approval_assign_status"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="post_approval_assign_status" type="INT">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 

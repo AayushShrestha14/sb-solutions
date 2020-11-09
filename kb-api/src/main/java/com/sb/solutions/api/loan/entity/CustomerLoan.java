@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.core.enums.PostApprovalAssignStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -254,6 +255,9 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     @Transient
     private Object groupSummaryDto;
+
+    @NotAudited
+    private PostApprovalAssignStatus postApprovalAssignStatus = PostApprovalAssignStatus.NOT_ASSIGNED;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

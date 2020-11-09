@@ -12,8 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.utils.ApprovalType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -44,8 +43,6 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
@@ -303,8 +300,11 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         if (customerOfferLetter.getId() == null) {
             customerOfferLetter.setOfferLetterStage(offerLetterStageAssigned);
         }
-        return customerOfferRepository
+        CustomerOfferLetter customerOfferLetter1 = customerOfferRepository
                 .save(customerOfferLetter);
+        customerLoanRepository.updatePostApprovalAssignedStatus(PostApprovalAssignStatus.ASSIGNED,
+                customerOfferLetter1.getCustomerLoan().getId());
+        return customerOfferLetter1;
     }
 
     @Override

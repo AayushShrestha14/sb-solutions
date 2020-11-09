@@ -15,15 +15,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.gson.Gson;
+import com.sb.solutions.core.enums.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.LoanFlag;
-import com.sb.solutions.core.enums.LoanTag;
-import com.sb.solutions.core.enums.LoanType;
 
 /**
  * @author Rujan Maharjan on 6/8/2019
@@ -59,6 +55,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_LOAN_HOLDER_ID = "loanHolderId";
     public static final String FILTER_BY_IS_STAGED = "isStaged";
     private static final String FILTER_BY_CUSTOMER_GROUP_CODE = "groupCode";
+    private static final String FILTER_BY_LOAN_ASSIGNED_TO_USER = "postApprovalAssignStatus";
 
     private final String property;
     private final String value;
@@ -70,7 +67,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
     @Override
     public Predicate toPredicate(Root<CustomerLoan> root, CriteriaQuery<?> criteriaQuery,
-        CriteriaBuilder criteriaBuilder) {
+                                 CriteriaBuilder criteriaBuilder) {
 
         switch (property) {
 
@@ -90,18 +87,18 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_LOAN:
                 return criteriaBuilder
-                    .and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
+                        .and(criteriaBuilder.equal(root.join("loan").get("id"), Long.valueOf(value)));
 
             case FILTER_BY_CURRENT_USER_ROLE:
                 return criteriaBuilder
-                    .equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"),
-                        Long.valueOf(value));
+                        .equal(root.join("currentStage", JoinType.LEFT).join("toRole").get("id"),
+                                Long.valueOf(value));
 
             case FILTER_BY_BRANCH:
                 Pattern pattern = Pattern.compile(",");
                 List<Long> list = pattern.splitAsStream(value)
-                    .map(Long::valueOf)
-                    .collect(Collectors.toList());
+                        .map(Long::valueOf)
+                        .collect(Collectors.toList());
                 Expression<String> exp = root.join("branch").get("id");
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
@@ -111,34 +108,34 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Map dates = gson.fromJson(value, Map.class);
                 try {
                     return criteriaBuilder.between(root.get("createdAt"),
-                        new SimpleDateFormat("MM/dd/yyyy")
-                            .parse(String.valueOf(dates.get("startDate"))),
-                        new SimpleDateFormat("MM/dd/yyyy")
-                            .parse(String.valueOf(dates.get("endDate"))));
+                            new SimpleDateFormat("MM/dd/yyyy")
+                                    .parse(String.valueOf(dates.get("startDate"))),
+                            new SimpleDateFormat("MM/dd/yyyy")
+                                    .parse(String.valueOf(dates.get("endDate"))));
                 } catch (ParseException e) {
                     return null;
                 }
 
             case FILTER_BY_TO_USER:
                 return criteriaBuilder
-                    .equal(
-                        root.join("currentStage", JoinType.LEFT).join(FILTER_BY_TO_USER).get("id"),
-                        Long.valueOf(value));
+                        .equal(
+                                root.join("currentStage", JoinType.LEFT).join(FILTER_BY_TO_USER).get("id"),
+                                Long.valueOf(value));
 
             case FILTER_BY_TYPE:
                 return criteriaBuilder.equal(root.get("loanType"), LoanType.valueOf(value));
 
             case FILTER_BY_NOTIFY:
                 Predicate notifyPredicate = criteriaBuilder
-                    .equal(root.get(FILTER_BY_NOTIFY), Boolean.valueOf(value));
+                        .equal(root.get(FILTER_BY_NOTIFY), Boolean.valueOf(value));
                 Predicate notedByPredicate = criteriaBuilder.isNull(root.get("notedBy"));
                 return criteriaBuilder.and(notifyPredicate, notedByPredicate);
 
             case FILTER_BY_CUSTOMER_NAME:
                 return criteriaBuilder
-                    .like(criteriaBuilder
-                            .lower(root.join("loanHolder").get("name")),
-                        value.toLowerCase() + "%");
+                        .like(criteriaBuilder
+                                        .lower(root.join("loanHolder").get("name")),
+                                value.toLowerCase() + "%");
 
 //            case FILTER_BY_COMPANY_NAME:
 //                return criteriaBuilder
@@ -148,8 +145,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_DOC_ACTION:
                 return criteriaBuilder
-                    .and(criteriaBuilder.equal(root.get("currentStage").get("docAction"),
-                        DocAction.valueOf(value)));
+                        .and(criteriaBuilder.equal(root.get("currentStage").get("docAction"),
+                                DocAction.valueOf(value)));
 
 //
 //            case FILTER_BY_CURRENT_OFFER_LETTER_STAGE:
@@ -172,96 +169,96 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_CUSTOMER_RELATIVE_NAME:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.join("customerInfo").join("customerRelatives").get(property),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(root.join("customerInfo").join("customerRelatives").get(property),
+                                        value));
 
             case FILTER_BY_CUSTOMER_CITIZENSHIP:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.join("customerInfo").join("customerRelatives").get(property),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(root.join("customerInfo").join("customerRelatives").get(property),
+                                        value));
 
             case FILTER_BY_CUSTOMER_CITIZEN_ISSUE_DATE:
                 try {
                     return criteriaBuilder
-                        .and(criteriaBuilder
-                            .equal(
-                                root.join("customerInfo").join("customerRelatives").get(property),
-                                new SimpleDateFormat("yyyy-MM-dd").parse(value)));
+                            .and(criteriaBuilder
+                                    .equal(
+                                            root.join("customerInfo").join("customerRelatives").get(property),
+                                            new SimpleDateFormat("yyyy-MM-dd").parse(value)));
                 } catch (ParseException e) {
                     return null;
                 }
 
             case FILTER_BY_GUARANTOR_NAME:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.join("guarantor").join("guarantorList").get("name"),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(root.join("guarantor").join("guarantorList").get("name"),
+                                        value));
 
             case FILTER_BY_GUARANTOR_CITIZENSHIP:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(root.join("guarantor").join("guarantorList").get("citizenNumber"),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(root.join("guarantor").join("guarantorList").get("citizenNumber"),
+                                        value));
 
             case FILTER_BY_GUARANTOR_CITIZEN_ISSUE_DATE:
                 try {
                     return criteriaBuilder
-                        .and(criteriaBuilder
-                            .equal(
-                                root.join("guarantor").join("guarantorList").get("issuedYear"),
-                                new SimpleDateFormat("yyyy-MM-dd").parse(value)));
+                            .and(criteriaBuilder
+                                    .equal(
+                                            root.join("guarantor").join("guarantorList").get("issuedYear"),
+                                            new SimpleDateFormat("yyyy-MM-dd").parse(value)));
                 } catch (ParseException e) {
                     return null;
                 }
 
             case FILTER_BY_GUARANTOR_DISTRICT_ID:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(
-                            root.join("guarantor").join("guarantorList").join("district").get("id"),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(
+                                        root.join("guarantor").join("guarantorList").join("district").get("id"),
+                                        value));
 
             case FILTER_BY_GUARANTOR_PROVINCE_ID:
                 return criteriaBuilder
-                    .and(criteriaBuilder
-                        .equal(
-                            root.join("guarantor").join("guarantorList").join("province").get("id"),
-                            value));
+                        .and(criteriaBuilder
+                                .equal(
+                                        root.join("guarantor").join("guarantorList").join("province").get("id"),
+                                        value));
 
             case FILTER_BY_SHARE_LOAN_EXCEEDING_LIMIT:
                 Predicate idEqual = criteriaBuilder.
-                    equal(root.join("loanHolder").join("loanFlags").get("customerLoanId") , root.get("id"));
+                        equal(root.join("loanHolder").join("loanFlags").get("customerLoanId"), root.get("id"));
                 Predicate shareFlagExist = criteriaBuilder.equal(root.join("loanHolder").
-                    join("loanFlags").get("flag"), LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
+                        join("loanFlags").get("flag"), LoanFlag.INSUFFICIENT_SHARE_AMOUNT);
                 Predicate hasShareLoanTag = criteriaBuilder.equal(root.join("loan").get("loanTag"),
-                    LoanTag.SHARE_SECURITY);
+                        LoanTag.SHARE_SECURITY);
                 return criteriaBuilder
-                    .and(idEqual, shareFlagExist,hasShareLoanTag);
+                        .and(idEqual, shareFlagExist, hasShareLoanTag);
 
             case FILTER_BY_INSURANCE_EXPIRY:
                 return criteriaBuilder.equal(root.join("loanHolder").join("loanFlags").get("flag"),
-                    LoanFlag.INSURANCE_EXPIRY);
+                        LoanFlag.INSURANCE_EXPIRY);
 
             case FILTER_BY_HAS_INSURANCE:
                 return criteriaBuilder.and(criteriaBuilder.isMember(AppConstant.TEMPLATE_INSURANCE,
-                    root.join("loan").get("templateList")));
+                        root.join("loan").get("templateList")));
 
             case FILTER_BY_IS_CLOSE_RENEW:
                 Predicate notNull = criteriaBuilder.isNotNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
 
                 Predicate isNull = criteriaBuilder.isNull(root.get(FILTER_BY_IS_CLOSE_RENEW));
                 Predicate equal = criteriaBuilder
-                    .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
+                        .equal(root.get(FILTER_BY_IS_CLOSE_RENEW), Boolean.valueOf(value));
                 return Boolean.parseBoolean(value) ? criteriaBuilder.and(notNull, equal)
-                    : criteriaBuilder.or(isNull, equal);
+                        : criteriaBuilder.or(isNull, equal);
 
             case FILTER_BY_IS_NOT_COMBINED:
                 return criteriaBuilder.isNull(root.get("combinedLoan"));
             case FILTER_BY_LOAN_HOLDER_ID:
                 return criteriaBuilder
-                    .equal(root.join("loanHolder").get("id"), Long.valueOf(value));
+                        .equal(root.join("loanHolder").get("id"), Long.valueOf(value));
 
             case FILTER_BY_IS_STAGED:
                 boolean isStaged = Boolean.parseBoolean(value);
@@ -271,6 +268,15 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_CUSTOMER_GROUP_CODE:
                 return criteriaBuilder.equal(root.join("loanHolder").join("customerGroup").get("groupCode"), value);
 
+            case FILTER_BY_LOAN_ASSIGNED_TO_USER:
+                if (PostApprovalAssignStatus.NOT_ASSIGNED.equals(PostApprovalAssignStatus.valueOf(value))) {
+                    Predicate predicateNotAssigned = criteriaBuilder
+                            .equal(root.get(property), Boolean.valueOf(value));
+                    Predicate predicateNUll = criteriaBuilder.isNull(root.get(property));
+                    return criteriaBuilder.or(predicateNotAssigned,predicateNUll);
+                } else {
+                    return criteriaBuilder.equal(root.get(property), PostApprovalAssignStatus.valueOf(value));
+                }
             default:
                 return null;
         }
