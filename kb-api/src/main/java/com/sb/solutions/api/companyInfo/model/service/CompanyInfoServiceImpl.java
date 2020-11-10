@@ -88,6 +88,13 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
                     "Customer Exist!" + "This Customer is associate with branch " + branch
                         .getName());
             }
+
+            if (!ObjectUtils.isEmpty(companyInfo.getRegistrationNumber())){
+                CompanyInfo sameRegistrationNumber = companyInfoRepository.findCompanyInfoByRegistrationNumber(companyInfo.getRegistrationNumber());
+                if (sameRegistrationNumber != null) {
+                    throw new ServiceValidationException("The registration number is already in use. You cannot create two clients with same registration number");
+                }
+            }
         }
 
         final CompanyInfo info = companyInfoRepository.save(companyInfo);

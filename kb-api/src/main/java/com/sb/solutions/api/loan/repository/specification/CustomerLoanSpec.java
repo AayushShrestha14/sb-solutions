@@ -271,7 +271,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_LOAN_ASSIGNED_TO_USER:
                 if (PostApprovalAssignStatus.NOT_ASSIGNED.equals(PostApprovalAssignStatus.valueOf(value))) {
                     Predicate predicateNotAssigned = criteriaBuilder
-                            .equal(root.get(property), Boolean.valueOf(value));
+                            .equal(root.get(property), PostApprovalAssignStatus.valueOf(value));
                     Predicate predicateNUll = criteriaBuilder.isNull(root.get(property));
                     return criteriaBuilder.or(predicateNotAssigned,predicateNUll);
                 } else {
