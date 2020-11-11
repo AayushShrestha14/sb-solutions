@@ -13,6 +13,7 @@ BEGIN
     SET @count_preference = (SELECT count(*) from permission where id = 142)
     SET @count_customer = (SELECT count(*) from permission where id = 143)
 
+
     if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT permission ON
@@ -30,6 +31,8 @@ BEGIN
             VALUES (17, 'Dashboard', 'home-outline', '/home/admin/dashboard', 1, 1)
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (102, 'Catalogue', 'layers-outline', '/home/admin/catalogue', 14, 1)
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+            VALUES (150, 'Post Approval', 'checkmark-circle-outline', '/home/loan/post-approval-form', 110, 1)
             SET IDENTITY_INSERT permission OFF
 
 
