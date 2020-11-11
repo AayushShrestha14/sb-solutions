@@ -11,7 +11,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.authorization.dto.RoleDto;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.user.dto.UserDto;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.utils.ApprovalType;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -120,8 +125,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     @Override
     public CustomerOfferLetter action(CustomerOfferLetter customerOfferLetter) {
-
-        return customerOfferRepository.save(customerOfferLetter);
+        final CustomerOfferLetter c = customerOfferRepository.save(customerOfferLetter);
+        customerLoanRepository.updatePostApprovalAssignedStatus(PostApprovalAssignStatus.ASSIGNED, c.getCustomerLoan().getId(), c.getOfferLetterStage().getToUser());
+        return c;
     }
 
     @Override
@@ -303,7 +309,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         CustomerOfferLetter customerOfferLetter1 = customerOfferRepository
                 .save(customerOfferLetter);
         customerLoanRepository.updatePostApprovalAssignedStatus(PostApprovalAssignStatus.ASSIGNED,
-                customerOfferLetter1.getCustomerLoan().getId());
+                customerOfferLetter1.getCustomerLoan().getId(), customerOfferLetter1.getOfferLetterStage().getToUser());
         return customerOfferLetter1;
     }
 
@@ -349,6 +355,13 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
         }
         return map;
+    }
+
+    @Override
+    public List<RoleDto> getUserListForFilter(List<ApprovalRoleHierarchy> approvalRoleHierarchies, SearchDto searchDto) {
+        final List<Role> roleList = approvalRoleHierarchies.stream().map(ApprovalRoleHierarchy::getRole).collect(Collectors.toList());
+        return userService.findByRoleInAndStatus(roleList, Status.ACTIVE);
+
     }
 
 
