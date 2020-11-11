@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
 
+import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.PostApprovalAssignStatus;
 import com.sb.solutions.core.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -212,7 +213,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     @Modifying
     @Transactional
-    @Query("UPDATE CustomerLoan c SET c.postApprovalAssignStatus=:status WHERE c.id = :id")
-    void updatePostApprovalAssignedStatus(@Param("status") PostApprovalAssignStatus status, @Param("id") Long id);
+    @Query("UPDATE CustomerLoan c SET c.postApprovalAssignStatus=:status,c.postApprovalAssignedUser=:user WHERE c.id = :id")
+    void updatePostApprovalAssignedStatus(@Param("status") PostApprovalAssignStatus status, @Param("id") Long id, @Param("user") User user);
 
 }

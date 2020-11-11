@@ -7,14 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.core.enums.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -56,6 +52,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_IS_STAGED = "isStaged";
     private static final String FILTER_BY_CUSTOMER_GROUP_CODE = "groupCode";
     private static final String FILTER_BY_LOAN_ASSIGNED_TO_USER = "postApprovalAssignStatus";
+    private static final String FILTER_BY_POST_APPROVAL_CURRENT_USER = "postApprovalAssignedUser";
 
     private final String property;
     private final String value;
@@ -273,10 +270,13 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     Predicate predicateNotAssigned = criteriaBuilder
                             .equal(root.get(property), PostApprovalAssignStatus.valueOf(value));
                     Predicate predicateNUll = criteriaBuilder.isNull(root.get(property));
-                    return criteriaBuilder.or(predicateNotAssigned,predicateNUll);
+                    return criteriaBuilder.or(predicateNotAssigned, predicateNUll);
                 } else {
                     return criteriaBuilder.equal(root.get(property), PostApprovalAssignStatus.valueOf(value));
                 }
+
+            case FILTER_BY_POST_APPROVAL_CURRENT_USER:
+                return criteriaBuilder.equal(root.join("postApprovalAssignedUser").get("id"), Long.valueOf(value));
             default:
                 return null;
         }

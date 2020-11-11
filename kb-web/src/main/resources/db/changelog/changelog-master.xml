@@ -4670,6 +4670,22 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="369-alter-customer-loan-add-column-post-approval-assigned-user-id" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="post_approval_assigned_user_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+      <column name="post_approval_assigned_user_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_loan_post_approval_assigned_user_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
