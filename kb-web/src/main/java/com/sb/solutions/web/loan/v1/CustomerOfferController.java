@@ -1,6 +1,8 @@
 package com.sb.solutions.web.loan.v1;
 
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.web.loan.v1.dto.AssignOfferLetter;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,6 +31,7 @@ import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.OfferLetterStageMapper;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -138,15 +141,23 @@ public class CustomerOfferController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/assigned-offer-letter")
     public ResponseEntity<?> getAssignedOfferLetter(@RequestBody Object searchDto,
-                                                  @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                    @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
                 .successModel(
                         customerOfferService.getAssignedOfferLetter(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "/stat")
-    public ResponseEntity<?> userPostApprovalDocumentStat(){
+    public ResponseEntity<?> userPostApprovalDocumentStat() {
         return new RestResponseDto().successModel(customerOfferService.userPostApprovalDocStat());
+    }
+
+    @PostMapping(value = "/user-list")
+    public ResponseEntity<?> getUserListForFilter(@RequestBody SearchDto searchDto) {
+        final List<ApprovalRoleHierarchy> approvalRoleHierarchyList = approvalRoleHierarchyService.getRoles(ApprovalType.CAD, 0L);
+        return new RestResponseDto()
+                .successModel(customerOfferService.getUserListForFilter(approvalRoleHierarchyList, searchDto)
+                );
     }
 
 }
