@@ -148,10 +148,11 @@ public class Mapper {
             throw new RuntimeException(
                 "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
+        // TODO: Separate alert message for no user and disabled user
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
-                throw new RuntimeException("No user present of selected To:");
+                throw new RuntimeException("There is no user created in the role or is  disabled. Please contact admin.");
             }
             // Check loan flags
             List<CustomerLoanFlag> loanFlags = customerLoan.getLoanHolder().getLoanFlags()

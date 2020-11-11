@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
@@ -29,6 +30,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.csv.CsvReader;
 import com.sb.solutions.report.core.bean.ReportParam;
@@ -70,6 +72,12 @@ public class BranchServiceImpl implements BranchService {
         branch.setLastModifiedAt(new Date());
         if (branch.getId() == null) {
             branch.setStatus(Status.ACTIVE);
+        }
+        if (!ObjectUtils.isEmpty(branch.getName())){
+            Branch sameBranchNameExist = this.branchRepository.findByName(branch.getName());
+            if (sameBranchNameExist != null) {
+                throw new ServiceValidationException("Branch name already exist.");
+            }
         }
         branch.setBranchCode(branch.getBranchCode().toUpperCase());
         return branchRepository.save(branch);
