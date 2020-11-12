@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -72,6 +73,8 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private CustomerType customerType;
 
+    private ClientType clientType;
+    private String subsectorDetail;
 
     private String contactNo;
 
