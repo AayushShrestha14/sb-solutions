@@ -235,16 +235,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
-        if (ProductUtils.OFFER_LETTER) {
-            CustomerOfferLetter customerOfferLetter = customerOfferService
-                    .findByCustomerLoanId(customerLoan.getId());
-            if (customerOfferLetter != null) {
-                CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
-                BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
-                customerOfferLetterDto.setId(customerOfferLetter.getId());
-                customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
-            }
-        }
         if (ProductUtils.NEP_TEMPLATE) {
             Map<String, String> filterParams = new HashMap<>();
             filterParams.put("customerLoan.id", String.valueOf(id));
@@ -291,6 +281,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
 
+        }
+        if (ProductUtils.OFFER_LETTER) {
+            CustomerOfferLetter customerOfferLetter = customerOfferService
+                    .findByCustomerLoanId(customerLoan.getId());
+            if (customerOfferLetter != null) {
+                CustomerOfferLetterDto customerOfferLetterDto = new CustomerOfferLetterDto();
+                BeanUtils.copyProperties(customerOfferLetter, customerOfferLetterDto);
+                customerOfferLetterDto.setId(customerOfferLetter.getId());
+                customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
+            }
         }
         List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
             .findByCustomerInfoId(customerLoan.getLoanHolder().getId());
