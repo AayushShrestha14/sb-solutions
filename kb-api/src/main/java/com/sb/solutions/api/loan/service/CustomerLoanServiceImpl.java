@@ -36,6 +36,7 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sb.solutions.api.creditRiskGradingLambda.service.CreditRiskGradingLambdaService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +146,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
+    private final CreditRiskGradingLambdaService creditRiskGradingLambdaService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
     private final GroupServices groupService;
@@ -177,6 +179,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             SiteVisitService siteVisitService,
             FinancialService financialService,
             CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+            CreditRiskGradingLambdaService creditRiskGradingLambdaService,
             SecurityService securityservice,
             ProposalService proposalService,
             CustomerOfferService customerOfferService,
@@ -203,6 +206,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
+        this.creditRiskGradingLambdaService = creditRiskGradingLambdaService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
         this.customerOfferService = customerOfferService;
@@ -409,6 +413,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoan.getLoanHolder().getCreditRiskGradingAlpha());*/
             customerLoan.setCreditRiskGradingAlpha(this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
         }
+
+        if (customerLoan.getCreditRiskGradingLambda() != null) {
+            customerLoan.setCreditRiskGradingLambda(this.creditRiskGradingLambdaService.save(customerLoan.getCreditRiskGradingLambda()));
+        }
+
         if (customerLoan.getCrgGamma() != null) {
             customerLoan.setCrgGamma(
                     customerLoan.getLoanHolder().getCrgGamma());
@@ -857,6 +866,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.getCreditRiskGradingAlpha().setId(null);
             previousLoan.setCreditRiskGradingAlpha(
                     creditRiskGradingAlphaService.save(previousLoan.getCreditRiskGradingAlpha()));
+        }
+        if (previousLoan.getCreditRiskGradingLambda() != null) {
+            previousLoan.getCreditRiskGradingLambda().setId(null);
+            previousLoan.setCreditRiskGradingLambda(
+                    creditRiskGradingLambdaService.save(previousLoan.getCreditRiskGradingLambda()));
         }
         if (previousLoan.getCrgGamma() != null) {
             previousLoan.getCrgGamma().setId(null);
