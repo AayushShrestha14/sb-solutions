@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://150.107.205.62:1433;database=sunilv2db
+    url: jdbc:sqlserver://localhost:1433;database=las_v2
     username: sa
-    password: sbdb@141
+    password: root
   jpa:
     show-sql: true
 
