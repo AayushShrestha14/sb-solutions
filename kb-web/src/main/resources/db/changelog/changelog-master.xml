@@ -4686,6 +4686,30 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="355-alter-customer-info-add-client-type" author="sunil">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="client_type"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="client_type" type="BIGINT">
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="355-alter-customer-info-add-subsector-detail" author="sunil">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="subsector_detail"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="subsector_detail" type="Varchar(1000)">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
 
 
