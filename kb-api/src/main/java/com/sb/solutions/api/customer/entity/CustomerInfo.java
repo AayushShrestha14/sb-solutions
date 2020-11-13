@@ -1,8 +1,11 @@
 package com.sb.solutions.api.customer.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
@@ -21,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.cicl.entity.Cicl;
@@ -148,8 +152,19 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToOne
     private CreditChecklist creditChecklist;
 
-    public String getsubsectorDetailCode() {
-        return this.subsectorDetail.substring(0, this.subsectorDetail.indexOf("-") - 1);
+    @Transient
+    private String subSectorDetailCode ;
+
+    public String getSubSectorDetailCode() {
+        if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
+           Pattern pattern = Pattern.compile("-");
+            List<String> list = pattern.splitAsStream(this.getSubsectorDetail())
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+            return list.get(0);
+
+        }
+        return null;
 
     }
 }
