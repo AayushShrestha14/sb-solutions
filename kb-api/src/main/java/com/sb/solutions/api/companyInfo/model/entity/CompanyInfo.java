@@ -26,6 +26,7 @@ import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
 import com.sb.solutions.api.companyInfo.managementTeam.entity.ManagementTeam;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.swot.entity.Swot;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
 import com.sb.solutions.core.enums.BusinessType;
@@ -86,6 +87,12 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @NotAudited
     private String withinLimitRemarks;
+
+    @Transient
+    private ClientType clientType;
+
+    @Transient
+    private String subsectorDetail;
 
     @Override
     public Pair<Boolean, String> valid() {
