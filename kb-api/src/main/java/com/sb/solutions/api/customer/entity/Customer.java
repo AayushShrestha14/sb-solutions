@@ -31,6 +31,7 @@ import org.springframework.data.util.Pair;
 import com.sb.solutions.api.address.district.entity.District;
 import com.sb.solutions.api.address.municipalityVdc.entity.MunicipalityVdc;
 import com.sb.solutions.api.address.province.entity.Province;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
@@ -92,6 +93,12 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
 
     @Transient
     private String customerCode;
+
+    @Transient
+    private ClientType clientType;
+
+    @Transient
+    private String subsectorDetail;
 
 
     @AuditJoinTable

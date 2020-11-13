@@ -37,6 +37,6 @@ public class PaginationUtils {
     }
 
     public static Pageable pageableWithSort(int page, int size, String sort) {
-        return PageRequest.of(page - 1, size, new Sort(Direction.DESC, sort));
+        return PageRequest.of(page - 1, size, Sort.by(sort));
     }
 }

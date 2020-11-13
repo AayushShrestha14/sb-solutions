@@ -29,6 +29,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.creditRiskGradingLambda.entity.CreditRiskGradingLambda;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.core.enums.PostApprovalAssignStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -195,8 +198,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @ManyToMany
     @JoinTable(name = "customer_loan_guarantor",
-        joinColumns = @JoinColumn(name = "customer_loan_id"),
-        inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
+            joinColumns = @JoinColumn(name = "customer_loan_id"),
+            inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
     private Set<Guarantor> taggedGuarantors;
 
     @Lob
@@ -224,6 +227,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
+
+    @NotAudited
+    @OneToOne
+    private CreditRiskGradingLambda creditRiskGradingLambda;
 
     @Audited
     @Transient
@@ -255,6 +262,13 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     private Object groupSummaryDto;
 
+    @NotAudited
+    private PostApprovalAssignStatus postApprovalAssignStatus = PostApprovalAssignStatus.NOT_ASSIGNED;
+
+    @NotAudited
+    @OneToOne
+    private User postApprovalAssignedUser;
+
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
@@ -269,7 +283,7 @@ public class CustomerLoan extends BaseEntity<Long> {
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
                 this.previousList = objectMapper.readValue(this.getPreviousStageList(),
-                    typeFactory.constructCollectionType(List.class, LoanStageDto.class));
+                        typeFactory.constructCollectionType(List.class, LoanStageDto.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -281,12 +295,12 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     public List<LoanStageDto> getDistinctPreviousList() {
         Collection<LoanStageDto> list =
-            CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils
-                .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
+                CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils
+                        .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
         return list.stream()
-            .filter(distinctByKey(
-                p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
-            .filter(p -> !p.getToUser().getIsDefaultCommittee())
-            .collect(Collectors.toList());
+                .filter(distinctByKey(
+                        p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
+                .filter(p -> !p.getToUser().getIsDefaultCommittee())
+                .collect(Collectors.toList());
     }
 }

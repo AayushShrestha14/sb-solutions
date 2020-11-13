@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -59,5 +60,7 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     List<User> findByRoleTypeAndBranchIdAndStatusActive(RoleType roleType, Long branchId);
 
     List<UserDto> findByRoleIdAndBranchIdForDocumentAction(Long roleId, Long branchId);
+
+    List<RoleDto> findByRoleInAndStatus(List<Role> roleList, Status status);
 
 }

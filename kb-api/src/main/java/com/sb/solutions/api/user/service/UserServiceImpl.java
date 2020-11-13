@@ -6,7 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -312,38 +314,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
         List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
-
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
-        List<RoleDto> finalRoleDtoList = new ArrayList<>();
+        return userAndRoleDtoMap(roleDtoList, users, userId);
 
-        for (RoleDto r : roleDtoList) {
-            List<UserDto> userDtoList = new ArrayList<>();
-            for (User u : users) {
-                UserDto userDto = new UserDto();
-                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L
-                        && u.getId() != userId) {
-                    List<BranchDto> branchDto = new ArrayList<>();
-
-                    userDto.setId(u.getId());
-                    userDto.setUsername(u.getUsername());
-                    for (Branch b : u.getBranch()) {
-                        BranchDto branchDto1 = new BranchDto();
-                        branchDto1.setId(b.getId());
-                        branchDto1.setName(b.getName());
-                        branchDto.add(branchDto1);
-                    }
-                    userDto.setBranchDtoList(branchDto);
-                    userDtoList.add(userDto);
-                }
-                r.setUserDtoList(userDtoList);
-
-            }
-            if (r.getId() != 1L) {
-                finalRoleDtoList.add(r);
-            }
-
-        }
-        return finalRoleDtoList;
     }
 
     @Override
@@ -385,6 +358,20 @@ public class UserServiceImpl implements UserService {
         return new ArrayList<>();
     }
 
+    @Override
+    public List<RoleDto> findByRoleInAndStatus(List<Role> roleList, Status status) {
+        List<User> userList = userRepository.findByRoleInAndStatus(roleList, status);
+      List<RoleDto> roleDtoList = new ArrayList<>();
+      roleList.forEach(r->{
+          RoleDto roleDto = new RoleDto();
+          roleDto.setId(r.getId());
+          roleDto.setName(r.getRoleName());
+          roleDtoList.add(roleDto);
+      });
+
+        return userAndRoleDtoMap(roleDtoList,userList,0L);
+    }
+
     private List<UserDto> userToUserDtoMap(List<User> userList) {
         List<UserDto> userDtoList = new ArrayList<>();
         for (User u : userList) {
@@ -394,6 +381,40 @@ public class UserServiceImpl implements UserService {
             userDtoList.add(userDto);
         }
         return userDtoList;
+    }
+
+    private List<RoleDto> userAndRoleDtoMap(List<RoleDto> roleDtoList, List<User> users, Long userId) {
+        List<RoleDto> finalRoleDtoList = new ArrayList<>();
+        for (RoleDto r : roleDtoList) {
+            List<UserDto> userDtoList = new ArrayList<>();
+            for (User u : users) {
+                UserDto userDto = new UserDto();
+                if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L
+                        && u.getId() != userId) {
+                    List<BranchDto> branchDto = new ArrayList<>();
+
+                    userDto.setId(u.getId());
+                    userDto.setUsername(u.getUsername());
+                    userDto.setName(u.getName());
+                    for (Branch b : u.getBranch()) {
+                        BranchDto branchDto1 = new BranchDto();
+                        branchDto1.setId(b.getId());
+                        branchDto1.setName(b.getName());
+                        branchDto.add(branchDto1);
+                    }
+                    userDto.setBranchDtoList(branchDto);
+                    userDtoList.add(userDto);
+                }
+                r.setUserDtoList(userDtoList);
+
+            }
+            if (r.getId() != 1L) {
+                finalRoleDtoList.add(r);
+            }
+
+        }
+
+        return finalRoleDtoList;
     }
 
 }

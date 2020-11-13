@@ -1,8 +1,11 @@
 package com.sb.solutions.api.customer.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
@@ -16,20 +19,20 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
-import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.cicl.entity.Cicl;
+import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
 import com.sb.solutions.api.crg.entity.CrgGamma;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerIdType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
@@ -38,6 +41,7 @@ import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.incomeFromAccount.entity.IncomeFromAccount;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
@@ -72,6 +76,8 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private CustomerType customerType;
 
+    private ClientType clientType;
+    private String subsectorDetail;
 
     private String contactNo;
 
@@ -145,4 +151,20 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private CreditChecklist creditChecklist;
+
+    @Transient
+    private String subSectorDetailCode ;
+
+    public String getSubSectorDetailCode() {
+        if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
+           Pattern pattern = Pattern.compile("-");
+            List<String> list = pattern.splitAsStream(this.getSubsectorDetail())
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+            return list.get(0);
+
+        }
+        return null;
+
+    }
 }

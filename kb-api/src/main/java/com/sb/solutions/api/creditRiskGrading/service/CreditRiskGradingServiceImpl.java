@@ -17,7 +17,7 @@ import com.sb.solutions.api.creditRiskGrading.repository.CreditRiskGradingReposi
 @AllArgsConstructor
 public class CreditRiskGradingServiceImpl implements CreditRiskGradingService {
 
-    private CreditRiskGradingRepository creditRiskGradingRepository;
+    private final CreditRiskGradingRepository creditRiskGradingRepository;
 
     @Override
     public List<CreditRiskGrading> findAll() {

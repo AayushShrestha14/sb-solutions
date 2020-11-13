@@ -50,4 +50,11 @@ public class CompanyInfoController {
         return new RestResponseDto()
                 .successModel(companyInfoService.findOne(id));
     }
+
+    @GetMapping("/registrationNumber/{id}")
+    public ResponseEntity<?> getCompanyInfoByRegNumber(
+        @PathVariable("id") String id) {
+        return new RestResponseDto()
+            .successModel(companyInfoService.findCompanyInfoByRegistrationNumber(id));
+    }
 }

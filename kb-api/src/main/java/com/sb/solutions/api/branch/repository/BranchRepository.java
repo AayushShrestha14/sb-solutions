@@ -40,4 +40,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
     @Query(value = "SELECT new com.sb.solutions.api.branch.dto.BranchDto(b.id,b.name) FROM Branch b ")
     List<BranchDto> getBranch();
 
+    Branch findByName( String name);
+
 }

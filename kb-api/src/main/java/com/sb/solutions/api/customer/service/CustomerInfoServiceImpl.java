@@ -168,7 +168,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setEmail(((Customer) o).getEmail());
             customerInfo.setCustomerCode(((Customer) o).getCustomerCode());
             customerInfo.setBankingRelationship(((Customer) o).getBankingRelationship());
+            customerInfo.setClientType(((Customer) o).getClientType());
+            customerInfo.setSubsectorDetail(((Customer) o).getSubsectorDetail());
+
         }
+
         if (o instanceof CompanyInfo) {
             customerInfo = customerInfoRepository
                 .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.INSTITUTION);
@@ -187,6 +191,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setEmail(((CompanyInfo) o).getEmail());
             customerInfo.setCustomerCode(((CompanyInfo) o).getCustomerCode());
             customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
+            customerInfo.setClientType(((CompanyInfo) o).getClientType());
+            customerInfo.setSubsectorDetail(((CompanyInfo) o).getSubsectorDetail());
         }
         customerInfo.setBranch(user.getBranch().get(0));
             return this.save(customerInfo);

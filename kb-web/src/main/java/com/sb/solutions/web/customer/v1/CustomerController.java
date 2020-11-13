@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.enums.ClientType;
+import com.sb.solutions.api.customer.service.CustomerPropertiesDataLoaderService;
 import com.sb.solutions.api.customer.service.CustomerService;
 import com.sb.solutions.api.customerActivity.aop.Activity;
 import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
@@ -34,13 +36,16 @@ public class CustomerController {
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
     private final CustomerService customerService;
     private final UserService userService;
+    private final CustomerPropertiesDataLoaderService customerPropertiesDataLoaderService;
 
     @Autowired
     public CustomerController(
         CustomerService customerService,
-        UserService userService) {
+        UserService userService,
+        CustomerPropertiesDataLoaderService customerPropertiesDataLoaderService) {
         this.customerService = customerService;
         this.userService = userService;
+        this.customerPropertiesDataLoaderService = customerPropertiesDataLoaderService;
     }
 
     @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
@@ -134,4 +139,15 @@ public class CustomerController {
                 customer.getCitizenshipIssuedDate()));
     }
 
+    @GetMapping("/client-type")
+    public ResponseEntity<?> getClientType() {
+
+        return new RestResponseDto().successModel(ClientType.values());
+    }
+
+    @GetMapping("/subsectors")
+    public ResponseEntity<?> getSubsectors() {
+        return new RestResponseDto()
+            .successModel(customerPropertiesDataLoaderService.getSubSectors());
+    }
 }
