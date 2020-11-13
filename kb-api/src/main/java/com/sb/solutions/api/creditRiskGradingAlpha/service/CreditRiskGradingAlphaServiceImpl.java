@@ -11,6 +11,7 @@ import com.sb.solutions.api.creditRiskGradingAlpha.repository.CreditRiskGradingA
 /**
  * @author Amulya Shrestha on 7/30/2020
  **/
+
 @Service
 public class CreditRiskGradingAlphaServiceImpl implements CreditRiskGradingAlphaService {
 

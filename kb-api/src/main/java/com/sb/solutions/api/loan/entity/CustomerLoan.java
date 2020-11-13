@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.creditRiskGradingLambda.entity.CreditRiskGradingLambda;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.PostApprovalAssignStatus;
 import lombok.AllArgsConstructor;
@@ -226,6 +227,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @Transient
     @OneToOne
     private CreditRiskGrading creditRiskGrading;
+
+    @NotAudited
+    @OneToOne
+    private CreditRiskGradingLambda creditRiskGradingLambda;
 
     @Audited
     @Transient
