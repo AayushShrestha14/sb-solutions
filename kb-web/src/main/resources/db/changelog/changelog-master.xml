@@ -4775,4 +4775,47 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="371-create-forms-table" author="rujan">
+        <preConditions>
+            <not>
+                <tableExists tableName="forms"/>
+            </not>
+        </preConditions>
+        <createTable tableName="forms">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(256)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="form_title"/>
+            </column>
+            <column name="config" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_forms_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_forms_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
