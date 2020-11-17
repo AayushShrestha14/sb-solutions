@@ -27,7 +27,7 @@ public interface CustomerOfferService extends BaseService<CustomerOfferLetter> {
 
     @Transactional
     CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile, Long customerLoanId,
-        Long offerLetterId);
+        Long offerLetterId,Long type);
 
     @Transactional
     CustomerOfferLetter assignOfferLetter(Long customerLoanId,Long userId,Long roleId);

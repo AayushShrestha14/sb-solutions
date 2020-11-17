@@ -70,11 +70,12 @@ public class CustomerOfferController {
     @PostMapping(path = "/uploadFile")
     public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
                                                @RequestParam("customerLoanId") Long customerLoanId,
-                                               @RequestParam("offerLetterId") Long offerLetterId) {
+                                               @RequestParam("offerLetterId") Long offerLetterId,
+                                               @RequestParam(name = "type", required = true, defaultValue = "0") Long type) {
         logger.info("uploading offer letter{}", multipartFile.getOriginalFilename());
         return new RestResponseDto().successModel(
                 customerOfferService
-                        .saveWithMultipartFile(multipartFile, customerLoanId, offerLetterId));
+                        .saveWithMultipartFile(multipartFile, customerLoanId, offerLetterId,type));
     }
 
     @PostMapping(path = "/action")
