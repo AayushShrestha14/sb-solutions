@@ -51,4 +51,12 @@ public class FormsController {
         logger.info("saving forms....");
         return new RestResponseDto().successModel(formsService.findOne(id));
     }
+
+    @DeleteMapping(value="/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        logger.info("deleting forms....{}",id);
+//        todo check whether form is tag or not
+        formsService.deleteById(id);
+        return new RestResponseDto().successModel("Deleted Successfully");
+    }
 }
