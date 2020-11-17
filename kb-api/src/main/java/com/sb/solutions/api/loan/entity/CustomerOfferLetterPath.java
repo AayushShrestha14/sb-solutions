@@ -27,4 +27,6 @@ public class CustomerOfferLetterPath extends BaseEntity<Long> {
     @OneToOne
     private OfferLetter offerLetter;
 
+    private String pathSigned;
+
 }
