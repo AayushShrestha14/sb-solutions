@@ -4764,7 +4764,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="370-alter-customer-offer-table-add-column-path-signed" author="rujan">
+    <changeSet id="370-alter-customer-offer-path-table-add-column-path-signed" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_offer_letter_path" columnName="path_signed"/>
