@@ -48,7 +48,7 @@ public class FormsController {
 
     @GetMapping(value="/{id}")
     public ResponseEntity<?> saveForms(@PathVariable Long id) {
-        logger.info("saving forms....");
+        logger.info("getting forms....");
         return new RestResponseDto().successModel(formsService.findOne(id));
     }
 
