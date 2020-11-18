@@ -1,7 +1,9 @@
 package com.sb.solutions.api.forms.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.string.NameFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +26,7 @@ import javax.validation.constraints.NotNull;
 @EntityListeners({AuditingEntityListener.class})
 public class Forms extends BaseEntity<Long> {
 
+    @JsonDeserialize(using = NameFormatter.class)
     @NotNull(message = "title cannot be empty")
     private String title;
 
