@@ -2,6 +2,7 @@ package com.sb.solutions.web.loan.v1;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.loan.entity.OfferLetterDocType;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.web.loan.v1.dto.AssignOfferLetter;
@@ -71,7 +72,7 @@ public class CustomerOfferController {
     public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
                                                @RequestParam("customerLoanId") Long customerLoanId,
                                                @RequestParam("offerLetterId") Long offerLetterId,
-                                               @RequestParam(name = "type", required = true, defaultValue = "0") Long type) {
+                                               @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
         logger.info("uploading offer letter{}", multipartFile.getOriginalFilename());
         return new RestResponseDto().successModel(
                 customerOfferService
