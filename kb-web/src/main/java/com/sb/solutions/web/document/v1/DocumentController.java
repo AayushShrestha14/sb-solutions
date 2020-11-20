@@ -6,7 +6,9 @@ import javax.validation.Valid;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,7 @@ import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.document.v1.dto.DocumentDto;
 import com.sb.solutions.web.document.v1.mapper.DocumentMapper;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -135,8 +138,20 @@ public class DocumentController {
                         customerLoan.getLoanHolder().getBranch().getId(),
                         customerLoan.getLoanHolder().getCustomerType().name());
 
+
+        String cadDocumentPath = null;
+        if (!ObjectUtils.isEmpty(customerLoan.getCadDocument()) && ProductUtils.CAD_DOC_UPLOAD){
+             cadDocumentPath = new PathBuilder(UploadDir.initialDocument)
+                .buildCadLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
+                    customerLoan.getBranch().getId(),
+                    customerLoan.getLoanHolder().getCustomerType().name(),
+                    action,
+                    customerLoan.getLoan().getId());
+        }
+
+
         return new RestResponseDto()
-                .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath));
+                .successModel(documentService.downloadAllDoc(customerPath, customerLoanDocumentPath, cadDocumentPath));
     }
 
     private String actionType(LoanType loanType) {

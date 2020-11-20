@@ -15,6 +15,7 @@ import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.GroupSummaryDto;
+import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.service.BaseService;
@@ -79,5 +80,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
     List<CustomerLoan> findAllBySpec(Map<String, String> filterParams);
 
     List<CustomerLoan> findByCombinedLoanId(long id);
+
+    CustomerLoan saveCadLoanDocument(Long loanId , List<CadDocument> cadDocuments);
+
 
 }
