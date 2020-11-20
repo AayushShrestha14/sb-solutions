@@ -4818,4 +4818,94 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="374-create-loan-config-cad-document" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="loan_config_approved_document"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="loan_config_approved_document">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints
+                  nullable="false"
+                  foreignKeyName="fk_loan_config_approved_document_loan_config_id"
+                  referencedColumnNames="id"
+                  referencedTableName="loan_config"
+                />
+            </column>
+            <column name="approved_document_id" type="BIGINT">
+                <constraints nullable="false"
+                  foreignKeyName="fk_loan_config_approved_document_id"
+                  referencedColumnNames="id"
+                  referencedTableName="document"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="377-create-table-cad-document" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_document" />
+            </not>
+        </preConditions>
+        <createTable tableName="cad_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="document_path" type="VARCHAR(256)"/>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"
+                  foreignKeyName="fk_cad_document_id"
+                  referencedTableName="document"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="customer_loan_id" type="BIGINT">
+                <constraints foreignKeyName="fk_customer_loan_cad_document_id"
+                  referencedTableName="customer_loan"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_cad_document_created_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_cad_document_modified_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+
+    </changeSet>
+    <changeSet id="378-create-table-customer_loan_cad_document" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_loan_cad_document"/>
+            </not>
+        </preConditions>
+        <createTable tableName="customer_loan_cad_document">
+            <column name="customer_loan_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_cad_document_customer_loan_id"
+                  referencedTableName="customer_loan"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="cad_document_id" type="BIGINT">
+                <constraints foreignKeyName="fk_customer_cad_document_id"
+                  referencedTableName="cad_document"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
