@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.document.entity.LoanCycle;
@@ -23,6 +24,7 @@ import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -110,7 +112,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public String downloadAllDoc(String sourcepath, String SourcePathCustomer) {
+    public String downloadAllDoc(String sourcepath, String SourcePathCustomer, String SourceCadDocPath) {
         String rootth = String.join("/",
             (Arrays.asList(sourcepath.split("/"))
                 .subList(0, Arrays.asList(sourcepath
@@ -118,6 +120,13 @@ public class DocumentServiceImpl implements DocumentService {
 
         String destinationPath = rootth
             + "/zipFolder/customerDocument.zip";
+
+        String destinationCadDocumentPath = null;
+
+        if (ProductUtils.CAD_DOC_UPLOAD) {
+            destinationCadDocumentPath = rootth
+                + "/zipFolder/cadDocument.zip";
+        }
 
         String destinationCustomerDocumentPath = rootth
             + "/zipFolder/loanDocument.zip";
@@ -138,6 +147,10 @@ public class DocumentServiceImpl implements DocumentService {
                 UploadDir.WINDOWS_PATH + destinationPath);
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourcePathCustomer,
                 UploadDir.WINDOWS_PATH + destinationCustomerDocumentPath);
+            if (!ObjectUtils.isEmpty(SourceCadDocPath)) {
+                FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourceCadDocPath,
+                    UploadDir.WINDOWS_PATH + destinationCadDocumentPath);
+            }
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcePathParent,
                 UploadDir.WINDOWS_PATH + parentDocumentPath);
         } catch (IOException e) {

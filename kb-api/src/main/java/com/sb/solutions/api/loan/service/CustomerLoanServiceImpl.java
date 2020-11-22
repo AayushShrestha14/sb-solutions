@@ -88,6 +88,7 @@ import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
 import com.sb.solutions.api.loan.dto.GroupDto;
 import com.sb.solutions.api.loan.dto.GroupSummaryDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
@@ -164,6 +165,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final ActivityService activityService;
     private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
+    private final CadDocumentService cadDocumentService;
     private ObjectMapper objectMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -197,7 +199,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             CustomerInfoService customerInfoService,
             ActivityService activityService,
             CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
-            CustomerGeneralDocumentService customerGeneralDocumentService) {
+            CustomerGeneralDocumentService customerGeneralDocumentService,
+            CadDocumentService cadDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -224,6 +227,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.activityService = activityService;
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
         this.customerGeneralDocumentService = customerGeneralDocumentService;
+        this.cadDocumentService = cadDocumentService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -285,6 +289,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
             }
 
+        }
+        if (ProductUtils.CAD_DOC_UPLOAD) {
+            CustomerLoan customer1 =customerLoanRepository.findById(id).get();
+            List<CadDocument> cadDocument= customer1.getCadDocument();
+            if (!ObjectUtils.isEmpty(cadDocument)) {
+                customerLoan.setCadDocument(cadDocument);
+            }
         }
         if (ProductUtils.OFFER_LETTER) {
             CustomerOfferLetter customerOfferLetter = customerOfferService
@@ -1417,6 +1428,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments) {
+        CustomerLoan customerLoan = customerLoanRepository.findById(loanId).orElse(null);
+        if (customerLoan == null) {
+            throw new ServiceValidationException("No customer loan found!!!");
+        }
+
+        customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));
+        return customerLoanRepository.save(customerLoan);
     }
 
 }

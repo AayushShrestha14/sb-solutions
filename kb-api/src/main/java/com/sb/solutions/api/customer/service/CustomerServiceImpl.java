@@ -31,8 +31,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerInfoService customerInfoService;
 
     public CustomerServiceImpl(
-        @Autowired CustomerRepository customerRepository,
-        CustomerInfoService customerInfoService) {
+            @Autowired CustomerRepository customerRepository,
+            CustomerInfoService customerInfoService) {
         this.customerRepository = customerRepository;
         this.customerInfoService = customerInfoService;
     }
@@ -52,23 +52,26 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer save(Customer customer) {
         if (!customer.isValid()) {
             throw new ServiceValidationException(
-                customer.getValidationMsg());
+                    customer.getValidationMsg());
         }
         if (ObjectUtils.isEmpty(customer.getId())) {
             CustomerInfo isExist = customerInfoService
-                .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
-                    CustomerType.INDIVIDUAL, customer.getCitizenshipNumber(),
-                    customer.getCitizenshipIssuedPlace(),
-                    CustomerIdType.CITIZENSHIP, customer.getCitizenshipIssuedDate());
+                    .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
+                            CustomerType.INDIVIDUAL, customer.getCitizenshipNumber(),
+                            customer.getCitizenshipIssuedPlace(),
+                            CustomerIdType.CITIZENSHIP, customer.getCitizenshipIssuedDate());
             if (!ObjectUtils.isEmpty(isExist)) {
                 Branch branch = isExist.getBranch();
                 throw new ServiceValidationException(
-                    "Customer Exist!" + "This Customer is associate with branch " + branch
-                        .getName());
+                        "Customer Exist!" + "This Customer is associate with branch " + branch
+                                .getName());
             }
         }
         final Customer customer1 = customerRepository.save(customer);
-        customerInfoService.saveObject(customer1);
+        if (!ObjectUtils.isEmpty(customer1)) {
+            customerInfoService.saveObject(customer);
+        }
+
         return customer1;
     }
 
@@ -95,10 +98,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
-        String name, String citizenship, Date citizenIssueDate) {
+            String name, String citizenship, Date citizenIssueDate) {
         Customer customer = customerRepository
-            .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(name,
-                citizenship, citizenIssueDate);
+                .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(name,
+                        citizenship, citizenIssueDate);
         if (customer == null) {
             throw new ServiceValidationException("No customer Found");
         }

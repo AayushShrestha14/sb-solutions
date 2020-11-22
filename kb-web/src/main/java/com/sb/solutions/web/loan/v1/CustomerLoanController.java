@@ -10,6 +10,8 @@ import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.loan.entity.CadDocument;
+import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -357,5 +359,56 @@ public class CustomerLoanController {
         logger.info("getting Customer Loan by CustomerGroup {}", customerGroup);
         return new RestResponseDto()
                 .successModel(service.getLoanByCustomerGroup(customerGroup));
+    }
+
+    @PostMapping("/cad-document")
+    public ResponseEntity<?> saveCadDocumentLoan(@RequestParam Long loanId,
+        @RequestBody List<CadDocument> customerDocuments) {
+        return new RestResponseDto()
+            .successModel(service.saveCadLoanDocument(loanId, customerDocuments));
+    }
+
+    @PostMapping("/cad-document/upload")
+    public ResponseEntity<?> uploadLoanCadFile(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("documentName") String documentName,
+        @RequestParam("documentId") Long documentId,
+        @RequestParam("customerLoanId") Long customerLoanId) {
+
+        CadDocument cadDocument = new CadDocument();
+        Document document = new Document();
+        document.setId(documentId);
+        cadDocument.setDocument(document);
+        CustomerLoan customerLoan = service.findOne(customerLoanId);
+        String uploadPath = new PathBuilder(UploadDir.initialDocument)
+            .buildCadLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
+                customerLoan.getBranch().getId(),
+                customerLoan.getLoanHolder().getCustomerType().name(),
+                actionType(customerLoan.getLoanType()),
+                customerLoan.getLoan().getId());
+        logger.info("File Upload Path {}", uploadPath);
+        ResponseEntity<?> responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, uploadPath, documentName);
+        cadDocument
+            .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
+        return new RestResponseDto().successModel(cadDocument);
+    }
+
+    private String actionType(LoanType loanType) {
+        switch (loanType) {
+            case NEW_LOAN:
+                return "NEW";
+            case RENEWED_LOAN:
+                return "RENEW";
+            case CLOSURE_LOAN:
+                return "CLOSE";
+            case ENHANCED_LOAN:
+                return "ENHANCE";
+            case FULL_SETTLEMENT_LOAN:
+                return "FULL_SETTLEMENT";
+            case PARTIAL_SETTLEMENT_LOAN:
+                return "PARTIAL_SETTLEMENT";
+            default:
+                return "";
+        }
     }
 }

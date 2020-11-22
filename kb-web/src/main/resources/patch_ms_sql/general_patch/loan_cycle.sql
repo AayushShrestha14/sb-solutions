@@ -119,3 +119,19 @@ BEGIN
             SET IDENTITY_INSERT loan_cycle OFF
         END
 END;
+
+BEGIN
+    DECLARE
+        @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_cycle lc WHERE lc.cycle = 'Cad Document')
+    IF (@count = 0)
+        BEGIN
+            SET IDENTITY_INSERT loan_cycle ON
+            INSERT INTO loan_cycle (id, cycle, label, created_by_id, modified_by_id, created_at,
+                                    last_modified_at,
+                                    version)
+            VALUES ('12', 'Cad Document', 'Document uploaded by CAD after loan is approved', null, null,
+                    '2020-11-18', '2020-11-18', '0')
+            SET IDENTITY_INSERT loan_cycle OFF
+        END
+END;

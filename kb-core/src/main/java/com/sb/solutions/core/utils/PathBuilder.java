@@ -185,4 +185,33 @@ public class PathBuilder {
                 .toString();
     }
 
+    /**
+     *  this is for loan Cad document upload and download
+     */
+    public String buildCadLoanDocumentUploadBasePathWithId(Long customerInfoId,
+        Long branchId,
+        String customerType,
+        String action,
+        Long loanId) {
+        return new StringBuilder(this.basePath)
+            .append("customers")
+            .append(FILE_SEPARATOR)
+            .append("Branch-" + branchId)
+            .append(FILE_SEPARATOR)
+            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+            .append(FILE_SEPARATOR)
+            .append("customer-" + customerInfoId)
+            .append(FILE_SEPARATOR)
+            .append("Loan_Document")
+            .append(FILE_SEPARATOR)
+            .append("Loan-" + loanId)
+            .append(FILE_SEPARATOR)
+            .append(StringUtils.deleteWhitespace(action).toUpperCase())
+            .append(FILE_SEPARATOR)
+            .append("Cad_Document")
+            .append(FILE_SEPARATOR)
+            .toString();
+    }
+
+
 }
