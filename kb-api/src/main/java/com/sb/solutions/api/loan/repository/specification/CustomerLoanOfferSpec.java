@@ -10,6 +10,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.sb.solutions.core.enums.LoanType;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
@@ -67,6 +68,15 @@ public class CustomerLoanOfferSpec implements Specification<CustomerOfferLetter>
                         .equal(root.join("offerLetterStage", JoinType.LEFT)
                                         .join("toRole", JoinType.LEFT).get("id"),
                                 Long.valueOf(value));
+
+            case FILTER_BY_CUSTOMER_NAME:
+                return criteriaBuilder
+                        .like(criteriaBuilder
+                                        .lower(root.join("customerLoan").join("loanHolder").get("name")),
+                                value.toLowerCase() + "%");
+
+            case FILTER_BY_TYPE:
+                return criteriaBuilder.equal(root.join("customerLoan").get("loanType"), LoanType.valueOf(value));
 
             default:
                 return null;
