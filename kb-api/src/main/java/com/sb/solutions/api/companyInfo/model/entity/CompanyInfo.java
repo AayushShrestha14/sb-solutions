@@ -88,6 +88,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     @NotAudited
     private String withinLimitRemarks;
 
+    @NotAudited
+    private String landLineNumber;
+
     @Transient
     private ClientType clientType;
 

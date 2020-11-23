@@ -100,6 +100,10 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @Transient
     private String subsectorDetail;
 
+    @NotAudited
+    private String landLineNumber;
+
+
 
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
