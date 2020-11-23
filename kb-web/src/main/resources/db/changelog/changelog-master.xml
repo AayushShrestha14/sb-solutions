@@ -4908,4 +4908,26 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="379-alter-table-customer-add-column-landLineNumber" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="land_line_number"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="land_line_number" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="380-alter-table-company-info-add-column-landLineNumber" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info" columnName="land_line_number"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="land_line_number" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
