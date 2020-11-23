@@ -174,7 +174,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
-                                                     Long customerLoanId, Long offerLetterId) {
+                                                     Long customerLoanId, Long offerLetterId, Long type) {
         final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
         final OfferLetter offerLetter = offerLetterRepository.getOne(offerLetterId);
         CustomerOfferLetter customerOfferLetter = this.customerOfferRepository
@@ -199,11 +199,12 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
                 break;
             default:
         }
-        String uploadPath = new PathBuilder(UploadDir.initialDocument).withAction(action)
-                .isJsonPath(false).withBranch(customerLoan.getBranch().getName())
-                .withCitizenship(customerLoan.getCustomerInfo().getCitizenshipNumber())
-                .withCustomerName(customerLoan.getCustomerInfo().getCustomerName())
-                .withLoanType(customerLoan.getLoan().getName()).build();
+        String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                .buildLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
+                        customerLoan.getBranch().getId(),
+                        customerLoan.getLoanHolder().getCustomerType().name(),
+                        action,
+                        customerLoan.getLoan().getId());
 
         uploadPath = new StringBuilder()
                 .append(uploadPath)
@@ -231,7 +232,11 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         } else {
             for (CustomerOfferLetterPath c : customerOfferLetterPathList) {
                 if (c.getOfferLetter().getId().equals(offerLetterId)) {
-                    c.setPath(restResponseDto.getDetail().toString());
+                    if (type.equals(0)) {
+                        c.setPath(restResponseDto.getDetail().toString());
+                    } else {
+                        c.setPathSigned(restResponseDto.getDetail().toString());
+                    }
                     break;
                 }
             }

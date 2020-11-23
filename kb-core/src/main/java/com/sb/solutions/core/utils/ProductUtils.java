@@ -26,6 +26,9 @@ public class ProductUtils {
 
     public static Boolean NEP_TEMPLATE;
 
+    public static Boolean CAD_DOC_UPLOAD;
+
+
     private static Map<String, Object> productUtilsMap = new HashMap<>();
 
 
@@ -45,6 +48,12 @@ public class ProductUtils {
     public void setAccount(Boolean account) {
         ACCOUNT = account;
         productUtilsMap.put("ACCOUNT", account);
+    }
+
+    @Value("${product.cadDocumentUpload}")
+    public void setCadDocUpload(Boolean cadDocUpload) {
+        CAD_DOC_UPLOAD = cadDocUpload;
+        productUtilsMap.put("CAD_DOC_UPLOAD", cadDocUpload);
     }
 
     @Value("${product.offerletter}")

@@ -116,6 +116,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     private List<CustomerDocument> customerDocument = new ArrayList<>();
 
     @NotAudited
+    @ManyToMany
+    private List<CadDocument> cadDocument;
+
+    @NotAudited
     @Transient
     @ManyToOne
     private DmsLoanFile dmsLoanFile;
