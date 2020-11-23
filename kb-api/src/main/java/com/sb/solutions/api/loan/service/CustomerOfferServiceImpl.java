@@ -15,6 +15,7 @@ import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.loan.entity.OfferLetterDocType;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.*;
@@ -174,7 +175,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
     @Override
     public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
-                                                     Long customerLoanId, Long offerLetterId, Long type) {
+                                                     Long customerLoanId, Long offerLetterId, String type) {
         final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
         final OfferLetter offerLetter = offerLetterRepository.getOne(offerLetterId);
         CustomerOfferLetter customerOfferLetter = this.customerOfferRepository
@@ -208,7 +209,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
 
         uploadPath = new StringBuilder()
                 .append(uploadPath)
-                .append("offer-letter/").toString();
+                .append("offer-letter/").append(type).append("/").toString();
 
         final StringBuilder nameBuilder = new StringBuilder().append(action).append("-")
                 .append(customerLoan.getBranch().getName()).append("-")
@@ -232,7 +233,7 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
         } else {
             for (CustomerOfferLetterPath c : customerOfferLetterPathList) {
                 if (c.getOfferLetter().getId().equals(offerLetterId)) {
-                    if (type.equals(0)) {
+                    if (OfferLetterDocType.valueOf(type).equals(OfferLetterDocType.DRAFT)) {
                         c.setPath(restResponseDto.getDetail().toString());
                     } else {
                         c.setPathSigned(restResponseDto.getDetail().toString());
