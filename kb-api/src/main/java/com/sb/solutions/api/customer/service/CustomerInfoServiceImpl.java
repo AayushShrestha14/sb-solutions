@@ -174,6 +174,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         }
 
         if (o instanceof CompanyInfo) {
+
             customerInfo = customerInfoRepository
                 .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.INSTITUTION);
             log.info("Saving company into customer info {}", o);
