@@ -263,6 +263,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             customerOfferLetter.setCustomerLoan(customerLoan);
         } else {
             final OfferLetterStage offerLetterStage = customerOfferLetter.getOfferLetterStage();
+            if (offerLetterStage.getDocAction().equals(DocAction.APPROVED)) {
+                throw new ServiceValidationException("This Document has been already Approved By " + offerLetterStage.getToUser().getName());
+            }
 
             com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
