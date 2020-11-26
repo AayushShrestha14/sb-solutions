@@ -97,6 +97,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     @Transient
     private String subsectorDetail;
 
+    @NotAudited
+    private String businessGiven;
+
     @Override
     public Pair<Boolean, String> valid() {
         Boolean validator = Boolean.TRUE;
