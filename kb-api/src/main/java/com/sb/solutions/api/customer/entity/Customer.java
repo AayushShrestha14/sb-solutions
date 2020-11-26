@@ -82,8 +82,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
     private String introduction;
-
-    private String netWorth;
+    private Double netWorth;
 
     @NotAudited
     private String withinLimitRemarks;
