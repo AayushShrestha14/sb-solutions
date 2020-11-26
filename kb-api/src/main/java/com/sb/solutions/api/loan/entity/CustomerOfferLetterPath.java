@@ -3,12 +3,13 @@ package com.sb.solutions.api.loan.entity;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+import com.sb.solutions.api.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import com.sb.solutions.api.offerLetter.entity.OfferLetter;
+import com.sb.solutions.api.postApprovalDocument.entity.OfferLetter;
 import com.sb.solutions.core.enitity.BaseEntity;
 
 @Entity
@@ -28,5 +29,10 @@ public class CustomerOfferLetterPath extends BaseEntity<Long> {
     private OfferLetter offerLetter;
 
     private String pathSigned;
+
+    private Boolean isApproved = false;
+
+    @OneToOne
+    private User approvedBy;
 
 }

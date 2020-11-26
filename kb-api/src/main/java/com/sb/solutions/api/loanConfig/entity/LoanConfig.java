@@ -19,7 +19,7 @@ import org.hibernate.annotations.Where;
 
 import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loanTemplate.entity.LoanTemplate;
-import com.sb.solutions.api.offerLetter.entity.OfferLetter;
+import com.sb.solutions.api.postApprovalDocument.entity.OfferLetter;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 
