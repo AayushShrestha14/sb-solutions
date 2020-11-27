@@ -4977,7 +4977,8 @@
             <column name="business_given" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
-    <changeSet id="381-alter-table-role-add-column-authority_label" author="Mohammad">
+
+    <changeSet id="386-alter-table-role-add-column-authority_label" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="role" columnName="authority_label"/>
@@ -4988,7 +4989,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="382-alter-table-role-add-column-authority_label_audit" author="Mohammad">
+    <changeSet id="387-alter-table-role-add-column-authority_label_audit" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="role_audit" columnName="authority_label"/>
