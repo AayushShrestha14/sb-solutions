@@ -2,7 +2,7 @@ package com.sb.solutions.web.loan.v1;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.api.loan.entity.OfferLetterDocType;
+import com.sb.solutions.api.loan.service.CustomerOfferLetterPathService;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.web.loan.v1.dto.AssignOfferLetter;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
 import com.sb.solutions.api.loan.service.CustomerLoanService;
 import com.sb.solutions.api.loan.service.CustomerOfferService;
@@ -51,6 +50,8 @@ public class CustomerOfferController {
 
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
+    private final CustomerOfferLetterPathService customerOfferLetterPathService;
+
 
     private UserService userService;
 
@@ -59,13 +60,14 @@ public class CustomerOfferController {
             @Autowired CustomerLoanService customerLoanService,
             @Autowired UserService userService,
             @Autowired OfferLetterStageMapper offerLetterStageMapper,
-            ApprovalRoleHierarchyService approvalRoleHierarchyService) {
+            ApprovalRoleHierarchyService approvalRoleHierarchyService, CustomerOfferLetterPathService customerOfferLetterPathService) {
         this.customerOfferService = customerOfferService;
         this.customerLoanService = customerLoanService;
         this.userService = userService;
         this.offerLetterStageMapper = offerLetterStageMapper;
 
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
+        this.customerOfferLetterPathService = customerOfferLetterPathService;
     }
 
     @PostMapping(path = "/uploadFile")
@@ -76,7 +78,7 @@ public class CustomerOfferController {
         logger.info("uploading offer letter{}", multipartFile.getOriginalFilename());
         return new RestResponseDto().successModel(
                 customerOfferService
-                        .saveWithMultipartFile(multipartFile, customerLoanId, offerLetterId,type));
+                        .saveWithMultipartFile(multipartFile, customerLoanId, offerLetterId, type));
     }
 
     @PostMapping(path = "/action")
@@ -160,6 +162,12 @@ public class CustomerOfferController {
         return new RestResponseDto()
                 .successModel(customerOfferService.getUserListForFilter(approvalRoleHierarchyList, searchDto)
                 );
+    }
+
+    @PostMapping(value = "/approve-partial")
+    public ResponseEntity<?> approvePartialDocument(@RequestBody List<Long> ids) {
+        return new RestResponseDto()
+                .successModel(customerOfferLetterPathService.updateApproveStatusAndApprovedBy(ids));
     }
 
 }

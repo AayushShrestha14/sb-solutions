@@ -4930,6 +4930,53 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="381-alter-table-customer-offer-letter-path-add-column-is-approved" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_offer_letter_path" columnName="is_approved"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_offer_letter_path">
+            <column name="is_approved" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="382-alter-table-customer-offer-letter-path-add-column-approved-by" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_offer_letter_path" columnName="approved_by_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_offer_letter_path">
+            <column name="approved_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_post_document_users_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="383-alter-table-offer-letter-add-column-post_approval_doc_type" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="offer_letter" columnName="post_approval_doc_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="offer_letter">
+            <column name="post_approval_doc_type" type="INT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="385-alter-company-info-add-column-business-given" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info" columnName="business_given"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="business_given" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
     <changeSet id="381-alter-table-role-add-column-authority_label" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
