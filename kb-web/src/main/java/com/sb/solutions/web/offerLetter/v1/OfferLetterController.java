@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sb.solutions.api.offerLetter.service.OfferLetterService;
+import com.sb.solutions.api.postApprovalDocument.service.OfferLetterService;
 import com.sb.solutions.core.dto.RestResponseDto;
 
 @RestController

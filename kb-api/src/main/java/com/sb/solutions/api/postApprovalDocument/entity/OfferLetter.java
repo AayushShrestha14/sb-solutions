@@ -1,10 +1,9 @@
-package com.sb.solutions.api.offerLetter.entity;
+package com.sb.solutions.api.postApprovalDocument.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import com.sb.solutions.api.postApprovalDocument.enums.PostApprovalDocType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +20,6 @@ public class OfferLetter {
     private Long id;
     private @NotNull String name;
     private @NotNull String templateUrl;
+
+    private PostApprovalDocType postApprovalDocType;
 }

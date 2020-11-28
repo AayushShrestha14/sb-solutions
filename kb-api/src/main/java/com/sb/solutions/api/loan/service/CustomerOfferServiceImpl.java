@@ -16,7 +16,6 @@ import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.loan.entity.OfferLetterDocType;
-import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.utils.ApprovalType;
@@ -43,8 +42,8 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.CustomerOfferRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanOfferSpecBuilder;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
-import com.sb.solutions.api.offerLetter.entity.OfferLetter;
-import com.sb.solutions.api.offerLetter.repository.OfferLetterRepository;
+import com.sb.solutions.api.postApprovalDocument.entity.OfferLetter;
+import com.sb.solutions.api.postApprovalDocument.repository.OfferLetterRepository;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
@@ -263,6 +262,9 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
             customerOfferLetter.setCustomerLoan(customerLoan);
         } else {
             final OfferLetterStage offerLetterStage = customerOfferLetter.getOfferLetterStage();
+            if (offerLetterStage.getDocAction().equals(DocAction.APPROVED)) {
+                throw new ServiceValidationException("This Document has been already Approved By " + offerLetterStage.getToUser().getName());
+            }
 
             com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
