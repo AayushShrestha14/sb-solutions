@@ -4930,4 +4930,60 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="386-alter-table-customer-add-temporary-address-province" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="temporary_province_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="temporary_province_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="386-alter-table-customer-add-temporary-address-district" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="temporary_district_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="temporary_district_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="386-alter-table-customer-add-temporary-address-municipalities" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="temporary_municipalities_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="temporary_municipalities_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="386-alter-table-customer-add-temporary-address-street" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="temporary_street"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="temporary_street" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="386-alter-table-customer-add-temporary-address-ward" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="temporary_ward_number"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="temporary_ward_number" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>
