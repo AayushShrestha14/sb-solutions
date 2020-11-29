@@ -420,8 +420,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (customerLoan.getCreditRiskGradingAlpha() != null) {
-            /*customerLoan.setCreditRiskGradingAlpha(
-                customerLoan.getLoanHolder().getCreditRiskGradingAlpha());*/
             customerLoan.setCreditRiskGradingAlpha(this.creditRiskGradingAlphaService.save(customerLoan.getCreditRiskGradingAlpha()));
         }
 
@@ -430,9 +428,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (customerLoan.getCrgGamma() != null) {
-            customerLoan.setCrgGamma(
-                    customerLoan.getLoanHolder().getCrgGamma());
+            customerLoan.setCrgGamma(this.crgGammaService.save(customerLoan.getCrgGamma()));
         }
+
         if (customerLoan.getShareSecurity() != null) {
             customerLoan
                     .setShareSecurity(customerLoan.getLoanHolder().getShareSecurity());
@@ -1386,9 +1384,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerInfo customerInfo = customerLoan.getLoanHolder();
         customerLoan.setSecurity(customerInfo.getSecurity());
         customerLoan.setFinancial(customerInfo.getFinancial());
-        customerLoan.setCrgGamma(customerInfo.getCrgGamma());
         customerLoan.setCreditRiskGrading(customerInfo.getCreditRiskGrading());
-//        customerLoan.setCreditRiskGradingAlpha(customerInfo.getCreditRiskGradingAlpha());
         customerLoan.setSiteVisit(customerInfo.getSiteVisit());
         //customerLoan.setGuarantor(customerInfo.getGuarantors());
         customerLoan.setInsurance(customerInfo.getInsurance());
