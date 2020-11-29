@@ -1,7 +1,6 @@
 package com.sb.solutions.api.crg.entity;
 
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
-import com.sb.solutions.api.customer.enums.CustomerType;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,9 @@ public class CrgQuestion extends BaseEntity<Long> {
 
     private long crgGroupId;
 
-    private CustomerType customerType;
+    @ManyToOne
+    @JoinColumn(name = "loan_config_id")
+    private LoanConfig loanConfig;
 
     @OneToMany(mappedBy = "crgQuestion")
     private List<CrgAnswer> answers = new ArrayList<>();

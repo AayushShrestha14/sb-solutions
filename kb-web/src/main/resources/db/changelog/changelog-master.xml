@@ -5071,4 +5071,27 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="287-alter-table-crg-question-add-column-loan-type" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="crg_question" columnName="loan_config_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="crg_question">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_question_loan_config_id"
+                             referencedTableName="loan_config"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="287-alter-table-crg-question-remove-column-customer_type" author="Amulya">
+        <preConditions>
+                <columnExists tableName="crg_question" columnName="customer_type"/>
+        </preConditions>
+        <dropColumn tableName="crg_question" columnName="customer_type"/>
+    </changeSet>
 </databaseChangeLog>
