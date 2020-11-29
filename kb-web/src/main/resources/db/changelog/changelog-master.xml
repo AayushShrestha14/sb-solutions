@@ -5033,4 +5033,27 @@
     </changeSet>
 
 
+
+    <changeSet id="386-alter-table-role-add-column-authority_label" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="role" columnName="authority_label"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="role">
+            <column name="authority_label" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="387-alter-table-role-add-column-authority_label_audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="role_audit" columnName="authority_label"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="role_audit">
+            <column name="authority_label" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
