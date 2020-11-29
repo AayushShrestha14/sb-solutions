@@ -5056,4 +5056,19 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="287-alter-customer-loan-add-credit-risk-grading-gamma" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="crg_gamma_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="crg_gamma_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_crg_gamma_id"
+                             referencedTableName="crg_gamma"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
