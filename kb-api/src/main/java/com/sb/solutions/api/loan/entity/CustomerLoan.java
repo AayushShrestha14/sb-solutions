@@ -236,8 +236,7 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private CreditRiskGradingLambda creditRiskGradingLambda;
 
-    @Audited
-    @Transient
+    @NotAudited
     @OneToOne
     private CrgGamma crgGamma;
 

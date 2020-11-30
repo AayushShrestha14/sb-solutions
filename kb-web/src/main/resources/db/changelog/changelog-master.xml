@@ -5056,4 +5056,42 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="287-alter-customer-loan-add-credit-risk-grading-gamma" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="crg_gamma_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="crg_gamma_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_crg_gamma_id"
+                             referencedTableName="crg_gamma"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="287-alter-table-crg-question-add-column-loan-type" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="crg_question" columnName="loan_config_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="crg_question">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_question_loan_config_id"
+                             referencedTableName="loan_config"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="287-alter-table-crg-question-remove-column-customer_type" author="Amulya">
+        <preConditions>
+                <columnExists tableName="crg_question" columnName="customer_type"/>
+        </preConditions>
+        <dropColumn tableName="crg_question" columnName="customer_type"/>
+    </changeSet>
 </databaseChangeLog>
