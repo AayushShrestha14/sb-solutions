@@ -12,4 +12,6 @@ import com.sb.solutions.core.dto.BaseDto;
 public class RoleDto extends BaseDto<Long> {
 
     private String roleName;
+
+    private String authorityLabel;
 }
