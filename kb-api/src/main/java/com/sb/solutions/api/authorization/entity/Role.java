@@ -50,7 +50,6 @@ public class Role extends BaseEntity<Long> implements Serializable {
     @NotNull
     private RoleAccess roleAccess = RoleAccess.OWN;
 
-    @NotNull
     private String authorityLabel;
 
     @NotAudited
