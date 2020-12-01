@@ -54,7 +54,7 @@ public class RoleController {
         if (r == null) {
             return new RestResponseDto().failureModel("Error Occurs");
         } else {
-            if (role.getId() != null && (!role.getRoleType().equals(RoleType.CAD_ADMIN))) {
+            if (role.getId() != null && !(role.getRoleType().equals(RoleType.CAD_ADMIN) || role.getRoleType().equals(RoleType.ADMIN))) {
                 List<RoleHierarchy> roleHierarchies = roleHierarchyService.findAll();
                 RoleHierarchy roleHierarchy = new RoleHierarchy();
                 roleHierarchy.setRole(r);
