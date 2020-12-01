@@ -28,6 +28,8 @@ public class ProductUtils {
 
     public static Boolean CAD_DOC_UPLOAD;
 
+    public static Boolean FULL_CAD;
+
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
 
@@ -83,6 +85,18 @@ public class ProductUtils {
     @Value("${product.loanApprovalHierarchyLevel}")
     public void setApprovalHierarchyForLoan(ApprovalType approvalType) {
         productUtilsMap.put("LOAN_APPROVAL_HIERARCHY_LEVEL", approvalType);
+    }
+
+    /**
+     * Full cad represent work flow of cad respect to offer letter,legal document and disbursement
+     * Each type have their own stages
+     * to enable set value true
+     **/
+
+    @Value("${product.fullCad}")
+    public void setFullCad(Boolean fullCad) {
+        FULL_CAD = fullCad;
+        productUtilsMap.put("FULL_CAD", fullCad);
     }
 
     public static Map<String, Object> getProductUtilsMap() {

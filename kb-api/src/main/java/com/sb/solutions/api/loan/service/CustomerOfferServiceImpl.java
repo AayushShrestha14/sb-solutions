@@ -19,6 +19,7 @@ import com.sb.solutions.api.loan.entity.OfferLetterDocType;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.ProductUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -346,21 +347,25 @@ public class CustomerOfferServiceImpl implements CustomerOfferService {
     public Map<String, Object> userPostApprovalDocStat() {
         Map<String, Object> map = new HashMap<>();
         final User user = userService.getAuthenticatedUser();
-        if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
-            final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
-            map.put("docCount", count);
-            map.put("show", true);
-        } else {
-            boolean isUserExistInCad = approvalRoleHierarchyService.checkRoleContainInHierarchies(user.getRole().getId(), ApprovalType.CAD, 0l);
-            if (isUserExistInCad) {
-                final Long count = customerOfferRepository
-                        .countCustomerOfferLetterByOfferLetterStageToUserIdAndOfferLetterStageToRoleId
-                                (user.getId(), user.getRole().getId());
-
+        if (!ProductUtils.FULL_CAD) {
+            if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
+                final Long count = customerLoanRepository.countCustomerLoanByDocumentStatus(DocStatus.APPROVED);
                 map.put("docCount", count);
-            }
-            map.put("show", isUserExistInCad);
+                map.put("show", true);
+            } else {
+                boolean isUserExistInCad = approvalRoleHierarchyService.checkRoleContainInHierarchies(user.getRole().getId(), ApprovalType.CAD, 0l);
+                if (isUserExistInCad) {
+                    final Long count = customerOfferRepository
+                            .countCustomerOfferLetterByOfferLetterStageToUserIdAndOfferLetterStageToRoleId
+                                    (user.getId(), user.getRole().getId());
 
+                    map.put("docCount", count);
+                }
+                map.put("show", isUserExistInCad);
+
+            }
+        } else {
+            map.put("show", false);
         }
         return map;
     }

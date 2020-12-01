@@ -174,8 +174,23 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                         dataResource, dataResourceTemplate);
                 populator.execute(dataSource);
             }
+            if (ProductUtils.FULL_CAD) {
+                ClassPathResource dataResource = new ClassPathResource(
+                        baseServerFolder + "/loan_sql/cad/cad-menu.sql");
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                        dataResource);
+                populator.execute(dataSource);
+            }
 
-            this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
+            else  {
+                ClassPathResource dataResource = new ClassPathResource(
+                        baseServerFolder + "/loan_sql/cad/remove-cad-menu.sql");
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                        dataResource);
+                populator.execute(dataSource);
+            }
+
+                this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
                     baseServerFolder);
         } catch (Exception e) {
             e.printStackTrace();

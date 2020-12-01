@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: dev
+    active: qa
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -85,3 +85,4 @@ product:
   nepTemplate: true
   cadDocumentUpload: true
   loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  fullCad: true #only fullCad should not be enable. you should enable offerLetter also
