@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.api.crg.service.CrgQuestionService;
-import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.core.dto.RestResponseDto;
 
 /**
  * @author Sunil Babu Shrestha on 9/10/2020
  */
+
 @RestController
-@RequestMapping("/v1/{customerType}/crg-questions")
+@RequestMapping("/v1/{loanConfigId}/crg-questions")
 @RequiredArgsConstructor
 public class CrgQuestionController {
 
@@ -44,9 +44,9 @@ public class CrgQuestionController {
     }
 
     @GetMapping
-    public final ResponseEntity<?> getQuestionsOfCustomerType(
-        @PathVariable CustomerType customerType) {
-        final List<CrgQuestion> questions = questionService.findByCustomerType(customerType);
+    public final ResponseEntity<?> getQuestionsFromLoanConfigId(
+        @PathVariable Long loanConfigId) {
+        final List<CrgQuestion> questions = questionService.findByLoanConfigId(loanConfigId);
         return new RestResponseDto().successModel(questions);
     }
 

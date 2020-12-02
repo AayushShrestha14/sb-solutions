@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.sb.solutions.api.crg.entity.CrgAnswer;
 import com.sb.solutions.api.crg.entity.CrgQuestion;
 import com.sb.solutions.api.crg.repository.CrgQuestionRepository;
-import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.core.enums.Status;
 
 @Service
@@ -58,7 +57,6 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
                 question.getAnswers().stream().mapToDouble(value -> value.getPoints()).sum());
             savedQuestions.add(questionRepository.save(savedQuestion));
         }
-
         return savedQuestions;
     }
 
@@ -73,9 +71,8 @@ public class CrgQuestionServiceImpl implements CrgQuestionService {
     }
 
     @Override
-    public List<CrgQuestion> findByCustomerType(CustomerType customerType) {
-        return questionRepository
-            .findByCustomerTypeAndStatusNotOrderByCrgGroupIdAsc(customerType, Status.DELETED);
+    public List<CrgQuestion> findByLoanConfigId(Long loanConfigId) {
+        return questionRepository.findByLoanConfigIdAndStatusNotOrderByCrgGroupIdAsc(loanConfigId, Status.DELETED);
     }
 
     @Override

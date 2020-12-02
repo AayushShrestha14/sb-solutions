@@ -88,11 +88,17 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     @NotAudited
     private String withinLimitRemarks;
 
+    @NotAudited
+    private String landLineNumber;
+
     @Transient
     private ClientType clientType;
 
     @Transient
     private String subsectorDetail;
+
+    @NotAudited
+    private String businessGiven;
 
     @Override
     public Pair<Boolean, String> valid() {
