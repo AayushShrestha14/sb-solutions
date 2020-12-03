@@ -12,8 +12,10 @@ public enum LoanFlag {
     INSUFFICIENT_SHARE_AMOUNT("3",
         "Insufficient Security considered value. Maximum considered amount is %s"),
     COMPANY_VAT_PAN_EXPIRY("4",
-        "Cannot forward loan as Company VAT/PAN registration will expire within %s days"),
-    MISSING_REQUIRED_DOCUMENT("5", "Missing Required Document");
+        "Company VAT/PAN registration will expire within %s days"),
+    MISSING_REQUIRED_DOCUMENT("5", "Missing Required Document"),
+    EMPTY_COMPANY_VAT_PAN_EXPIRY("6",
+        "Cannot check Company VAT/PAN registration as expiry date field is empty");
 
     private final String[] value;
 

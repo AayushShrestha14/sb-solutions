@@ -295,6 +295,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             List<CadDocument> cadDocument= customer1.getCadDocument();
             if (!ObjectUtils.isEmpty(cadDocument)) {
                 customerLoan.setCadDocument(cadDocument);
+                customerLoan.setCbsLoanFileNumber(customer1.getCbsLoanFileNumber());
             }
         }
         if (ProductUtils.OFFER_LETTER) {
@@ -1427,13 +1428,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments) {
+    public CustomerLoan saveCadLoanDocument(Long loanId, CustomerLoan customerLoan1) {
         CustomerLoan customerLoan = customerLoanRepository.findById(loanId).orElse(null);
         if (customerLoan == null) {
             throw new ServiceValidationException("No customer loan found!!!");
         }
 
-        customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));
+        customerLoan.setCadDocument(cadDocumentService.saveAll(customerLoan1.getCadDocument()));
+        customerLoan.setCbsLoanFileNumber(customerLoan1.getCbsLoanFileNumber());
         return customerLoanRepository.save(customerLoan);
     }
 

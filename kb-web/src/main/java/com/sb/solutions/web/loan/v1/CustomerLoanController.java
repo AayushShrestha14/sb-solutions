@@ -363,9 +363,9 @@ public class CustomerLoanController {
 
     @PostMapping("/cad-document")
     public ResponseEntity<?> saveCadDocumentLoan(@RequestParam Long loanId,
-        @RequestBody List<CadDocument> customerDocuments) {
+        @RequestBody CustomerLoan customerLoan) {
         return new RestResponseDto()
-            .successModel(service.saveCadLoanDocument(loanId, customerDocuments));
+            .successModel(service.saveCadLoanDocument(loanId, customerLoan));
     }
 
     @PostMapping("/cad-document/upload")
