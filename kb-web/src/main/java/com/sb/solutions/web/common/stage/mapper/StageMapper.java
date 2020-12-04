@@ -38,6 +38,7 @@ public class StageMapper {
     public <T> T mapper(StageDto stageDto, List previousList, Class<T> classType, Long createdBy,
         StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
         ObjectMapper objectMapper = new ObjectMapper();
+        User loggedUser = userService.getAuthenticatedUser();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
@@ -51,7 +52,7 @@ public class StageMapper {
         } else {
             currentStage.setFromUser(currentStage.getToUser());
             currentStage.setFromRole(currentStage.getToRole());
-            currentStage.setComment("Transfer By Administrator");
+            currentStage.setComment("Transfer By " + loggedUser.getRole().getRoleName() + ". " + stageDto.getComment());
         }
 
         if (stageDto.getDocAction().equals(DocAction.PULLED)) {
