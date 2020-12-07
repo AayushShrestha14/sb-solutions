@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.productMode.service.ProductModeService;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 
 /**
@@ -40,4 +41,10 @@ public class ProductModeController {
         logger.info("get product mode utils{}", URL);
         return new RestResponseDto().successModel(ProductUtils.getProductUtilsMap());
     }
+
+    @GetMapping(value = "/bankUtils")
+    public ResponseEntity<?> getBankUtils() {
+        return new RestResponseDto().successModel(BankUtils.getMap());
+    }
+
 }

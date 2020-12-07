@@ -12,6 +12,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -151,7 +152,16 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
             .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.COMPANY_VAT_PAN_EXPIRY))
             .collect(CustomerLoanFlag.toSingleton());
 
+        CustomerLoanFlag customerEmptyLoanFlag = customerInfo.get().getLoanFlags()
+            .stream()
+            .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY))
+            .collect(CustomerLoanFlag.toSingleton());
+
+
         try {
+            if (!ObjectUtils
+                .isEmpty(this.findOne(customerInfo.get().getAssociateId()).getLegalStatus()
+                    .getRegistrationExpiryDate())) {
             int daysToExpiryBefore = notificationMaster.get().getValue();
             Calendar c = Calendar.getInstance();
             c.setTime(new Date());
@@ -172,9 +182,29 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
                 customerLoanFlag.setOrder(
                     Integer.parseInt(LoanFlag.COMPANY_VAT_PAN_EXPIRY.getValue()[0]));
                 customerLoanFlagService.save(customerLoanFlag);
-            } else if (!flag && customerLoanFlag != null) {
+            }
+            else if (!flag && customerLoanFlag != null) {
                 customerLoanFlagService
                     .deleteCustomerLoanFlagById(customerLoanFlag.getId());
+            }
+            if (customerEmptyLoanFlag != null) {
+                customerLoanFlagService
+                    .deleteCustomerLoanFlagById(customerEmptyLoanFlag.getId());
+            }
+        } else {
+                if (customerLoanFlag != null) {
+                customerLoanFlagService
+                    .deleteCustomerLoanFlagById(customerLoanFlag.getId());
+                }
+                customerLoanFlag = new CustomerLoanFlag();
+                customerLoanFlag.setCustomerInfo(customerInfo.get());
+                customerLoanFlag.setFlag(LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY);
+                customerLoanFlag.setDescription(
+                    String.format(LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY.getValue()[1]));
+                customerLoanFlag.setOrder(
+                    Integer.parseInt(LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY.getValue()[0]));
+                customerLoanFlagService.save(customerLoanFlag);
+
             }
         } catch (ParseException e) {
             log.error("Error parsing company registration expiry date");
