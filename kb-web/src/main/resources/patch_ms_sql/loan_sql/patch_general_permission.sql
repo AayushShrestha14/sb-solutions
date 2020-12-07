@@ -5,6 +5,8 @@ BEGIN
     DECLARE
         @countapproval smallint
     DECLARE
+        @counttransfer smallint
+    DECLARE
         @countPull smallint
     DECLARE
         @count_preference smallint
@@ -15,7 +17,7 @@ BEGIN
     SET @count_preference = (SELECT count(*) from permission where id = 142)
     SET @count_customer = (SELECT count(*) from permission where id = 143)
     SET @countapproval = (Select count(*) from permission where id = 150)
-
+    SET @counttransfer = (Select count(*) from permission where id = 160)
     if (@count < 8)
         BEGIN
             SET IDENTITY_INSERT permission ON
@@ -200,6 +202,12 @@ BEGIN
         SET IDENTITY_INSERT permission ON
             INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
             VALUES (150, 'Post Approval', 'checkmark-circle-outline', '/home/loan/post-approval-form', 110, 1)
+        end
+        if(@counttransfer < 1)
+        BEGIN
+        SET IDENTITY_INSERT permission ON
+            INSERT INTO permission (id, permission_name, fa_icon, front_url, orders, status)
+            VALUES (160, 'Transfer Document', 'book-outline', '/home/loan/transfer-doc', 119, 1)
         end
 END;
 
