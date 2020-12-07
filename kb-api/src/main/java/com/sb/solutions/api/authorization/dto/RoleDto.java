@@ -30,6 +30,8 @@ public class RoleDto {
 
     private RoleAccess roleAccess;
 
+    private String authorityLabel;
+
     private Status status;
 
     public RoleDto(Long id, String name) {

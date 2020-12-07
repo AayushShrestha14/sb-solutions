@@ -120,6 +120,7 @@ import com.sb.solutions.core.enums.LoanFlag;
 import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
@@ -295,6 +296,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             List<CadDocument> cadDocument= customer1.getCadDocument();
             if (!ObjectUtils.isEmpty(cadDocument)) {
                 customerLoan.setCadDocument(cadDocument);
+            }
+        }
+        if (BankUtils.AFFILIATED_ID.equals("srdb")) {
+            CustomerLoan customer1 =customerLoanRepository.findById(id).get();
+            if(!ObjectUtils.isEmpty(customer1.getCbsLoanFileNumber())){
+                customerLoan.setCbsLoanFileNumber(customer1.getCbsLoanFileNumber());
             }
         }
         if (ProductUtils.OFFER_LETTER) {
@@ -1435,6 +1442,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));
         return customerLoanRepository.save(customerLoan);
+    }
+
+    public CustomerLoan saveCbsNumbers(CustomerLoan customerLoans) {
+        CustomerLoan customerLoan1 = customerLoanRepository.findById(customerLoans.getId()).orElse(null);
+        if (customerLoan1 == null) {
+            throw new ServiceValidationException("No customer loan found!!!");
+        } else if( !customerLoan1.getDocumentStatus().equals(DocStatus.APPROVED)) {
+            throw new ServiceValidationException("Document Status should be Approved!!!");
+        }
+        customerLoan1.setCbsLoanFileNumber(customerLoans.getCbsLoanFileNumber());
+        return customerLoanRepository.save(customerLoan1);
     }
 
 }

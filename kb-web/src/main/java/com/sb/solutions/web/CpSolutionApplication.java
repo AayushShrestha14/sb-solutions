@@ -30,6 +30,7 @@ import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import com.sb.solutions.core.config.security.property.MailProperties;
 import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
+import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 
 /**
@@ -90,6 +91,7 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @PostConstruct
     public void initialize() {
         this.productModeSetup();
+        this.bankDetailInitialize();
         try {
             String baseServerFolder = BaseConfigurationPatchUtils.currentConnectedDb(dbValue);
             InitialPatch.inital(baseServerFolder, dataSource);
@@ -152,12 +154,13 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             }
 
             if (ProductUtils.OFFER_LETTER) {
-                ClassPathResource dataResource = new ClassPathResource(
+                if (affiliateId.equals("mega")) {
+                    ClassPathResource dataResource = new ClassPathResource(
                         baseServerFolder + "/general_patch/offer_letter/"+affiliateId+".sql");
-                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
                         dataResource);
-                populator.execute(dataSource);
-
+                    populator.execute(dataSource);
+                }
                 ClassPathResource cadResource = new ClassPathResource(
                         baseServerFolder + "/general_patch/role_cad.sql");
                 ResourceDatabasePopulator cadPopulator = new ResourceDatabasePopulator(
@@ -224,6 +227,11 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
     @Bean
     public ProductUtils productModeSetup() {
         return new ProductUtils();
+    }
+
+    @Bean
+    public BankUtils bankDetailInitialize() {
+        return new BankUtils();
     }
 
 }
