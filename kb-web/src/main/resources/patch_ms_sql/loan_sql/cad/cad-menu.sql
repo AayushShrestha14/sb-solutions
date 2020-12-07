@@ -1,6 +1,8 @@
 BEGIN
     DECLARE @count smallint
     DECLARE @perm_id smallint
+     DECLARE @perm_del_id smallint
+     SET @perm_del_id = (Select id from permission where permission_name = 'Post Approval')
     SET @count = (Select count(*) from permission where permission_name = 'Credit Administration')
     if (@count = 0)
         BEGIN
@@ -30,5 +32,12 @@ BEGIN
             (@perm_id, 17),
             (@perm_id, 18),
             (@perm_id, 19)
+
+        END
+         IF (@perm_del_id IS NOT NULL)
+        BEGIN
+            DELETE FROM role_permission_rights WHERE permission_id = @perm_del_id
+            DELETE FROM permission_sub_navs WHERE permission_id =@perm_del_id
+           DELETE FROM permission WHERE id = @perm_del_id
         END
 END;

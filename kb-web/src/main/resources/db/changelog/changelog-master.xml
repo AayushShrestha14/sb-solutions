@@ -5094,4 +5094,235 @@
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
+
+    <changeSet id="288-cad-stage" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_stage"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_stage">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="comment" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_from_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="to_user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_to_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="from_role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_from_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="to_role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_to_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="doc_action" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="289-create-table-cad-file" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <tableExists tableName="cad_file"/>
+        </not>
+    </preConditions>
+        <createTable tableName="cad_file">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="cad_document" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="draft_path" type="VARCHAR(250)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="signed_path" type="VARCHAR(250)">
+                <constraints nullable="true"/>
+            </column>
+
+
+            <column name="initial_information" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="supported_information" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_file_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_file_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="290-create-table-customer-approved-loan-cad-documentation" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_approved_loan_cad_documentation"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_approved_loan_cad_documentation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="loan_holder_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_cad_loan_holder_id"
+                             referencedTableName="customer_info"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="cad_current_stage_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_cad_cad_current_stage_id"
+                             referencedTableName="cad_stage"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="cad_document_type" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cad_stage_list" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="parent_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="child_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="doc_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="291-create-table-cad-file-list" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_file_customer_approved_loan_cad_documentation"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_file_customer_approved_loan_cad_documentation">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_id"
+                             referencedTableName="customer_approved_loan_cad_documentation"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="cad_file_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_cad_file_loan_id"
+                        referencedTableName="cad_file"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="292-create-table-customer-approved-loan-cad-documentation-approved-loan" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="assigned_loan"/>
+            </not>
+        </preConditions>
+        <createTable tableName="assigned_loan">
+            <column name="assigned_loan_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_assigned_loan_id"
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_assigned_customer_approved_loan_cad_documentation_id"
+                        referencedTableName="customer_approved_loan_cad_documentation"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
