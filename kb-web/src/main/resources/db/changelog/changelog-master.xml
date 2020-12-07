@@ -5094,4 +5094,70 @@
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
+    
+    <changeSet id="392-alter-guarantor-add-column-date_of_birth" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="date_of_birth"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="date_of_birth" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-motherName" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="mother_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="mother_name" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-spouseName" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="spouse_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="spouse_name" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-fatherInLaw" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="father_in_law"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="father_in_law" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-profession" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="profession"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="profession" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-background" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="background"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="background" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
