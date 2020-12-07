@@ -5094,7 +5094,18 @@
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
-    
+
+    <changeSet id="390-alter-customer-loan-add-column-cbsLoanFileNumbers" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="cbs_loan_file_number"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="cbs_loan_file_number" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="392-alter-guarantor-add-column-date_of_birth" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>

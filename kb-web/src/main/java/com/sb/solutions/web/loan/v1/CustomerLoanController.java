@@ -368,6 +368,13 @@ public class CustomerLoanController {
             .successModel(service.saveCadLoanDocument(loanId, customerDocuments));
     }
 
+    @PostMapping("/cbs")
+    public ResponseEntity<?> saveCbsNumber(
+        @RequestBody CustomerLoan customerLoan) {
+        return new RestResponseDto()
+            .successModel(service.saveCbsNumbers(customerLoan));
+    }
+
     @PostMapping("/cad-document/upload")
     public ResponseEntity<?> uploadLoanCadFile(@RequestParam("file") MultipartFile multipartFile,
         @RequestParam("documentName") String documentName,

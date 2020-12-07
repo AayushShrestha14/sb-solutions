@@ -157,7 +157,7 @@ public class Mapper {
             // Check loan flags
             List<CustomerLoanFlag> loanFlags = customerLoan.getLoanHolder().getLoanFlags()
                 .stream()
-                .filter(f -> f.getCustomerLoanId().equals(customerLoan.getId()))
+                .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId().equals(customerLoan.getId()))
                 .collect(Collectors.toList());
             if (!loanFlags.isEmpty()) {
                 loanFlags.sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));

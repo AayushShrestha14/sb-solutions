@@ -52,7 +52,7 @@ public class LegalStatus extends BaseEntity<Long> implements EntityValidator {
         Boolean anyAttributeNull = Stream.of(this.corporateStructure,
             this.registeredOffice,
             this.registrationDate, this.panRegistrationOffice,
-            this.panRegistrationDate, this.registrationExpiryDate).anyMatch(Objects::isNull);
+            this.panRegistrationDate).anyMatch(Objects::isNull);
         if (anyAttributeNull) {
             pair = Pair.of(Boolean.FALSE,
                 validationMsg);
