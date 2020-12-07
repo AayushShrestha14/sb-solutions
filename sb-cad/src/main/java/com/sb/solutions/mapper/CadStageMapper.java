@@ -25,12 +25,12 @@ import com.sb.solutions.entity.CustomerApproveLoanCadDocumentation;
 @Component
 public class CadStageMapper {
 
-    private ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper().
+    private final ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper().
         setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-    public String addPresentListToPreviousList(List previousList, CadStage cadStage) {
+    public String addPresentStageToPreviousList(List previousList, CadStage cadStage) {
         List previousListTemp = new ArrayList();
         if (cadStage != null) {
 
@@ -60,7 +60,7 @@ public class CadStageMapper {
         CustomerApproveLoanCadDocumentation oldData, User currentUser) {
         StageDto stageDto = new StageDto();
         stageDto.setPreviousList(
-            addPresentListToPreviousList(oldData.getPreviousList(), oldData.getCadCurrentStage()));
+            addPresentStageToPreviousList(oldData.getPreviousList(), oldData.getCadCurrentStage()));
         CadStage cadStage = oldData.getCadCurrentStage();
         cadStage.setFromRole(currentUser.getRole());
         cadStage.setFromUser(currentUser);

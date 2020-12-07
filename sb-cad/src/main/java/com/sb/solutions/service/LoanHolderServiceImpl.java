@@ -1,5 +1,18 @@
 package com.sb.solutions.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
@@ -18,21 +31,11 @@ import com.sb.solutions.dto.LoanHolderDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApproveLoanCadDocumentation;
-import com.sb.solutions.mapper.CustomerLoanMapper;
+import com.sb.solutions.enums.CADDocumentType;
 import com.sb.solutions.mapper.CadStageMapper;
+import com.sb.solutions.mapper.CustomerLoanMapper;
 import com.sb.solutions.repository.CustomerCadRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import com.sb.solutions.repository.specification.CustomerCadSpecBuilder;
 
 /**
  * @author : Rujan Maharjan on  12/1/2020
@@ -54,7 +57,10 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private final CadStageMapper cadStageMapper;
 
-    public LoanHolderServiceImpl(CustomerLoanRepository customerLoanRepository, CustomerLoanMapper customerLoanMapper, UserService userService, CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository, CadStageMapper cadStageMapper) {
+    public LoanHolderServiceImpl(CustomerLoanRepository customerLoanRepository,
+        CustomerLoanMapper customerLoanMapper, UserService userService,
+        CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
+        CadStageMapper cadStageMapper) {
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanMapper = customerLoanMapper;
         this.userService = userService;
@@ -64,11 +70,12 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     }
 
     @Override
-    public Page<LoanHolderDto> getAllUnAssignLoanForCadAdmin(Map<String, String> filterParams, Pageable pageable) {
+    public Page<LoanHolderDto> getAllUnAssignLoanForCadAdmin(Map<String, String> filterParams,
+        Pageable pageable) {
         List<LoanHolderDto> finalLoanHolderDtoList = new ArrayList<>();
         Map<String, String> s = filterParams;
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                .map(Object::toString).collect(Collectors.joining(","));
+            .map(Object::toString).collect(Collectors.joining(","));
         if (s.containsKey("branchIds")) {
             branchAccess = s.get("branchIds");
         }
@@ -78,7 +85,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         s.values().removeIf(Objects::isNull);
         final CustomerInfoSpecBuilder customerInfoSpecBuilder = new CustomerInfoSpecBuilder(s);
         final Specification<CustomerInfo> specCustomerInfo = customerInfoSpecBuilder.build();
-        Page<CustomerInfo> customerInfoPage = customerInfoRepository.findAll(specCustomerInfo, pageable);
+        Page<CustomerInfo> customerInfoPage = customerInfoRepository
+            .findAll(specCustomerInfo, pageable);
         customerInfoPage.getContent().forEach(customerInfo -> {
             LoanHolderDto holderDto = new LoanHolderDto();
             holderDto.setId(customerInfo.getId());
@@ -92,12 +100,14 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             s.put("loanHolderId", String.valueOf(customerInfo.getId()));
             final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
             final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-            final List<CustomerLoanDto> customerLoanDtoList = customerLoanMapper.mapEntitiesToDtos(customerLoanRepository.findAll(specification));
+            final List<CustomerLoanDto> customerLoanDtoList = customerLoanMapper
+                .mapEntitiesToDtos(customerLoanRepository.findAll(specification));
             holderDto.setCustomerLoanDtoList(customerLoanDtoList);
             holderDto.setTotalLoan((long) customerLoanDtoList.size());
             finalLoanHolderDtoList.add(holderDto);
         });
-        return new PageImpl<>(finalLoanHolderDtoList, pageable, customerInfoPage.getTotalElements());
+        return new PageImpl<>(finalLoanHolderDtoList, pageable,
+            customerInfoPage.getTotalElements());
     }
 
     @Override
@@ -105,7 +115,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         boolean isUniqueCADDocumentType = false;
         CustomerApproveLoanCadDocumentation temp = null;
         CustomerApproveLoanCadDocumentation cadDocumentation = new CustomerApproveLoanCadDocumentation();
-        cadDocumentation.setAssignedLoan(customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+        cadDocumentation.setAssignedLoan(
+            customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
         cadDocumentation.setCadCurrentStage(assignStage(cadStageDto.getToUser().getId()));
         cadDocumentation.setCadDocumentType(cadStageDto.getDocumentType());
         if (!ObjectUtils.isEmpty(cadStageDto.getCadId())) {
@@ -113,9 +124,13 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             if ((temp.getCadDocumentType().equals(cadStageDto.getDocumentType()))) {
                 if ((!temp.getDocStatus().equals(DocStatus.APPROVED))) {
                     cadDocumentation = temp;
-                    cadDocumentation.setCadStageList(cadStageMapper.addPresentListToPreviousList(cadDocumentation.getPreviousList(), cadDocumentation.getCadCurrentStage()));
-                    cadDocumentation.setAssignedLoan(customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
-                    cadDocumentation.setCadCurrentStage(assignStage(cadStageDto.getToUser().getId()));
+                    cadDocumentation.setCadStageList(cadStageMapper
+                        .addPresentStageToPreviousList(cadDocumentation.getPreviousList(),
+                            cadDocumentation.getCadCurrentStage()));
+                    cadDocumentation.setAssignedLoan(
+                        customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+                    cadDocumentation
+                        .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId()));
 
                 } else {
                     return ErrorMessage.ERROR_ASSIGNED_APPROVED_ALREADY;
@@ -127,7 +142,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
                 isUniqueCADDocumentType = true;
             }
         }
-        final CustomerApproveLoanCadDocumentation cadDocumentation1 = customerCadRepository.save(cadDocumentation);
+        final CustomerApproveLoanCadDocumentation cadDocumentation1 = customerCadRepository
+            .save(cadDocumentation);
         if (!ObjectUtils.isEmpty(cadDocumentation1)) {
             if (isUniqueCADDocumentType && (!ObjectUtils.isEmpty(temp))) {
                 temp.setChildId(cadDocumentation1.getId());
@@ -143,9 +159,42 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     @Override
     public String cadAction(CadStageDto cadStageDto) {
         final User currentUser = userService.getAuthenticatedUser();
-        final CustomerApproveLoanCadDocumentation documentation = customerCadRepository.getOne(cadStageDto.getCadId());
+        final CustomerApproveLoanCadDocumentation documentation = customerCadRepository
+            .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
+        customerCadRepository.updateAction(cadStageDto.getCadId(),
+            cadStageDto.getDocAction() == DocAction.APPROVED ? DocStatus.APPROVED
+                : cadStageDto.getDocAction() == DocAction.CLOSED ? DocStatus.CLOSED
+                    : cadStageDto.getDocAction() == DocAction.REJECT ? DocStatus.REJECTED
+                        : DocStatus.PENDING, stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
+    }
+
+    @Override
+    public Page<CustomerApproveLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(
+        Map<String, String> filterParams, Pageable pageable) {
+        filterParams.values().removeIf(Objects::isNull);
+        filterParams.put("cadDocumentType", CADDocumentType.OFFER_LETTER.name());
+        filterParams.put("childId", null);
+        filterParams.put("docStatus", DocStatus.APPROVED.name());
+        return filterCADbyParams(filterParams, pageable);
+    }
+
+    @Override
+    public Page<CustomerApproveLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(
+        Map<String, String> filterParams, Pageable pageable) {
+        filterParams.values().removeIf(Objects::isNull);
+        filterParams.put("cadDocumentType", CADDocumentType.LEGAL_DOCUMENT.name());
+        filterParams.put("childId", null);
+        filterParams.put("docStatus", DocStatus.APPROVED.name());
+        return filterCADbyParams(filterParams, pageable);
+    }
+
+    @Override
+    public Page<CustomerApproveLoanCadDocumentation> getAllByFilterParams(
+        Map<String, String> filterParams, Pageable pageable) {
+        filterParams.values().removeIf(Objects::isNull);
+        return filterCADbyParams(filterParams, pageable);
     }
 
 
@@ -164,5 +213,24 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         return cadStage;
     }
 
+
+    private Map<String, String> branchAccess(Map<String, String> filterParams) {
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (filterParams.containsKey("branchIds")) {
+            branchAccess = filterParams.get("branchIds");
+        }
+        filterParams.put("branchIds", branchAccess);
+        return filterParams;
+    }
+
+    private Page<CustomerApproveLoanCadDocumentation> filterCADbyParams(
+        Map<String, String> filterParams, Pageable pageable) {
+        final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
+            branchAccess(filterParams));
+        final Specification<CustomerApproveLoanCadDocumentation> specification = customerCadSpecBuilder
+            .build();
+        return customerCadRepository.findAll(specification, pageable);
+    }
 
 }
