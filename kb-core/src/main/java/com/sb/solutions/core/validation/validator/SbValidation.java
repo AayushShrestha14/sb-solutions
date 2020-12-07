@@ -30,6 +30,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class SbValidation {
+
     public static final String EMPTY_ = "%s Cannot be NUll";
 
     private ObjectMapper mapper = new ObjectMapper()
@@ -43,7 +44,7 @@ public class SbValidation {
     }
 
     @Before(value = "serviceLayer() && @annotation(sbValid) && args(batch)")
-    public void validateBeforeAssigningDocument(JoinPoint pjp, Object batch,
+    public void emptyValidate(JoinPoint pjp, Object batch,
                                                 SbValid sbValid) {
         Map<String, Object> map;
         List<Violation> violations = new ArrayList<>();
