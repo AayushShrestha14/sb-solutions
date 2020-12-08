@@ -80,6 +80,16 @@ public class Guarantor extends BaseEntity<Long> {
     private String streetNameTemporary;
     private Integer wardNumberTemporary;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date dateOfBirth;
+
+    private String motherName;
+    private String spouseName;
+    private String fatherInLaw;
+    private String profession;
+    private String background;
+
+
 
 
 }
