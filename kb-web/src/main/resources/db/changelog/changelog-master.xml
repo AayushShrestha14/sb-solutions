@@ -5171,4 +5171,15 @@
             <column name="background" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="392-alter-valuator-add-column-is-all-branch" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="valuator" columnName="is_all_branch"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="valuator">
+            <column name="is_all_branch" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
