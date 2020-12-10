@@ -196,6 +196,10 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
                 customerLoanFlagService
                     .deleteCustomerLoanFlagById(customerLoanFlag.getId());
                 }
+                if (customerEmptyLoanFlag != null) {
+                    customerLoanFlagService
+                        .deleteCustomerLoanFlagById(customerEmptyLoanFlag.getId());
+                }
                 customerLoanFlag = new CustomerLoanFlag();
                 customerLoanFlag.setCustomerInfo(customerInfo.get());
                 customerLoanFlag.setFlag(LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY);
