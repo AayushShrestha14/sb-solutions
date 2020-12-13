@@ -37,6 +37,7 @@ public class UserSpec implements Specification<User> {
         CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_NAME:
+                return criteriaBuilder.like(root.get(property), value + "%");
             case FILTER_BY_EMAIL:
                 return criteriaBuilder
                         .equal(criteriaBuilder.lower(root.get(property)), value.toLowerCase() + "%");
