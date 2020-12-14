@@ -52,7 +52,7 @@ INSERT  INTO district (id, province_id, name) VALUES
 (43, 4, 'Myagdi'),
 (44, 4, 'Parbat'),
 (45, 4, 'Baglung'),
-(46, 4, 'Nawalparasi'),
+(46, 4, 'Nawalparasi East'),
 (47, 5, 'Gulmi'),
 (48, 5, 'Palpa'),
 (49, 5, 'Rupandehi'),
@@ -60,7 +60,7 @@ INSERT  INTO district (id, province_id, name) VALUES
 (51, 5, 'Arghakhanchi'),
 (52, 5, 'Pyuthan'),
 (53, 5, 'Rolpa'),
-(54, 5, 'Rukum'),
+(54, 5, 'Rukum East'),
 (55, 5, 'Dang'),
 (56, 5, 'Banke'),
 (57, 5, 'Bardiya'),
@@ -81,7 +81,9 @@ INSERT  INTO district (id, province_id, name) VALUES
 (72, 7, 'Kanchanpur'),
 (73, 7, 'Dadeldhura'),
 (74, 7, 'Baitadi'),
-(75, 7, 'Darchula')
+(75, 7, 'Darchula'),
+(76, 5, 'Nawalparasi West'),
+(77, 6, 'Rukum West')
 
 SET IDENTITY_INSERT district Off
 END
