@@ -1,13 +1,13 @@
 
 BEGIN
 DECLARE @count smallint
-SET @count = (Select count(*) from_vdc)
+SET @count = (Select count(*) from municipality_vdc)
 
-if(@count < 75)
+if(@count < 764)
 BEGIN
 
-SET IDENTITY_INSERT_vdc ON
-INSERT INTO_vdc (id, district_id, name) VALUES
+SET IDENTITY_INSERT municipality_vdc ON
+INSERT INTO municipality_vdc (id, district_id, name) VALUES
 (1, 1, 'Phungling'),
 (2, 1, 'Aatharai Triveni'),
 (3, 1, 'Sidingawa'),
@@ -762,6 +762,6 @@ INSERT INTO_vdc (id, district_id, name) VALUES
 (763, 21, 'Bishrampur'),
 (764, 22, 'Thori')
 
-SET IDENTITY_INSERT_vdc OFF
+SET IDENTITY_INSERT municipality_vdc OFF
 END
 END;

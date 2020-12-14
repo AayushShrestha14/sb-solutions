@@ -3,7 +3,7 @@ BEGIN
 DECLARE @count smallint
 SET @count = (Select count(*) from district)
 
-if(@count < 75)
+if(@count < 77)
 BEGIN
 SET IDENTITY_INSERT district ON
 INSERT  INTO district (id, province_id, name) VALUES
