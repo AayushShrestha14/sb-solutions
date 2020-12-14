@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -85,6 +86,11 @@ public class Mapper {
             if (loanActionDto.isNotify()) {
                 customerLoan.setNotify(true);
             }
+            if (customerLoan.getIsSol()) {
+                Preconditions.checkArgument(
+                    customerLoan.getSolUser().getId() == currentUser.getId(),
+                    "You don't have permission to Approve tis file!!");
+            }
         }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -152,12 +158,14 @@ public class Mapper {
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
-                throw new RuntimeException("There is no user created in the role or is  disabled. Please contact admin.");
+                throw new RuntimeException(
+                    "There is no user created in the role or is  disabled. Please contact admin.");
             }
             // Check loan flags
             List<CustomerLoanFlag> loanFlags = customerLoan.getLoanHolder().getLoanFlags()
                 .stream()
-                .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId().equals(customerLoan.getId()))
+                .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId()
+                    .equals(customerLoan.getId()))
                 .collect(Collectors.toList());
             if (!loanFlags.isEmpty()) {
                 loanFlags.sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
@@ -165,7 +173,7 @@ public class Mapper {
                 throw new RuntimeException(loanFlags.get(0).getDescription());
             }
             //sol
-            if(stageDto.getIsSol()){
+            if (stageDto.getIsSol()) {
                 User user = new User();
                 user.setId(stageDto.getSolUser().getId());
                 customerLoan.setIsSol(stageDto.getIsSol());
