@@ -164,6 +164,13 @@ public class Mapper {
                 logger.error(loanFlags.get(0).getDescription());
                 throw new RuntimeException(loanFlags.get(0).getDescription());
             }
+            //sol
+            if(stageDto.getIsSol()){
+                User user = new User();
+                user.setId(stageDto.getSolUser().getId());
+                customerLoan.setIsSol(stageDto.getIsSol());
+                customerLoan.setSolUser(user);
+            }
         }
         return stageMapper
             .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,

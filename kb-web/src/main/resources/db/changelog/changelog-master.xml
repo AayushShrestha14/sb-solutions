@@ -5171,4 +5171,31 @@
             <column name="background" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="393-alter-customer-loan-add-column-is-sol" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="is_sol"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="is_sol" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="394-alter-table-customer-loan-add-column-sol-user" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <columnExists tableName="customer_loan" columnName="sol_user_id"/>
+        </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+        <column name="sol_user_id" type="BIGINT">
+            <constraints nullable="true"
+              foreignKeyName="fk_sol_user_users_id"
+              referencedTableName="users"
+              referencedColumnNames="id"/>
+        </column>
+    </addColumn>
+    </changeSet>
 </databaseChangeLog>

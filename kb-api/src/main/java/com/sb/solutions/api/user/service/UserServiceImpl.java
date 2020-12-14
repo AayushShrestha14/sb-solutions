@@ -6,9 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -29,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.authorization.entity.Role;
@@ -49,7 +48,6 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.csv.CsvMaker;
-import org.springframework.util.ObjectUtils;
 
 /**
  * @author Sunil Babu Shrestha on 12/31/2018
@@ -67,12 +65,12 @@ public class UserServiceImpl implements UserService {
     private final CustomJdbcTokenStore customJdbcTokenStore;
 
     public UserServiceImpl(
-            @Autowired UserRepository userRepository,
-            @Autowired BranchRepository branchRepository,
-            @Autowired RoleRepository roleRepository,
-            @Autowired CustomJdbcTokenStore customJdbcTokenStore,
-            @Autowired BCryptPasswordEncoder passwordEncoder,
-            @Autowired CustomerLoanRepository customerLoanRepository) {
+        @Autowired UserRepository userRepository,
+        @Autowired BranchRepository branchRepository,
+        @Autowired RoleRepository roleRepository,
+        @Autowired CustomJdbcTokenStore customJdbcTokenStore,
+        @Autowired BCryptPasswordEncoder passwordEncoder,
+        @Autowired CustomerLoanRepository customerLoanRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
@@ -94,15 +92,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getAuthenticatedUser() {
         final Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+            .getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails) {
             User user = (User) authentication.getPrincipal();
             return this.getByUsername(user.getUsername());
         } else {
             logger.error("User not authenticated or invalid {}", authentication);
             throw new UsernameNotFoundException(
-                    "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
-                            .getClass() + "; Expected type User");
+                "User is not authenticated; Found " + " of type " + authentication.getPrincipal()
+                    .getClass() + "; Expected type User");
         }
     }
 
@@ -122,7 +120,7 @@ public class UserServiceImpl implements UserService {
         if (user.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
             if (user.getBranch().isEmpty() || (user.getBranch().size() > 1)) {
                 throw new InvalidPropertyException(User.class, "Branch",
-                        "Branch can not be null or multi selected");
+                    "Branch can not be null or multi selected");
             }
         }
 
@@ -136,7 +134,7 @@ public class UserServiceImpl implements UserService {
             if (!user.getBranch().isEmpty()) {
 
                 throw new InvalidPropertyException(User.class, "Branch",
-                        "Branch can not be selected For role");
+                    "Branch can not be selected For role");
             }
         }
 
@@ -165,9 +163,9 @@ public class UserServiceImpl implements UserService {
     public List<User> findByRoleAndBranch(Long roleId, List<Long> branchIds) {
         Role r = roleRepository.getOne(roleId);
         if (r.getRoleAccess().equals(RoleAccess.ALL) && (!r.getRoleType()
-                .equals(RoleType.COMMITTEE))) {
+            .equals(RoleType.COMMITTEE))) {
             return userRepository.findByRoleRoleAccessAndRoleNotAndRoleId(RoleAccess.ALL,
-                    roleRepository.getOne(Long.valueOf(1)), roleId);
+                roleRepository.getOne(Long.valueOf(1)), roleId);
         }
         if (r.getRoleType().equals(RoleType.COMMITTEE)) {
             return userRepository.findByRoleIdAndIsDefaultCommittee(r.getId(), true);
@@ -230,7 +228,7 @@ public class UserServiceImpl implements UserService {
         String branchIdListTOString = null;
         if (u.getRole().getRoleAccess() != null) {
             if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole()
-                    .getRoleAccess().equals(RoleAccess.OWN)) {
+                .getRoleAccess().equals(RoleAccess.OWN)) {
                 for (Branch b : u.getBranch()) {
                     branchIdList.add(b.getId());
                 }
@@ -254,18 +252,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public String dismissAllBranchAndRole(User user) {
         Integer i = customerLoanRepository
-                .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
-                        DocStatus.PENDING);
+            .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
+                DocStatus.PENDING);
         if (i > 0) {
             throw new ServiceValidationException("This user have " + i
-                    + " Customer Loan pending  Please transfer the loan before dismiss.");
+                + " Customer Loan pending  Please transfer the loan before dismiss.");
         }
         user.setBranch(new ArrayList<Branch>());
         user.setStatus(Status.INACTIVE);
         user.setRole(null);
         userRepository.save(user);
         Collection<OAuth2AccessToken> token = customJdbcTokenStore
-                .findTokensByUserName(user.getUsername());
+            .findTokensByUserName(user.getUsername());
         for (OAuth2AccessToken tempToken : token) {
             customJdbcTokenStore.removeAccessToken(tempToken);
             customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
@@ -287,21 +285,21 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
         if (u != null) {
             List<String> authorityList = userRepository
-                    .userApiAuthorities(u.getRole().getId()).stream()
-                    .map(object -> Objects.toString(object, null))
-                    .collect(Collectors.toList());
+                .userApiAuthorities(u.getRole().getId()).stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
             Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-                    .getContext().getAuthentication().getAuthorities();
+                .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
             for (String a : authorityList) {
                 updatedAuthorities.add(new SimpleGrantedAuthority(a));
             }
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-                            u.getPassword(),
-                            updatedAuthorities)
+                new UsernamePasswordAuthenticationToken(
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                    u.getPassword(),
+                    updatedAuthorities)
             );
 
             u.setAuthorityList(authorityList);
@@ -333,7 +331,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findByRoleTypeAndBranchIdAndStatusActive(RoleType roleType, Long branchId) {
-        return userRepository.findByRoleRoleTypeAndBranchIdAndStatus(roleType, branchId, Status.ACTIVE);
+        return userRepository
+            .findByRoleRoleTypeAndBranchIdAndStatus(roleType, branchId, Status.ACTIVE);
     }
 
     @Override
@@ -346,13 +345,16 @@ public class UserServiceImpl implements UserService {
             switch (role.getRoleAccess()) {
                 case ALL:
                     userList = userRepository.findByRoleId(roleId);
-                    return userToUserDtoMap(userList.stream().filter(user -> user.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList()));
+                    return userToUserDtoMap(
+                        userList.stream().filter(user -> user.getStatus().equals(Status.ACTIVE))
+                            .collect(Collectors.toList()));
                 case OWN:
                 case SPECIFIC:
                     branchIdList.add(branch);
                     break;
             }
-            userList = userRepository.findByRoleIdAndBranchInAndStatus(roleId, branchIdList, Status.ACTIVE);
+            userList = userRepository
+                .findByRoleIdAndBranchInAndStatus(roleId, branchIdList, Status.ACTIVE);
             return userToUserDtoMap(userList);
         }
         return new ArrayList<>();
@@ -361,15 +363,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<RoleDto> findByRoleInAndStatus(List<Role> roleList, Status status) {
         List<User> userList = userRepository.findByRoleInAndStatus(roleList, status);
-      List<RoleDto> roleDtoList = new ArrayList<>();
-      roleList.forEach(r->{
-          RoleDto roleDto = new RoleDto();
-          roleDto.setId(r.getId());
-          roleDto.setName(r.getRoleName());
-          roleDtoList.add(roleDto);
-      });
+        List<RoleDto> roleDtoList = new ArrayList<>();
+        roleList.forEach(r -> {
+            RoleDto roleDto = new RoleDto();
+            roleDto.setId(r.getId());
+            roleDto.setName(r.getRoleName());
+            roleDtoList.add(roleDto);
+        });
 
-        return userAndRoleDtoMap(roleDtoList,userList,0L);
+        return userAndRoleDtoMap(roleDtoList, userList, 0L);
+    }
+
+    @Override
+    public List<UserDto> findUserListForSolByRoleIdInAndBranchId(List<Long> roleIds,
+        Long branchId) {
+        List<UserDto> finalList = new ArrayList<>();
+        List<User> userList = userRepository.findByRoleIdInAndStatus(roleIds, Status.ACTIVE);
+        userList.forEach(user -> {
+            UserDto userDto = new UserDto();
+            List<Branch> branchList = user.getBranch();
+            if (user.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
+                BeanUtils.copyProperties(user, userDto);
+                userDto.setId(user.getId());
+                finalList.add(userDto);
+            } else {
+                List<Branch> checkList = branchList.stream()
+                    .filter(branch -> branch.getId().equals(branchId)).collect(
+                        Collectors.toList());
+                if (checkList.size() > 0) {
+                    BeanUtils.copyProperties(user, userDto);
+                    userDto.setId(user.getId());
+                    finalList.add(userDto);
+                }
+            }
+        });
+        return finalList;
     }
 
     private List<UserDto> userToUserDtoMap(List<User> userList) {
@@ -383,14 +411,15 @@ public class UserServiceImpl implements UserService {
         return userDtoList;
     }
 
-    private List<RoleDto> userAndRoleDtoMap(List<RoleDto> roleDtoList, List<User> users, Long userId) {
+    private List<RoleDto> userAndRoleDtoMap(List<RoleDto> roleDtoList, List<User> users,
+        Long userId) {
         List<RoleDto> finalRoleDtoList = new ArrayList<>();
         for (RoleDto r : roleDtoList) {
             List<UserDto> userDtoList = new ArrayList<>();
             for (User u : users) {
                 UserDto userDto = new UserDto();
                 if (u.getRole().getId() == r.getId() && u.getRole().getId() != 1L
-                        && u.getId() != userId) {
+                    && u.getId() != userId) {
                     List<BranchDto> branchDto = new ArrayList<>();
 
                     userDto.setId(u.getId());
