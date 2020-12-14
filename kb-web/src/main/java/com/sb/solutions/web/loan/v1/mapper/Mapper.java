@@ -89,7 +89,7 @@ public class Mapper {
             if (customerLoan.getIsSol()) {
                 Preconditions.checkArgument(
                     customerLoan.getSolUser().getId() == currentUser.getId(),
-                    "You don't have permission to Approve tis file!!");
+                    "You don't have permission to Approve this file!!");
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
