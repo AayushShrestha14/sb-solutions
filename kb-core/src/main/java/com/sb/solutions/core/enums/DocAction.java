@@ -7,12 +7,12 @@ package com.sb.solutions.core.enums;
  */
 public enum DocAction {
     DRAFT("Draft"),
-    FORWARD("Forward"),
+    FORWARD("Forwarded"),
     BACKWARD("Backward"),
     APPROVED("Approved"),
     REJECT("Reject"),
     CLOSED("Close"),
-    TRANSFER("Transfer"),
+    TRANSFER("Transferred"),
     NOTED("Noted"),
     PULLED("Pulled"),
     BACKWARD_TO_COMMITTEE("Backward To Committee"),

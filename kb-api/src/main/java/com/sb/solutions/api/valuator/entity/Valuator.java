@@ -60,4 +60,6 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
 
     @ManyToMany
     private List<Branch> branch;
+
+    private Boolean isAllBranch = false;
 }
