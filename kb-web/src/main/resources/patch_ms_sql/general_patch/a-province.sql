@@ -12,7 +12,7 @@ INSERT  INTO province (id, name) VALUES
 (2, 'Province 2'),
 (3, 'Bagmati Pradesh'),
 (4, 'Gandaki Pradesh'),
-(5, 'Province 5'),
+(5, 'Lumbini'),
 (6, 'Karnali Pradesh'),
 (7, 'Sudurpashchim Pradesh')
 SET IDENTITY_INSERT province OFF
