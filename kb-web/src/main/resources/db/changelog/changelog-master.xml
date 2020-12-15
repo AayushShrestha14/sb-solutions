@@ -5182,4 +5182,26 @@
             <column name="is_all_branch" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="393-alter-customer-info-add-gender" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="gender"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="gender" type="VARCHAR(256)"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="394-alter-customer-info-add-marital-status" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="marital_status"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="marital_status" type="VARCHAR(256)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
