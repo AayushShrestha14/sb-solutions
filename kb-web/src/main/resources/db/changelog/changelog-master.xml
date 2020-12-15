@@ -4828,17 +4828,17 @@
         <createTable tableName="loan_config_approved_document">
             <column name="loan_config_id" type="BIGINT">
                 <constraints
-                  nullable="false"
-                  foreignKeyName="fk_loan_config_approved_document_loan_config_id"
-                  referencedColumnNames="id"
-                  referencedTableName="loan_config"
+                        nullable="false"
+                        foreignKeyName="fk_loan_config_approved_document_loan_config_id"
+                        referencedColumnNames="id"
+                        referencedTableName="loan_config"
                 />
             </column>
             <column name="approved_document_id" type="BIGINT">
                 <constraints nullable="false"
-                  foreignKeyName="fk_loan_config_approved_document_id"
-                  referencedColumnNames="id"
-                  referencedTableName="document"/>
+                             foreignKeyName="fk_loan_config_approved_document_id"
+                             referencedColumnNames="id"
+                             referencedTableName="document"/>
             </column>
         </createTable>
     </changeSet>
@@ -4846,7 +4846,7 @@
     <changeSet id="377-create-table-cad-document" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="cad_document" />
+                <tableExists tableName="cad_document"/>
             </not>
         </preConditions>
         <createTable tableName="cad_document">
@@ -4856,26 +4856,26 @@
             <column name="document_path" type="VARCHAR(256)"/>
             <column name="document_id" type="BIGINT">
                 <constraints nullable="false"
-                  foreignKeyName="fk_cad_document_id"
-                  referencedTableName="document"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_document_id"
+                             referencedTableName="document"
+                             referencedColumnNames="id"/>
             </column>
             <column name="customer_loan_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_loan_cad_document_id"
-                  referencedTableName="customer_loan"
-                  referencedColumnNames="id"/>
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"/>
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_customer_cad_document_created_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_customer_cad_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_customer_cad_document_modified_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_customer_cad_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATETIME">
                 <constraints nullable="false"/>
@@ -4896,14 +4896,14 @@
         <createTable tableName="customer_loan_cad_document">
             <column name="customer_loan_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_cad_document_customer_loan_id"
-                  referencedTableName="customer_loan"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_document_customer_loan_id"
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"/>
             </column>
             <column name="cad_document_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_cad_document_id"
-                  referencedTableName="cad_document"
-                  referencedColumnNames="id"/>
+                             referencedTableName="cad_document"
+                             referencedColumnNames="id"/>
             </column>
         </createTable>
     </changeSet>
@@ -5033,7 +5033,6 @@
     </changeSet>
 
 
-
     <changeSet id="386-alter-table-role-add-column-authority_label" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -5090,7 +5089,7 @@
 
     <changeSet id="287-alter-table-crg-question-remove-column-customer_type" author="Amulya">
         <preConditions>
-                <columnExists tableName="crg_question" columnName="customer_type"/>
+            <columnExists tableName="crg_question" columnName="customer_type"/>
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
@@ -5181,5 +5180,42 @@
         <addColumn tableName="valuator">
             <column name="is_all_branch" type="BOOLEAN"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet author="bibash" id="393-alter-table-proposal-modify-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="393-alter-table-proposal-audit-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-audit-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
     </changeSet>
 </databaseChangeLog>
