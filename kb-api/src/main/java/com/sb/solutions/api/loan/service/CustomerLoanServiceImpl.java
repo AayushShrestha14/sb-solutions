@@ -861,6 +861,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
+            previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
         }
         if (previousLoan.getCreditRiskGrading() != null) {
             previousLoan.getCreditRiskGrading().setId(null);

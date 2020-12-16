@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.core.enums.LoanType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,9 @@ public class Mapper {
                 "Sorry this document is not under you!!");
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
+            if(customerLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || customerLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
+                customerLoan.getProposal().setExistingLimit(customerLoan.getProposal().getProposedLimit());
+            }
             if (ProductUtils.LAS) {
                 ApprovalLimit approvalLimit = approvalLimitService
                     .getByRoleAndLoan(currentUser.getRole().getId(),
