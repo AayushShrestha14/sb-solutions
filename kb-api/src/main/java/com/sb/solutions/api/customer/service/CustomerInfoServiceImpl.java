@@ -170,6 +170,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setBankingRelationship(((Customer) o).getBankingRelationship());
             customerInfo.setClientType(((Customer) o).getClientType());
             customerInfo.setSubsectorDetail(((Customer) o).getSubsectorDetail());
+            customerInfo.setGender(((Customer) o).getGender());
+            customerInfo.setMaritalStatus(((Customer)o).getMaritalStatus());
 
         }
 

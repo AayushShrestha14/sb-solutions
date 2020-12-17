@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,6 +28,7 @@ import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
@@ -89,6 +91,11 @@ public class Mapper {
             if (loanActionDto.isNotify()) {
                 customerLoan.setNotify(true);
             }
+            if (customerLoan.getIsSol()) {
+                Preconditions.checkArgument(
+                    customerLoan.getSolUser().getId() == currentUser.getId(),
+                    "You don't have permission to Approve this file!!");
+            }
         }
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -136,6 +143,21 @@ public class Mapper {
                 currentUserDto, customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
+        if ((loanActionDto.getDocAction().equals(DocAction.FORWARD)) && currentUser.getRole()
+            .getRoleType().equals(
+                RoleType.MAKER)) {
+            if (loanActionDto.getIsSol()) {
+                User user = new User();
+                Preconditions.checkNotNull(loanActionDto.getSolUser(),
+                    "Please Select Approval User for Loan " + customerLoan.getLoan().getName());
+                user.setId(loanActionDto.getSolUser().getId());
+                customerLoan.setIsSol(loanActionDto.getIsSol());
+                customerLoan.setSolUser(user);
+            } else {
+                customerLoan.setIsSol(loanActionDto.getIsSol());
+                customerLoan.setSolUser(null);
+            }
+        }
         return customerLoan;
     }
 
@@ -149,25 +171,28 @@ public class Mapper {
 
             logger.error("Error while performing the action");
 
-            throw new RuntimeException(
+            throw new ServiceValidationException(
                 "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
         // TODO: Separate alert message for no user and disabled user
         if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
-                throw new RuntimeException("There is no user created in the role or is  disabled. Please contact admin.");
+                throw new ServiceValidationException(
+                    "There is no user created in the role or is  disabled. Please contact admin.");
             }
             // Check loan flags
             List<CustomerLoanFlag> loanFlags = customerLoan.getLoanHolder().getLoanFlags()
                 .stream()
-                .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId().equals(customerLoan.getId()))
+                .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId()
+                    .equals(customerLoan.getId()))
                 .collect(Collectors.toList());
             if (!loanFlags.isEmpty()) {
                 loanFlags.sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
                 logger.error(loanFlags.get(0).getDescription());
                 throw new RuntimeException(loanFlags.get(0).getDescription());
             }
+
         }
         return stageMapper
             .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,
