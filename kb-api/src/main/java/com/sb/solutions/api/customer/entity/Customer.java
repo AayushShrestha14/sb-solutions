@@ -122,6 +122,9 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;
 
+    @Transient
+    private String customerLegalDocumentAddress;
+
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CustomerRelative> customerRelatives;

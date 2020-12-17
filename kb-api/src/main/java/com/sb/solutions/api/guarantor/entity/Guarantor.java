@@ -88,7 +88,7 @@ public class Guarantor extends BaseEntity<Long> {
     private String fatherInLaw;
     private String profession;
     private String background;
-
+    private String guarantorLegalDocumentAddress;
 
 
 

@@ -172,6 +172,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setSubsectorDetail(((Customer) o).getSubsectorDetail());
             customerInfo.setGender(((Customer) o).getGender());
             customerInfo.setMaritalStatus(((Customer)o).getMaritalStatus());
+            customerInfo.setCustomerLegalDocumentAddress(((Customer)o).getCustomerLegalDocumentAddress());
 
         }
 
