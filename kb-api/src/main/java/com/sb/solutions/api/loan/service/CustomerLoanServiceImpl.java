@@ -36,6 +36,7 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.sb.solutions.api.creditRiskGradingLambda.service.CreditRiskGradingLambdaService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -172,6 +173,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
     private List customerGroupLogList = new ArrayList();
+    Gson gson = new Gson();
 
     public CustomerLoanServiceImpl(
             CustomerLoanRepository customerLoanRepository,
@@ -861,6 +863,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
+            Map<String , Object> proposalData = gson.fromJson(previousLoan.getProposal().getData() , HashMap.class);
+            proposalData.replace("existingLimit" , previousLoan.getProposal().getProposedLimit());
+            previousLoan.getProposal().setData(gson.toJson(proposalData));
             previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
         }
         if (previousLoan.getCreditRiskGrading() != null) {

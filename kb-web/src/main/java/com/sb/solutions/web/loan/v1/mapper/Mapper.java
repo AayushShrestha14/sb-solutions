@@ -1,11 +1,7 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 import com.sb.solutions.core.enums.LoanType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +44,7 @@ public class Mapper {
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
     private final StageMapper stageMapper;
     private final ApprovalLimitService approvalLimitService;
+    Gson gson = new Gson();
 
     public Mapper(@Autowired StageMapper stageMapper,
         @Autowired ApprovalLimitService approvalLimitService) {
@@ -65,7 +63,10 @@ public class Mapper {
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
             if(customerLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || customerLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
-                customerLoan.getProposal().setExistingLimit(customerLoan.getProposal().getProposedLimit());
+               Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
+               proposalData.replace("existingLimit" , customerLoan.getProposal().getProposedLimit());
+               customerLoan.getProposal().setData(gson.toJson(proposalData));
+               customerLoan.getProposal().setExistingLimit(customerLoan.getProposal().getProposedLimit());
             }
             if (ProductUtils.LAS) {
                 ApprovalLimit approvalLimit = approvalLimitService
