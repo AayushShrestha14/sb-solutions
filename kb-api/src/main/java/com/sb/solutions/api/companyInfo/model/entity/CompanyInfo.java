@@ -100,6 +100,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     @NotAudited
     private String businessGiven;
 
+    @NotAudited
+    private String companyLegalDocumentAddress;
+
     @Override
     public Pair<Boolean, String> valid() {
         Boolean validator = Boolean.TRUE;

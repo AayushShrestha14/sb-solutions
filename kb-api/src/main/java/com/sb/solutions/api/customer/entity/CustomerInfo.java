@@ -158,6 +158,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private String customerLegalDocumentAddress;
 
+    @Transient
+    private String companyLegalDocumentAddress;
+
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
            Pattern pattern = Pattern.compile("-");

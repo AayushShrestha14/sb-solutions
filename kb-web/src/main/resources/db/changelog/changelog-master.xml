@@ -5251,4 +5251,14 @@
             <column name="guarantor_legal_document_address" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="397-alter-company-info-add-company_legal_document_address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="company_info" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
