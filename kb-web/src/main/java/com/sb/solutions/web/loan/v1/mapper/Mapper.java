@@ -62,12 +62,10 @@ public class Mapper {
                 "Sorry this document is not under you!!");
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
-            if(customerLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || customerLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
                Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
                proposalData.replace("existingLimit" , customerLoan.getProposal().getProposedLimit());
                customerLoan.getProposal().setData(gson.toJson(proposalData));
                customerLoan.getProposal().setExistingLimit(customerLoan.getProposal().getProposedLimit());
-            }
             if (ProductUtils.LAS) {
                 ApprovalLimit approvalLimit = approvalLimitService
                     .getByRoleAndLoan(currentUser.getRole().getId(),

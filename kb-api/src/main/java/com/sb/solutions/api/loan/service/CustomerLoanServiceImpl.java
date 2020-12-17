@@ -863,10 +863,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
-            Map<String , Object> proposalData = gson.fromJson(previousLoan.getProposal().getData() , HashMap.class);
-            proposalData.replace("existingLimit" , previousLoan.getProposal().getProposedLimit());
-            previousLoan.getProposal().setData(gson.toJson(proposalData));
-            previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
+            if(previousLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || previousLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
+                Map<String, Object> proposalData = gson.fromJson(previousLoan.getProposal().getData(), HashMap.class);
+                proposalData.replace("existingLimit", previousLoan.getProposal().getProposedLimit());
+                previousLoan.getProposal().setData(gson.toJson(proposalData));
+                previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
+            }
         }
         if (previousLoan.getCreditRiskGrading() != null) {
             previousLoan.getCreditRiskGrading().setId(null);
