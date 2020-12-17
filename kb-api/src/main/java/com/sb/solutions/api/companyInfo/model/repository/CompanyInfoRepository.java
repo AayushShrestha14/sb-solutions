@@ -10,4 +10,6 @@ public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long>,
 
     CompanyInfo findCompanyInfoByRegistrationNumber(String registrationNumber);
 
+    CompanyInfo findCompanyInfoByPanNumber(String panNumber);
+
 }
