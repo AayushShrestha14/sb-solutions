@@ -123,7 +123,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         String destinationCadDocumentPath = null;
 
-        if (ProductUtils.CAD_DOC_UPLOAD) {
+        if (ProductUtils.CAD_LITE_VERSION) {
             destinationCadDocumentPath = rootth
                 + "/zipFolder/cadDocument.zip";
         }

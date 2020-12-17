@@ -83,5 +83,5 @@ product:
   eligibility: true
   dms: false
   nepTemplate: true
-  cadDocumentUpload: true
+  cadLiteVersion: true
   loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
