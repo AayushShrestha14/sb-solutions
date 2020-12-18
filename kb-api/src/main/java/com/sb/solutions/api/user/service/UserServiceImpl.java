@@ -16,6 +16,7 @@ import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -47,6 +48,7 @@ import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
 
 /**
@@ -311,9 +313,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RoleDto> getRoleWiseBranchWiseUserList(Long roleId, Long branchId, Long userId) {
+        User currentUser = getAuthenticatedUser();
+        String roleName = "CAD";
+        List<User> finalUserList = new ArrayList<>();
         List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
+        List<User> userWithAllAccess = users.stream()
+            .filter(user ->(!user.getRole().getRoleName().equalsIgnoreCase(roleName)) && (!user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (user
+                .getRole().getRoleAccess().equals(RoleAccess.ALL)) && (!currentUser
+                .equals(user))).collect(
+                Collectors.toList());
+        finalUserList.addAll(userWithAllAccess);
+        List<User> userWithOwnAndSpecificAccess = users.stream()
+            .filter(
+                user ->(!user.getRole().getRoleName().equalsIgnoreCase(roleName)) &&  (!user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (!user
+                    .getRole().getRoleAccess().equals(RoleAccess.ALL)) && (!currentUser
+                    .equals(user))).collect(
+                Collectors.toList());
+        userWithOwnAndSpecificAccess.forEach(user -> {
+            List<Branch> branchList = user.getBranch().stream()
+                .filter(branch -> Objects.equals(branch.getId(), branchId)).collect(
+                    Collectors.toList());
+            if (!branchList.isEmpty()) {
+                finalUserList.add(user);
+            }
+
+        });
         List<RoleDto> roleDtoList = roleRepository.getRoleDto();
-        return userAndRoleDtoMap(roleDtoList, users, userId);
+        return userAndRoleDtoMap(roleDtoList,
+            finalUserList.stream().filter(FilterJsonUtils.distinctByKey(User::getId))
+                .collect(Collectors.toList()), userId);
 
     }
 
@@ -442,8 +470,10 @@ public class UserServiceImpl implements UserService {
             }
 
         }
+        return finalRoleDtoList.stream().filter(roleDto -> !roleDto.getUserDtoList().isEmpty())
+            .collect(
+                Collectors.toList());
 
-        return finalRoleDtoList;
     }
 
 }
