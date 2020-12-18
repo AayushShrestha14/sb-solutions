@@ -497,9 +497,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> findAll(Object search) {
 
         Map<String, String> s = objectMapper.convertValue(search, Map.class);
-        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        return customerLoanRepository.findAll(specification);
+        return customerLoanRepository.findALlUniqueLoanByCustomerId(Long.parseLong(s.get("loanHolderId")));
     }
 
     @Override
