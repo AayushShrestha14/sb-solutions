@@ -156,10 +156,15 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/get-all-doc-transfer/{id}")
-    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id) {
+    /**
+     * PathVariable id represent currentUser Id
+     * PathVariable  branchId represent Loan branch id
+     */
+
+    @GetMapping(path = "/get-all-doc-transfer/{id}/branch/{branchId}")
+    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id,@PathVariable Long branchId) {
         return new RestResponseDto()
-            .successModel(userService.getRoleWiseBranchWiseUserList(null, null, id));
+            .successModel(userService.getRoleWiseBranchWiseUserList(null, branchId, id));
     }
 
     @PostMapping(value = "/resetPassword")
