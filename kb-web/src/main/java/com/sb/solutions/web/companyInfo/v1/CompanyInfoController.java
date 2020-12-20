@@ -57,4 +57,10 @@ public class CompanyInfoController {
         return new RestResponseDto()
             .successModel(companyInfoService.findCompanyInfoByRegistrationNumber(id));
     }
+
+    @GetMapping("/panNumber/{id}")
+    public ResponseEntity<?> getCompanyInfoByPanNumber(
+        @PathVariable("id") String id) {
+        return new RestResponseDto().successModel(companyInfoService.findCompanyInfoByPanNumber(id));
+    }
 }
