@@ -172,6 +172,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setSubsectorDetail(((Customer) o).getSubsectorDetail());
             customerInfo.setGender(((Customer) o).getGender());
             customerInfo.setMaritalStatus(((Customer)o).getMaritalStatus());
+            customerInfo.setCustomerLegalDocumentAddress(((Customer)o).getCustomerLegalDocumentAddress());
 
         }
 
@@ -196,6 +197,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
             customerInfo.setClientType(((CompanyInfo) o).getClientType());
             customerInfo.setSubsectorDetail(((CompanyInfo) o).getSubsectorDetail());
+            customerInfo.setCompanyLegalDocumentAddress(((CompanyInfo)o).getCompanyLegalDocumentAddress());
         }
         customerInfo.setBranch(user.getBranch().get(0));
             return this.save(customerInfo);

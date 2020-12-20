@@ -5231,4 +5231,34 @@
             <column name="marital_status" type="VARCHAR(256)"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="395-alter-customer-info-add-customer-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="customer_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="customer_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="396-alter-guarantor-add-guarantor-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="guarantor" columnName="guarantor_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="guarantor_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="397-alter-company-info-add-company_legal_document_address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="company_info" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
