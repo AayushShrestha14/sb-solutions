@@ -293,7 +293,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
 
         }
-        if (ProductUtils.CAD_DOC_UPLOAD) {
+        if (ProductUtils.CAD_LITE_VERSION) {
             CustomerLoan customer1 =customerLoanRepository.findById(id).get();
             List<CadDocument> cadDocument= customer1.getCadDocument();
             if (!ObjectUtils.isEmpty(cadDocument)) {

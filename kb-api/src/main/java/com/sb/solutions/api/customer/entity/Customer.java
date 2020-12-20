@@ -47,7 +47,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @JsonDeserialize(using = NameFormatter.class)
     private String customerName;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+//    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT")
     private Date dob;
 
 

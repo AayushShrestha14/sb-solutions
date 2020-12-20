@@ -8,5 +8,6 @@ public interface CompanyInfoService extends BaseService<CompanyInfo>,
     HelperService<Long> {
 
     CompanyInfo findCompanyInfoByRegistrationNumber(String registrationNumber);
+    CompanyInfo findCompanyInfoByPanNumber(String panNumber);
 
 }

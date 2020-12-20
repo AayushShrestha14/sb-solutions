@@ -26,7 +26,7 @@ public class ProductUtils {
 
     public static Boolean NEP_TEMPLATE;
 
-    public static Boolean CAD_DOC_UPLOAD;
+    public static Boolean CAD_LITE_VERSION;
 
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
@@ -50,10 +50,10 @@ public class ProductUtils {
         productUtilsMap.put("ACCOUNT", account);
     }
 
-    @Value("${product.cadDocumentUpload}")
+    @Value("${product.cadLiteVersion}")
     public void setCadDocUpload(Boolean cadDocUpload) {
-        CAD_DOC_UPLOAD = cadDocUpload;
-        productUtilsMap.put("CAD_DOC_UPLOAD", cadDocUpload);
+        CAD_LITE_VERSION = cadDocUpload;
+        productUtilsMap.put("CAD_LITE_VERSION", cadDocUpload);
     }
 
     @Value("${product.offerletter}")

@@ -140,7 +140,7 @@ public class DocumentController {
 
 
         String cadDocumentPath = null;
-        if (!ObjectUtils.isEmpty(customerLoan.getCadDocument()) && ProductUtils.CAD_DOC_UPLOAD){
+        if (!ObjectUtils.isEmpty(customerLoan.getCadDocument()) && ProductUtils.CAD_LITE_VERSION){
              cadDocumentPath = new PathBuilder(UploadDir.initialDocument)
                 .buildCadLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
                     customerLoan.getBranch().getId(),
