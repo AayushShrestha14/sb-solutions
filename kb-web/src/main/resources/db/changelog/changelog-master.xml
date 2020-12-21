@@ -5261,4 +5261,41 @@
             <column name="company_legal_document_address" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="bibash" id="393-alter-table-proposal-modify-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="393-alter-table-proposal-audit-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-audit-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
 </databaseChangeLog>

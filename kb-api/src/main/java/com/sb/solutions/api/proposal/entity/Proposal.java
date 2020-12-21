@@ -30,8 +30,8 @@ public class Proposal extends BaseEntity<Long> {
     private BigDecimal proposedLimit;
     private Double tenureDurationInMonths;
     private String checkedData;
-    private Double existingLimit;
-    private Double outStandingLimit;
+    private BigDecimal existingLimit;
+    private BigDecimal outStandingLimit;
     private Double collateralRequirement;
     private String limitExpiryMethod;
     private Double duration;
