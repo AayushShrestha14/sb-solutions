@@ -4828,17 +4828,17 @@
         <createTable tableName="loan_config_approved_document">
             <column name="loan_config_id" type="BIGINT">
                 <constraints
-                        nullable="false"
-                        foreignKeyName="fk_loan_config_approved_document_loan_config_id"
-                        referencedColumnNames="id"
-                        referencedTableName="loan_config"
+                  nullable="false"
+                  foreignKeyName="fk_loan_config_approved_document_loan_config_id"
+                  referencedColumnNames="id"
+                  referencedTableName="loan_config"
                 />
             </column>
             <column name="approved_document_id" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="fk_loan_config_approved_document_id"
-                             referencedColumnNames="id"
-                             referencedTableName="document"/>
+                  foreignKeyName="fk_loan_config_approved_document_id"
+                  referencedColumnNames="id"
+                  referencedTableName="document"/>
             </column>
         </createTable>
     </changeSet>
@@ -4846,7 +4846,7 @@
     <changeSet id="377-create-table-cad-document" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="cad_document"/>
+                <tableExists tableName="cad_document" />
             </not>
         </preConditions>
         <createTable tableName="cad_document">
@@ -4856,26 +4856,26 @@
             <column name="document_path" type="VARCHAR(256)"/>
             <column name="document_id" type="BIGINT">
                 <constraints nullable="false"
-                             foreignKeyName="fk_cad_document_id"
-                             referencedTableName="document"
-                             referencedColumnNames="id"/>
+                  foreignKeyName="fk_cad_document_id"
+                  referencedTableName="document"
+                  referencedColumnNames="id"/>
             </column>
             <column name="customer_loan_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_loan_cad_document_id"
-                             referencedTableName="customer_loan"
-                             referencedColumnNames="id"/>
+                  referencedTableName="customer_loan"
+                  referencedColumnNames="id"/>
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_customer_cad_document_created_by_id"
-                             referencedTableName="users"
-                             referencedColumnNames="id"/>
+                  foreignKeyName="fk_customer_cad_document_created_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_customer_cad_document_modified_by_id"
-                             referencedTableName="users"
-                             referencedColumnNames="id"/>
+                  foreignKeyName="fk_customer_cad_document_modified_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATETIME">
                 <constraints nullable="false"/>
@@ -4896,14 +4896,14 @@
         <createTable tableName="customer_loan_cad_document">
             <column name="customer_loan_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_cad_document_customer_loan_id"
-                             referencedTableName="customer_loan"
-                             referencedColumnNames="id"/>
+                  foreignKeyName="fk_cad_document_customer_loan_id"
+                  referencedTableName="customer_loan"
+                  referencedColumnNames="id"/>
             </column>
             <column name="cad_document_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_cad_document_id"
-                             referencedTableName="cad_document"
-                             referencedColumnNames="id"/>
+                  referencedTableName="cad_document"
+                  referencedColumnNames="id"/>
             </column>
         </createTable>
     </changeSet>
@@ -5033,6 +5033,7 @@
     </changeSet>
 
 
+
     <changeSet id="386-alter-table-role-add-column-authority_label" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -5089,7 +5090,7 @@
 
     <changeSet id="287-alter-table-crg-question-remove-column-customer_type" author="Amulya">
         <preConditions>
-            <columnExists tableName="crg_question" columnName="customer_type"/>
+                <columnExists tableName="crg_question" columnName="customer_type"/>
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
@@ -5228,6 +5229,36 @@
         </preConditions>
         <addColumn tableName="customer_info">
             <column name="marital_status" type="VARCHAR(256)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="395-alter-customer-info-add-customer-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="customer_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="customer_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="396-alter-guarantor-add-guarantor-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="guarantor" columnName="guarantor_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="guarantor_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="397-alter-company-info-add-company_legal_document_address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="company_info" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_legal_document_address" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
 
