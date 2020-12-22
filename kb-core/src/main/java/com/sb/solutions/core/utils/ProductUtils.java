@@ -28,6 +28,8 @@ public class ProductUtils {
 
     public static Boolean CAD_LITE_VERSION;
 
+    public static Boolean CBS_ENABLE;
+
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
 
@@ -83,6 +85,12 @@ public class ProductUtils {
     @Value("${product.loanApprovalHierarchyLevel}")
     public void setApprovalHierarchyForLoan(ApprovalType approvalType) {
         productUtilsMap.put("LOAN_APPROVAL_HIERARCHY_LEVEL", approvalType);
+    }
+
+    @Value("${product.cbsEnable}")
+    public void setCbsEnable(Boolean cbsEnable) {
+        CBS_ENABLE = cbsEnable;
+        productUtilsMap.put("CBS_ENABLE", cbsEnable);
     }
 
     public static Map<String, Object> getProductUtilsMap() {
