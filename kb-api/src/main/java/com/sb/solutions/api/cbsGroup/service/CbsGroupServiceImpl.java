@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,9 @@ import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.cbsGroup.entity.CbsGroup;
 import com.sb.solutions.api.cbsGroup.repository.CbsGroupRepository;
+import com.sb.solutions.api.cbsGroup.repository.specification.CbsGroupSpecBuilder;
+import com.sb.solutions.api.customer.entity.Customer;
+import com.sb.solutions.api.customer.repository.specification.CustomerSpecBuilder;
 import com.sb.solutions.core.constant.AppConstant;
 
 /**
@@ -63,13 +68,17 @@ public class CbsGroupServiceImpl implements CbsGroupService {
 
     @Override
     public Page<CbsGroup> findAllPageable(Object t, Pageable pageable) {
-        return null;
+        Map<String, String> s = mapper.convertValue(t, Map.class);
+        s.values().removeIf(Objects::isNull);
+        final CbsGroupSpecBuilder cbsGroupSpecBuilder = new CbsGroupSpecBuilder(s);
+        Specification<CbsGroup> specification = cbsGroupSpecBuilder.build();
+        return cbsGroupRepository.findAll(specification, pageable);
     }
 
     @Transactional
     @Override
     public List<CbsGroup> saveAll(List<CbsGroup> list) {
-        cbsGroupRepository.deleteAllInBatch();
+
         List<Map<String, Object>> cbsRemoteData = getCbsData.getAllData();
 
         //if only to save data with obl nt null
@@ -87,8 +96,14 @@ public class CbsGroupServiceImpl implements CbsGroupService {
             }
             return cbsGroup;
         }).collect(Collectors.toList());
+        if (!cbsRemoteData.isEmpty()) {
+            cbsGroupRepository.deleteAllInBatch();
+            return cbsGroupRepository.saveAll(cbsGroupList);
+        } else {
+            log.error("no data present in remote db");
+            return null;
+        }
 
-        return cbsGroupRepository.saveAll(cbsGroupList);
     }
 
     @Override
@@ -97,7 +112,7 @@ public class CbsGroupServiceImpl implements CbsGroupService {
     }
 
     @Scheduled(cron = "0 0 20 * * ?")
-    public void fetchData(){
+    public void fetchData() {
         this.saveAll(new ArrayList<>());
     }
 }
