@@ -5231,4 +5231,71 @@
             <column name="marital_status" type="VARCHAR(256)"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="395-alter-customer-info-add-customer-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="customer_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="customer_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="396-alter-guarantor-add-guarantor-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="guarantor" columnName="guarantor_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="guarantor_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="397-alter-company-info-add-company_legal_document_address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="company_info" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="bibash" id="393-alter-table-proposal-modify-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="393-alter-table-proposal-audit-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-audit-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
 </databaseChangeLog>
