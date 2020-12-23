@@ -5315,4 +5315,15 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="396-alter-customer-info-add-obligor" author="rujan">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="obligor"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="obligor" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
