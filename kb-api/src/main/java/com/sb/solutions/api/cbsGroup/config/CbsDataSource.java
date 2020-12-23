@@ -21,6 +21,7 @@ public class CbsDataSource {
 
     private Map<String, String> cbs;
     private String tableName;
+    private String uniqueKey;
 
     private ObjectMapper mapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)

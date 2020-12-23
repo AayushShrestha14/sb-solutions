@@ -23,4 +23,5 @@ public class GetCbsDataImpl implements GetCbsData {
     public List<Map<String,Object>> getAllData() {
         return cbsRepository.getAllData();
     }
+
 }

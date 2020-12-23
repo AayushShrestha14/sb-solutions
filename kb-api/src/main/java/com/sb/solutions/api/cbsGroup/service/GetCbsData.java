@@ -10,4 +10,5 @@ public interface GetCbsData {
 
     List<Map<String,Object>> getAllData();
 
+
 }

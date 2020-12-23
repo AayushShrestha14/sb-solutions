@@ -20,11 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.cbsGroup.config.DataSourceConfig;
 import com.sb.solutions.api.cbsGroup.entity.CbsGroup;
 import com.sb.solutions.api.cbsGroup.repository.CbsGroupRepository;
 import com.sb.solutions.api.cbsGroup.repository.specification.CbsGroupSpecBuilder;
-import com.sb.solutions.api.customer.entity.Customer;
-import com.sb.solutions.api.customer.repository.specification.CustomerSpecBuilder;
 import com.sb.solutions.core.constant.AppConstant;
 
 /**
@@ -37,7 +36,7 @@ public class CbsGroupServiceImpl implements CbsGroupService {
 
     private final CbsGroupRepository cbsGroupRepository;
     private final GetCbsData getCbsData;
-    private final static String OBLIGOR_KEY = "obligor";
+    private final DataSourceConfig dataSourceConfig;
 
     private ObjectMapper mapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
@@ -46,9 +45,11 @@ public class CbsGroupServiceImpl implements CbsGroupService {
 
     public CbsGroupServiceImpl(
         CbsGroupRepository cbsGroupRepository,
-        GetCbsData getCbsData) {
+        GetCbsData getCbsData,
+        DataSourceConfig dataSourceConfig) {
         this.cbsGroupRepository = cbsGroupRepository;
         this.getCbsData = getCbsData;
+        this.dataSourceConfig = dataSourceConfig;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class CbsGroupServiceImpl implements CbsGroupService {
     @Transactional
     @Override
     public List<CbsGroup> saveAll(List<CbsGroup> list) {
-
+        String OBLIGOR_KEY = this.dataSourceConfig.getUniqueKeyForFilter();
         List<Map<String, Object>> cbsRemoteData = getCbsData.getAllData();
 
         //if only to save data with obl nt null

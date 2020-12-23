@@ -97,3 +97,4 @@ app:
       password: sbdb@141
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     tableName: cbs_group
+    uniqueKey: obligor

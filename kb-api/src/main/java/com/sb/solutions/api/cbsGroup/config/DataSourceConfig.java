@@ -29,4 +29,8 @@ public class DataSourceConfig {
         return cbsDataSource.getTableName();
     }
 
+    public String getUniqueKeyForFilter(){
+        return cbsDataSource.getUniqueKey();
+    }
+
 }
