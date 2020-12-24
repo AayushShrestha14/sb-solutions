@@ -21,6 +21,7 @@ import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         NetTradingAssetsService netTradingAssetsService,
         CIclService cIclService,
         CreditChecklistService creditChecklistService
-        ) {
+    ) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -171,15 +172,17 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setClientType(((Customer) o).getClientType());
             customerInfo.setSubsectorDetail(((Customer) o).getSubsectorDetail());
             customerInfo.setGender(((Customer) o).getGender());
-            customerInfo.setMaritalStatus(((Customer)o).getMaritalStatus());
-            customerInfo.setCustomerLegalDocumentAddress(((Customer)o).getCustomerLegalDocumentAddress());
+            customerInfo.setMaritalStatus(((Customer) o).getMaritalStatus());
+            customerInfo
+                .setCustomerLegalDocumentAddress(((Customer) o).getCustomerLegalDocumentAddress());
 
         }
 
         if (o instanceof CompanyInfo) {
 
             customerInfo = customerInfoRepository
-                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(), CustomerType.INSTITUTION);
+                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(),
+                    CustomerType.INSTITUTION);
             log.info("Saving company into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -197,10 +200,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
             customerInfo.setClientType(((CompanyInfo) o).getClientType());
             customerInfo.setSubsectorDetail(((CompanyInfo) o).getSubsectorDetail());
-            customerInfo.setCompanyLegalDocumentAddress(((CompanyInfo)o).getCompanyLegalDocumentAddress());
+            customerInfo
+                .setCompanyLegalDocumentAddress(((CompanyInfo) o).getCompanyLegalDocumentAddress());
         }
         customerInfo.setBranch(user.getBranch().get(0));
-            return this.save(customerInfo);
+        return this.save(customerInfo);
     }
 
     @Transactional
@@ -264,18 +268,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Cicl cicl = cIclService
                 .save(objectMapper().convertValue(o, Cicl.class));
             customerInfo1.setCicl(cicl);
-        }
-        else if ((template.equalsIgnoreCase(TemplateNameConstant.INCOME_FROM_ACCOUNT))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.INCOME_FROM_ACCOUNT))) {
             final IncomeFromAccount incomeFromAccount = incomeFromAccountServices
                 .save(objectMapper().convertValue(o, IncomeFromAccount.class));
             customerInfo1.setIncomeFromAccount(incomeFromAccount);
-        }
-        else if ((template.equalsIgnoreCase(TemplateNameConstant.NET_TRADING_ASSETS))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.NET_TRADING_ASSETS))) {
             final NetTradingAssets netTradingAssets = netTradingAssetsService
-                    .save(objectMapper().convertValue(o, NetTradingAssets.class));
+                .save(objectMapper().convertValue(o, NetTradingAssets.class));
             customerInfo1.setNetTradingAssets(netTradingAssets);
-        }
-        else if ((template.equalsIgnoreCase(TemplateNameConstant.CREDIT_CHECKlIST))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CREDIT_CHECKlIST))) {
             final CreditChecklist creditChecklist = creditChecklistService
                 .save(objectMapper().convertValue(o, CreditChecklist.class));
             customerInfo1.setCreditChecklist(creditChecklist);
@@ -296,6 +297,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         return customerInfoRepository
             .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(customerType, idNumber,
                 idRegPlace, customerIdType, date);
+    }
+
+    /**
+     * this method is use for cbs group only
+     **/
+    @Override
+    public String updateObligor(String obligor, Long id) {
+        customerInfoRepository.updateObligorByCustomerInfoId(obligor, id);
+        return null;
     }
 
     @Override

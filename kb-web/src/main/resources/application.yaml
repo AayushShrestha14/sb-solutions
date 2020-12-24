@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: dev
+    active: qa
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -85,3 +85,16 @@ product:
   nepTemplate: true
   cadLiteVersion: true
   loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  cbsEnable: true
+
+#this feature is enabled if cbsEnable is set true
+#url : remote server url
+app:
+  datasource:
+    cbs:
+      url: jdbc:sqlserver://150.107.205.62:1433;database=cbs
+      username: sa
+      password: sbdb@141
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    tableName: cbs_group
+    uniqueKey: obligor

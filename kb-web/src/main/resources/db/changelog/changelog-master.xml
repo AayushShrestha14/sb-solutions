@@ -5298,4 +5298,32 @@
                 newDataType="decimal"
                 tableName="proposal_audit"/>
     </changeSet>
+
+    <changeSet id="395-create-table-cbs-group" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <tableExists tableName="cbs_group"/>
+        </not>
+    </preConditions>
+        <createTable tableName="cbs_group">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="obligor" type="VARCHAR(256)"/>
+            <column name="json_data" type="LONGTEXT"/>
+            <column name="last_modified_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="396-alter-customer-info-add-obligor" author="rujan">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="obligor"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="obligor" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
