@@ -25,6 +25,7 @@ import com.sb.solutions.api.cbsGroup.entity.CbsGroup;
 import com.sb.solutions.api.cbsGroup.repository.CbsGroupRepository;
 import com.sb.solutions.api.cbsGroup.repository.specification.CbsGroupSpecBuilder;
 import com.sb.solutions.core.constant.AppConstant;
+import com.sb.solutions.core.utils.ProductUtils;
 
 /**
  * @author : Rujan Maharjan on  12/22/2020
@@ -35,7 +36,7 @@ import com.sb.solutions.core.constant.AppConstant;
 public class CbsGroupServiceImpl implements CbsGroupService {
 
     private final CbsGroupRepository cbsGroupRepository;
-    private final GetCbsData getCbsData;
+    private final GetCbsDataService getCbsDataService;
     private final DataSourceConfig dataSourceConfig;
 
     private ObjectMapper mapper = new ObjectMapper()
@@ -45,10 +46,10 @@ public class CbsGroupServiceImpl implements CbsGroupService {
 
     public CbsGroupServiceImpl(
         CbsGroupRepository cbsGroupRepository,
-        GetCbsData getCbsData,
+        GetCbsDataService getCbsDataService,
         DataSourceConfig dataSourceConfig) {
         this.cbsGroupRepository = cbsGroupRepository;
-        this.getCbsData = getCbsData;
+        this.getCbsDataService = getCbsDataService;
         this.dataSourceConfig = dataSourceConfig;
     }
 
@@ -80,7 +81,7 @@ public class CbsGroupServiceImpl implements CbsGroupService {
     @Override
     public List<CbsGroup> saveAll(List<CbsGroup> list) {
         String OBLIGOR_KEY = this.dataSourceConfig.getUniqueKeyForFilter();
-        List<Map<String, Object>> cbsRemoteData = getCbsData.getAllData();
+        List<Map<String, Object>> cbsRemoteData = getCbsDataService.getAllData();
 
         //if only to save data with obl nt null
         List<Map<String, Object>> cbsRemoteDataWithOblNotNull = cbsRemoteData.stream().filter(
@@ -114,6 +115,8 @@ public class CbsGroupServiceImpl implements CbsGroupService {
 
     @Scheduled(cron = "0 0 20 * * ?")
     public void fetchData() {
-        this.saveAll(new ArrayList<>());
+        if (ProductUtils.CBS_ENABLE) {
+            this.saveAll(new ArrayList<>());
+        }
     }
 }

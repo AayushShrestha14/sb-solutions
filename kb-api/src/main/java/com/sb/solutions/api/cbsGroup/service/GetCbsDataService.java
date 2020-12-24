@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author : Rujan Maharjan on  12/20/2020
  **/
-public interface GetCbsData {
+public interface GetCbsDataService {
 
     List<Map<String,Object>> getAllData();
 

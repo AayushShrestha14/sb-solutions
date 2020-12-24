@@ -11,11 +11,11 @@ import com.sb.solutions.api.cbsGroup.repository.CbsRepository;
  * @author : Rujan Maharjan on  12/20/2020
  **/
 @Service
-public class GetCbsDataImpl implements GetCbsData {
+public class GetCbsDataServiceImpl implements GetCbsDataService {
 
     private final CbsRepository cbsRepository;
 
-    public GetCbsDataImpl(CbsRepository cbsRepository) {
+    public GetCbsDataServiceImpl(CbsRepository cbsRepository) {
         this.cbsRepository = cbsRepository;
     }
 
