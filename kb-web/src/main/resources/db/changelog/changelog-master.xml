@@ -5325,5 +5325,27 @@
             <column name="obligor" type="VARCHAR(256)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="397-create-table-nepse-price-info" author="bibash">
+        <createTable tableName="nepse_price_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="share_price_date" type="Date"/>
+            <column name="avg_days_for_price" type="int"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

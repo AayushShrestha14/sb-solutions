@@ -1,26 +1,21 @@
 package com.sb.solutions.web.nepseCompany.controller;
 
-import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.nepseCompany.entity.NepsePriceInfo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.nepseCompany.entity.NepseMaster;
 import com.sb.solutions.api.nepseCompany.service.NepseCompanyService;
 import com.sb.solutions.api.nepseCompany.service.NepseMasterService;
-import com.sb.solutions.api.nepseCompany.util.NepseExcelReader;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
@@ -46,15 +41,11 @@ public class NepseCompanyController {
 
     @PostMapping(value = "/uploadNepseFile")
     public ResponseEntity<?> saveNepseExcel(
-            @RequestParam("excelFile") MultipartFile multipartFile) {
-
-        List<NepseCompany> nepseCompanyList = NepseExcelReader.parseNepseCompanyFile(multipartFile);
-        if (nepseCompanyList == null) {
-            return new RestResponseDto().failureModel("Failed-Either file is empty or invalid file format");
-        } else {
-            nepseCompanyService.saveList(nepseCompanyList);
-            return new RestResponseDto().successModel("Added");
-        }
+            @RequestPart("excelFile") MultipartFile excelFile,
+            @RequestPart("nepsePriceInfo") String nepsePriceInfo) throws JsonProcessingException {
+        nepseCompanyService.uploadNepseData(excelFile , new ObjectMapper().
+                readValue(nepsePriceInfo, NepsePriceInfo.class));
+        return new RestResponseDto().successModel("Successfully uploaded nepse data");
     }
 
     @ApiImplicitParams({
