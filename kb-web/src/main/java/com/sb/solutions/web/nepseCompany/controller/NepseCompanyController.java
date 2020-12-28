@@ -1,7 +1,6 @@
 package com.sb.solutions.web.nepseCompany.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.nepseCompany.entity.NepsePriceInfo;
@@ -19,6 +18,8 @@ import com.sb.solutions.api.nepseCompany.service.NepseMasterService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/v1/nepse-company")
@@ -42,7 +43,7 @@ public class NepseCompanyController {
     @PostMapping(value = "/uploadNepseFile")
     public ResponseEntity<?> saveNepseExcel(
             @RequestPart("excelFile") MultipartFile excelFile,
-            @RequestPart("nepsePriceInfo") String nepsePriceInfo) throws JsonProcessingException {
+            @RequestPart("nepsePriceInfo") String nepsePriceInfo) throws IOException {
         nepseCompanyService.uploadNepseData(excelFile , new ObjectMapper().
                 readValue(nepsePriceInfo, NepsePriceInfo.class));
         return new RestResponseDto().successModel("Successfully uploaded nepse data");
