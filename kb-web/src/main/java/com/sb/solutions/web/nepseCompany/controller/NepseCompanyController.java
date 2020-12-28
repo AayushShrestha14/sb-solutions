@@ -1,7 +1,6 @@
 package com.sb.solutions.web.nepseCompany.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.nepseCompany.entity.NepsePriceInfo;
