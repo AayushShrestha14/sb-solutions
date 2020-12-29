@@ -158,9 +158,6 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private String customerLegalDocumentAddress;
 
-    @Transient
-    private String companyLegalDocumentAddress;
-
     private String obligor;
 
     public String getSubSectorDetailCode() {

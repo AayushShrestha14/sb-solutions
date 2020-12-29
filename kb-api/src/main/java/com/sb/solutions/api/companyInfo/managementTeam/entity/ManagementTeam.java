@@ -28,6 +28,7 @@ public class ManagementTeam extends BaseEntity<Long>  {
     private String name;
     private String description;
     private String designation;
+    private String companyLegalDocumentAddress;
 
 //    validation removed as per mega requirement
 //    @Override
