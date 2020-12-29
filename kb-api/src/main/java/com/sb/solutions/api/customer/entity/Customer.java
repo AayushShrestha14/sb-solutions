@@ -4,19 +4,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sb.solutions.core.enums.Gender;
+import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,7 +47,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @JsonDeserialize(using = NameFormatter.class)
     private String customerName;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+//    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT")
     private Date dob;
 
 
@@ -121,7 +114,16 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @NotAudited
     private String temporaryWardNumber;
 
+    @Transient
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
+    @Transient
+    @Enumerated(EnumType.STRING)
+    private MaritalStatus maritalStatus;
+
+    @Transient
+    private String customerLegalDocumentAddress;
 
     @AuditJoinTable
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

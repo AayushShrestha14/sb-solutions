@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.nepseCompany.entity.NepsePriceInfo;
+import com.sb.solutions.api.nepseCompany.util.NepseExcelReader;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,21 +22,30 @@ import com.sb.solutions.api.nepseCompany.repository.NepseCompanyRepository;
 import com.sb.solutions.api.nepseCompany.repository.specification.NepseSpecBuilder;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.enums.Status;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class NepseCompanyServiceImpl implements NepseCompanyService {
+
+    private final Logger logger = LoggerFactory.getLogger(NepseCompanyServiceImpl.class);
 
     private final NepseCompanyRepository nepseCompanyRepository;
     private final CustomerShareLoanThreadService customerShareLoanThreadService;
+    private final NepsePriceInfoService nepsePriceInfoService ;
     private ObjectMapper objectMapper = new ObjectMapper();
     private TaskExecutor executor;
 
     public NepseCompanyServiceImpl(
         NepseCompanyRepository nepseCompanyRepository, TaskExecutor taskExecutor,
-        CustomerShareLoanThreadService customerShareLoanThreadService) {
+        CustomerShareLoanThreadService customerShareLoanThreadService,
+        NepsePriceInfoService nepsePriceInfoService) {
         this.nepseCompanyRepository = nepseCompanyRepository;
         this.executor = taskExecutor;
         this.customerShareLoanThreadService = customerShareLoanThreadService;
+        this.nepsePriceInfoService = nepsePriceInfoService;
     }
 
     @Override
@@ -96,6 +109,14 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
         final Specification<NepseCompany> specification = nepseSpecBuilder.build();
         return nepseCompanyRepository.findAll(specification);
 
+    }
+
+    @Override
+    public void  uploadNepseData(MultipartFile file, NepsePriceInfo nepsePriceInfo) {
+           nepsePriceInfoService.deletePrevRecord();
+           nepsePriceInfoService.save(nepsePriceInfo);
+           List<NepseCompany> nepseCompanyList = NepseExcelReader.parseNepseCompanyFile(file);
+           saveList(nepseCompanyList);
     }
 
 

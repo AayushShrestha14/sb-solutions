@@ -216,4 +216,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Query("UPDATE CustomerLoan c SET c.postApprovalAssignStatus=:status,c.postApprovalAssignedUser=:user WHERE c.id = :id")
     void updatePostApprovalAssignedStatus(@Param("status") PostApprovalAssignStatus status, @Param("id") Long id, @Param("user") User user);
 
+    @Transactional
+    @Query("SELECT c FROM CustomerLoan c WHERE c.loanHolder.id = :loanHolderId and c.previousStageList is not null and c.id not in " +
+            "(select c.parentId from CustomerLoan c where c.loanHolder.id = :loanHolderId and c.parentId is not null )")
+    List<CustomerLoan> findALlUniqueLoanByCustomerId(@Param("loanHolderId") Long loanHolderId);
 }

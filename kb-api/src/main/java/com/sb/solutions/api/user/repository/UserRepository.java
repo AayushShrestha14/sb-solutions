@@ -24,9 +24,6 @@ import com.sb.solutions.core.enums.Status;
 public interface UserRepository extends JpaRepository<User, Long>,
         JpaSpecificationExecutor<User> {
 
-    @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
-    Page<User> userFilter(@Param("name") String name, Pageable pageable);
-
     User getUsersByUsername(String username);
 
     User getUsersByUsernameAndStatus(String username, Status status);
@@ -51,8 +48,6 @@ public interface UserRepository extends JpaRepository<User, Long>,
             + " (select  count(id) FROM users) users\n", nativeQuery = true)
     Map<Object, Object> userStatusCount();
 
-    @Query(value = "select b FROM User b WHERE b.name like concat(:name,'%')")
-    List<User> userCsvFilter(@Param("name") String name);
 
     List<User> findByRoleIdAndBranchId(Long roleId, Long branchId);
 
@@ -77,6 +72,10 @@ public interface UserRepository extends JpaRepository<User, Long>,
     List<User> findByRoleIdAndBranchInAndStatus(Long roleId, List<Branch> branchId, Status status);
 
     List<User> findByRoleInAndStatus(List<Role> roleList,Status status);
+
+    List<User> findByRoleIdInAndStatus(List<Long> roleList,Status status);
+
+   
 
 }
 

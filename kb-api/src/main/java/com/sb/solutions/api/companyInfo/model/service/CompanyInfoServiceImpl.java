@@ -90,10 +90,10 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
                         .getName());
             }
 
-            if (!ObjectUtils.isEmpty(companyInfo.getRegistrationNumber())){
-                CompanyInfo sameRegistrationNumber = companyInfoRepository.findCompanyInfoByRegistrationNumber(companyInfo.getRegistrationNumber());
-                if (sameRegistrationNumber != null) {
-                    throw new ServiceValidationException("The registration number is already in use. You cannot create two clients with same registration number");
+            if (!ObjectUtils.isEmpty(companyInfo.getPanNumber())){
+                CompanyInfo samePanNumber = companyInfoRepository.findCompanyInfoByPanNumber(companyInfo.getPanNumber());
+                if (samePanNumber != null) {
+                    throw new ServiceValidationException("The pan number is already in use. You cannot create two clients with same pan number");
                 }
             }
         }
@@ -123,6 +123,11 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
     @Override
     public CompanyInfo findCompanyInfoByRegistrationNumber(String registrationNumber) {
         return companyInfoRepository.findCompanyInfoByRegistrationNumber(registrationNumber);
+    }
+
+    @Override
+    public CompanyInfo findCompanyInfoByPanNumber(String panNumber) {
+        return companyInfoRepository.findCompanyInfoByPanNumber(panNumber);
     }
 
     @Override
@@ -195,6 +200,10 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
                 if (customerLoanFlag != null) {
                 customerLoanFlagService
                     .deleteCustomerLoanFlagById(customerLoanFlag.getId());
+                }
+                if (customerEmptyLoanFlag != null) {
+                    customerLoanFlagService
+                        .deleteCustomerLoanFlagById(customerEmptyLoanFlag.getId());
                 }
                 customerLoanFlag = new CustomerLoanFlag();
                 customerLoanFlag.setCustomerInfo(customerInfo.get());

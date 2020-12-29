@@ -36,10 +36,10 @@ public class Insurance extends BaseEntity<Long> {
     @JsonSerialize(using = DoubleSerializer.class)
     private double premiumAmount;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
     private Date issuedDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
     private Date expiryDate;
 
     @JsonDeserialize(using = WordFormatter.class)

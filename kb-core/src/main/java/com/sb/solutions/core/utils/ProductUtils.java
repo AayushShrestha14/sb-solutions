@@ -26,7 +26,9 @@ public class ProductUtils {
 
     public static Boolean NEP_TEMPLATE;
 
-    public static Boolean CAD_DOC_UPLOAD;
+    public static Boolean CAD_LITE_VERSION;
+
+    public static Boolean CBS_ENABLE;
 
     public static Boolean FULL_CAD;
 
@@ -52,10 +54,10 @@ public class ProductUtils {
         productUtilsMap.put("ACCOUNT", account);
     }
 
-    @Value("${product.cadDocumentUpload}")
+    @Value("${product.cadLiteVersion}")
     public void setCadDocUpload(Boolean cadDocUpload) {
-        CAD_DOC_UPLOAD = cadDocUpload;
-        productUtilsMap.put("CAD_DOC_UPLOAD", cadDocUpload);
+        CAD_LITE_VERSION = cadDocUpload;
+        productUtilsMap.put("CAD_LITE_VERSION", cadDocUpload);
     }
 
     @Value("${product.offerletter}")
@@ -97,6 +99,12 @@ public class ProductUtils {
     public void setFullCad(Boolean fullCad) {
         FULL_CAD = fullCad;
         productUtilsMap.put("FULL_CAD", fullCad);
+    }
+
+    @Value("${product.cbsEnable}")
+    public void setCbsEnable(Boolean cbsEnable) {
+        CBS_ENABLE = cbsEnable;
+        productUtilsMap.put("CBS_ENABLE", cbsEnable);
     }
 
     public static Map<String, Object> getProductUtilsMap() {

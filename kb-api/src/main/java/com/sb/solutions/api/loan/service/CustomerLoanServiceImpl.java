@@ -36,6 +36,7 @@ import javax.transaction.Transactional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.sb.solutions.api.creditRiskGradingLambda.service.CreditRiskGradingLambdaService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -172,6 +173,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
     private List customerGroupLogList = new ArrayList();
+    Gson gson = new Gson();
 
     public CustomerLoanServiceImpl(
             CustomerLoanRepository customerLoanRepository,
@@ -291,7 +293,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
 
         }
-        if (ProductUtils.CAD_DOC_UPLOAD) {
+        if (ProductUtils.CAD_LITE_VERSION) {
             CustomerLoan customer1 =customerLoanRepository.findById(id).get();
             List<CadDocument> cadDocument= customer1.getCadDocument();
             if (!ObjectUtils.isEmpty(cadDocument)) {
@@ -495,9 +497,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<CustomerLoan> findAll(Object search) {
 
         Map<String, String> s = objectMapper.convertValue(search, Map.class);
-        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
-        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        return customerLoanRepository.findAll(specification);
+        return customerLoanRepository.findALlUniqueLoanByCustomerId(Long.parseLong(s.get("loanHolderId")));
     }
 
     @Override
@@ -861,6 +861,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
+            if(previousLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || previousLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
+                Map<String, Object> proposalData = gson.fromJson(previousLoan.getProposal().getData(), HashMap.class);
+                proposalData.replace("existingLimit", previousLoan.getProposal().getProposedLimit());
+                previousLoan.getProposal().setData(gson.toJson(proposalData));
+                previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
+            }
         }
         if (previousLoan.getCreditRiskGrading() != null) {
             previousLoan.getCreditRiskGrading().setId(null);

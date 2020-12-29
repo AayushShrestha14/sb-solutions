@@ -5106,6 +5106,249 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="392-alter-guarantor-add-column-date_of_birth" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="date_of_birth"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="date_of_birth" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-motherName" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="mother_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="mother_name" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-spouseName" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="spouse_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="spouse_name" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-fatherInLaw" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="father_in_law"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="father_in_law" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-profession" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="profession"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="profession" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-guarantor-add-column-background" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="background"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="background" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="392-alter-valuator-add-column-is-all-branch" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="valuator" columnName="is_all_branch"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="valuator">
+            <column name="is_all_branch" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="393-alter-customer-loan-add-column-is-sol" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="is_sol"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="is_sol" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="394-alter-table-customer-loan-add-column-sol-user" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <columnExists tableName="customer_loan" columnName="sol_user_id"/>
+        </not>
+    </preConditions>
+    <addColumn tableName="customer_loan">
+        <column name="sol_user_id" type="BIGINT">
+            <constraints nullable="true"
+              foreignKeyName="fk_sol_user_users_id"
+              referencedTableName="users"
+              referencedColumnNames="id"/>
+        </column>
+    </addColumn>
+    </changeSet>
+
+    <changeSet id="393-alter-customer-info-add-gender" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="gender"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="gender" type="VARCHAR(256)"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="394-alter-customer-info-add-marital-status" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="marital_status"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="marital_status" type="VARCHAR(256)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="395-alter-customer-info-add-customer-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="customer_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="customer_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="396-alter-guarantor-add-guarantor-legal-document-address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="guarantor" columnName="guarantor_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="guarantor_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="397-alter-company-info-add-company_legal_document_address" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="company_info" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="company_legal_document_address" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="bibash" id="393-alter-table-proposal-modify-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="393-alter-table-proposal-audit-existing-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="existing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="existing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal"/>
+    </changeSet>
+    <changeSet author="bibash" id="394-alter-table-proposal-audit-modify-outstanding-limit">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="proposal_audit" columnName="out_standing_limit"/>
+        </preConditions>
+        <modifyDataType
+                columnName="out_standing_limit"
+                newDataType="decimal"
+                tableName="proposal_audit"/>
+    </changeSet>
+
+    <changeSet id="395-create-table-cbs-group" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <tableExists tableName="cbs_group"/>
+        </not>
+    </preConditions>
+        <createTable tableName="cbs_group">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="obligor" type="VARCHAR(256)"/>
+            <column name="json_data" type="LONGTEXT"/>
+            <column name="last_modified_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="396-alter-customer-info-add-obligor" author="rujan">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_info" columnName="obligor"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="obligor" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="397-create-table-nepse-price-info" author="bibash">
+        <createTable tableName="nepse_price_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="share_price_date" type="Date"/>
+            <column name="avg_days_for_price" type="int"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+
     <changeSet id="288-cad-stage" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>

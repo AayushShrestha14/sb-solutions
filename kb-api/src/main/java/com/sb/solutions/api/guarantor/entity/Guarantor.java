@@ -45,7 +45,7 @@ public class Guarantor extends BaseEntity<Long> {
 
     private String citizenNumber;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
     private Date issuedYear;
 
     private String issuedPlace;
@@ -79,6 +79,16 @@ public class Guarantor extends BaseEntity<Long> {
     private Integer wardNumber;
     private String streetNameTemporary;
     private Integer wardNumberTemporary;
+
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
+    private Date dateOfBirth;
+
+    private String motherName;
+    private String spouseName;
+    private String fatherInLaw;
+    private String profession;
+    private String background;
+    private String guarantorLegalDocumentAddress;
 
 
 

@@ -27,4 +27,6 @@ public interface CustomerInfoService extends Service<CustomerInfo, Long>,
     CustomerInfo findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
         CustomerType customerType, String idNumber, String idRegPlace,
         CustomerIdType customerIdType, Date date);
+
+    String updateObligor(String obligor,Long id);
 }
