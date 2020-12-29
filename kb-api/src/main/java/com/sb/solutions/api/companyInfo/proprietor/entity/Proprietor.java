@@ -1,5 +1,6 @@
 package com.sb.solutions.api.companyInfo.proprietor.entity;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Stream;
 import javax.persistence.Entity;
@@ -48,6 +49,18 @@ public class Proprietor extends BaseEntity<Long> implements EntityValidator {
 
     private double share;
     private String type;
+
+    private String shareholderRelationship;
+    private String relationName;
+    private String citizenshipNumber;
+
+    @Audited(targetAuditMode =  RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne
+    private District issuedLocation;
+
+    private Date issuedDate;
+    private String mobileNumber;
+    private String shareholderKycAddress;
 
     @Override
     public Pair<Boolean, String> valid() {
