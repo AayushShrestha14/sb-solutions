@@ -32,7 +32,7 @@ import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CustomerApproveLoanCadDocumentation extends BaseEntity<Long> {
+public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     @OneToOne
     private CustomerInfo loanHolder;

@@ -53,6 +53,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_CUSTOMER_GROUP_CODE = "groupCode";
     private static final String FILTER_BY_LOAN_ASSIGNED_TO_USER = "postApprovalAssignStatus";
     private static final String FILTER_BY_POST_APPROVAL_CURRENT_USER = "postApprovalAssignedUser";
+    private static final String FILTER_BY_NOT_IN_LOAN_IDS= "notLoanIds";
 
     private final String property;
     private final String value;
@@ -277,6 +278,16 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
 
             case FILTER_BY_POST_APPROVAL_CURRENT_USER:
                 return criteriaBuilder.equal(root.join("postApprovalAssignedUser").get("id"), Long.valueOf(value));
+
+            case FILTER_BY_NOT_IN_LOAN_IDS:
+                Pattern pattern1 = Pattern.compile(",");
+                List<Long> list1 = pattern1.splitAsStream(value)
+                    .map(Long::valueOf)
+                    .collect(Collectors.toList());
+                Expression<String> exp1 = root.get("id");
+                Predicate predicate1= exp1.in(list1).not();
+                return criteriaBuilder.and(predicate1);
+
             default:
                 return null;
         }

@@ -4,13 +4,16 @@ import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_QUESTION;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.navigation.dto.MenuDto;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,8 +45,9 @@ public class NavigationController {
 
 
     public NavigationController(
-            RolePermissionRightService rolePermissionRightService,
-            ApprovalRoleHierarchyService approvalRoleHierarchyService, UserService userService, MenuMapper menuMapper) {
+        RolePermissionRightService rolePermissionRightService,
+        ApprovalRoleHierarchyService approvalRoleHierarchyService, UserService userService,
+        MenuMapper menuMapper) {
         this.rolePermissionRightService = rolePermissionRightService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
         this.userService = userService;
@@ -54,41 +58,99 @@ public class NavigationController {
     public ResponseEntity<?> getNav() {
         User u = userService.getAuthenticatedUser();
         return new RestResponseDto()
-                .successModel(rolePermissionRightService.getByRoleId(u.getRole().getId()));
+            .successModel(rolePermissionRightService.getByRoleId(u.getRole().getId()));
     }
 
     @GetMapping("/menu")
     public ResponseEntity<?> getMenu() {
         User u = userService.getAuthenticatedUser();
         List<RolePermissionRights> rolePermissionRights = rolePermissionRightService
-                .getByRoleId(u.getRole().getId());
+            .getByRoleId(u.getRole().getId());
           /*
         Beside admin user, no other user can set question for eligibility
         below logic is to guard
          */
         boolean hasEligibilityPermission = rolePermissionRights.stream()
-                .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
+            .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
         if (!u.getRole().getRoleName().equals(AppConstant.ADMIN_ROLE) && hasEligibilityPermission) {
             rolePermissionRights.stream().forEach(role -> {
                 if (role.getPermission().getId() == ELIGIBILITY_PERMISSION) {
                     role.getPermission().getSubNavs()
-                            .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
-                                    || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
+                        .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
+                            || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
                 }
             });
 
         }
         List<MenuDto> menuList = menuMapper.menuDtoList(rolePermissionRights);
         if (ProductUtils.OFFER_LETTER) {
-            boolean isPresentInCadHierarchy = approvalRoleHierarchyService.checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
-            if ((isPresentInCadHierarchy || u.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (!ProductUtils.FULL_CAD)) {
+            boolean isPresentInCadHierarchy = approvalRoleHierarchyService
+                .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
+            if ((isPresentInCadHierarchy || u.getRole().getRoleType().equals(RoleType.CAD_ADMIN))
+                && (!ProductUtils.FULL_CAD)) {
                 MenuDto menuDto = new MenuDto();
                 menuDto.setTitle("Post Approval Documentation");
                 menuDto.setLink("/home/loan/loan-offer-letter");
                 menuDto.setIcon("arrowhead-down-outline");
                 menuList.add(menuDto);
             }
+            List<MenuDto> menuDtos = menuList.stream()
+                .filter(menuDto -> menuDto.getTitle().equalsIgnoreCase("Credit Administration"))
+                .collect(
+                    Collectors.toList());
+
+            int size = menuDtos.size();
+            if (isPresentInCadHierarchy && ProductUtils.FULL_CAD && (!u.getRole().getRoleType()
+                .equals(RoleType.CAD_ADMIN))) {
+
+                if (size == 0) {
+                    menuList.add(addCreditAdminMenu());
+                }
+
+            }
+
+            if (u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) && ProductUtils.FULL_CAD) {
+                if (size == 0) {
+                    menuList.add(addCreditAdminMenu());
+                }
+            }
         }
         return new RestResponseDto().successModel(menuList);
     }
+
+    private MenuDto addCreditAdminMenu() {
+        MenuDto menuDto = new MenuDto();
+        menuDto.setTitle("Credit Administration");
+        menuDto.setIcon("book-open-outline");
+        menuDto.setChildren(ListCreditAdminMenu());
+        return menuDto;
+
+    }
+
+    private List<MenuDto> ListCreditAdminMenu() {
+        List<MenuDto> menuDtos = new ArrayList<>();
+        MenuDto menuDto = new MenuDto();
+
+        menuDto.setTitle("all");
+        menuDto.setIcon("file-text-outline");
+        menuDto.setLink("/home/credit");
+        menuDtos.add(menuDto);
+
+        menuDto = new MenuDto();
+        menuDto.setTitle("Offer Letter Pending");
+        menuDto.setIcon("edit-2-outline");
+        menuDto.setLink("/home/credit/offer-pending");
+        menuDtos.add(menuDto);
+
+        menuDto = new MenuDto();
+        menuDto.setTitle("Offer Letter Approved");
+        menuDto.setIcon("edit-2-outline");
+        menuDto.setLink("/home/credit/offer-approved");
+        menuDtos.add(menuDto);
+
+        return menuDtos;
+    }
+
+
+
 }

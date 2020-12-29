@@ -12,13 +12,13 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.entity.CustomerApproveLoanCadDocumentation;
+import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocumentType;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
  **/
-public class CustomerCadSpec implements Specification<CustomerApproveLoanCadDocumentation> {
+public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDocumentation> {
 
     private static final String FILTER_BY_CAD_DOCUMENT_TYPE = "cadDocumentType";
 
@@ -27,6 +27,7 @@ public class CustomerCadSpec implements Specification<CustomerApproveLoanCadDocu
     private static final String FILTER_BY_PARENT_ID = "parentId";
 
     private static final String FILTER_BY_BRANCH = "branchIds";
+
     private static final String FILTER_BY_DOC_STATUS = "docStatus";
 
     private final String property;
@@ -38,7 +39,7 @@ public class CustomerCadSpec implements Specification<CustomerApproveLoanCadDocu
     }
 
     @Override
-    public Predicate toPredicate(Root<CustomerApproveLoanCadDocumentation> root,
+    public Predicate toPredicate(Root<CustomerApprovedLoanCadDocumentation> root,
         CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_CAD_DOCUMENT_TYPE:

@@ -61,13 +61,13 @@ public class CadController {
     }
 
 
-    @SbValid(value = ValidateConstants.ASSIGN_VALID_PARAM)
+
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
         return new RestResponseDto().successModel(loanHolderService.assignLoanToUser(cadStageDto));
     }
 
-    @SbValid(value = ValidateConstants.ACTION_VALID_PARAM)
+
     @CadValid
     @PostMapping(value = ApiConstants.CAD_ACTION)
     public ResponseEntity<?> action(@RequestBody CadStageDto cadStageDto) {

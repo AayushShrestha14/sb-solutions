@@ -16,7 +16,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
-import com.sb.solutions.entity.CustomerApproveLoanCadDocumentation;
+import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -57,7 +57,7 @@ public class CadStageMapper {
 
 
     public StageDto cadAction(CadStageDto requestedStage,
-        CustomerApproveLoanCadDocumentation oldData, User currentUser) {
+        CustomerApprovedLoanCadDocumentation oldData, User currentUser) {
         StageDto stageDto = new StageDto();
         stageDto.setPreviousList(
             addPresentStageToPreviousList(oldData.getPreviousList(), oldData.getCadCurrentStage()));

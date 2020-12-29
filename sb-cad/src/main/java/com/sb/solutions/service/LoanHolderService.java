@@ -2,7 +2,7 @@ package com.sb.solutions.service;
 
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.LoanHolderDto;
-import com.sb.solutions.entity.CustomerApproveLoanCadDocumentation;
+import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +23,9 @@ public interface LoanHolderService {
 
     String cadAction(CadStageDto cadStageDto);
 
-    Page<CustomerApproveLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(Map<String, String> filterParams, Pageable pageable);
+    Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(Map<String, String> filterParams, Pageable pageable);
 
-    Page<CustomerApproveLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(Map<String, String> filterParams, Pageable pageable);
+    Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(Map<String, String> filterParams, Pageable pageable);
 
-    Page<CustomerApproveLoanCadDocumentation> getAllByFilterParams(Map<String, String> filterParams, Pageable pageable);
+    Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(Map<String, String> filterParams, Pageable pageable);
 }
