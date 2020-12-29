@@ -75,6 +75,7 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     private String citizenshipIssuedPlace;
     private Status status = Status.ACTIVE;
     private String introduction;
+    private String individualJsonData;
 
     private Double netWorth;
 

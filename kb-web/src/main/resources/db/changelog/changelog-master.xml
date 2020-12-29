@@ -5347,5 +5347,25 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
+    <changeSet id="298-alter-customer-add-individual-json-data" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="individual_json_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="individual_json_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="298-alter-customer-add-individual-json-data-audit" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_audit" columnName="individual_json_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_audit">
+            <column name="individual_json_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
