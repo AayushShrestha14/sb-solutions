@@ -5347,5 +5347,24 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-
+    <changeSet id="398-alter-table-management-team-add-address-as-per-legal-document" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="management_team" columnName="company_legal_document_address"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="management_team">
+            <column name="company_legal_document_address" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="399-alter-table-management-team-add-address-as-per-legal-document-audit" author="Mohammad">
+        <preConditions>
+            <not>
+                <columnExists tableName="management_team_audit" columnName="company_legal_document_address_audit"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="management_team_audit">
+            <column name="company_legal_document_address" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
