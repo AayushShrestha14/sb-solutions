@@ -5347,65 +5347,24 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-
-    <changeSet id="398-alter-proprietor-add-column-shareholder-kyc" author="Mohammad">
+    <changeSet id="398-alter-table-management-team-add-address-as-per-legal-document" author="Mohammad">
         <preConditions>
             <not>
-                <columnExists tableName="proprietor" columnName="shareholder_relationship"/>
-                <columnExists tableName="proprietor" columnName="relation_name"/>
-                <columnExists tableName="proprietor" columnName="citizenship_number"/>
-                <columnExists tableName="proprietor" columnName="issued_location_id"/>
-                <columnExists tableName="proprietor" columnName="issued_date"/>
-                <columnExists tableName="proprietor" columnName="mobile_number"/>
-                <columnExists tableName="proprietor" columnName="shareholder_kyc_address"/>
+                <columnExists tableName="management_team" columnName="company_legal_document_address"/>
             </not>
         </preConditions>
-        <addColumn tableName="proprietor">
-            <column name="shareholder_relationship" type="VARCHAR(256)"/>
-            <column name="relation_name" type="VARCHAR(256)"/>
-            <column name="citizenship_number" type="VARCHAR(256)"/>
-            <column name="issued_date" type="DATE"/>
-            <column name="mobile_number" type="VARCHAR(256)"/>
-            <column name="shareholder_kyc_address" type="VARCHAR(256)"/>
-            <column name="issued_location_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_shareholder_kyc_issued_location_id"
-                             referencedTableName="district"
-                             referencedColumnNames="id"
-                />
-            </column>
+        <addColumn tableName="management_team">
+            <column name="company_legal_document_address" type="VARCHAR(256)"/>
         </addColumn>
     </changeSet>
-
-    <changeSet id="399-alter-proprietor-audit-add-column-shareholder-kyc-audit" author="Mohammad">
+    <changeSet id="399-alter-table-management-team-add-address-as-per-legal-document-audit" author="Mohammad">
         <preConditions>
             <not>
-                <columnExists tableName="proprietor_audit" columnName="shareholder_relationship"/>
-                <columnExists tableName="proprietor_audit" columnName="relation_name"/>
-                <columnExists tableName="proprietor_audit" columnName="citizenship_number"/>
-                <columnExists tableName="proprietor_audit" columnName="issued_location_id"/>
-                <columnExists tableName="proprietor_audit" columnName="issued_date"/>
-                <columnExists tableName="proprietor_audit" columnName="mobile_number"/>
-                <columnExists tableName="proprietor_audit" columnName="shareholder_kyc_address"/>
-
+                <columnExists tableName="management_team_audit" columnName="company_legal_document_address_audit"/>
             </not>
         </preConditions>
-        <addColumn tableName="proprietor_audit">
-            <column name="shareholder_relationship" type="VARCHAR(256)"/>
-            <column name="relation_name" type="VARCHAR(256)"/>
-            <column name="citizenship_number" type="VARCHAR(256)"/>
-            <column name="issued_date" type="DATE"/>
-            <column name="mobile_number" type="VARCHAR(256)"/>
-            <column name="shareholder_kyc_address" type="VARCHAR(256)"/>
-            <column name="issued_location_id" type="BIGINT">
-                <constraints nullable="true"
-                             foreignKeyName="fk_shareholder_kyc_audit_issued_location_id"
-                             referencedTableName="district"
-                             referencedColumnNames="id"
-                />
-            </column>
+        <addColumn tableName="management_team_audit">
+            <column name="company_legal_document_address" type="VARCHAR(256)"/>
         </addColumn>
     </changeSet>
-
-
 </databaseChangeLog>

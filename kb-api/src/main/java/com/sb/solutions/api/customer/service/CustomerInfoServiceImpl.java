@@ -200,8 +200,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setBankingRelationship(((CompanyInfo) o).getBankingRelationship());
             customerInfo.setClientType(((CompanyInfo) o).getClientType());
             customerInfo.setSubsectorDetail(((CompanyInfo) o).getSubsectorDetail());
-            customerInfo
-                .setCompanyLegalDocumentAddress(((CompanyInfo) o).getCompanyLegalDocumentAddress());
         }
         customerInfo.setBranch(user.getBranch().get(0));
         return this.save(customerInfo);
