@@ -12,6 +12,7 @@ import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.repository.BaseRepository;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -22,7 +23,7 @@ public interface CustomerCadRepository extends
     @Modifying
     @Transactional
     @Query("UPDATE CustomerApprovedLoanCadDocumentation  c set c.cadStageList= :previousList,c.docStatus=:docStatus , c.cadCurrentStage = :cadStage WHERE c.id = :id")
-    void updateAction(@Param("id") Long id, @Param("docStatus") DocStatus docStatus,
+    void updateAction(@Param("id") Long id, @Param("docStatus") CadDocStatus docStatus,
         @Param("cadStage") CadStage cadStage, @Param("previousList") String previousList);
 
     @Query( value= "SELECT c.assignedLoan FROM CustomerApprovedLoanCadDocumentation c")

@@ -31,5 +31,4 @@ public class CadStageDto {
 
     private DocAction docAction;
 
-    private CADDocumentType documentType;
 }

@@ -5423,7 +5423,7 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
 
-            <column name="cad_document" type="INT">
+            <column name="cad_document" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 
@@ -5492,21 +5492,11 @@
                              referencedColumnNames="id"/>
             </column>
 
-            <column name="cad_document_type" type="INT">
-                <constraints nullable="false"/>
-            </column>
 
             <column name="cad_stage_list" type="LONGTEXT">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="parent_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="child_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
 
             <column name="doc_status" type="INT">
                 <constraints nullable="false"/>

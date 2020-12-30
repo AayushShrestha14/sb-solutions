@@ -1,5 +1,6 @@
 package com.sb.solutions.entity;
 
+import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.enums.CADDocument;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 public class CadFile extends BaseEntity<Long> {
 
-    private CADDocument cadDocument;
+    private String cadDocument;
 
     private String draftPath;
 
