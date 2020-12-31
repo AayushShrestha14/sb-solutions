@@ -2,6 +2,7 @@ package com.sb.solutions.api.cbsGroup.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,16 +22,20 @@ public class DataSourceConfig {
 
 
     public DataSource dataSourceCsb() {
-       return cbsDataSource.cbsDataSourceProperties().initializeDataSourceBuilder()
-            .type(HikariDataSource .class).build();
+        return cbsDataSource.cbsDataSourceProperties().initializeDataSourceBuilder()
+            .type(HikariDataSource.class).build();
     }
 
-    public String getTableName(){
+    public String getTableName() {
         return cbsDataSource.getTableName();
     }
 
-    public String getUniqueKeyForFilter(){
+    public String getUniqueKeyForFilter() {
         return cbsDataSource.getUniqueKey();
+    }
+
+    public NamedParameterJdbcTemplate getCbsNamedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSourceCsb());
     }
 
 }
