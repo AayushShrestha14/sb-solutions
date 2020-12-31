@@ -17,7 +17,6 @@ import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.service.LoanHolderService;
-import com.sb.solutions.validation.constraint.CadValid;
 
 
 /**
@@ -46,27 +45,6 @@ public class CadController {
             .getAllUnAssignLoanForCadAdmin(filterParams, PaginationUtils.pageable(page, size)));
     }
 
-    @PostMapping(value = ApiConstants.UNASSIGNED_LEGAL_LOAN)
-    public ResponseEntity<?> getUnassignedOfferLetterLegalAdmin(
-        @RequestBody Map<String, String> filterParams,
-        @RequestParam("page") int page,
-        @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(loanHolderService
-            .getAllUnassignedOfferLetterForLegalAdmin(filterParams,
-                PaginationUtils.pageable(page, size)));
-    }
-
-
-    @PostMapping(value = ApiConstants.UNASSIGNED_DISBURSEMENT_LOAN)
-    public ResponseEntity<?> getUnassignedOfferLetterDisbursementAdmin(
-        @RequestBody Map<String, String> filterParams,
-        @RequestParam("page") int page,
-        @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(loanHolderService
-            .getAllUnassignedOfferLetterForDisbursementAdmin(filterParams,
-                PaginationUtils.pageable(page, size)));
-    }
-
 
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
@@ -74,7 +52,6 @@ public class CadController {
     }
 
 
-    @CadValid
     @PostMapping(value = ApiConstants.CAD_ACTION)
     public ResponseEntity<?> action(@RequestBody CadStageDto cadStageDto) {
         return new RestResponseDto().successModel(loanHolderService.cadAction(cadStageDto));
