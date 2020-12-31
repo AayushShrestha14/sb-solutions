@@ -24,4 +24,6 @@ public interface BranchService extends BaseService<Branch>, FormReportGeneratorS
 
     List<Branch> getBranchNoTAssignUser(Long roleId);
 
+    List<Branch> getBranchByProvince(Long pId);
+
 }

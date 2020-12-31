@@ -104,5 +104,12 @@ public class BranchController {
         return new RestResponseDto().successModel(branchDtoList);
     }
 
+    @GetMapping(value = "/province/{id}")
+    public ResponseEntity<?> getBranchByProvince(Long id) {
+        List<BranchCustomerEndDto> branchDtoList = branchCustomerEndMapper
+            .mapEntitiesToDtos(branchService.getBranchByProvince(id));
+        return new RestResponseDto().successModel(branchDtoList);
+    }
+
 
 }
