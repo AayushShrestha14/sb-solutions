@@ -20,6 +20,7 @@ import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.dto.CadStageDto;
@@ -38,7 +39,7 @@ public class CadStageMapper {
     private final ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper().
         setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
 
     private final UserService userService;
 
@@ -123,7 +124,6 @@ public class CadStageMapper {
     private Map<String, Long> getLoanMaker(String list, Long branchID) {
         Map<String, Long> map = new HashMap<>();
         TypeFactory typeFactory = objectMapper.getTypeFactory();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         try {
             List<LoanStageDto> mapPreviousList = objectMapper.readValue(list,
                 typeFactory.constructCollectionType(List.class, LoanStageDto.class));
@@ -144,7 +144,7 @@ public class CadStageMapper {
 
 
         } catch (Exception e) {
-            log.error("unable to get users for backward ",e);
+            log.error("unable to get users for backward ", e);
 
         }
         return map;
