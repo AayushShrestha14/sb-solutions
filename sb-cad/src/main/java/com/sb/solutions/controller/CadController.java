@@ -17,6 +17,7 @@ import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.service.LoanHolderService;
+import com.sb.solutions.validation.constraint.CadValid;
 
 
 /**
@@ -45,7 +46,7 @@ public class CadController {
             .getAllUnAssignLoanForCadAdmin(filterParams, PaginationUtils.pageable(page, size)));
     }
 
-
+    @CadValid
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
         return new RestResponseDto().successModel(loanHolderService.assignLoanToUser(cadStageDto));
@@ -62,6 +63,15 @@ public class CadController {
         return new RestResponseDto()
             .successModel(
                 approvalRoleHierarchyService.getRoles(ApprovalType.CAD, 0L));
+    }
+
+    @PostMapping(value = ApiConstants.CAD_LIST)
+    public ResponseEntity<?> getCadList(
+        @RequestBody Map<String, String> filterParams,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(loanHolderService
+            .getAllByFilterParams(filterParams, PaginationUtils.pageable(page, size)));
     }
 
 }

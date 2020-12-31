@@ -123,8 +123,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     public String assignLoanToUser(CadStageDto cadStageDto) {
         CustomerApprovedLoanCadDocumentation temp = null;
         CustomerApprovedLoanCadDocumentation cadDocumentation = new CustomerApprovedLoanCadDocumentation();
-        cadDocumentation.setAssignedLoan(
-            customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+
         if (!ObjectUtils.isEmpty(cadStageDto.getCadId())) {
             temp = customerCadRepository.findById(cadStageDto.getCadId()).get();
             cadDocumentation = temp;
@@ -139,9 +138,14 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
 
         } else {
+            CustomerInfo customerInfo = new CustomerInfo();
+            customerInfo.setId(cadStageDto.getLoanHolderId());
+            cadDocumentation.setLoanHolder(customerInfo);
             cadDocumentation
                 .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId(), null));
-            cadDocumentation.setAssignedLoan(temp.getAssignedLoan());
+            cadDocumentation.setAssignedLoan(
+                customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+            cadDocumentation.setDocStatus(CadDocStatus.OFFER_PENDING);
 
         }
         customerCadRepository
@@ -156,26 +160,24 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         final CustomerApprovedLoanCadDocumentation documentation = customerCadRepository
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
-        CadDocStatus currentStatus  = documentation.getDocStatus();
+        CadDocStatus currentStatus = documentation.getDocStatus();
         //todo action change current status logic
-        if(cadStageDto.getDocAction().equals(DocAction.APPROVED)){
-            if(currentStatus.equals(CadDocStatus.OFFER_PENDING)){
+        if (cadStageDto.getDocAction().equals(DocAction.APPROVED)) {
+            if (currentStatus.equals(CadDocStatus.OFFER_PENDING)) {
                 currentStatus = CadDocStatus.OFFER_APPROVED;
             }
-            if(currentStatus.equals(CadDocStatus.LEGAL_PENDING)){
+            if (currentStatus.equals(CadDocStatus.LEGAL_PENDING)) {
                 currentStatus = CadDocStatus.LEGAL_APPROVED;
             }
-            if(currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)){
+            if (currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)) {
                 currentStatus = CadDocStatus.DISBURSEMENT_APPROVED;
             }
         }
-
 
         customerCadRepository.updateAction(cadStageDto.getCadId(),
             currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
-
 
 
     @Override

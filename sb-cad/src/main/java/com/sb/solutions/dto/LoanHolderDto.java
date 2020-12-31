@@ -2,6 +2,7 @@ package com.sb.solutions.dto;
 
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.customer.enums.CustomerType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class LoanHolderDto {
 
-    private Long id;
+    private Long id = 0L;
     private CustomerType customerType;
     private String name;
     private Branch branch;
