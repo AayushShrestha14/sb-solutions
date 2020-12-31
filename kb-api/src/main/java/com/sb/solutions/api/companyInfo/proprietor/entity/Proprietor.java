@@ -50,18 +50,6 @@ public class Proprietor extends BaseEntity<Long> implements EntityValidator {
     private double share;
     private String type;
 
-    private String shareholderRelationship;
-    private String relationName;
-    private String citizenshipNumber;
-
-    @Audited(targetAuditMode =  RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne
-    private District issuedLocation;
-
-    private Date issuedDate;
-    private String mobileNumber;
-    private String shareholderKycAddress;
-
     @Override
     public Pair<Boolean, String> valid() {
         final String validationMsg = "Company Info - Proprietor Information Section Name ,Type,Share cannot be left empty.";
