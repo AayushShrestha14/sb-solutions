@@ -2,17 +2,26 @@ package com.sb.solutions.mapper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
@@ -23,12 +32,19 @@ import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
  **/
 
 @Component
+@Slf4j
 public class CadStageMapper {
 
     private final ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper().
         setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
+    private final UserService userService;
+
+    public CadStageMapper(UserService userService) {
+        this.userService = userService;
+    }
 
     public String addPresentStageToPreviousList(List previousList, CadStage cadStage) {
         List previousListTemp = new ArrayList();
@@ -75,7 +91,24 @@ public class CadStageMapper {
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
+                if (!currentUser.getRole().getRoleType().equals(RoleType.MAKER)) {
+                    if (oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
+                        DocAction.FORWARD) || f.getDocAction().equals(
+                        DocAction.BACKWARD)).collect(Collectors.toList()).isEmpty()) {
+                        CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
+                        Map<String, Long> creator = this
+                            .getLoanMaker(oldDataCustomerLoan.getPreviousStageList(),
+                                oldDataCustomerLoan.getBranch().getId());
+                        user.setId(creator.get("userId"));
+                        role.setId(creator.get("roleId"));
 
+                    }
+                } else {
+                    user.setId(cadStage.getFromUser().getId());
+                    role.setId(cadStage.getFromUser().getRole().getId());
+                }
+                cadStage.setToUser(user);
+                cadStage.setToRole(role);
                 break;
             case APPROVED:
                 cadStage.setToUser(currentUser);
@@ -85,4 +118,36 @@ public class CadStageMapper {
         stageDto.setCadStage(cadStage);
         return stageDto;
     }
+
+
+    private Map<String, Long> getLoanMaker(String list, Long branchID) {
+        Map<String, Long> map = new HashMap<>();
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        try {
+            List<LoanStageDto> mapPreviousList = objectMapper.readValue(list,
+                typeFactory.constructCollectionType(List.class, LoanStageDto.class));
+            List<LoanStageDto> makerList = mapPreviousList.stream()
+                .filter(a -> a.getFromRole().getRoleType().equals(RoleType.MAKER)).collect(
+                    Collectors.toList());
+            final List<User> users = userService
+                .findByRoleAndBranchId(makerList.get(0).getFromRole().getId(), branchID);
+            final List<Long> userIdList = users.stream().map(User::getId)
+                .collect(Collectors.toList());
+            if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
+                map.put("userId", makerList.get(0).getFromUser().getId());
+                map.put("roleId", makerList.get(0).getFromRole().getId());
+            } else {
+                map.put("userId", users.get(0).getId());
+                map.put("roleId", users.get(0).getRole().getId());
+            }
+
+
+        } catch (Exception e) {
+            log.error("unable to get users for backward ",e);
+
+        }
+        return map;
+    }
+
 }
