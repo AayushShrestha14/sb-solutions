@@ -1,14 +1,13 @@
 package com.sb.solutions.entity;
 
-import com.sb.solutions.api.loan.entity.CadDocument;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.enums.CADDocument;
+import javax.persistence.Entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import com.sb.solutions.core.enitity.BaseEntity;
 
 /**
  * @author : Rujan Maharjan on  12/4/2020

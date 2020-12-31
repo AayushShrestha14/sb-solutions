@@ -157,35 +157,26 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
         CadDocStatus currentStatus  = documentation.getDocStatus();
-        //todo assgin logic
-//        if()
-//        customerCadRepository.updateAction(cadStageDto.getCadId(),
-//            cadStageDto.getDocAction() == DocAction.APPROVED ? DocStatus.APPROVED
-//                : cadStageDto.getDocAction() == DocAction.CLOSED ? DocStatus.CLOSED
-//                    : cadStageDto.getDocAction() == DocAction.REJECT ? DocStatus.REJECTED
-//                        : DocStatus.PENDING, stageDto.getCadStage(), stageDto.getPreviousList());
+        //todo action change current status logic
+        if(cadStageDto.getDocAction().equals(DocAction.APPROVED)){
+            if(currentStatus.equals(CadDocStatus.OFFER_PENDING)){
+                currentStatus = CadDocStatus.OFFER_APPROVED;
+            }
+            if(currentStatus.equals(CadDocStatus.LEGAL_PENDING)){
+                currentStatus = CadDocStatus.LEGAL_APPROVED;
+            }
+            if(currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)){
+                currentStatus = CadDocStatus.DISBURSEMENT_APPROVED;
+            }
+        }
+
+
+        customerCadRepository.updateAction(cadStageDto.getCadId(),
+            currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
-    @Override
-    public Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(
-        Map<String, String> filterParams, Pageable pageable) {
-        filterParams.values().removeIf(Objects::isNull);
-        filterParams.put("cadDocumentType", CADDocumentType.OFFER_LETTER.name());
-        filterParams.put("childId", null);
-        filterParams.put("docStatus", DocStatus.APPROVED.name());
-        return filterCADbyParams(filterParams, pageable);
-    }
 
-    @Override
-    public Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(
-        Map<String, String> filterParams, Pageable pageable) {
-        filterParams.values().removeIf(Objects::isNull);
-        filterParams.put("cadDocumentType", CADDocumentType.LEGAL_DOCUMENT.name());
-        filterParams.put("childId", null);
-        filterParams.put("docStatus", DocStatus.APPROVED.name());
-        return filterCADbyParams(filterParams, pageable);
-    }
 
     @Override
     public Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
