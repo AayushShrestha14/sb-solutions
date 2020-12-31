@@ -1,27 +1,33 @@
 package com.sb.solutions.entity;
 
+import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.customer.entity.CustomerInfo;
-import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.enums.CADDocumentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/1/2020
@@ -44,19 +50,18 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private CadStage cadCurrentStage;
 
+    //create table for offer letter Doc see entity
+    @OneToMany
+    private List<OfferDocument> offerDocumentList=new ArrayList<>();
+
+    //refactor table for CadFile see entity
     @OneToMany
     @JoinTable(name = "cad_file_customer_approved_loan_cad_documentation")
-    private List<CadFile> cadFileList;
-
-    private CADDocumentType cadDocumentType = CADDocumentType.OFFER_LETTER;
+    private List<CadFile> cadFileList= new ArrayList<>();
 
     private String cadStageList;
 
-    private Long parentId;
-
-    private Long childId;
-
-    private DocStatus docStatus;
+    private CadDocStatus docStatus;
 
     @Transient
     private List previousList;
@@ -70,7 +75,7 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
                 this.previousList = objectMapper.readValue(this.getCadStageList(),
-                        typeFactory.constructCollectionType(List.class, LoanStageDto.class));
+                    typeFactory.constructCollectionType(List.class, LoanStageDto.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }

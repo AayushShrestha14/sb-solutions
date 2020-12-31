@@ -21,6 +21,8 @@ public class CadStageDto {
 
     private Long cadId;
 
+    private Long loanHolderId;
+
     private List<CustomerLoanDto> customerLoanDtoList = new ArrayList<>();
 
     private UserDto toUser;
@@ -31,5 +33,4 @@ public class CadStageDto {
 
     private DocAction docAction;
 
-    private CADDocumentType documentType;
 }

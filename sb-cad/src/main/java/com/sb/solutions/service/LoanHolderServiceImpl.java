@@ -32,6 +32,7 @@ import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocumentType;
+import com.sb.solutions.enums.CadDocStatus;
 import com.sb.solutions.mapper.CadStageMapper;
 import com.sb.solutions.mapper.CustomerLoanMapper;
 import com.sb.solutions.repository.CustomerCadRepository;
@@ -120,49 +121,38 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     @Override
     public String assignLoanToUser(CadStageDto cadStageDto) {
-        boolean isUniqueCADDocumentType = false;
         CustomerApprovedLoanCadDocumentation temp = null;
         CustomerApprovedLoanCadDocumentation cadDocumentation = new CustomerApprovedLoanCadDocumentation();
-        cadDocumentation.setAssignedLoan(
-            customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
-        cadDocumentation.setCadCurrentStage(assignStage(cadStageDto.getToUser().getId()));
-        cadDocumentation.setCadDocumentType(cadStageDto.getDocumentType());
+
         if (!ObjectUtils.isEmpty(cadStageDto.getCadId())) {
             temp = customerCadRepository.findById(cadStageDto.getCadId()).get();
-            if ((temp.getCadDocumentType().equals(cadStageDto.getDocumentType()))) {
-                if ((!temp.getDocStatus().equals(DocStatus.APPROVED))) {
-                    cadDocumentation = temp;
-                    cadDocumentation.setCadStageList(cadStageMapper
-                        .addPresentStageToPreviousList(cadDocumentation.getPreviousList(),
-                            cadDocumentation.getCadCurrentStage()));
-                    cadDocumentation.setAssignedLoan(
-                        customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
-                    cadDocumentation
-                        .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId()));
+            cadDocumentation = temp;
+            cadDocumentation.setCadStageList(cadStageMapper
+                .addPresentStageToPreviousList(cadDocumentation.getPreviousList(),
+                    cadDocumentation.getCadCurrentStage()));
+            cadDocumentation.setAssignedLoan(
+                customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+            cadDocumentation
+                .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId(),
+                    cadDocumentation.getCadCurrentStage()));
 
-                } else {
-                    return ErrorMessage.ERROR_ASSIGNED_APPROVED_ALREADY;
-                }
-
-            } else {
-                cadDocumentation.setParentId(cadStageDto.getCadId());
-                cadDocumentation.setAssignedLoan(temp.getAssignedLoan());
-                isUniqueCADDocumentType = true;
-            }
-        }
-        final CustomerApprovedLoanCadDocumentation cadDocumentation1 = customerCadRepository
-            .save(cadDocumentation);
-        if (!ObjectUtils.isEmpty(cadDocumentation1)) {
-            if (isUniqueCADDocumentType && (!ObjectUtils.isEmpty(temp))) {
-                temp.setChildId(cadDocumentation1.getId());
-                customerCadRepository.save(temp);
-            }
-            return SuccessMessage.SUCCESS_ASSIGNED;
 
         } else {
-            return ErrorMessage.ERROR_ASSIGNED;
+            CustomerInfo customerInfo = new CustomerInfo();
+            customerInfo.setId(cadStageDto.getLoanHolderId());
+            cadDocumentation.setLoanHolder(customerInfo);
+            cadDocumentation
+                .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId(), null));
+            cadDocumentation.setAssignedLoan(
+                customerLoanMapper.mapDtosToEntities(cadStageDto.getCustomerLoanDtoList()));
+            cadDocumentation.setDocStatus(CadDocStatus.OFFER_PENDING);
+
         }
+        customerCadRepository
+            .save(cadDocumentation);
+        return SuccessMessage.SUCCESS_ASSIGNED;
     }
+
 
     @Override
     public String cadAction(CadStageDto cadStageDto) {
@@ -170,33 +160,25 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         final CustomerApprovedLoanCadDocumentation documentation = customerCadRepository
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
+        CadDocStatus currentStatus = documentation.getDocStatus();
+        //todo action change current status logic
+        if (cadStageDto.getDocAction().equals(DocAction.APPROVED)) {
+            if (currentStatus.equals(CadDocStatus.OFFER_PENDING)) {
+                currentStatus = CadDocStatus.OFFER_APPROVED;
+            }
+            if (currentStatus.equals(CadDocStatus.LEGAL_PENDING)) {
+                currentStatus = CadDocStatus.LEGAL_APPROVED;
+            }
+            if (currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)) {
+                currentStatus = CadDocStatus.DISBURSEMENT_APPROVED;
+            }
+        }
+
         customerCadRepository.updateAction(cadStageDto.getCadId(),
-            cadStageDto.getDocAction() == DocAction.APPROVED ? DocStatus.APPROVED
-                : cadStageDto.getDocAction() == DocAction.CLOSED ? DocStatus.CLOSED
-                    : cadStageDto.getDocAction() == DocAction.REJECT ? DocStatus.REJECTED
-                        : DocStatus.PENDING, stageDto.getCadStage(), stageDto.getPreviousList());
+            currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
-    @Override
-    public Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(
-        Map<String, String> filterParams, Pageable pageable) {
-        filterParams.values().removeIf(Objects::isNull);
-        filterParams.put("cadDocumentType", CADDocumentType.OFFER_LETTER.name());
-        filterParams.put("childId", null);
-        filterParams.put("docStatus", DocStatus.APPROVED.name());
-        return filterCADbyParams(filterParams, pageable);
-    }
-
-    @Override
-    public Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(
-        Map<String, String> filterParams, Pageable pageable) {
-        filterParams.values().removeIf(Objects::isNull);
-        filterParams.put("cadDocumentType", CADDocumentType.LEGAL_DOCUMENT.name());
-        filterParams.put("childId", null);
-        filterParams.put("docStatus", DocStatus.APPROVED.name());
-        return filterCADbyParams(filterParams, pageable);
-    }
 
     @Override
     public Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
@@ -206,9 +188,12 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     }
 
 
-    private CadStage assignStage(Long userId) {
+    private CadStage assignStage(Long userId, CadStage cadStage) {
         User user = userService.getAuthenticatedUser();
-        CadStage cadStage = new CadStage();
+        if (ObjectUtils.isEmpty(cadStage)) {
+            cadStage = new CadStage();
+        }
+
         User toUser = userService.findOne(userId);
 
         cadStage.setToRole(toUser.getRole());

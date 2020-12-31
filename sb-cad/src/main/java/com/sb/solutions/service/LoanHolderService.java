@@ -23,9 +23,5 @@ public interface LoanHolderService {
 
     String cadAction(CadStageDto cadStageDto);
 
-    Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForLegalAdmin(Map<String, String> filterParams, Pageable pageable);
-
-    Page<CustomerApprovedLoanCadDocumentation> getAllUnassignedOfferLetterForDisbursementAdmin(Map<String, String> filterParams, Pageable pageable);
-
     Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(Map<String, String> filterParams, Pageable pageable);
 }

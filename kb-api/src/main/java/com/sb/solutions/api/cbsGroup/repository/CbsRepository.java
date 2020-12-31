@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.sb.solutions.api.cbsGroup.config.DataSourceConfig;
@@ -24,21 +23,17 @@ public class CbsRepository {
 
     private final DataSourceConfig dataSourceConfig;
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public CbsRepository(DataSourceConfig dataSourceConfig,
-        NamedParameterJdbcTemplate jdbcTemplate) {
+    public CbsRepository(DataSourceConfig dataSourceConfig) {
         this.dataSourceConfig = dataSourceConfig;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Map<String, Object>> getAllData() {
         Map<String, String> map = new HashMap<>();
         if (ProductUtils.CBS_ENABLE) {
-            jdbcTemplate.getJdbcTemplate().setDataSource(dataSourceConfig.dataSourceCsb());
             try {
                 log.info("fetch data from remote server");
-                return jdbcTemplate.queryForList(
+                return this.dataSourceConfig.getCbsNamedParameterJdbcTemplate().queryForList(
                     String.format(CbsConstant.QUERY_FOR_LIST, dataSourceConfig.getTableName()),
                     map);
             } catch (Exception e) {
