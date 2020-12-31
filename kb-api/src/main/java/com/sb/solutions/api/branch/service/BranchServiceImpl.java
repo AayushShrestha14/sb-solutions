@@ -141,6 +141,11 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    public List<Branch> getBranchByProvince(Long pId) {
+        return branchRepository.getAllByProvinceIdAndStatus(pId , Status.ACTIVE);
+    }
+
+    @Override
     public String title() {
         return "Form Report For Branch";
     }

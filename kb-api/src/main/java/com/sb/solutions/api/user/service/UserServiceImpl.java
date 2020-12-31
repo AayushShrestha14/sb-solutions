@@ -126,7 +126,8 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)) {
+        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)
+                && user.getRole().getRoleType() != RoleType.CAD_SUPERVISOR) {
             if (user.getBranch().isEmpty()) {
                 throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
             }

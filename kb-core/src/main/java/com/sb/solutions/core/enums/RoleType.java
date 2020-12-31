@@ -6,7 +6,7 @@ package com.sb.solutions.core.enums;
 public enum RoleType {
 
     MAKER("Maker"), APPROVAL("Approval"), COMMITTEE("Committee"),CAD_ADMIN("Cad Admin"),
-    ADMIN("Admin");
+    ADMIN("Admin"), CAD_SUPERVISOR("Cad Supervisor");
 
     private final String value;
 

@@ -5608,5 +5608,38 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="301-create-table-user-province" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_provinces"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users_provinces">
+            <column name="user_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_user_id"
+                        referencedTableName="users"
+                        referencedColumnNames="id"/>
+            </column>
+            <column name="provinces_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_province_id"
+                        referencedTableName="province"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="302-alter-document-add-contains_template" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="document" columnName="contains_template"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="document">
+            <column name="contains_template" type="boolean"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
