@@ -26,4 +26,8 @@ public class CadFile extends BaseEntity<Long> {
     private Document cadDocument;
     private String path;
 
+    private String initialInformation;
+
+    private String supportedInformation;
+
 }
