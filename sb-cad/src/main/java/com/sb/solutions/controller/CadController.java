@@ -71,4 +71,9 @@ public class CadController {
             .getAllByFilterParams(filterParams, PaginationUtils.pageable(page, size)));
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<?> getCad(@PathVariable Long id) {
+        return new RestResponseDto().successModel(loanHolderService.getByID(id));
+    }
+
 }

@@ -179,6 +179,11 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
+    @Override
+    public CustomerApprovedLoanCadDocumentation getByID(Long id) {
+        return customerCadRepository.findById(id).get();
+    }
+
 
     @Override
     public Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(

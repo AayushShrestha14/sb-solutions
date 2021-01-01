@@ -16,12 +16,16 @@ import java.util.Map;
 
 public interface LoanHolderService {
 
-    Page<LoanHolderDto> getAllUnAssignLoanForCadAdmin(Map<String, String> filterParams, Pageable pageable);
+    Page<LoanHolderDto> getAllUnAssignLoanForCadAdmin(Map<String, String> filterParams,
+        Pageable pageable);
 
     @Transactional
-    String  assignLoanToUser(CadStageDto cadStageDto);
+    String assignLoanToUser(CadStageDto cadStageDto);
 
     String cadAction(CadStageDto cadStageDto);
 
-    Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(Map<String, String> filterParams, Pageable pageable);
+    CustomerApprovedLoanCadDocumentation getByID(Long id);
+
+    Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
+        Map<String, String> filterParams, Pageable pageable);
 }
