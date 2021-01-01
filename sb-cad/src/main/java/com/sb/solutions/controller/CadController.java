@@ -46,6 +46,7 @@ public class CadController {
             .getAllUnAssignLoanForCadAdmin(filterParams, PaginationUtils.pageable(page, size)));
     }
 
+    // use this api
     @CadValid
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
@@ -65,6 +66,7 @@ public class CadController {
                 approvalRoleHierarchyService.getRoles(ApprovalType.CAD, 0L));
     }
 
+    // todo use this api
     @PostMapping(value = ApiConstants.CAD_LIST)
     public ResponseEntity<?> getCadList(
         @RequestBody Map<String, String> filterParams,

@@ -56,7 +56,7 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     //refactor table for CadFile see entity
     @OneToMany
-    @JoinTable(name = "cad_file_customer_approved_loan_cad_documentation")
+    @JoinTable(name = "cad_file_customer_approved_loan_cad_file_list")
     private List<CadFile> cadFileList= new ArrayList<>();
 
     private String cadStageList;
