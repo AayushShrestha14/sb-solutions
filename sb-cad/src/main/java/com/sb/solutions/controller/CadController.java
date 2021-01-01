@@ -3,12 +3,7 @@ package com.sb.solutions.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.constant.ApiConstants;
@@ -46,6 +41,7 @@ public class CadController {
             .getAllUnAssignLoanForCadAdmin(filterParams, PaginationUtils.pageable(page, size)));
     }
 
+    // use this api
     @CadValid
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
@@ -65,6 +61,7 @@ public class CadController {
                 approvalRoleHierarchyService.getRoles(ApprovalType.CAD, 0L));
     }
 
+    // todo use this api
     @PostMapping(value = ApiConstants.CAD_LIST)
     public ResponseEntity<?> getCadList(
         @RequestBody Map<String, String> filterParams,

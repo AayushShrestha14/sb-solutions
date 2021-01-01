@@ -5463,18 +5463,16 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
 
-            <column name="cad_document" type="VARCHAR(100)">
-                <constraints nullable="false"/>
+            <column name="cad_document_id" type="Bigint">
+                <constraints
+                             foreignKeyName="fk_cad_file_cad_document_id"
+                             referencedTableName="document"
+                             referencedColumnNames="id"/>
             </column>
-
-            <column name="draft_path" type="VARCHAR(250)">
+            <column name="customer_loan_id" type="BIGINT"/>
+            <column name="path" type="VARCHAR(250)">
                 <constraints nullable="true"/>
             </column>
-
-            <column name="signed_path" type="VARCHAR(250)">
-                <constraints nullable="true"/>
-            </column>
-
 
             <column name="initial_information" type="LONGTEXT">
                 <constraints nullable="true"/>
@@ -5563,13 +5561,13 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="291-create-table-cad-file-list" author="rujan">
+    <changeSet id="291-create-table-cad_file_customer_approved_loan_cad_file_list" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="cad_file_customer_approved_loan_cad_documentation"/>
+                <tableExists tableName="cad_file_customer_approved_loan_cad_file_list"/>
             </not>
         </preConditions>
-        <createTable tableName="cad_file_customer_approved_loan_cad_documentation">
+        <createTable tableName="cad_file_customer_approved_loan_cad_file_list">
             <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_approved_loan_cad_documentation_id"
@@ -5577,7 +5575,7 @@
                              referencedColumnNames="id"
                 />
             </column>
-            <column name="cad_file_id" type="BIGINT">
+            <column name="cad_file_list_id" type="BIGINT">
                 <constraints
                         foreignKeyName="fk_cad_file_loan_id"
                         referencedTableName="cad_file"
@@ -5640,6 +5638,68 @@
         <addColumn tableName="document">
             <column name="contains_template" type="boolean"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="303-create-table-offer-document" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="offer_document"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="offer_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="doc_name" type="VARCHAR(256)"/>
+            <column name="initial_information" type="LONGTEXT"/>
+            <column name="path_signed" type="VARCHAR(256)"/>
+            <column name="draft_path" type="VARCHAR(256)"/>
+            <column name="supported_information" type="LONGTEXT"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_offer_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer-offer_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="303-create-table-customer_approved_loan_cad_documentation_offer_document_list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+           <not>
+               <tableExists tableName="customer_approved_loan_cad_documentation_offer_document_list"/>
+           </not>
+        </preConditions>
+        <createTable tableName="customer_approved_loan_cad_documentation_offer_document_list">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT" >
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_third_table_id"
+                             referencedTableName="customer_approved_loan_cad_documentation"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="offer_document_list_id" type="BIGINT" >
+                <constraints nullable="true"
+                             foreignKeyName="fk_offer_document_list_third_table_id"
+                             referencedTableName="offer_document"
+                             referencedColumnNames="id"
+                />
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>
