@@ -2,6 +2,9 @@ package com.sb.solutions.controller;
 
 import java.util.Map;
 
+import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
+import com.sb.solutions.service.approvedloancaddoc.CustomerCadService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +28,14 @@ public class CadController {
 
     private final LoanHolderService loanHolderService;
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
+    @Qualifier("customerCadService")
+    private final CustomerCadService customerCadService;
 
     public CadController(LoanHolderService loanHolderService,
-        ApprovalRoleHierarchyService approvalRoleHierarchyService) {
+                         ApprovalRoleHierarchyService approvalRoleHierarchyService, CustomerCadService customerCadService) {
         this.loanHolderService = loanHolderService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
+        this.customerCadService = customerCadService;
     }
 
     @PostMapping(value = ApiConstants.UNASSIGNED_LOAN)
@@ -74,6 +80,11 @@ public class CadController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getCad(@PathVariable Long id) {
         return new RestResponseDto().successModel(loanHolderService.getByID(id));
+    }
+
+    @PatchMapping(ApiConstants.SAVE_CAD)
+    public ResponseEntity<?> saveCAD(@RequestBody CustomerApprovedLoanCadDocumentation c) {
+        return new RestResponseDto().successModel(customerCadService.save(c));
     }
 
 }

@@ -15,6 +15,8 @@ public class ApiConstants {
 
     public static final String CAD_LIST = "/cad-list";
 
+    public static final String SAVE_CAD = "/cad/save";
+
     public static final String ASSIGN_LOAN_TO_USER = "/assign";
     public static final String CAD_ACTION = "/action";
 

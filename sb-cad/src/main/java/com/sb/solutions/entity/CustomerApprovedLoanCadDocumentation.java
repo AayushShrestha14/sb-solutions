@@ -50,10 +50,10 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
     @OneToOne(cascade = CascadeType.ALL)
     private CadStage cadCurrentStage;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OfferDocument> offerDocumentList=new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_cad_file_list")
     private List<CadFile> cadFileList= new ArrayList<>();
 
