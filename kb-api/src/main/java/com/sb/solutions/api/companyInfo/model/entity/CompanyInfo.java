@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import com.sb.solutions.api.companyInfo.shareholderkyc.entity.ShareholderKyc;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -57,6 +58,10 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Proprietor> proprietorsList;
 
+    @AuditJoinTable
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<ShareholderKyc> shareholderKycList;
+
     private String companyName;
     private String registrationNumber;
     private Date establishmentDate;
@@ -99,9 +104,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @NotAudited
     private String businessGiven;
-
-    @NotAudited
-    private String companyLegalDocumentAddress;
 
     @Override
     public Pair<Boolean, String> valid() {
