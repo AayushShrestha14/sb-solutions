@@ -79,7 +79,7 @@ public class CustomerCadServiceImpl implements CustomerCadService {
                         offerLetterId,
                         OfferLetterDocType.valueOf(type).toString());
 
-        final StringBuilder nameBuilder = new StringBuilder().append(offerDocument.getDocName())
+        final StringBuilder nameBuilder = new StringBuilder().append(offerDocument.getDocName().trim().replaceAll("\\s", "-"))
                 .append("-")
                 .append(customerCad.getLoanHolder().getIdNumber());
         logger.info("File Upload Path offer letter {} {}", uploadPath, nameBuilder);
