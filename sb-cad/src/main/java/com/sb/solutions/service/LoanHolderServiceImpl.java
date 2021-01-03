@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
@@ -21,17 +24,16 @@ import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
-import com.sb.solutions.constant.ErrorMessage;
 import com.sb.solutions.constant.SuccessMessage;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.CustomerLoanDto;
 import com.sb.solutions.dto.LoanHolderDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
-import com.sb.solutions.enums.CADDocumentType;
 import com.sb.solutions.enums.CadDocStatus;
 import com.sb.solutions.mapper.CadStageMapper;
 import com.sb.solutions.mapper.CustomerLoanMapper;
@@ -58,16 +60,20 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private final CadStageMapper cadStageMapper;
 
+    private final BranchService branchService;
+
     public LoanHolderServiceImpl(CustomerLoanRepository customerLoanRepository,
         CustomerLoanMapper customerLoanMapper, UserService userService,
         CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
-        CadStageMapper cadStageMapper) {
+        CadStageMapper cadStageMapper,
+        BranchService branchService) {
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanMapper = customerLoanMapper;
         this.userService = userService;
         this.customerInfoRepository = customerInfoRepository;
         this.customerCadRepository = customerCadRepository;
         this.cadStageMapper = cadStageMapper;
+        this.branchService = branchService;
     }
 
     @Override
@@ -212,20 +218,42 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     }
 
 
-    private Map<String, String> branchAccess(Map<String, String> filterParams) {
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
-        if (filterParams.containsKey("branchIds")) {
-            branchAccess = filterParams.get("branchIds");
+    private Map<String, String> branchAccessAndUserAccess(Map<String, String> filterParams) {
+        final User user = userService.getAuthenticatedUser();
+        if (!user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (filterParams.containsKey("branchIds")) {
+                branchAccess = filterParams.get("branchIds");
+            }
+            filterParams.put("branchIds", branchAccess);
+        } else {
+            List<Branch> finalBranchList = new ArrayList<>();
+            user.getProvinces().forEach(province -> {
+                List<Branch> branchList = branchService.getBranchByProvince(province.getId());
+                finalBranchList.addAll(branchList);
+            });
+            String branchAccess = finalBranchList.stream()
+                .map(Branch::getId).map(Object::toString).collect(Collectors.joining(","));
+            if (filterParams.containsKey("branchIds")) {
+                branchAccess = filterParams.get("branchIds");
+            }
+            filterParams.put("branchIds", branchAccess);
+
         }
-        filterParams.put("branchIds", branchAccess);
+
+        if (!(user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || user.getRole()
+            .getRoleType().equals(RoleType.CAD_ADMIN))) {
+            filterParams.put("toUser", user.getId().toString());
+        }
+
         return filterParams;
     }
 
     private Page<CustomerApprovedLoanCadDocumentation> filterCADbyParams(
         Map<String, String> filterParams, Pageable pageable) {
         final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
-            branchAccess(filterParams));
+            branchAccessAndUserAccess(filterParams));
         final Specification<CustomerApprovedLoanCadDocumentation> specification = customerCadSpecBuilder
             .build();
         return customerCadRepository.findAll(specification, pageable);
