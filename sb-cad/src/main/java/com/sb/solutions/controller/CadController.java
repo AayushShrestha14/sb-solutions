@@ -16,6 +16,7 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.service.LoanHolderService;
 import com.sb.solutions.validation.constraint.CadValid;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -85,6 +86,16 @@ public class CadController {
     @PatchMapping(ApiConstants.SAVE_CAD)
     public ResponseEntity<?> saveCAD(@RequestBody CustomerApprovedLoanCadDocumentation c) {
         return new RestResponseDto().successModel(customerCadService.save(c));
+    }
+
+    @PostMapping(path = "/uploadFile")
+    public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
+                                               @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
+                                               @RequestParam("offerLetterId") Long offerLetterId,
+                                               @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
+        return new RestResponseDto().successModel(
+                customerCadService
+                        .saveWithMultipartFile(multipartFile, customerApprovedDocId, offerLetterId, type));
     }
 
 }
