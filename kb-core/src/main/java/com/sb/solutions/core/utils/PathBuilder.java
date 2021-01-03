@@ -1,8 +1,7 @@
 package com.sb.solutions.core.utils;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.sb.solutions.core.utils.string.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * this utility method is use for chaining folder path for json file or document file
@@ -189,29 +188,47 @@ public class PathBuilder {
      *  this is for loan Cad document upload and download
      */
     public String buildCadLoanDocumentUploadBasePathWithId(Long customerInfoId,
-        Long branchId,
-        String customerType,
-        String action,
-        Long loanId) {
+                                                           Long branchId,
+                                                           String customerType,
+                                                           String action,
+                                                           Long loanId) {
         return new StringBuilder(this.basePath)
-            .append("customers")
-            .append(FILE_SEPARATOR)
-            .append("Branch-" + branchId)
-            .append(FILE_SEPARATOR)
-            .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
-            .append(FILE_SEPARATOR)
-            .append("customer-" + customerInfoId)
-            .append(FILE_SEPARATOR)
-            .append("Loan_Document")
-            .append(FILE_SEPARATOR)
-            .append("Loan-" + loanId)
-            .append(FILE_SEPARATOR)
-            .append(StringUtils.deleteWhitespace(action).toUpperCase())
-            .append(FILE_SEPARATOR)
-            .append("Cad_Document")
-            .append(FILE_SEPARATOR)
-            .toString();
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append("Branch-" + branchId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Loan_Document")
+                .append(FILE_SEPARATOR)
+                .append("Loan-" + loanId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(action).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("Cad_Document")
+                .append(FILE_SEPARATOR)
+                .toString();
     }
 
+    public String buildCustomerCadDocumentPath(
+            Long branchId,
+            Long customerInfoId,
+            Long offerLetterId,
+            String type) {
+        return new StringBuilder(this.basePath)
+                .append("CAD")
+                .append(FILE_SEPARATOR)
+                .append("Branch-" + branchId)
+                .append(FILE_SEPARATOR)
+                .append("Customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Offer_Letter-" + offerLetterId)
+                .append(FILE_SEPARATOR)
+                .append(type)
+                .append(FILE_SEPARATOR)
+                .toString();
+    }
 
 }
