@@ -12,4 +12,6 @@ import com.sb.solutions.core.service.BaseService;
 public interface PermissionService extends BaseService<Permission> {
 
     List<UrlApi> permsRight(Long role);
+
+    Permission findByName(String name);
 }

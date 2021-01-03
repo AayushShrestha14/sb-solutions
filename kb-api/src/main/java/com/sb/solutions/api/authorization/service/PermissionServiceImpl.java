@@ -53,4 +53,9 @@ public class PermissionServiceImpl implements PermissionService {
     public List<UrlApi> permsRight(Long role) {
         return rolePermissionRightRepository.permsRight(role);
     }
+
+    @Override
+    public Permission findByName(String name) {
+        return permissionRepository.findPermissionByPermissionName(name.trim());
+    }
 }
