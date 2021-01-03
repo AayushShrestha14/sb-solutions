@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.authorization.entity.Permission;
+import com.sb.solutions.api.authorization.service.PermissionService;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.ProductUtils;
@@ -39,6 +41,8 @@ public class NavigationController {
 
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
+    private final PermissionService permissionService;
+
     private final UserService userService;
 
     private final MenuMapper menuMapper;
@@ -46,10 +50,13 @@ public class NavigationController {
 
     public NavigationController(
         RolePermissionRightService rolePermissionRightService,
-        ApprovalRoleHierarchyService approvalRoleHierarchyService, UserService userService,
+        ApprovalRoleHierarchyService approvalRoleHierarchyService,
+        PermissionService permissionService,
+        UserService userService,
         MenuMapper menuMapper) {
         this.rolePermissionRightService = rolePermissionRightService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
+        this.permissionService = permissionService;
         this.userService = userService;
         this.menuMapper = menuMapper;
     }
@@ -104,51 +111,27 @@ public class NavigationController {
                 .equals(RoleType.CAD_ADMIN))) {
 
                 if (size == 0) {
-                    menuList.add(addCreditAdminMenu());
+                    menuList.add(getMenuForCADFULL(u));
                 }
 
             }
 
             if (u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) && ProductUtils.FULL_CAD) {
                 if (size == 0) {
-                    menuList.add(addCreditAdminMenu());
+                    menuList.add(getMenuForCADFULL(u));
                 }
             }
         }
         return new RestResponseDto().successModel(menuList);
     }
 
-    private MenuDto addCreditAdminMenu() {
-        MenuDto menuDto = new MenuDto();
-        menuDto.setTitle("Credit Administration");
-        menuDto.setIcon("book-open-outline");
-        menuDto.setChildren(ListCreditAdminMenu());
-        return menuDto;
 
-    }
-
-    private List<MenuDto> ListCreditAdminMenu() {
-        List<MenuDto> menuDtos = new ArrayList<>();
-        MenuDto menuDto = new MenuDto();
-
-        menuDto.setTitle("all");
-        menuDto.setIcon("file-text-outline");
-        menuDto.setLink("/home/credit");
-        menuDtos.add(menuDto);
-
-        menuDto = new MenuDto();
-        menuDto.setTitle("Offer Letter Pending");
-        menuDto.setIcon("edit-2-outline");
-        menuDto.setLink("/home/credit/offer-pending");
-        menuDtos.add(menuDto);
-
-        menuDto = new MenuDto();
-        menuDto.setTitle("Offer Letter Approved");
-        menuDto.setIcon("edit-2-outline");
-        menuDto.setLink("/home/credit/offer-approved");
-        menuDtos.add(menuDto);
-
-        return menuDtos;
+    private MenuDto getMenuForCADFULL(User u){
+        RolePermissionRights rolePermissionRights = new RolePermissionRights();
+        Permission permission = permissionService.findByName("Credit Administration");
+        rolePermissionRights.setRole(u.getRole());
+        rolePermissionRights.setPermission(permission);
+        return menuMapper.menuDto(rolePermissionRights);
     }
 
 

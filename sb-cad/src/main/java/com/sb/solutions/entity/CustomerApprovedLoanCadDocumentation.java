@@ -64,6 +64,11 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
     @Transient
     private List previousList;
 
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private List<Disbursement> disbursement;
+
+    private String feesAndCommission;
+
     public List<LoanStageDto> getPreviousList() {
         if (this.getCadStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
