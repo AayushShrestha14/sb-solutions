@@ -18,7 +18,7 @@
 //@AllArgsConstructor
 //@EqualsAndHashCode(callSuper = true)
 //public class DisbursementData extends BaseEntity<Long> {
-//
+//   private Long customerLoanId;
 //    private String jsonData;
 //
 //}
