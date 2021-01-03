@@ -88,6 +88,7 @@ public class CadStageMapper {
             case FORWARD:
                 user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
+                cadStage.setDocAction(DocAction.FORWARD);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
@@ -108,10 +109,12 @@ public class CadStageMapper {
                     user.setId(cadStage.getFromUser().getId());
                     role.setId(cadStage.getFromUser().getRole().getId());
                 }
+                cadStage.setDocAction(DocAction.BACKWARD);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
             case APPROVED:
+                cadStage.setDocAction(DocAction.APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
                 break;
