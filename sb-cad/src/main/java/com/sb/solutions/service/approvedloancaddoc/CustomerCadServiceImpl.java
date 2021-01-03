@@ -1,10 +1,26 @@
 package com.sb.solutions.service.approvedloancaddoc;
 
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
+import com.sb.solutions.api.loan.entity.CustomerOfferLetterPath;
+import com.sb.solutions.api.loan.entity.OfferLetterDocType;
+import com.sb.solutions.api.postApprovalDocument.entity.OfferLetter;
+import com.sb.solutions.core.constant.UploadDir;
+import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocStatus;
+import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.PathBuilder;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
+import com.sb.solutions.entity.OfferDocument;
 import com.sb.solutions.repository.CustomerCadRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -12,6 +28,8 @@ import java.util.List;
 @Service("customerCadService")
 @Transactional
 public class CustomerCadServiceImpl implements CustomerCadService {
+    private static final Logger logger = LoggerFactory.getLogger(CustomerCadServiceImpl.class);
+
     private final CustomerCadRepository customerCadRepository;
 
     public CustomerCadServiceImpl(CustomerCadRepository customerCadRepository) {
@@ -42,4 +60,47 @@ public class CustomerCadServiceImpl implements CustomerCadService {
     public List<CustomerApprovedLoanCadDocumentation> saveAll(List<CustomerApprovedLoanCadDocumentation> list) {
         return customerCadRepository.saveAll(list);
     }
+
+    @Override
+    public CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile,
+                                                     Long customerApprovedDocId, Long offerLetterId, String type) {
+      final CustomerApprovedLoanCadDocumentation customerCad = customerCadRepository.getOne(customerApprovedDocId);
+      final OfferDocument offerDocument = customerCad.getOfferDocumentList().stream().filter(od -> od.getId().equals(offerLetterId)).findFirst().get();
+        if (offerDocument == null) {
+            logger.info("Please select a offer letter and save before uploading file {}",
+                    customerCad);
+            throw new ServiceValidationException(
+                    "Please select a offer letter and save before uploading file");
+        }
+        String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                .buildCustomerCadDocumentPath(
+                        customerCad.getLoanHolder().getBranch().getId(),
+                        customerCad.getLoanHolder().getId(),
+                        offerLetterId,
+                        OfferLetterDocType.valueOf(type).toString());
+
+        final StringBuilder nameBuilder = new StringBuilder().append(offerDocument.getDocName())
+                .append("-")
+                .append(customerCad.getLoanHolder().getIdNumber());
+        logger.info("File Upload Path offer letter {} {}", uploadPath, nameBuilder);
+        ResponseEntity responseEntity = FileUploadUtils
+                .uploadFile(multipartFile, uploadPath, nameBuilder.toString());
+        RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
+            for (OfferDocument c : customerCad.getOfferDocumentList()) {
+                if (c.getId().equals(offerLetterId)) {
+                    if (OfferLetterDocType.valueOf(type).equals(OfferLetterDocType.DRAFT)) {
+                        c.setDraftPath(restResponseDto.getDetail().toString());
+                    } else {
+                        c.setPathSigned(restResponseDto.getDetail().toString());
+                    }
+                    break;
+                }
+            }
+            customerCadRepository.save(customerCad);
+
+        return null;
+
+
+    }
+
 }
