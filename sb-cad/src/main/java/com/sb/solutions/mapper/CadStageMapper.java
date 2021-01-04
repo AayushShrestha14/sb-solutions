@@ -27,6 +27,7 @@ import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
+import com.sb.solutions.enums.CADDocAction;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -89,7 +90,7 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
-                cadStage.setDocAction(DocAction.FORWARD);
+                cadStage.setDocAction(CADDocAction.FORWARD);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
@@ -110,19 +111,34 @@ public class CadStageMapper {
                     user.setId(oldData.getCadCurrentStage().getFromUser().getId());
                     role.setId(oldData.getCadCurrentStage().getFromUser().getRole().getId());
                 }
-                cadStage.setDocAction(DocAction.BACKWARD);
+                cadStage.setDocAction(CADDocAction.BACKWARD);
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
-            case APPROVED:
+            case OFFER_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
-                cadStage.setDocAction(DocAction.APPROVED);
+                cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
                 break;
+            case LEGAL_APPROVED:
+                cadStage.setFromRole(currentUser.getRole());
+                cadStage.setFromUser(currentUser);
+                cadStage.setDocAction(CADDocAction.LEGAL_APPROVED);
+                cadStage.setToUser(currentUser);
+                cadStage.setToRole(currentUser.getRole());
+                break;
+            case DISBURSEMENT_APPROVED:
+                cadStage.setFromRole(currentUser.getRole());
+                cadStage.setFromUser(currentUser);
+                cadStage.setDocAction(CADDocAction.DISBURSEMENT_APPROVED);
+                cadStage.setToUser(currentUser);
+                cadStage.setToRole(currentUser.getRole());
+                break;
+
         }
         stageDto.setCadStage(cadStage);
         return stageDto;
