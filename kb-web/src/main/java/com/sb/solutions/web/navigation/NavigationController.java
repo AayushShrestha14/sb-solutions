@@ -107,6 +107,9 @@ public class NavigationController {
                     Collectors.toList());
 
             int size = menuDtos.size();
+            if(size > 0){
+                menuList.remove(menuDtos.get(0));
+            }
             if (isPresentInCadHierarchy && ProductUtils.FULL_CAD && (!u.getRole().getRoleType()
                 .equals(RoleType.CAD_ADMIN))) {
 
@@ -126,14 +129,20 @@ public class NavigationController {
     }
 
 
-    private MenuDto getMenuForCADFULL(User u){
+    private MenuDto getMenuForCADFULL(User u) {
         RolePermissionRights rolePermissionRights = new RolePermissionRights();
         Permission permission = permissionService.findByName("Credit Administration");
         rolePermissionRights.setRole(u.getRole());
         rolePermissionRights.setPermission(permission);
-        return menuMapper.menuDto(rolePermissionRights);
+        MenuDto menuDto = menuMapper.menuDto(rolePermissionRights);
+        if (!(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || u.getRole().getRoleType()
+            .equals(RoleType.CAD_ADMIN))) {
+            menuDto.setChildren(
+                menuDto.getChildren().stream().filter(f -> !(f.getTitle().equalsIgnoreCase("all")))
+                    .collect(Collectors.toList()));
+        }
+        return menuDto;
     }
-
 
 
 }

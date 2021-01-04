@@ -67,7 +67,7 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 //    @OneToOne(cascade = CascadeType.ALL)
 //    private List<Disbursement> disbursement;
 
-    private String feesAndCommission;
+//    private String feesAndCommission;
 
     public List<LoanStageDto> getPreviousList() {
         if (this.getCadStageList() != null) {

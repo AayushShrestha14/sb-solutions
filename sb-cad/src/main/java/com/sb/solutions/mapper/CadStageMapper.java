@@ -79,39 +79,47 @@ public class CadStageMapper {
         stageDto.setPreviousList(
             addPresentStageToPreviousList(oldData.getPreviousList(), oldData.getCadCurrentStage()));
         CadStage cadStage = oldData.getCadCurrentStage();
-        cadStage.setFromRole(currentUser.getRole());
-        cadStage.setFromUser(currentUser);
+
         cadStage.setComment(requestedStage.getComment());
         User user = new User();
         Role role = new Role();
         switch (requestedStage.getDocAction()) {
             case FORWARD:
+                cadStage.setFromRole(currentUser.getRole());
+                cadStage.setFromUser(currentUser);
                 user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
+                cadStage.setDocAction(DocAction.FORWARD);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
-                if (!currentUser.getRole().getRoleType().equals(RoleType.MAKER)) {
-                    if (oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
-                        DocAction.FORWARD) || f.getDocAction().equals(
-                        DocAction.BACKWARD)).collect(Collectors.toList()).isEmpty()) {
-                        CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
-                        Map<String, Long> creator = this
-                            .getLoanMaker(oldDataCustomerLoan.getPreviousStageList(),
-                                oldDataCustomerLoan.getBranch().getId());
-                        user.setId(creator.get("userId"));
-                        role.setId(creator.get("roleId"));
 
-                    }
+                if (oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
+                    DocAction.FORWARD) || f.getDocAction().equals(
+                    DocAction.BACKWARD)).collect(Collectors.toList()).isEmpty()) {
+                    CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
+                    Map<String, Long> creator = this
+                        .getLoanMaker(oldDataCustomerLoan.getPreviousStageList(),
+                            oldDataCustomerLoan.getBranch().getId());
+                    user.setId(creator.get("userId"));
+                    role.setId(creator.get("roleId"));
+
+
                 } else {
-                    user.setId(cadStage.getFromUser().getId());
-                    role.setId(cadStage.getFromUser().getRole().getId());
+                    user.setId(oldData.getCadCurrentStage().getFromUser().getId());
+                    role.setId(oldData.getCadCurrentStage().getFromUser().getRole().getId());
                 }
+                cadStage.setDocAction(DocAction.BACKWARD);
+                cadStage.setFromRole(currentUser.getRole());
+                cadStage.setFromUser(currentUser);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
             case APPROVED:
+                cadStage.setFromRole(currentUser.getRole());
+                cadStage.setFromUser(currentUser);
+                cadStage.setDocAction(DocAction.APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
                 break;
