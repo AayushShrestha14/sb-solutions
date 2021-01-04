@@ -124,6 +124,11 @@ public class NavigationController {
                     menuList.add(getMenuForCADFULL(u));
                 }
             }
+            if (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) && ProductUtils.FULL_CAD) {
+                if (size == 0) {
+                    menuList.add(getMenuForCADFULL(u));
+                }
+            }
         }
         return new RestResponseDto().successModel(menuList);
     }

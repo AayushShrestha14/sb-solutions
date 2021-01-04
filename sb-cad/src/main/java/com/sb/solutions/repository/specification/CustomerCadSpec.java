@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocumentType;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -24,6 +25,7 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
 
     private static final String FILTER_BY_BRANCH = "branchIds";
+    private static final String FILTER_BY_PROVINCE = "provinceIds";
 
     private static final String FILTER_BY_DOC_STATUS = "docStatus";
     private static final String FILTER_BY_TO_USER = "toUser";
@@ -51,6 +53,15 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
 
+            case FILTER_BY_PROVINCE:
+                Pattern pattern1 = Pattern.compile(",");
+                List<Long> list1 = pattern1.splitAsStream(value)
+                    .map(Long::valueOf)
+                    .collect(Collectors.toList());
+                Expression<String> exp1 = root.join("loanHolder").get("branch").get("province").get("id");
+                Predicate predicate1 = exp1.in(list1);
+                return criteriaBuilder.and(predicate1);
+
             case FILTER_BY_TO_USER:
                 return criteriaBuilder
                     .equal(
@@ -58,7 +69,7 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
                         Long.valueOf(value));
 
             case FILTER_BY_DOC_STATUS:
-                return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
+                return criteriaBuilder.equal(root.get(property), CadDocStatus.valueOf(value));
 
             default:
                 return null;

@@ -1,6 +1,8 @@
 package com.sb.solutions.dto;
 
 import com.sb.solutions.entity.CadStage;
+import com.sb.solutions.enums.CadDocStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +21,7 @@ public class StageDto {
     private CadStage cadStage;
 
     private String previousList;
+
+    private CadDocStatus cadDocStatus;
 
 }

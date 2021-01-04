@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
@@ -24,7 +24,6 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.constant.SuccessMessage;
-import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.dto.CadStageDto;
@@ -82,14 +81,22 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         String assignedLoanId = "0";
         List<LoanHolderDto> finalLoanHolderDtoList = new ArrayList<>();
         List<CustomerLoan> assignedCustomerLoan = customerCadRepository.findAllAssignedLoan();
-
+        User user = userService.getAuthenticatedUser();
         Map<String, String> s = filterParams;
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
-        if (s.containsKey("branchIds")) {
-            branchAccess = s.get("branchIds");
+        if (!user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (s.containsKey("branchIds")) {
+                branchAccess = s.get("branchIds");
+            }
+            s.put("branchIds", branchAccess);
+        } else {
+            String provienceList = user.getProvinces().stream().map(Province::getId)
+                .map(Objects::toString).collect(Collectors.joining(","));
+            filterParams.put("provinceIds", provienceList);
+
         }
-        s.put("branchIds", branchAccess);
+
         s.put("documentStatus", DocStatus.APPROVED.name());
         if (!assignedCustomerLoan.isEmpty()) {
             assignedLoanId = assignedCustomerLoan.stream()
@@ -166,22 +173,9 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         final CustomerApprovedLoanCadDocumentation documentation = customerCadRepository
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
-        CadDocStatus currentStatus = documentation.getDocStatus();
-        //todo action change current status logic
-        if (cadStageDto.getDocAction().equals(DocAction.APPROVED)) {
-            if (currentStatus.equals(CadDocStatus.OFFER_PENDING)) {
-                currentStatus = CadDocStatus.OFFER_APPROVED;
-            }
-            if (currentStatus.equals(CadDocStatus.LEGAL_PENDING)) {
-                currentStatus = CadDocStatus.LEGAL_APPROVED;
-            }
-            if (currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)) {
-                currentStatus = CadDocStatus.DISBURSEMENT_APPROVED;
-            }
-        }
 
         customerCadRepository.updateAction(cadStageDto.getCadId(),
-            currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
+            stageDto.getCadDocStatus(), stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
@@ -228,17 +222,9 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             }
             filterParams.put("branchIds", branchAccess);
         } else {
-            List<Branch> finalBranchList = new ArrayList<>();
-            user.getProvinces().forEach(province -> {
-                List<Branch> branchList = branchService.getBranchByProvince(province.getId());
-                finalBranchList.addAll(branchList);
-            });
-            String branchAccess = finalBranchList.stream()
-                .map(Branch::getId).map(Object::toString).collect(Collectors.joining(","));
-            if (filterParams.containsKey("branchIds")) {
-                branchAccess = filterParams.get("branchIds");
-            }
-            filterParams.put("branchIds", branchAccess);
+            String provienceList = user.getProvinces().stream().map(Province::getId)
+                .map(Objects::toString).collect(Collectors.joining(","));
+            filterParams.put("provinceIds", provienceList);
 
         }
 

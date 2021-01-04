@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
@@ -28,6 +29,7 @@ import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocAction;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -55,15 +57,17 @@ public class CadStageMapper {
             Map<String, String> tempCadStage = objectMapper
                 .convertValue(cadStage, Map.class);
             try {
-                previousList.forEach(p -> {
-                    try {
-                        Map<String, String> previous = objectMapper.convertValue(p, Map.class);
+                if (!ObjectUtils.isEmpty(previousList)) {
+                    previousList.forEach(p -> {
+                        try {
+                            Map<String, String> previous = objectMapper.convertValue(p, Map.class);
 
-                        previousListTemp.add(objectMapper.writeValueAsString(previous));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Failed to handle JSON data");
-                    }
-                });
+                            previousListTemp.add(objectMapper.writeValueAsString(previous));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Failed to handle JSON data");
+                        }
+                    });
+                }
                 String jsonValue = objectMapper.writeValueAsString(tempCadStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {
@@ -91,6 +95,7 @@ public class CadStageMapper {
                 user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
                 cadStage.setDocAction(CADDocAction.FORWARD);
+                stageDto.setCadDocStatus(oldData.getDocStatus());
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
@@ -116,11 +121,14 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
+                stageDto.setCadDocStatus(oldData.getDocStatus());
                 break;
             case OFFER_APPROVED:
+
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
+                stageDto.setCadDocStatus(CadDocStatus.OFFER_APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
                 break;
@@ -128,12 +136,14 @@ public class CadStageMapper {
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.LEGAL_APPROVED);
+                stageDto.setCadDocStatus(CadDocStatus.LEGAL_APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
                 break;
             case DISBURSEMENT_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
+                stageDto.setCadDocStatus(CadDocStatus.DISBURSEMENT_APPROVED);
                 cadStage.setDocAction(CADDocAction.DISBURSEMENT_APPROVED);
                 cadStage.setToUser(currentUser);
                 cadStage.setToRole(currentUser.getRole());
