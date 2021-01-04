@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocumentType;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/7/2020
@@ -58,7 +59,7 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
                         Long.valueOf(value));
 
             case FILTER_BY_DOC_STATUS:
-                return criteriaBuilder.equal(root.get(property), DocStatus.valueOf(value));
+                return criteriaBuilder.equal(root.get(property), CadDocStatus.valueOf(value));
 
             default:
                 return null;

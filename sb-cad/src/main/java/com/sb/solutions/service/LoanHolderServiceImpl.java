@@ -167,19 +167,6 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
         CadDocStatus currentStatus = documentation.getDocStatus();
-        //todo action change current status logic
-        if (cadStageDto.getDocAction().equals(DocAction.APPROVED)) {
-            if (currentStatus.equals(CadDocStatus.OFFER_PENDING)) {
-                currentStatus = CadDocStatus.OFFER_APPROVED;
-            }
-            if (currentStatus.equals(CadDocStatus.LEGAL_PENDING)) {
-                currentStatus = CadDocStatus.LEGAL_APPROVED;
-            }
-            if (currentStatus.equals(CadDocStatus.DISBURSEMENT_PENDING)) {
-                currentStatus = CadDocStatus.DISBURSEMENT_APPROVED;
-            }
-        }
-
         customerCadRepository.updateAction(cadStageDto.getCadId(),
             currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
@@ -228,17 +215,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             }
             filterParams.put("branchIds", branchAccess);
         } else {
-            List<Branch> finalBranchList = new ArrayList<>();
-            user.getProvinces().forEach(province -> {
-                List<Branch> branchList = branchService.getBranchByProvince(province.getId());
-                finalBranchList.addAll(branchList);
-            });
-            String branchAccess = finalBranchList.stream()
-                .map(Branch::getId).map(Object::toString).collect(Collectors.joining(","));
-            if (filterParams.containsKey("branchIds")) {
-                branchAccess = filterParams.get("branchIds");
-            }
-            filterParams.put("branchIds", branchAccess);
+
+            //  filterParams.put("provienceId", branchAccess);
 
         }
 
