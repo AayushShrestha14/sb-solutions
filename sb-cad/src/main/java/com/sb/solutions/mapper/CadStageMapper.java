@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
@@ -56,15 +57,17 @@ public class CadStageMapper {
             Map<String, String> tempCadStage = objectMapper
                 .convertValue(cadStage, Map.class);
             try {
-                previousList.forEach(p -> {
-                    try {
-                        Map<String, String> previous = objectMapper.convertValue(p, Map.class);
+                if (!ObjectUtils.isEmpty(previousList)) {
+                    previousList.forEach(p -> {
+                        try {
+                            Map<String, String> previous = objectMapper.convertValue(p, Map.class);
 
-                        previousListTemp.add(objectMapper.writeValueAsString(previous));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Failed to handle JSON data");
-                    }
-                });
+                            previousListTemp.add(objectMapper.writeValueAsString(previous));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Failed to handle JSON data");
+                        }
+                    });
+                }
                 String jsonValue = objectMapper.writeValueAsString(tempCadStage);
                 previousListTemp.add(jsonValue);
             } catch (JsonProcessingException e) {

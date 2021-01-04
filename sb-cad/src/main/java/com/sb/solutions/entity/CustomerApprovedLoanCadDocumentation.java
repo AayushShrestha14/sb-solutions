@@ -27,6 +27,7 @@ import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.enums.CadDocStatus;
 
 /**
@@ -69,7 +70,7 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
 //    private String feesAndCommission;
 
-    public List<LoanStageDto> getPreviousList() {
+    public List<CadStage> getPreviousList() {
         if (this.getCadStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
@@ -78,7 +79,7 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
                 this.previousList = objectMapper.readValue(this.getCadStageList(),
-                    typeFactory.constructCollectionType(List.class, LoanStageDto.class));
+                    typeFactory.constructCollectionType(List.class, CadStage.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
