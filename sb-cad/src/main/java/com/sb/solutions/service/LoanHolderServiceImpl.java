@@ -173,9 +173,9 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         final CustomerApprovedLoanCadDocumentation documentation = customerCadRepository
             .getOne(cadStageDto.getCadId());
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
-        CadDocStatus currentStatus = documentation.getDocStatus();
+
         customerCadRepository.updateAction(cadStageDto.getCadId(),
-            currentStatus, stageDto.getCadStage(), stageDto.getPreviousList());
+            stageDto.getCadDocStatus(), stageDto.getCadStage(), stageDto.getPreviousList());
         return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
