@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
@@ -25,7 +24,6 @@ import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilde
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.constant.SuccessMessage;
-import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.dto.CadStageDto;
