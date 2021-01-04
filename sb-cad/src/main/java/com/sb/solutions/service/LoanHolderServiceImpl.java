@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
@@ -82,14 +83,22 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         String assignedLoanId = "0";
         List<LoanHolderDto> finalLoanHolderDtoList = new ArrayList<>();
         List<CustomerLoan> assignedCustomerLoan = customerCadRepository.findAllAssignedLoan();
-
+        User user = userService.getAuthenticatedUser();
         Map<String, String> s = filterParams;
-        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
-        if (s.containsKey("branchIds")) {
-            branchAccess = s.get("branchIds");
+        if (!user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (s.containsKey("branchIds")) {
+                branchAccess = s.get("branchIds");
+            }
+            s.put("branchIds", branchAccess);
+        } else {
+            String provienceList = user.getProvinces().stream().map(Province::getId)
+                .map(Objects::toString).collect(Collectors.joining(","));
+            filterParams.put("provinceIds", provienceList);
+
         }
-        s.put("branchIds", branchAccess);
+
         s.put("documentStatus", DocStatus.APPROVED.name());
         if (!assignedCustomerLoan.isEmpty()) {
             assignedLoanId = assignedCustomerLoan.stream()
@@ -215,8 +224,9 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             }
             filterParams.put("branchIds", branchAccess);
         } else {
-
-            //  filterParams.put("provienceId", branchAccess);
+            String provienceList = user.getProvinces().stream().map(Province::getId)
+                .map(Objects::toString).collect(Collectors.joining(","));
+            filterParams.put("provinceIds", provienceList);
 
         }
 

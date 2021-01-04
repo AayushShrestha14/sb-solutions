@@ -25,6 +25,7 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
 
     private static final String FILTER_BY_BRANCH = "branchIds";
+    private static final String FILTER_BY_PROVINCE = "provinceIds";
 
     private static final String FILTER_BY_DOC_STATUS = "docStatus";
     private static final String FILTER_BY_TO_USER = "toUser";
@@ -51,6 +52,15 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
                 Expression<String> exp = root.join("loanHolder").get("branch").get("id");
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
+
+            case FILTER_BY_PROVINCE:
+                Pattern pattern1 = Pattern.compile(",");
+                List<Long> list1 = pattern1.splitAsStream(value)
+                    .map(Long::valueOf)
+                    .collect(Collectors.toList());
+                Expression<String> exp1 = root.join("loanHolder").get("branch").get("province").get("id");
+                Predicate predicate1 = exp1.in(list1);
+                return criteriaBuilder.and(predicate1);
 
             case FILTER_BY_TO_USER:
                 return criteriaBuilder

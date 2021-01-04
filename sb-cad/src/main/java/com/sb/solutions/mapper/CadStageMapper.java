@@ -118,11 +118,13 @@ public class CadStageMapper {
                 cadStage.setToRole(role);
                 break;
             case OFFER_APPROVED:
+                user.setId(oldData.getCadCurrentStage().getFromUser().getId());
+                role.setId(oldData.getCadCurrentStage().getFromUser().getRole().getId());
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
-                cadStage.setToUser(currentUser);
-                cadStage.setToRole(currentUser.getRole());
+                cadStage.setToUser(user);
+                cadStage.setToRole(role);
                 break;
             case LEGAL_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
