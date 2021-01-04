@@ -33,6 +33,7 @@ import com.sb.solutions.dto.LoanHolderDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
+import com.sb.solutions.enums.CADDocAction;
 import com.sb.solutions.enums.CadDocStatus;
 import com.sb.solutions.mapper.CadStageMapper;
 import com.sb.solutions.mapper.CustomerLoanMapper;
@@ -212,7 +213,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         cadStage.setFromRole(user.getRole());
 
         cadStage.setComment("Assigned to " + toUser.getUsername());
-        cadStage.setDocAction(DocAction.ASSIGNED);
+        cadStage.setDocAction(CADDocAction.ASSIGNED);
         return cadStage;
     }
 

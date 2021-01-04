@@ -3,6 +3,7 @@ package com.sb.solutions.dto;
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.core.enums.DocAction;
+import com.sb.solutions.enums.CADDocAction;
 import com.sb.solutions.enums.CADDocumentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,6 @@ public class CadStageDto {
 
     private String comment;
 
-    private DocAction docAction;
+    private CADDocAction docAction;
 
 }
