@@ -5701,5 +5701,16 @@
             </column>
         </createTable>
     </changeSet>
+    
+    <changeSet id="303-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="bibash">
+        <preConditions>
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="fees_and_commission"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="fees_and_commission" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
