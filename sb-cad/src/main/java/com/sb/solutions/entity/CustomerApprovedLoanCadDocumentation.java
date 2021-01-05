@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.enums.CadDocStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,11 +47,11 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
     private CadStage cadCurrentStage;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<OfferDocument> offerDocumentList=new ArrayList<>();
+    private List<OfferDocument> offerDocumentList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_cad_file_list")
-    private List<CadFile> cadFileList= new ArrayList<>();
+    private List<CadFile> cadFileList = new ArrayList<>();
 
     private String cadStageList;
 
