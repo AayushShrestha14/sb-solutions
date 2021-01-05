@@ -100,9 +100,10 @@ public class CadStageMapper {
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
-                List forwardBack = oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
-                    CADDocAction.FORWARD) || f.getDocAction().equals(
-                    CADDocAction.BACKWARD)).collect(Collectors.toList());
+                List forwardBack = oldData.getPreviousList().stream()
+                    .filter(f -> f.getDocAction().equals(
+                        CADDocAction.FORWARD) || f.getDocAction().equals(
+                        CADDocAction.BACKWARD)).collect(Collectors.toList());
                 if (forwardBack.isEmpty()) {
                     CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
                     Map<String, Long> creator = this
@@ -128,6 +129,7 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
                 stageDto.setCadDocStatus(CadDocStatus.OFFER_APPROVED);
+                //set RM
                 Map<String, Long> cadMaker = this
                     .getCADMaker(oldData.getCadStageList(),
                         oldData.getLoanHolder().getBranch().getId());
@@ -140,9 +142,15 @@ public class CadStageMapper {
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.LEGAL_APPROVED);
-                stageDto.setCadDocStatus(CadDocStatus.LEGAL_APPROVED);
-                cadStage.setToUser(currentUser);
-                cadStage.setToRole(currentUser.getRole());
+                stageDto.setCadDocStatus(CadDocStatus.DISBURSEMENT_PENDING);
+                //set to user CAD
+                Map<String, Long> cadUser = this
+                    .getCADUser(oldData.getPreviousList(),
+                        oldData.getLoanHolder().getBranch().getId());
+                user.setId(cadUser.get("userId"));
+                role.setId(cadUser.get("roleId"));
+                cadStage.setToUser(user);
+                cadStage.setToRole(role);
                 break;
             case DISBURSEMENT_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
@@ -218,4 +226,22 @@ public class CadStageMapper {
         return map;
     }
 
+    private Map<String, Long> getCADUser(List<CadStage> list, Long branchID) {
+        Map<String, Long> map = new HashMap<>();
+        try {
+            List<CadStage> mapPreviousList = list;
+            List<CadStage> makerList = mapPreviousList.stream()
+                .filter(a -> a.getFromRole().getRoleName().equalsIgnoreCase("CAD")).collect(
+                    Collectors.toList());
+            //todo check user still exist in this role
+            map.put("userId", makerList.get(0).getFromUser().getId());
+            map.put("roleId", makerList.get(0).getFromRole().getId());
+
+
+        } catch (Exception e) {
+            log.error("unable to get users for backward ", e);
+
+        }
+        return map;
+    }
 }
