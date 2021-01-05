@@ -1,9 +1,6 @@
 //package com.sb.solutions.entity;
 //
-//import java.util.List;
-//
 //import javax.persistence.Entity;
-//import javax.persistence.OneToMany;
 //
 //import lombok.AllArgsConstructor;
 //import lombok.Data;
@@ -20,9 +17,9 @@
 //@NoArgsConstructor
 //@AllArgsConstructor
 //@EqualsAndHashCode(callSuper = true)
-//public class Disbursement extends BaseEntity<Long> {
+//public class ExposureHistory extends BaseEntity<Long> {
 //
-//    @OneToMany
-//    private List<DisbursementData>  disbursementData;
+//    private Long cadId;
+//    private String jsonData;
 //
 //}

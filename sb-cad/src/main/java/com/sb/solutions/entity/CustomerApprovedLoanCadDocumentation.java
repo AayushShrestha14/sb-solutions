@@ -57,9 +57,9 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     @Transient
     private List previousList;
-
+    //todo disbursement
 //    @OneToOne(cascade = CascadeType.ALL)
-//    private List<Disbursement> disbursement;
+//    private Exposure exposure;
 
     private String feesAndCommission;
 
