@@ -95,15 +95,15 @@ public class CadStageMapper {
                 user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
                 cadStage.setDocAction(CADDocAction.FORWARD);
-                stageDto.setCadDocStatus(oldData.getDocStatus());
+                stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
-
-                if (oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
-                    DocAction.FORWARD) || f.getDocAction().equals(
-                    DocAction.BACKWARD)).collect(Collectors.toList()).isEmpty()) {
+                List forwardBack = oldData.getPreviousList().stream().filter(f -> f.getDocAction().equals(
+                    CADDocAction.FORWARD) || f.getDocAction().equals(
+                    CADDocAction.BACKWARD)).collect(Collectors.toList());
+                if (forwardBack.isEmpty()) {
                     CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
                     Map<String, Long> creator = this
                         .getLoanMaker(oldDataCustomerLoan.getPreviousStageList(),
@@ -121,16 +121,20 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 cadStage.setToUser(user);
                 cadStage.setToRole(role);
-                stageDto.setCadDocStatus(oldData.getDocStatus());
+                stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
                 break;
             case OFFER_APPROVED:
-
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
                 stageDto.setCadDocStatus(CadDocStatus.OFFER_APPROVED);
-                cadStage.setToUser(currentUser);
-                cadStage.setToRole(currentUser.getRole());
+                Map<String, Long> cadMaker = this
+                    .getCADMaker(oldData.getCadStageList(),
+                        oldData.getLoanHolder().getBranch().getId());
+                user.setId(cadMaker.get("userId"));
+                role.setId(cadMaker.get("roleId"));
+                cadStage.setToUser(user);
+                cadStage.setToRole(role);
                 break;
             case LEGAL_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
@@ -162,6 +166,36 @@ public class CadStageMapper {
             List<LoanStageDto> mapPreviousList = objectMapper.readValue(list,
                 typeFactory.constructCollectionType(List.class, LoanStageDto.class));
             List<LoanStageDto> makerList = mapPreviousList.stream()
+                .filter(a -> a.getFromRole().getRoleType().equals(RoleType.MAKER)).collect(
+                    Collectors.toList());
+            final List<User> users = userService
+                .findByRoleAndBranchId(makerList.get(0).getFromRole().getId(), branchID);
+            final List<Long> userIdList = users.stream().map(User::getId)
+                .collect(Collectors.toList());
+            if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
+                map.put("userId", makerList.get(0).getFromUser().getId());
+                map.put("roleId", makerList.get(0).getFromRole().getId());
+            } else {
+                map.put("userId", users.get(0).getId());
+                map.put("roleId", users.get(0).getRole().getId());
+            }
+
+
+        } catch (Exception e) {
+            log.error("unable to get users for backward ", e);
+
+        }
+        return map;
+    }
+
+
+    private Map<String, Long> getCADMaker(String list, Long branchID) {
+        Map<String, Long> map = new HashMap<>();
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        try {
+            List<CadStage> mapPreviousList = objectMapper.readValue(list,
+                typeFactory.constructCollectionType(List.class, CadStage.class));
+            List<CadStage> makerList = mapPreviousList.stream()
                 .filter(a -> a.getFromRole().getRoleType().equals(RoleType.MAKER)).collect(
                     Collectors.toList());
             final List<User> users = userService

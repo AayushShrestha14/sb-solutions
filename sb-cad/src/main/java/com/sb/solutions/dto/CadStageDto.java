@@ -5,6 +5,8 @@ import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.enums.CADDocAction;
 import com.sb.solutions.enums.CADDocumentType;
+import com.sb.solutions.enums.CadDocStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +35,7 @@ public class CadStageDto {
     private String comment;
 
     private CADDocAction docAction;
+
+    private CadDocStatus documentStatus;
 
 }
