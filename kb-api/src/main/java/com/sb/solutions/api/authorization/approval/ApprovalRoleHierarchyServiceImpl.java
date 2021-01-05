@@ -101,6 +101,7 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                     Role role = new Role();
                     role.setId(r.getId());
                     role.setRoleName(r.getRoleName());
+                    role.setRoleType(r.getRoleType());
                     hierarchy.setRole(role);
 
                     return hierarchy;
