@@ -18,9 +18,9 @@ BEGIN
             (14, 'Offer Letter Pending','/home/credit/offer-pending', 'edit-2-outline'),
             (15, 'Offer Letter Approved','/home/credit/offer-approved', 'checkmark-square-outline'),
             (16, 'Legal Review Pending','/home/credit/legal-pending', 'edit-2-outline'),
-            (17, 'Legal Review Approved','/home/credit/legal-approved', 'checkmark-circle-outline'),
             (18, 'Disbursement Pending','/home/credit/disbursement-pending', 'edit-2-outline'),
-            (19, 'Disbursement Approved','/home/credit/disbursement-approved', 'checkmark-circle-outline')
+            (19, 'Disbursement Approved','/home/credit/disbursement-approved', 'checkmark-circle-outline'),
+            (20, 'CAD Document','/home/credit/cad-documents', 'file-text-outline')
             SET IDENTITY_INSERT sub_nav Off
 
 
@@ -29,9 +29,9 @@ BEGIN
             (@perm_id, 14),
             (@perm_id, 15),
             (@perm_id, 16),
-            (@perm_id, 17),
             (@perm_id, 18),
-            (@perm_id, 19)
+            (@perm_id, 19),
+            (@perm_id, 20)
 
         END
          IF (@perm_del_id IS NOT NULL)

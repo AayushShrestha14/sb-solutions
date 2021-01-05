@@ -5,7 +5,7 @@ BEGIN
         BEGIN
             DELETE FROM role_permission_rights WHERE permission_id = @perm_id
             DELETE FROM permission_sub_navs WHERE permission_id =@perm_id
-            DELETE FROM sub_nav WHERE id in (13,14,15,16,17,18,19)
+            DELETE FROM sub_nav WHERE id in (13,14,15,16,17,18,19,20)
             DELETE FROM permission WHERE id = @perm_id
         END
 
