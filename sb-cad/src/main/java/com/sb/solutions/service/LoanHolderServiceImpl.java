@@ -171,7 +171,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     public String cadAction(CadStageDto cadStageDto) {
         final User currentUser = userService.getAuthenticatedUser();
         final CustomerApprovedLoanCadDocumentation documentation = customerCadRepository
-            .getOne(cadStageDto.getCadId());
+            .findById(cadStageDto.getCadId()).get();
         StageDto stageDto = cadStageMapper.cadAction(cadStageDto, documentation, currentUser);
 
         customerCadRepository.updateAction(cadStageDto.getCadId(),
