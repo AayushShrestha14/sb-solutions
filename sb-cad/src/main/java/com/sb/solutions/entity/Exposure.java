@@ -1,6 +1,10 @@
 //package com.sb.solutions.entity;
 //
+//import java.util.List;
+//
 //import javax.persistence.Entity;
+//import javax.persistence.OneToMany;
+//import javax.persistence.Transient;
 //
 //import lombok.AllArgsConstructor;
 //import lombok.Data;
@@ -17,8 +21,8 @@
 //@NoArgsConstructor
 //@AllArgsConstructor
 //@EqualsAndHashCode(callSuper = true)
-//public class DisbursementData extends BaseEntity<Long> {
-//   private Long customerLoanId;
+//public class Exposure extends BaseEntity<Long> {
+//
 //    private String jsonData;
 //
 //}
