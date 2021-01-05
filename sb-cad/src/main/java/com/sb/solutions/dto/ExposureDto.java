@@ -15,4 +15,6 @@ import com.sb.solutions.core.dto.BaseDto;
 @NoArgsConstructor
 public class ExposureDto extends BaseDto<Long> {
 
+    private Long cadId;
+
 }
