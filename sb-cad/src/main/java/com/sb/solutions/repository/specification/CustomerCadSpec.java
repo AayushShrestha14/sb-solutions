@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CADDocumentType;
@@ -29,6 +30,9 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
     private static final String FILTER_BY_DOC_STATUS = "docStatus";
     private static final String FILTER_BY_TO_USER = "toUser";
+    private static final String FILTER_BY_CUSTOMER_NAME = "name";
+    private static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
+
 
     private final String property;
     private final String value;
@@ -70,6 +74,15 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
             case FILTER_BY_DOC_STATUS:
                 return criteriaBuilder.equal(root.get(property), CadDocStatus.valueOf(value));
+
+            case FILTER_BY_CUSTOMER_NAME:
+                return criteriaBuilder
+                    .like(criteriaBuilder
+                            .lower(root.join("loanHolder").get("name")),
+                        value.toLowerCase() + "%");
+
+            case FILTER_BY_CUSTOMER_TYPE:
+                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
 
             default:
                 return null;
