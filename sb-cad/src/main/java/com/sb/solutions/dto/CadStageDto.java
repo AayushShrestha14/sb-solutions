@@ -38,4 +38,6 @@ public class CadStageDto {
 
     private CadDocStatus documentStatus;
 
+    private Boolean isBackwardForMaker = false;
+
 }
