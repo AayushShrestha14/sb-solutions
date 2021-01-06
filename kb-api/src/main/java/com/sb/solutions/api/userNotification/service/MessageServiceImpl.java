@@ -67,7 +67,8 @@ public class MessageServiceImpl implements MessageService {
                     toRole.getRoleName()));
             } else if (message.getDocAction().equals(DocAction.APPROVED)
                 || message.getDocAction().equals(DocAction.REJECT)
-                || message.getDocAction().equals(DocAction.CLOSED)) {
+                || message.getDocAction().equals(DocAction.CLOSED)
+                || message.getDocAction().equals(DocAction.BACKWARD_TO_COMMITTEE)) {
                 message.setMessage(
                     String.format("%s (%s) has %s a loan document of Customer %s of limit Rs. %s.",
                         fromUser.getName(),
