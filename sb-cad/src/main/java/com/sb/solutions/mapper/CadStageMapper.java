@@ -102,9 +102,8 @@ public class CadStageMapper {
                 break;
             case BACKWARD:
                 List forwardBack = oldData.getPreviousList().stream()
-                    .filter(f -> f.getDocAction().equals(
-                        CADDocAction.FORWARD) || f.getDocAction().equals(
-                        CADDocAction.BACKWARD)).collect(Collectors.toList());
+                    .filter(f -> !f.getDocAction().equals(
+                        CADDocAction.ASSIGNED)).collect(Collectors.toList());
                 if (forwardBack.isEmpty() || ObjectUtils.isEmpty(forwardBack)) {
                     CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
                     Map<String, Long> creator = this
