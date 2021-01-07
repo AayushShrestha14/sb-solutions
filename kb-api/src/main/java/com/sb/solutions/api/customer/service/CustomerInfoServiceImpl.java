@@ -225,6 +225,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
+            HelperDto<Long> dto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
+            securityService.execute(Optional.of(dto));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService

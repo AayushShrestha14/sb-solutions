@@ -1150,6 +1150,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             companyInfoService.execute(loan.getLoanHolder().getId());
         }
 
+        if(!ObjectUtils.isEmpty(loan.getLoanHolder().getSecurity())) {
+            HelperDto<Long> dto = new HelperDto<>(loan.getId(), HelperIdType.LOAN);
+            securityService.execute(Optional.of(dto));
+        }
+
         // check proposed limit VS considered amount
         ShareSecurity shareSecurity = loan.getLoanHolder().getShareSecurity();
         if (shareSecurity != null) {

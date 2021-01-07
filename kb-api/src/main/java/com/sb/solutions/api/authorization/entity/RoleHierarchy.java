@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.RoleType;
 
 /**
  * @author Rujan Maharjan on 5/13/2019
@@ -38,9 +39,14 @@ public class RoleHierarchy extends BaseEntity<Long> {
     @Transient
     private Long userId;
 
-    public RoleHierarchy(Long roleOrder, String roleName, Long id) {
+    @Transient
+    private RoleType roleType;
+
+    public RoleHierarchy(Long roleOrder, String roleName, Long id, RoleType roleType) {
         this.roleOrder = roleOrder;
         this.roleName = roleName;
         this.id = id;
+        this.roleType = roleType;
+
     }
 }
