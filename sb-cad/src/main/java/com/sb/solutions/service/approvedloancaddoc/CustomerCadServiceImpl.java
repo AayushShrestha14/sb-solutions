@@ -1,16 +1,14 @@
 package com.sb.solutions.service.approvedloancaddoc;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.document.entity.Document;
 import com.sb.solutions.api.loan.entity.CustomerOfferLetter;
-import com.sb.solutions.api.loan.entity.CustomerOfferLetterPath;
 import com.sb.solutions.api.loan.entity.OfferLetterDocType;
-import com.sb.solutions.api.postApprovalDocument.entity.OfferLetter;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
-import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.entity.CadFile;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.entity.OfferDocument;
 import com.sb.solutions.repository.CustomerCadRepository;
@@ -20,10 +18,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("customerCadService")
 @Transactional
@@ -101,6 +102,54 @@ public class CustomerCadServiceImpl implements CustomerCadService {
         return null;
 
 
+    }
+
+    @Override
+    public CustomerApprovedLoanCadDocumentation saveCadCheckListDoc(MultipartFile multipartFile, Long customerInfoId, Long loanId,Long customerApprovedDocId,String documentName,Long documentId){
+        CustomerApprovedLoanCadDocumentation customerCad = customerCadRepository.getOne(customerApprovedDocId);
+        List<CadFile> cadExistingFile =  customerCad.getCadFileList();
+
+
+        String path = new PathBuilder(UploadDir.initialDocument).buildCustomerCadDocumentCheckListPath
+            (customerCad.getLoanHolder().getBranch().getId(),
+            customerInfoId,loanId);
+        ResponseEntity responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, path, documentName);
+        RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
+
+        if (!customerCad.getCadFileList().isEmpty()) {
+            List<CadFile> cadExistFile = customerCad.getCadFileList().stream().filter(existingFile -> existingFile.getCadDocument().getId().equals(documentId) && existingFile.getCustomerLoanId().equals(loanId)).collect(
+                Collectors.toList());
+
+            for (CadFile file : customerCad.getCadFileList()) {
+                if(file.getCadDocument().getId().equals(documentId) && file.getCustomerLoanId().equals(loanId)){
+                    file.setPath(restResponseDto.getDetail().toString());
+                }
+            }
+            if (ObjectUtils.isEmpty(cadExistFile)){
+                CadFile cadFile = new CadFile();
+                List<CadFile> cadFileList = new ArrayList<>();
+                Document document= new Document();
+                document.setId(documentId);
+                cadFile.setCadDocument(document);
+                cadFile.setCustomerLoanId(loanId);
+                cadFile.setPath(restResponseDto.getDetail().toString());
+                cadFileList.add(cadFile);
+                cadFileList.addAll(cadExistingFile);
+                customerCad.setCadFileList(cadFileList);
+            }
+        } else {
+            CadFile cadFile = new CadFile();
+            List<CadFile> cadFileList = new ArrayList<>();
+            Document document = new Document();
+            document.setId(documentId);
+            cadFile.setCadDocument(document);
+            cadFile.setCustomerLoanId(loanId);
+            cadFile.setPath(restResponseDto.getDetail().toString());
+            cadFileList.add(cadFile);
+            customerCad.setCadFileList(cadFileList);
+        }
+       return customerCadRepository.save(customerCad);
     }
 
 }

@@ -220,6 +220,8 @@ public class PathBuilder {
         return new StringBuilder(this.basePath)
                 .append("CAD")
                 .append(FILE_SEPARATOR)
+                .append("Offer_doc")
+                .append(FILE_SEPARATOR)
                 .append("Branch-" + branchId)
                 .append(FILE_SEPARATOR)
                 .append("Customer-" + customerInfoId)
@@ -230,5 +232,24 @@ public class PathBuilder {
                 .append(FILE_SEPARATOR)
                 .toString();
     }
+
+    public String buildCustomerCadDocumentCheckListPath(
+        Long branchId,
+        Long customerInfoId,
+        Long loanId) {
+        return new StringBuilder(this.basePath)
+            .append("CAD")
+            .append(FILE_SEPARATOR)
+            .append("Doc_checkList")
+            .append(FILE_SEPARATOR)
+            .append("Branch-" + branchId)
+            .append(FILE_SEPARATOR)
+            .append("Customer-" + customerInfoId)
+            .append(FILE_SEPARATOR)
+            .append("Loan-" + loanId)
+            .append(FILE_SEPARATOR)
+            .toString();
+    }
+
 
 }

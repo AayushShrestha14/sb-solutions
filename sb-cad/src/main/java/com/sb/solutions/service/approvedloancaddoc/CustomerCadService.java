@@ -10,4 +10,7 @@ public interface CustomerCadService extends BaseService<CustomerApprovedLoanCadD
     @Transactional
     CustomerOfferLetter saveWithMultipartFile(MultipartFile multipartFile, Long customerApprovedDocId,
                                               Long offerLetterId, String type);
-}
+
+    @Transactional
+    CustomerApprovedLoanCadDocumentation saveCadCheckListDoc(MultipartFile multipartFile, Long customerInfoId, Long loanId,Long customerApprovedDocId,String documentName,Long documentId);
+};
