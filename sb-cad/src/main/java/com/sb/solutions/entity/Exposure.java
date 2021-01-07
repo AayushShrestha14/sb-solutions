@@ -15,5 +15,6 @@ import javax.persistence.Entity;
 public class Exposure extends BaseEntity<Long> {
 
    private String data;
+   private String historyData;
 
 }
