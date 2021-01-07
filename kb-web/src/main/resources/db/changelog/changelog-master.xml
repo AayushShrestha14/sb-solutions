@@ -5389,6 +5389,153 @@
     </changeSet>
 
 
+    <changeSet id="400-create-table-shareholder-kyc" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="shareholder_kyc"/>
+            </not>
+        </preConditions>
+        <createTable tableName="shareholder_kyc">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shareholder_relationship" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relation_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="citizenship_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="citizenship_issued_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mobile_number" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="shareholder_kyc_address" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="401-create-table-shareholder-kyc_audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="shareholder_kyc_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="shareholder_kyc_audit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="shareholder_relationship" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relation_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="citizenship_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_audit_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="citizenship_issued_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mobile_number" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="shareholder_kyc_address" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="shareholder_kyc_audit" columnNames="id,rev"
+                       constraintName="PK_shareholder_kyc_audit_id_rev"/>
+        <addForeignKeyConstraint baseTableName="shareholder_kyc_audit" baseColumnNames="rev"
+                                 constraintName="FK_shareholder_kyc_audit_rev_revinfo_rev"
+                                 referencedTableName="revinfo" referencedColumnNames="rev"/>
+    </changeSet>
+    <changeSet id="402-create-table-company-info-shareholder-kyc-list" author="Mohammad">
+        <preConditions>
+            <not>
+                <tableExists tableName="company_info_shareholder_kyc_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_info_shareholder_kyc_list">
+            <column name="company_info_id" type="BIGINT">
+                <constraints foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"
+                             referencedTableName="company_info" referencedColumnNames="id"/>
+            </column>
+            <column name="shareholder_kyc_list_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"
+                        referencedTableName="shareholder_kyc" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="403-create-table-company-info-shareholder-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company_info_shareholder_kyc_list_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_info_shareholder_kyc_list_audit">
+            <column name="rev" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="company_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shareholder_kyc_list_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="company_info_shareholder_kyc_list_audit"
+                       columnNames="company_info_id,shareholder_kyc_list_id,rev"
+                       constraintName="PK_company_info_shareholder_kyc_list_audit_id_rev"/>
+        <addForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list_audit"
+                                 baseColumnNames="rev"
+                                 constraintName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"
+                                 referencedTableName="revinfo" referencedColumnNames="rev"/>
+    </changeSet>
+
     <changeSet id="288-cad-stage" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -5677,7 +5824,7 @@
             <column name="version" type="INT" defaultValueNumeric="0"/>
         </createTable>
     </changeSet>
-    
+
     <changeSet id="303-create-table-customer_approved_loan_cad_documentation_offer_document_list" author="bibash">
         <preConditions onFail="MARK_RAN">
            <not>
@@ -5701,7 +5848,7 @@
             </column>
         </createTable>
     </changeSet>
-    
+
     <changeSet id="303-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="bibash">
         <preConditions onFail="MARK_RAN">
             <not>

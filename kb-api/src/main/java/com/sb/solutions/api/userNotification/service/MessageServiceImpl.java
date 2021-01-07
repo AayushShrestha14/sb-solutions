@@ -58,19 +58,20 @@ public class MessageServiceImpl implements MessageService {
                 || message.getDocAction().equals(DocAction.TRANSFER)) {
                 message.setMessage(String.format(
                     "%s (%s) has %s a loan document of Customer %s of limit Rs. %s to %s (%s).",
-                    fromUser.getUsername(),
+                    fromUser.getName(),
                     fromRole.getRoleName(),
                     message.getDocAction().toString().toLowerCase(),
-                    customerLoan.getCustomerInfo().getCustomerName(),
+                    customerLoan.getLoanHolder().getName(),
                     customerLoan.getProposal().getProposedLimit(),
-                    toUser.getUsername(),
+                    toUser.getName(),
                     toRole.getRoleName()));
             } else if (message.getDocAction().equals(DocAction.APPROVED)
                 || message.getDocAction().equals(DocAction.REJECT)
-                || message.getDocAction().equals(DocAction.CLOSED)) {
+                || message.getDocAction().equals(DocAction.CLOSED)
+                || message.getDocAction().equals(DocAction.BACKWARD_TO_COMMITTEE)) {
                 message.setMessage(
                     String.format("%s (%s) has %s a loan document of Customer %s of limit Rs. %s.",
-                        fromUser.getUsername(),
+                        fromUser.getName(),
                         fromRole.getRoleName(),
                         message.getDocAction().toString().toLowerCase(),
                         customerLoan.getCustomerInfo().getCustomerName(),

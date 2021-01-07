@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.core.dto.BaseDto;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.ApprovalType;
 
 @Data
@@ -22,4 +23,6 @@ public class ApprovalRoleHierarchyDto extends BaseDto<Long> {
     private ApprovalType approvalType;
 
     private Long refId;
+
+    private RoleType roleType;
 }

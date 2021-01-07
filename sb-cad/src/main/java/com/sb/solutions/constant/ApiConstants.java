@@ -17,4 +17,8 @@ public class ApiConstants {
 
     public static final String CAD_ACTION = "/action";
 
+    public static final String CAD_ROLE_LIST = "/cad-role-list";
+    public static final String GET_BY_ID = "/{id}";
+    public static final String UPLOAD_FILE = "/uploadFile";
+
 }

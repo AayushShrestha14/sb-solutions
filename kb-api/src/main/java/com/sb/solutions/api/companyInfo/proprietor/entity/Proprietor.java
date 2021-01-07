@@ -1,5 +1,6 @@
 package com.sb.solutions.api.companyInfo.proprietor.entity;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Stream;
 import javax.persistence.Entity;

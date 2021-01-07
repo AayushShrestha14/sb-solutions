@@ -26,6 +26,7 @@ import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.constant.SuccessMessage;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.CustomerLoanDto;
 import com.sb.solutions.dto.LoanHolderDto;
@@ -136,7 +137,9 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     public String assignLoanToUser(CadStageDto cadStageDto) {
         CustomerApprovedLoanCadDocumentation temp = null;
         CustomerApprovedLoanCadDocumentation cadDocumentation = new CustomerApprovedLoanCadDocumentation();
-
+        if (cadStageDto.getCustomerLoanDtoList().isEmpty()) {
+            throw new ServiceValidationException("This customer have no any Approved loan!");
+        }
         if (!ObjectUtils.isEmpty(cadStageDto.getCadId())) {
             temp = customerCadRepository.findById(cadStageDto.getCadId()).get();
             cadDocumentation = temp;
