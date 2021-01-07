@@ -13,18 +13,18 @@ import com.sb.solutions.core.utils.ProductUtils;
 @Service
 public class AppConfigurationDataLoaderService {
 
-    private final RoleTypePropertiesDataLoaderService roleTypePropertiesDataLoaderService;
+    private final AppConfigPropertiesDataLoaderService appConfigPropertiesDataLoaderService;
 
     public AppConfigurationDataLoaderService(
-        RoleTypePropertiesDataLoaderService roleTypePropertiesDataLoaderService) {
-        this.roleTypePropertiesDataLoaderService = roleTypePropertiesDataLoaderService;
+        AppConfigPropertiesDataLoaderService appConfigPropertiesDataLoaderService) {
+        this.appConfigPropertiesDataLoaderService = appConfigPropertiesDataLoaderService;
     }
 
     public List<String> getRoleType() {
         if (ProductUtils.FULL_CAD) {
-            return Arrays.asList(roleTypePropertiesDataLoaderService.getRoleTypeListFullCAD().clone());
+            return Arrays.asList(appConfigPropertiesDataLoaderService.getRoleTypeListFullCAD().clone());
         }else{
-            return Arrays.asList(roleTypePropertiesDataLoaderService.getRoleTypeDefault().clone());
+            return Arrays.asList(appConfigPropertiesDataLoaderService.getRoleTypeDefault().clone());
         }
     }
 }

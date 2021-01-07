@@ -1,7 +1,5 @@
 package com.sb.solutions.api.appConfiguration.service;
 
-import java.util.List;
-
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,9 +11,9 @@ import org.springframework.stereotype.Component;
  **/
 
 @Component
-@PropertySource(value = "classpath:data/roleType.properties")
+@PropertySource(value = "classpath:data/appConfig.properties")
 @EnableConfigurationProperties
-public class RoleTypePropertiesDataLoaderService {
+public class AppConfigPropertiesDataLoaderService {
 
     @Value("#{'${roleTypeDefault}'.split(',')}")
     @Getter
