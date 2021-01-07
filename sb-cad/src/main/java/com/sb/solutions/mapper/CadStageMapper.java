@@ -177,8 +177,19 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 stageDto.setCadDocStatus(CadDocStatus.DISBURSEMENT_APPROVED);
                 cadStage.setDocAction(CADDocAction.DISBURSEMENT_APPROVED);
-                cadStage.setToUser(currentUser);
-                cadStage.setToRole(currentUser.getRole());
+                Map<String, Long> cadMaker1 = this
+                    .getCADMaker(oldData.getCadStageList(),
+                        oldData.getLoanHolder().getBranch().getId());
+                if (ObjectUtils.isEmpty(cadMaker1.get("userId"))) {
+                    cadMaker1 = this
+                        .getLoanMaker(
+                            oldData.getAssignedLoan().get(0).getPreviousStageList(),
+                            oldData.getAssignedLoan().get(0).getBranch().getId());
+                }
+                user.setId(cadMaker1.get("userId"));
+                role.setId(cadMaker1.get("roleId"));
+                cadStage.setToUser(user);
+                cadStage.setToRole(role);
                 break;
 
         }
