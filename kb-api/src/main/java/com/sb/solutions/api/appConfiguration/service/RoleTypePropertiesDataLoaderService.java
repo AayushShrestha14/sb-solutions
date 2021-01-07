@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
  **/
 
 @Component
-@PropertySource(value = "classpath:data/customer.properties")
+@PropertySource(value = "classpath:data/roleType.properties")
 @EnableConfigurationProperties
 public class RoleTypePropertiesDataLoaderService {
 
-    @Value("#{${roleTypeDefault}}")
+    @Value("#{'${roleTypeDefault}'.split(',')}")
     @Getter
-    private List<String> roleTypeListDefault;
+    private String[] roleTypeDefault;
 
-    @Value("#{${roleTypeFullCad}}")
+    @Value("${roleTypeFullCad}")
     @Getter
-    private List<String> roleTypeListFullCAD;
+    private String[] roleTypeListFullCAD;
 
 }
