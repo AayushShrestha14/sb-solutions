@@ -5,7 +5,6 @@ import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
 import com.sb.solutions.api.companyInfo.proprietor.entity.Proprietor;
 import com.sb.solutions.api.companyInfo.shareholderkyc.entity.ShareholderKyc;
-import com.sb.solutions.api.companyInfo.swot.entity.Swot;
 import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
@@ -39,9 +38,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Capital capital;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Swot swot;
 
     @AuditJoinTable
     @OneToMany(cascade = CascadeType.ALL)
@@ -111,11 +107,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
             validationMsg.append(legalStatus.getValidationMsg());
         }
 
-        // validate swot analysis field
-        if (!this.swot.isValid()) {
-            validator = Boolean.FALSE;
-            validationMsg.append(swot.getValidationMsg());
-        }
         // validate Proprietor Information
         if (null == proprietorsList || proprietorsList.size() == 0) {
             validator = Boolean.FALSE;
