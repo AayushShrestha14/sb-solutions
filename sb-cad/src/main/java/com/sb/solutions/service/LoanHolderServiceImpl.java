@@ -230,10 +230,19 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             filterParams.put("provinceIds", provienceList);
 
         }
+        boolean filterByToUser = false;
+        if (!filterParams.containsKey("isCadFile")) {
+            filterByToUser = true;
+        } else if (filterParams.get("isCadFile").equalsIgnoreCase("false")) {
+            filterByToUser = true;
 
-        if (!(user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || user.getRole()
-            .getRoleType().equals(RoleType.CAD_ADMIN))) {
-            filterParams.put("toUser", user.getId().toString());
+        }
+
+        if (filterByToUser) {
+            if (!(user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || user.getRole()
+                .getRoleType().equals(RoleType.CAD_ADMIN))) {
+                filterParams.put("toUser", user.getId().toString());
+            }
         }
 
         return filterParams;
