@@ -5897,13 +5897,23 @@
     </changeSet>
 
     <changeSet id="305-alter-table-add-column-exposure-id" author="bibash">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_approved_loan_cad_documentation" columnName="expsure_id"/>
             </not>
         </preConditions>
         <addColumn tableName="customer_approved_loan_cad_documentation">
             <column name="exposure_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="306-alter-table-exposure-add-column-previous-data-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="exposure" columnName="history_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="exposure">
+            <column name="history_data" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
 
