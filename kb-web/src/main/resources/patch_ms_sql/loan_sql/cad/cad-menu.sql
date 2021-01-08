@@ -14,13 +14,13 @@ BEGIN
 
             SET IDENTITY_INSERT sub_nav ON
             INSERT  INTO sub_nav (id, sub_nav_name, front_url,fa_icon) VALUES
-            (13, 'all','/home/credit', 'file-text-outline'),
+            (13, 'Unassigned Approved Loan','/home/credit', 'file-text-outline'),
             (14, 'Offer Letter Pending','/home/credit/offer-pending', 'edit-2-outline'),
             (15, 'Offer Letter Approved','/home/credit/offer-approved', 'checkmark-square-outline'),
             (16, 'Legal Review Pending','/home/credit/legal-pending', 'edit-2-outline'),
             (18, 'Disbursement Pending','/home/credit/disbursement-pending', 'edit-2-outline'),
             (19, 'Disbursement Approved','/home/credit/disbursement-approved', 'checkmark-circle-outline'),
-            (20, 'CAD Document','/home/credit/cad-documents', 'file-text-outline')
+            (20, 'CAD File','/home/credit/cad-documents', 'file-text-outline')
             SET IDENTITY_INSERT sub_nav Off
 
 
