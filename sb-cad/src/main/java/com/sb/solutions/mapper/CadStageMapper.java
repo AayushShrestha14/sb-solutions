@@ -104,14 +104,17 @@ public class CadStageMapper {
                 List forwardBack = oldData.getPreviousList().stream()
                     .filter(f -> !f.getDocAction().equals(
                         CADDocAction.ASSIGNED)).collect(Collectors.toList());
-                if (forwardBack.isEmpty() || ObjectUtils.isEmpty(forwardBack)) {
+                if (forwardBack.isEmpty() || ObjectUtils.isEmpty(forwardBack) || cadStage
+                    .getFromRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || cadStage
+                    .getFromRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
                     CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);
                     Map<String, Long> creator = this
                         .getLoanMaker(oldDataCustomerLoan.getPreviousStageList(),
                             oldDataCustomerLoan.getBranch().getId());
                     user.setId(creator.get("userId"));
                     role.setId(creator.get("roleId"));
-
+                    cadStage.setToUser(user);
+                    cadStage.setToRole(role);
 
                 } else {
                     if (requestedStage.getIsBackwardForMaker()) {
@@ -126,16 +129,17 @@ public class CadStageMapper {
                         }
                         user.setId(cadMaker.get("userId"));
                         role.setId(cadMaker.get("roleId"));
+                        cadStage.setToUser(user);
+                        cadStage.setToRole(role);
                     } else {
-                        user.setId(oldData.getCadCurrentStage().getFromUser().getId());
-                        role.setId(oldData.getCadCurrentStage().getFromUser().getRole().getId());
+                        cadStage.setToUser(cadStage.getFromUser());
+                        cadStage.setToRole(cadStage.getFromRole());
                     }
                 }
                 cadStage.setDocAction(CADDocAction.BACKWARD);
+
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
-                cadStage.setToUser(user);
-                cadStage.setToRole(role);
                 stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
                 break;
             case OFFER_APPROVED:
