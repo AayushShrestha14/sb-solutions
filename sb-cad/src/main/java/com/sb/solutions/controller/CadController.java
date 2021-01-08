@@ -2,11 +2,17 @@ package com.sb.solutions.controller;
 
 import java.util.Map;
 
-import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
-import com.sb.solutions.service.approvedloancaddoc.CustomerCadService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.constant.ApiConstants;
@@ -14,9 +20,10 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.dto.CadStageDto;
+import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.service.LoanHolderService;
+import com.sb.solutions.service.approvedloancaddoc.CustomerCadService;
 import com.sb.solutions.validation.constraint.CadValid;
-import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -33,7 +40,8 @@ public class CadController {
     private final CustomerCadService customerCadService;
 
     public CadController(LoanHolderService loanHolderService,
-                         ApprovalRoleHierarchyService approvalRoleHierarchyService, CustomerCadService customerCadService) {
+        ApprovalRoleHierarchyService approvalRoleHierarchyService,
+        CustomerCadService customerCadService) {
         this.loanHolderService = loanHolderService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
         this.customerCadService = customerCadService;
@@ -48,7 +56,7 @@ public class CadController {
             .getAllUnAssignLoanForCadAdmin(filterParams, PaginationUtils.pageable(page, size)));
     }
 
-    // use this api
+
     @CadValid
     @PostMapping(value = ApiConstants.ASSIGN_LOAN_TO_USER)
     public ResponseEntity<?> assignLoanToUser(@RequestBody CadStageDto cadStageDto) {
@@ -61,7 +69,7 @@ public class CadController {
         return new RestResponseDto().successModel(loanHolderService.cadAction(cadStageDto));
     }
 
-    @GetMapping(value = "/cad-role-list")
+    @GetMapping(value = ApiConstants.CAD_ROLE_LIST)
     public ResponseEntity<?> getRoleListPresentInCAD() {
         return new RestResponseDto()
             .successModel(
@@ -78,7 +86,7 @@ public class CadController {
             .getAllByFilterParams(filterParams, PaginationUtils.pageable(page, size)));
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = ApiConstants.GET_BY_ID)
     public ResponseEntity<?> getCad(@PathVariable Long id) {
         return new RestResponseDto().successModel(loanHolderService.getByID(id));
     }
@@ -88,15 +96,17 @@ public class CadController {
         return new RestResponseDto().successModel(customerCadService.save(c));
     }
 
-    @PostMapping(path = "/uploadFile")
+    @PostMapping(path = ApiConstants.UPLOAD_FILE)
     public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
-                                               @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
-                                               @RequestParam("offerLetterId") Long offerLetterId,
-                                               @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
+        @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
+        @RequestParam("offerLetterId") Long offerLetterId,
+        @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
         return new RestResponseDto().successModel(
-                customerCadService
-                        .saveWithMultipartFile(multipartFile, customerApprovedDocId, offerLetterId, type));
+            customerCadService
+                .saveWithMultipartFile(multipartFile, customerApprovedDocId, offerLetterId, type));
     }
+
+
 
     @PostMapping(path = "/cadCheckListDocUpload")
     public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
