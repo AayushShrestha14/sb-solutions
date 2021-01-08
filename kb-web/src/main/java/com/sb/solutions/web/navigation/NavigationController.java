@@ -143,7 +143,7 @@ public class NavigationController {
         if (!(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || u.getRole().getRoleType()
             .equals(RoleType.CAD_ADMIN))) {
             menuDto.setChildren(
-                menuDto.getChildren().stream().filter(f -> !(f.getTitle().equalsIgnoreCase("all")))
+                menuDto.getChildren().stream().filter(f -> !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")))
                     .collect(Collectors.toList()));
         }
         return menuDto;
