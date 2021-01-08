@@ -108,4 +108,15 @@ public class CadController {
 
 
 
+    @PostMapping(path = "/cadCheckListDocUpload")
+    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
+         @RequestParam("customerInfoId") Long customerInfoId,@RequestParam("loanID") Long loanId,
+        @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
+        @RequestParam("documentName") String documentName,
+        @RequestParam("documentId") Long documentId
+
+        ){
+        return new RestResponseDto().successModel(customerCadService.saveCadCheckListDoc(multipartFile,customerInfoId,loanId,customerApprovedDocId,documentName,documentId));
+    }
+
 }

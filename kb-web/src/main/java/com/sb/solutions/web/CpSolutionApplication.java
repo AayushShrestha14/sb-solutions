@@ -1,5 +1,6 @@
 package com.sb.solutions.web;
 
+import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
@@ -170,6 +171,15 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     cadResource);
                 cadPopulator.execute(dataSource);
             }
+
+            if (affiliateId.equals("mega")){
+                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(baseServerFolder + "/general_patch/cad_template_checkList_doc.sql");
+                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(dataResourceCheckListDoc);
+
+                cadCheckListTemplateDocument.execute(dataSource);
+            }
+
+
 
             if (ProductUtils.LAS) {
                 ClassPathResource dataResource = new ClassPathResource(

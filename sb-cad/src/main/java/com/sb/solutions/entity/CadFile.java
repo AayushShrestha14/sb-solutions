@@ -30,4 +30,9 @@ public class CadFile extends BaseEntity<Long> {
 
     private String supportedInformation;
 
+//    pivate  Date uploadedDate = new Date()
+//;
+//    private Double amount;
+//
+//    private String remarks;
 }
