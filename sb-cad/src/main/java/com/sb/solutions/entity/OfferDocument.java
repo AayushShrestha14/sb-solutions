@@ -2,6 +2,7 @@ package com.sb.solutions.entity;
 
 import javax.persistence.Entity;
 
+import com.sb.solutions.enums.OfferDocType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,5 +30,7 @@ public class OfferDocument extends BaseEntity<Long> {
     private String pathSigned;
 
     private String draftPath;
+
+    private OfferDocType offerDocType = OfferDocType.DEFAULT;
 
 }

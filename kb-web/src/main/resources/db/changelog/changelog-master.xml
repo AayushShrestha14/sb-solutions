@@ -5917,4 +5917,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="306-alter-table-offer-document-offer-doc-type" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="offer_document" columnName="offer_doc_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="offer_document">
+            <column name="offer_doc_type" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
