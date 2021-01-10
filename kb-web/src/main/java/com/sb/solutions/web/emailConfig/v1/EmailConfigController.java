@@ -30,6 +30,8 @@ public class EmailConfigController {
 
     @Value("${bank.name}")
     private String bankName;
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
 
     static final String URL = "/v1/email-config";
 
@@ -71,6 +73,7 @@ public class EmailConfigController {
         Email email = new Email();
         email.setTo(emailConfig.getTestMail());
         email.setBankName(this.bankName);
+        email.setAffiliateId(this.affiliateId);
         try {
             mailThreadService.testMail(EmailConstant.Template.TEST, email);
             logger.info(" sending Email config {}", emailConfig);

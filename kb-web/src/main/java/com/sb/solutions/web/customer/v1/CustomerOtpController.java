@@ -38,6 +38,9 @@ public class CustomerOtpController {
     @Value("${bank.name}")
     private String bankName;
 
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
+
     public CustomerOtpController(
         @Autowired CustomerOtpService customerOtpService,
         @Autowired CustomerOtpMapper customerOtpMapper,
@@ -99,6 +102,7 @@ public class CustomerOtpController {
         email.setTo(customerOtpDto.getEmail());
         email.setToName(customerOtpDto.getFirstName() + ' ' + customerOtpDto.getLastName());
         email.setBankName(this.bankName);
+        email.setAffiliateId(this.affiliateId);
         email.setBody(otp);
         mailSenderService.send(Template.ONE_TIME_PASSWORD, email);
         logger.debug("Email sent including One Time Password (OTP).");
