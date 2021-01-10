@@ -5928,4 +5928,61 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="404-drop-fk-constraint-management-team" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_management_team_list_company_info_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_management_team_list_management_team_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_management_team_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_management_team_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_management_team_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_management_team_modified_by_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+                                  constraintName="fk_company_info_management_team_list_company_info_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+                                  constraintName="fk_company_info_management_team_list_management_team_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list_audit"
+                                  constraintName="FK_company_info_management_team_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="management_team_audit"
+                                  constraintName="FK_management_team_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="management_team"
+                                  constraintName="fk_management_team_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="management_team"
+                                  constraintName="fk_management_team_modified_by_id"/>
+    </changeSet>
+    <changeSet id="405-drop-table-company-info-management-team-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_management_team_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_management_team_list"/>
+    </changeSet>
+    <changeSet id="406-drop-table-company-info-management-team-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_management_team_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_management_team_list_audit"/>
+    </changeSet>
+    <changeSet id="407-drop-table-management-team-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="management_team_audit"/>
+        </preConditions>
+        <dropTable tableName="management_team_audit"/>
+    </changeSet>
+    <changeSet id="408-drop-table-management-team" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="management_team"/>
+        </preConditions>
+        <dropTable tableName="management_team"/>
+    </changeSet>
+
+    <changeSet id="409-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -65,6 +65,8 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     private String feesAndCommission;
 
+    private String data;
+
     public List<CadStage> getPreviousList() {
         if (this.getCadStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
