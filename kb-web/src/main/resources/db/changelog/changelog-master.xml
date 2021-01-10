@@ -5581,17 +5581,4 @@
         </preConditions>
         <dropTable tableName="management_team"/>
     </changeSet>
-    <changeSet id="409-drop-fk-constraint-swot" author="Mohammad">
-        <preConditions onFail="MARK_RAN">
-            <foreignKeyConstraintExists foreignKeyName="FK_swot_audit_rev_revinfo_rev"/>
-            <foreignKeyConstraintExists foreignKeyName="fk_swot_created_by_id"/>
-            <foreignKeyConstraintExists foreignKeyName="fk_swot_modified_by_id"/>
-        </preConditions>
-        <dropForeignKeyConstraint baseTableName="swot_audit"
-                                  constraintName="FK_swot_audit_rev_revinfo_rev"/>
-        <dropForeignKeyConstraint baseTableName="swot"
-                                  constraintName="fk_swot_created_by_id"/>
-        <dropForeignKeyConstraint baseTableName="swot"
-                                  constraintName="fk_swot_modified_by_id"/>
-    </changeSet>
 </databaseChangeLog>
