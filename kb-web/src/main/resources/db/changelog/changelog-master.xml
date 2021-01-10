@@ -5974,4 +5974,15 @@
         </preConditions>
         <dropTable tableName="management_team"/>
     </changeSet>
+
+    <changeSet id="409-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
