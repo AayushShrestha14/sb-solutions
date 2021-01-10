@@ -5581,4 +5581,16 @@
         </preConditions>
         <dropTable tableName="management_team"/>
     </changeSet>
+
+    <changeSet id="409-alter-applicant-add-column-dob" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="applicant" columnName="dob"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="applicant">
+            <column name="dob" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

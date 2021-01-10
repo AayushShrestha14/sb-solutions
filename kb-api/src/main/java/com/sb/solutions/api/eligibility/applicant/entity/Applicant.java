@@ -1,6 +1,7 @@
 package com.sb.solutions.api.eligibility.applicant.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -35,6 +36,8 @@ public class Applicant extends BaseEntity<Long> {
     private String fullName;
 
     private long age;
+
+    private Date dob;
 
     private long phoneNumber;
 
