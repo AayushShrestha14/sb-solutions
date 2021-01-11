@@ -50,6 +50,8 @@ public class AccountOpeningController {
     private String bankName;
     @Value("${bank.website}")
     private String bankWebsite;
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,6 +75,7 @@ public class AccountOpeningController {
             Email email = new Email();
             email.setBankName(this.bankName);
             email.setBankWebsite(this.bankWebsite);
+            email.setAffiliateId(this.affiliateId);
             email.setBankBranch(c.getBranch().getName());
             // get branch user's email
             List<String> representativesEmailIds = openingFormService
@@ -116,6 +119,7 @@ public class AccountOpeningController {
                 Email email = new Email();
                 email.setBankName(this.bankName);
                 email.setBankWebsite(this.bankWebsite);
+                email.setAffiliateId(this.affiliateId);
                 email.setBankBranch(newOpeningForm.getBranch().getName());
                 email.setAccountType(newOpeningForm.getAccountType().getName());
                 for (OpeningCustomer customer : newOpeningForm.getOpeningAccount()
@@ -148,6 +152,7 @@ public class AccountOpeningController {
             email.setAccountType(openingForm.getAccountType().getName());
             email.setAccountNumber(savedAccountOpening.getAccountNumber());
             email.setTo(openingCustomer.getEmail());
+            email.setAffiliateId(this.affiliateId);
             email.setName(openingCustomer.getFirstName() + ' ' + openingCustomer.getLastName());
             mailThreadService.sendMain(Template.ACCOUNT_OPENING_ACCEPT, email);
         });
