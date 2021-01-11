@@ -25,6 +25,10 @@ public class MailThreadService {
     @Value("${bank.website}")
     private String bankWebsite;
 
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
+
+
     public MailThreadService(@Autowired MailSenderService mailSenderService) {
 
         this.mailSenderService = mailSenderService;
@@ -53,6 +57,7 @@ public class MailThreadService {
     public void testMail(EmailConstant.Template template, Email email) {
         email.setBankName(bankName);
         email.setBankWebsite(bankWebsite);
+        email.setAffiliateId(affiliateId);
         mailSenderService.send(template, email);
     }
 }
