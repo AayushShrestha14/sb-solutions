@@ -1,6 +1,5 @@
 package com.sb.solutions.core.utils.email;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -36,5 +35,6 @@ public class Email {
     private String clientCitizenshipNumber;
     private List<InsuranceEmailDto> insurances;
     private String accountNumber;
+    private String affiliateId;
 
 }

@@ -43,6 +43,9 @@ public class ApplicantController {
     @Value("${bank.website}")
     private String bankWebsite;
 
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
+
     @Autowired
     public ApplicantController(
         ApplicantService applicantService,
@@ -93,6 +96,7 @@ public class ApplicantController {
         email.setTo(applicant.getEmail());
         email.setToName(applicant.getFullName());
         email.setPhoneNumber(branch.getLandlineNumber());
+        email.setAffiliateId(this.affiliateId);
         email.setLoanType(
             loanConfigService.findOne(applicant.getLoanConfig().getId()).getName());
         if (applicant.getEligibilityStatus() == EligibilityStatus.ELIGIBLE
