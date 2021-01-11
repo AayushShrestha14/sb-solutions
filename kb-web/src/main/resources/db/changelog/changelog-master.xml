@@ -5917,4 +5917,37 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="410-alter-table-cad-file-add-column-amount" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="amount"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="amount" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="411-alter-table-cad-file-add-column-remarks" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="remarks"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="remarks" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="412-alter-table-cad-file-add-column-remarks" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="uploaded_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="uploaded_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
