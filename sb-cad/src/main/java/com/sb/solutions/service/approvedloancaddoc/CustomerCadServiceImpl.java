@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,6 +125,7 @@ public class CustomerCadServiceImpl implements CustomerCadService {
             for (CadFile file : customerCad.getCadFileList()) {
                 if(file.getCadDocument().getId().equals(documentId) && file.getCustomerLoanId().equals(loanId)){
                     file.setPath(restResponseDto.getDetail().toString());
+                    file.setUploadedDate(new Date());
                 }
             }
             if (ObjectUtils.isEmpty(cadExistFile)){
@@ -134,6 +136,7 @@ public class CustomerCadServiceImpl implements CustomerCadService {
                 cadFile.setCadDocument(document);
                 cadFile.setCustomerLoanId(loanId);
                 cadFile.setPath(restResponseDto.getDetail().toString());
+                cadFile.setUploadedDate(new Date());
                 cadFileList.add(cadFile);
                 cadFileList.addAll(cadExistingFile);
                 customerCad.setCadFileList(cadFileList);
@@ -146,6 +149,7 @@ public class CustomerCadServiceImpl implements CustomerCadService {
             cadFile.setCadDocument(document);
             cadFile.setCustomerLoanId(loanId);
             cadFile.setPath(restResponseDto.getDetail().toString());
+            cadFile.setUploadedDate(new Date());
             cadFileList.add(cadFile);
             customerCad.setCadFileList(cadFileList);
         }
