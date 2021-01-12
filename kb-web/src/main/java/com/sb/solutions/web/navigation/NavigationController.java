@@ -145,12 +145,15 @@ public class NavigationController {
                 menuDto.getChildren().stream()
                     .filter(f -> !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")))
                     .collect(Collectors.toList()));
-        } else if (u.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) {
+        }
+        if (u.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) {
             menuDto.setChildren(
                 menuDto.getChildren().stream().filter(f ->
                     !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")
-                        && f.getTitle().equalsIgnoreCase("Offer Letter Pending")
-                        && f.getTitle().equalsIgnoreCase("Offer Letter Approved")
+                        || f.getTitle().equalsIgnoreCase("Offer Letter Pending")
+                        || f.getTitle().equalsIgnoreCase("Offer Letter Approved")
+                        || f.getTitle().equalsIgnoreCase("Disbursement Pending")
+                        || f.getTitle().equalsIgnoreCase("Disbursement Approved")
                     ))
                     .collect(Collectors.toList()));
         }
