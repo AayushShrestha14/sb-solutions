@@ -1,5 +1,6 @@
 package com.sb.solutions.entity;
 
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -30,9 +31,8 @@ public class CadFile extends BaseEntity<Long> {
 
     private String supportedInformation;
 
-//    pivate  Date uploadedDate = new Date()
-//;
-//    private Double amount;
-//
-//    private String remarks;
+    private Date uploadedDate;
+    private Double amount;
+
+    private String remarks;
 }
