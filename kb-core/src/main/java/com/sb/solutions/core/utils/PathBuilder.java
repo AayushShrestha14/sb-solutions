@@ -251,5 +251,23 @@ public class PathBuilder {
             .toString();
     }
 
+    public String buildCustomerAdditionalDocPath(
+        Long branchId,
+        Long customerInfoId,
+        Long cadId) {
+        return new StringBuilder(this.basePath)
+            .append("CAD")
+            .append(FILE_SEPARATOR)
+            .append("additional-document")
+            .append(FILE_SEPARATOR)
+            .append("Branch-" + branchId)
+            .append(FILE_SEPARATOR)
+            .append("Customer-" + customerInfoId)
+            .append(FILE_SEPARATOR)
+            .append("cad-" + cadId)
+            .append(FILE_SEPARATOR)
+            .toString();
+    }
+
 
 }

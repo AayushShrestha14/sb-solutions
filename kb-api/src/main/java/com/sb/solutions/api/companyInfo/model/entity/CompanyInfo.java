@@ -41,10 +41,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @AuditJoinTable
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Proprietor> proprietorsList;
-
-    @AuditJoinTable
-    @OneToMany(cascade = CascadeType.ALL)
     private Set<ShareholderKyc> shareholderKycList;
 
     private String companyName;
@@ -105,22 +101,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
         if (!this.legalStatus.isValid()) {
             validator = Boolean.FALSE;
             validationMsg.append(legalStatus.getValidationMsg());
-        }
-
-        // validate Proprietor Information
-        if (null == proprietorsList || proprietorsList.size() == 0) {
-            validator = Boolean.FALSE;
-            validationMsg
-                .append(
-                    "Company Info -At least one member required on Proprietor Information Section.");
-        } else {
-            for (Proprietor proprietor : proprietorsList) {
-                if (!proprietor.isValid()) {
-                    validator = Boolean.FALSE;
-                    validationMsg.append(proprietor.getValidationMsg());
-                    break;
-                }
-            }
         }
         return Pair.of(validator, validationMsg.toString());
     }
