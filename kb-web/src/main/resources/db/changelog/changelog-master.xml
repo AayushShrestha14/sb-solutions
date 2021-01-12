@@ -5987,7 +5987,7 @@
     </changeSet>
 
 
-    <changeSet id="409-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="rujan">
+    <changeSet id="409-alter-table-customer-approved-documentation-add-column-data" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_approved_loan_cad_documentation" columnName="data"/>
@@ -6019,7 +6019,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="412-alter-table-cad-file-add-column-remarks" author="buddha">
+    <changeSet id="412-alter-table-cad-file-add-column-uploaded-date" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="cad_file" columnName="uploaded_date"/>
@@ -6028,6 +6028,67 @@
         <addColumn tableName="cad_file">
             <column name="uploaded_date" type="DATE"/>
         </addColumn>
+    </changeSet>
+
+
+    <changeSet id="413-create-table-cad-additional-document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_additional_document"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="cad_additional_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="doc_name" type="VARCHAR(256)"/>
+            <column name="remarks" type="LONGTEXT"/>
+            <column name="doc_path" type="VARCHAR(256)"/>
+            <column name="upload_on" type="DATETIME"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_cad_additional_document_created_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_cad_additional_document_modified_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="414-create-table-cad_file_customer_approved_loan_additional_doc_list" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_file_customer_approved_loan_additional_doc_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_file_customer_approved_loan_additional_doc_list">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_approved_loan_cad_documentation_additional_document_id"
+                  referencedTableName="customer_approved_loan_cad_documentation"
+                  referencedColumnNames="id"
+                />
+            </column>
+            <column name="additional_document_list_id" type="BIGINT">
+                <constraints
+                  foreignKeyName="fk_additional_document_id"
+                  referencedTableName="cad_additional_document"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

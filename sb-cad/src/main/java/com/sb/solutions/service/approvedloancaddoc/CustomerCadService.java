@@ -13,4 +13,8 @@ public interface CustomerCadService extends BaseService<CustomerApprovedLoanCadD
 
     @Transactional
     CustomerApprovedLoanCadDocumentation saveCadCheckListDoc(MultipartFile multipartFile, Long customerInfoId, Long loanId,Long customerApprovedDocId,String documentName,Long documentId);
-};
+
+    @Transactional
+    String uploadAdditionalDocument(MultipartFile multipartFile, Long cadId,
+        String docName,Long branchId,Long customerInfoId);
+}

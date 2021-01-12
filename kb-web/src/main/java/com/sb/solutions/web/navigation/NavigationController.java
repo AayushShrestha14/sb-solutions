@@ -4,17 +4,8 @@ import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_QUESTION;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.api.authorization.entity.Permission;
-import com.sb.solutions.api.authorization.service.PermissionService;
-import com.sb.solutions.core.enums.RoleType;
-import com.sb.solutions.core.utils.ApprovalType;
-import com.sb.solutions.core.utils.ProductUtils;
-import com.sb.solutions.web.navigation.dto.MenuDto;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.authorization.entity.Permission;
 import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.service.PermissionService;
 import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.web.navigation.dto.MenuDto;
 import com.sb.solutions.web.navigation.mapper.MenuMapper;
 
 /**
@@ -107,7 +105,7 @@ public class NavigationController {
                     Collectors.toList());
 
             int size = menuDtos.size();
-            if(size > 0){
+            if (size > 0) {
                 menuList.remove(menuDtos.get(0));
             }
             if (isPresentInCadHierarchy && ProductUtils.FULL_CAD && (!u.getRole().getRoleType()
@@ -124,7 +122,8 @@ public class NavigationController {
                     menuList.add(getMenuForCADFULL(u));
                 }
             }
-            if (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) && ProductUtils.FULL_CAD) {
+            if (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
+                && ProductUtils.FULL_CAD) {
                 if (size == 0) {
                     menuList.add(getMenuForCADFULL(u));
                 }
@@ -143,7 +142,19 @@ public class NavigationController {
         if (!(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || u.getRole().getRoleType()
             .equals(RoleType.CAD_ADMIN))) {
             menuDto.setChildren(
-                menuDto.getChildren().stream().filter(f -> !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")))
+                menuDto.getChildren().stream()
+                    .filter(f -> !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")))
+                    .collect(Collectors.toList()));
+        }
+        if (u.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) {
+            menuDto.setChildren(
+                menuDto.getChildren().stream().filter(f ->
+                    !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")
+                        || f.getTitle().equalsIgnoreCase("Offer Letter Pending")
+                        || f.getTitle().equalsIgnoreCase("Offer Letter Approved")
+                        || f.getTitle().equalsIgnoreCase("Disbursement Pending")
+                        || f.getTitle().equalsIgnoreCase("Disbursement Approved")
+                    ))
                     .collect(Collectors.toList()));
         }
         return menuDto;

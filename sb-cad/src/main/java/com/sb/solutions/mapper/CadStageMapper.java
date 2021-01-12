@@ -101,10 +101,7 @@ public class CadStageMapper {
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
-                List forwardBack = oldData.getPreviousList().stream()
-                    .filter(f -> !f.getDocAction().equals(
-                        CADDocAction.ASSIGNED)).collect(Collectors.toList());
-                if (forwardBack.isEmpty() || ObjectUtils.isEmpty(forwardBack) || cadStage
+                if ((cadStage.getDocAction().equals(CADDocAction.ASSIGNED)) || cadStage
                     .getFromRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || cadStage
                     .getFromRole().getRoleType().equals(RoleType.CAD_ADMIN)) {
                     CustomerLoan oldDataCustomerLoan = oldData.getAssignedLoan().get(0);

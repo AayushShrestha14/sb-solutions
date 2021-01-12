@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -154,6 +155,18 @@ public class CustomerCadServiceImpl implements CustomerCadService {
             customerCad.setCadFileList(cadFileList);
         }
        return customerCadRepository.save(customerCad);
+    }
+
+    @Override
+    public String uploadAdditionalDocument(MultipartFile multipartFile, Long cadId,
+        String docName,Long branchId,Long customerInfoId) {
+        String path = new PathBuilder(UploadDir.initialDocument).buildCustomerAdditionalDocPath
+            (branchId,
+                customerInfoId,cadId);
+        ResponseEntity responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, path, StringUtils.trimAllWhitespace(docName));
+        RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
+        return String.valueOf(restResponseDto.getDetail());
     }
 
 }
