@@ -71,7 +71,7 @@
                       <tr>
                         <td style="padding-bottom:20px"><h2
                             style="margin:0;color:#262626;font-weight:700;font-size:20px;line-height:1.2">
-                          Hello <span
+                          <span th:if="${data.getAffiliateId() eq 'mega'}" th:text="Mega"></span>&nbsp;Namaste <span
                             th:text="${data.getToName()}"></span>,</h2></td>
                       </tr>
                       <tr>
