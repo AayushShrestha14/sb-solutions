@@ -107,16 +107,31 @@ public class CadController {
     }
 
 
-
     @PostMapping(path = "/cadCheckListDocUpload")
     public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
-         @RequestParam("customerInfoId") Long customerInfoId,@RequestParam("loanID") Long loanId,
+        @RequestParam("customerInfoId") Long customerInfoId, @RequestParam("loanID") Long loanId,
         @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") Long documentId
 
-        ){
-        return new RestResponseDto().successModel(customerCadService.saveCadCheckListDoc(multipartFile,customerInfoId,loanId,customerApprovedDocId,documentName,documentId));
+    ) {
+        return new RestResponseDto().successModel(customerCadService
+            .saveCadCheckListDoc(multipartFile, customerInfoId, loanId, customerApprovedDocId,
+                documentName, documentId));
+    }
+
+    @PostMapping(value = ApiConstants.UPLOAD_ADDITIONAL_FILE)
+    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("cadId") Long cadId,
+        @RequestParam("documentName") String documentName,
+        @RequestParam("branchId") Long branchId,
+        @RequestParam("customerInfoId") Long customerInfoId
+
+    ) {
+        return new RestResponseDto().
+            successModel(customerCadService
+                .uploadAdditionalDocument(multipartFile, cadId, documentName, branchId,
+                    customerInfoId));
     }
 
 }

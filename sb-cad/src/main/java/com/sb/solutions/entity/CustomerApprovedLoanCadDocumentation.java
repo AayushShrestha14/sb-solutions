@@ -67,6 +67,10 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     private String data;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "cad_file_customer_approved_loan_additional_doc_list")
+    private List<CadAdditionalDocument> additionalDocumentList = new ArrayList<>();
+
     public List<CadStage> getPreviousList() {
         if (this.getCadStageList() != null) {
             ObjectMapper objectMapper = new ObjectMapper();
