@@ -236,7 +236,7 @@ public class PathBuilder {
     public String buildCustomerCadDocumentCheckListPath(
         Long branchId,
         Long customerInfoId,
-        Long loanId) {
+        Long loanId,Long customerApprovedDocId ) {
         return new StringBuilder(this.basePath)
             .append("CAD")
             .append(FILE_SEPARATOR)
@@ -245,6 +245,8 @@ public class PathBuilder {
             .append("Branch-" + branchId)
             .append(FILE_SEPARATOR)
             .append("Customer-" + customerInfoId)
+            .append(FILE_SEPARATOR)
+            .append("Cad-"+customerApprovedDocId)
             .append(FILE_SEPARATOR)
             .append("Loan-" + loanId)
             .append(FILE_SEPARATOR)

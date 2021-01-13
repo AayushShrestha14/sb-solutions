@@ -114,10 +114,11 @@ public class CustomerCadServiceImpl implements CustomerCadService {
 
         String path = new PathBuilder(UploadDir.initialDocument).buildCustomerCadDocumentCheckListPath
             (customerCad.getLoanHolder().getBranch().getId(),
-            customerInfoId,loanId);
+            customerInfoId,loanId,customerApprovedDocId);
         ResponseEntity responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, path, documentName);
+            .uploadFile(multipartFile, path, StringUtils.trimAllWhitespace(documentName));
         RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
+        logger.info("Upload Doc Cad Check List path {}",restResponseDto.getDetail().toString());
 
         if (!customerCad.getCadFileList().isEmpty()) {
             List<CadFile> cadExistFile = customerCad.getCadFileList().stream().filter(existingFile -> existingFile.getCadDocument().getId().equals(documentId) && existingFile.getCustomerLoanId().equals(loanId)).collect(
