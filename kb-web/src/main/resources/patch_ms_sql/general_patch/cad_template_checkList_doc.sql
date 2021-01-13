@@ -130,53 +130,52 @@ END;
 
 BEGIN
     DECLARE @count smallint
-    SET @count= (SELECT count(*) from document where id = 1001)
+    SET @count= (SELECT count(*) from document where id = 1010)
 
     if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT document ON
             INSERT INTO document (id, name,url,status,created_at,created_by_id,modified_by_id,last_modified_at,version,display_name,check_type,contains_template)
-            VALUES (1001, 'Deed Hypo of Machinery',null,1,'2021-1-7',1,1,'2021-1-7',0,'Deed Hypo of Machinery',null,1)
+            VALUES (1010, 'Loan Deed Single',null,1,'2021-1-7',1,1,'2021-1-7',0,'Loan Deed Single',null,1)
             SET IDENTITY_INSERT document OFF
         END
 END;
 
 BEGIN
     DECLARE @count smallint
-    SET @count= (SELECT count(*) from document where id = 1001)
+    SET @count= (SELECT count(*) from document where id = 1011)
 
     if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT document ON
             INSERT INTO document (id, name,url,status,created_at,created_by_id,modified_by_id,last_modified_at,version,display_name,check_type,contains_template)
-            VALUES (1001, 'Deed Hypo of Machinery',null,1,'2021-1-7',1,1,'2021-1-7',0,'Deed Hypo of Machinery',null,1)
+            VALUES (1011, 'Loan Deed Multiple',null,1,'2021-1-7',1,1,'2021-1-7',0,'Loan Deed Multiple',null,1)
             SET IDENTITY_INSERT document OFF
         END
 END;
 
 BEGIN
     DECLARE @count smallint
-    SET @count= (SELECT count(*) from document where id = 1001)
+    SET @count= (SELECT count(*) from document where id = 1012)
 
     if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT document ON
             INSERT INTO document (id, name,url,status,created_at,created_by_id,modified_by_id,last_modified_at,version,display_name,check_type,contains_template)
-            VALUES (1001, 'Deed Hypo of Machinery',null,1,'2021-1-7',1,1,'2021-1-7',0,'Deed Hypo of Machinery',null,1)
+            VALUES (1012, 'Promissory Note Company',null,1,'2021-1-7',1,1,'2021-1-7',0,'Promissory Note Company',null,1)
             SET IDENTITY_INSERT document OFF
         END
 END;
 
 BEGIN
     DECLARE @count smallint
-    SET @count= (SELECT count(*) from document where id = 1001)
+    SET @count= (SELECT count(*) from document where id = 1013)
 
     if (@count < 1)
         BEGIN
             SET IDENTITY_INSERT document ON
             INSERT INTO document (id, name,url,status,created_at,created_by_id,modified_by_id,last_modified_at,version,display_name,check_type,contains_template)
-            VALUES (1001, 'Deed Hypo of Machinery',null,1,'2021-1-7',1,1,'2021-1-7',0,'Deed Hypo of Machinery',null,1)
+            VALUES (1013, 'Promissory Note Joint',null,1,'2021-1-7',1,1,'2021-1-7',0,'Promissory Note Joint',null,1)
             SET IDENTITY_INSERT document OFF
         END
 END;
-
