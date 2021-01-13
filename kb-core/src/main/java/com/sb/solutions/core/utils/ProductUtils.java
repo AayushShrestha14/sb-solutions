@@ -32,6 +32,8 @@ public class ProductUtils {
 
     public static Boolean FULL_CAD;
 
+    public static Boolean CHECK_LIST_LITE_VERSION;
+
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
 
@@ -89,6 +91,8 @@ public class ProductUtils {
         productUtilsMap.put("LOAN_APPROVAL_HIERARCHY_LEVEL", approvalType);
     }
 
+
+
     /**
      * Full cad represent work flow of cad respect to offer letter,legal document and disbursement
      * Each type have their own stages
@@ -105,6 +109,12 @@ public class ProductUtils {
     public void setCbsEnable(Boolean cbsEnable) {
         CBS_ENABLE = cbsEnable;
         productUtilsMap.put("CBS_ENABLE", cbsEnable);
+    }
+
+    @Value("${product.checklistLiteVersion}")
+    public void setCheckListLiteVersion(Boolean value){
+        CHECK_LIST_LITE_VERSION = value;
+        productUtilsMap.put("CHECK_LIST_LITE_VERSION", value);
     }
 
     public static Map<String, Object> getProductUtilsMap() {
