@@ -1,9 +1,13 @@
 package com.sb.solutions.service;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -80,6 +84,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     public Page<LoanHolderDto> getAllUnAssignLoanForCadAdmin(Map<String, String> filterParams,
         Pageable pageable) {
         String assignedLoanId = "0";
+        boolean isV2 = true;
         List<LoanHolderDto> finalLoanHolderDtoList = new ArrayList<>();
         List<CustomerLoan> assignedCustomerLoan = customerCadRepository.findAllAssignedLoan();
         User user = userService.getAuthenticatedUser();
@@ -104,33 +109,75 @@ public class LoanHolderServiceImpl implements LoanHolderService {
                 .map(a -> String.valueOf(a.getId())).collect(Collectors.joining(","));
             s.put("notLoanIds", assignedLoanId);
         }
-        // s.put("postApprovalAssignStatus", PostApprovalAssignStatus.NOT_ASSIGNED.name());
+
         s.values().removeIf(Objects::isNull);
-        final CustomerInfoSpecBuilder customerInfoSpecBuilder = new CustomerInfoSpecBuilder(s);
-        final Specification<CustomerInfo> specCustomerInfo = customerInfoSpecBuilder.build();
-        Page<CustomerInfo> customerInfoPage = customerInfoRepository
-            .findAll(specCustomerInfo, pageable);
-        customerInfoPage.getContent().forEach(customerInfo -> {
+
+        if (isV2) {
+            //using getAllUnassignedLoanV2 this function retrieve data by loan approved and grouped by customer
+            return getAllUnassignedLoanV2(s,pageable);
+        } else {
+            // function retrieve data by customer and fetch loan of customer
+            final CustomerInfoSpecBuilder customerInfoSpecBuilder = new CustomerInfoSpecBuilder(s);
+            final Specification<CustomerInfo> specCustomerInfo = customerInfoSpecBuilder.build();
+            Page<CustomerInfo> customerInfoPage = customerInfoRepository
+                .findAll(specCustomerInfo, pageable);
+            customerInfoPage.getContent().forEach(customerInfo -> {
+                LoanHolderDto holderDto = new LoanHolderDto();
+                holderDto.setId(customerInfo.getId());
+                holderDto.setAssociateId(customerInfo.getAssociateId());
+                holderDto.setName(customerInfo.getName());
+                holderDto.setBranch(customerInfo.getBranch());
+                holderDto.setCustomerType(customerInfo.getCustomerType());
+                holderDto.setIdNumber(customerInfo.getIdNumber());
+                holderDto.setIdRegDate(customerInfo.getIdRegDate());
+                holderDto.setIdRegPlace(customerInfo.getIdRegPlace());
+                s.put("loanHolderId", String.valueOf(customerInfo.getId()));
+                final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+                    s);
+                final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+                final List<CustomerLoanDto> customerLoanDtoList = customerLoanMapper
+                    .mapEntitiesToDtos(customerLoanRepository.findAll(specification));
+                holderDto.setCustomerLoanDtoList(customerLoanDtoList);
+                holderDto.setTotalLoan((long) customerLoanDtoList.size());
+                finalLoanHolderDtoList.add(holderDto);
+            });
+            return new PageImpl<>(finalLoanHolderDtoList, pageable,
+                customerInfoPage.getTotalElements());
+        }
+    }
+
+    private Page<LoanHolderDto> getAllUnassignedLoanV2(Map<String, String> filterParams,
+        Pageable pageable) {
+        List<LoanHolderDto> finalLoanHolderDtoList = new ArrayList<>();
+        final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
+            filterParams);
+        final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
+        final List<CustomerLoan> customerLoanDtoList = customerLoanRepository.findAll(specification);
+        final Map<CustomerInfo, Set<CustomerLoan>> tempMap = customerLoanDtoList.stream()
+            .collect(groupingBy(CustomerLoan::getLoanHolder, toSet()));
+        tempMap.entrySet().forEach(e->{
             LoanHolderDto holderDto = new LoanHolderDto();
-            holderDto.setId(customerInfo.getId());
-            holderDto.setAssociateId(customerInfo.getAssociateId());
-            holderDto.setName(customerInfo.getName());
-            holderDto.setBranch(customerInfo.getBranch());
-            holderDto.setCustomerType(customerInfo.getCustomerType());
-            holderDto.setIdNumber(customerInfo.getIdNumber());
-            holderDto.setIdRegDate(customerInfo.getIdRegDate());
-            holderDto.setIdRegPlace(customerInfo.getIdRegPlace());
-            s.put("loanHolderId", String.valueOf(customerInfo.getId()));
-            final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
-            final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-            final List<CustomerLoanDto> customerLoanDtoList = customerLoanMapper
-                .mapEntitiesToDtos(customerLoanRepository.findAll(specification));
-            holderDto.setCustomerLoanDtoList(customerLoanDtoList);
-            holderDto.setTotalLoan((long) customerLoanDtoList.size());
+            holderDto.setId(e.getKey().getId());
+            holderDto.setAssociateId(e.getKey().getAssociateId());
+            holderDto.setName(e.getKey().getName());
+            holderDto.setBranch(e.getKey().getBranch());
+            holderDto.setCustomerType(e.getKey().getCustomerType());
+            holderDto.setIdNumber(e.getKey().getIdNumber());
+            holderDto.setIdRegDate(e.getKey().getIdRegDate());
+            holderDto.setIdRegPlace(e.getKey().getIdRegPlace());
+            holderDto.setCustomerLoanDtoList(customerLoanMapper
+                .mapEntitiesToDtos(new ArrayList<>(e.getValue())));
+            holderDto.setTotalLoan((long) e.getValue().size());
             finalLoanHolderDtoList.add(holderDto);
         });
-        return new PageImpl<>(finalLoanHolderDtoList, pageable,
-            customerInfoPage.getTotalElements());
+        if(finalLoanHolderDtoList.isEmpty()){
+            return new PageImpl<>(finalLoanHolderDtoList, pageable,
+               0);
+        }
+        int start = Integer.parseInt(String.valueOf(pageable.getOffset()));
+        int end = (start + pageable.getPageSize()) > finalLoanHolderDtoList.size() ? finalLoanHolderDtoList.size() : (start + pageable.getPageSize());
+        return new PageImpl<>(finalLoanHolderDtoList.subList(start,end), pageable,
+            finalLoanHolderDtoList.size());
     }
 
     @Override

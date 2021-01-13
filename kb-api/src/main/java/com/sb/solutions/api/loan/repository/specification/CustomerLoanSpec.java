@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 import com.google.gson.Gson;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.DocAction;
@@ -64,6 +65,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_POST_APPROVAL_CURRENT_USER = "postApprovalAssignedUser";
     private static final String FILTER_BY_NOT_IN_LOAN_IDS = "notLoanIds";
     private static final String FILTER_BY_PROVINCE = "provinceIds";
+    public static final String FILTER_BY_NAME = "name";
+    public static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
     private final String property;
     private final String value;
 
@@ -311,6 +314,15 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                     .get("id");
                 Predicate predicate2 = exp2.in(list2);
                 return criteriaBuilder.and(predicate2);
+
+            case FILTER_BY_NAME:
+                return criteriaBuilder
+                    .like(criteriaBuilder
+                            .lower(root.join("loanHolder").get("name")),
+                        value.toLowerCase() + "%");
+
+            case FILTER_BY_CUSTOMER_TYPE:
+                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
 
             default:
                 return null;
