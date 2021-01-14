@@ -126,7 +126,8 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)) {
+        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)
+                && user.getRole().getRoleType() != RoleType.CAD_SUPERVISOR) {
             if (user.getBranch().isEmpty()) {
                 throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
             }
@@ -432,8 +433,13 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userDtoList = new ArrayList<>();
         for (User u : userList) {
             UserDto userDto = new UserDto();
+            RoleDto roleDto = new RoleDto();
+
             BeanUtils.copyProperties(u, userDto);
+            BeanUtils.copyProperties(u.getRole(), roleDto);
+            roleDto.setId(u.getRole().getId());
             userDto.setId(u.getId());
+            userDto.setRole(roleDto);
             userDtoList.add(userDto);
         }
         return userDtoList;

@@ -5,6 +5,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,6 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
-import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.web.customerInfo.v1.CustomerInfoController;
 
 /**
@@ -67,7 +68,8 @@ public class CustomerGeneralDocumentController {
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
 
-        String basePath = new PathBuilder(UploadDir.initialDocument).buildCustomerInfoBasePathWithId( id, branchId , customerType);
+        String basePath = new PathBuilder(UploadDir.initialDocument)
+            .buildCustomerInfoBasePathWithId(id, branchId, customerType);
         String uploadPath = new StringBuilder(basePath)
             .append("generalDoc")
             .append("/")
@@ -78,5 +80,11 @@ public class CustomerGeneralDocumentController {
         customerGeneralDocument
             .setDocPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
         return new RestResponseDto().successModel(customerGeneralDocument);
+    }
+
+    @GetMapping(value = "/{customerInfoID}")
+    public ResponseEntity save(@PathVariable Long customerInfoID) {
+        return new RestResponseDto()
+            .successModel(customerGeneralDocumentService.findByCustomerInfoId(customerInfoID));
     }
 }

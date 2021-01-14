@@ -1,5 +1,6 @@
 package com.sb.solutions.web;
 
+import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
@@ -171,6 +172,15 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                 cadPopulator.execute(dataSource);
             }
 
+            if (affiliateId.equals("mega")){
+                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(baseServerFolder + "/general_patch/cad_template_checkList_doc.sql");
+                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(dataResourceCheckListDoc);
+
+                cadCheckListTemplateDocument.execute(dataSource);
+            }
+
+
+
             if (ProductUtils.LAS) {
                 ClassPathResource dataResource = new ClassPathResource(
                     baseServerFolder + "/loan_sql/patch_las_permission.sql");
@@ -180,9 +190,26 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                     dataResource, dataResourceTemplate);
                 populator.execute(dataSource);
             }
+            if (ProductUtils.FULL_CAD) {
+                ClassPathResource dataResource = new ClassPathResource(
+                        baseServerFolder + "/loan_sql/cad/cad-menu.sql");
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                        dataResource);
+                populator.execute(dataSource);
+            }
+
+            else  {
+                ClassPathResource dataResource = new ClassPathResource(
+                        baseServerFolder + "/loan_sql/cad/remove-cad-menu.sql");
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+                        dataResource);
+                populator.execute(dataSource);
+            }
 
             this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
                 baseServerFolder);
+                this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
+                    baseServerFolder);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("cannot load patch file");

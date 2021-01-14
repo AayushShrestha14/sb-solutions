@@ -4,8 +4,10 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.sb.solutions.api.authorization.service.RoleService;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleHierarchyService;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ApprovalType;
 
 @Service
@@ -23,8 +27,8 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
     private final RoleService roleService;
 
     public ApprovalRoleHierarchyServiceImpl(
-            RoleHierarchyService defaultRoleHierarchyService,
-            ApprovalRoleHierarchyRepository repository, RoleService roleService) {
+        RoleHierarchyService defaultRoleHierarchyService,
+        ApprovalRoleHierarchyRepository repository, RoleService roleService) {
         this.defaultRoleHierarchyService = defaultRoleHierarchyService;
         this.repository = repository;
         this.roleService = roleService;
@@ -32,64 +36,64 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
 
     @Override
     public List<ApprovalRoleHierarchy> getForwardRolesForRole(Long roleId,
-                                                              ApprovalType approvalType, Long typeId,
-                                                              ApprovalType refType, Long refId) {
+        ApprovalType approvalType, Long typeId,
+        ApprovalType refType, Long refId) {
         final List<ApprovalRoleHierarchy> referenceBasedHierarchies = repository
-                .findAllByApprovalTypeEqualsAndRefId(refType, refId);
+            .findAllByApprovalTypeEqualsAndRefId(refType, refId);
 
         if (CollectionUtils.isNotEmpty(referenceBasedHierarchies)) {
             final Optional<ApprovalRoleHierarchy> currentRole = referenceBasedHierarchies.stream()
-                    .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
+                .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
 
             return currentRole.map(hierarchy -> referenceBasedHierarchies.stream().filter(
-                    h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
-                            .getRoleOrder()).collect(toList())).orElse(referenceBasedHierarchies);
+                h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
+                    .getRoleOrder()).collect(toList())).orElse(referenceBasedHierarchies);
         }
 
         final List<ApprovalRoleHierarchy> typeBasedHierarchies = repository
-                .findAllByApprovalTypeEqualsAndRefId(approvalType, typeId);
+            .findAllByApprovalTypeEqualsAndRefId(approvalType, typeId);
 
         if (CollectionUtils.isNotEmpty(typeBasedHierarchies)) {
             final Optional<ApprovalRoleHierarchy> currentRole = typeBasedHierarchies.stream()
-                    .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
+                .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
 
             final List<ApprovalRoleHierarchy> selected = currentRole
-                    .map(hierarchy -> typeBasedHierarchies.stream().filter(
-                            h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
-                                    .getRoleOrder()).collect(toList())).orElse(typeBasedHierarchies);
+                .map(hierarchy -> typeBasedHierarchies.stream().filter(
+                    h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
+                        .getRoleOrder()).collect(toList())).orElse(typeBasedHierarchies);
 
             return selected;
         }
 
         return defaultRoleHierarchyService.roleHierarchyByCurrentRoleForward(roleId).stream()
-                .map(r -> {
-                    ApprovalRoleHierarchy hierarchy = new ApprovalRoleHierarchy();
-                    hierarchy.setApprovalType(ApprovalType.DEFAULT);
-                    hierarchy.setRefId(0L);
-                    hierarchy.setRoleOrder(r.getRoleOrder());
-                    Role role = new Role();
-                    role.setId(r.getId());
-                    role.setRoleName(r.getRoleName());
-                    hierarchy.setRole(r.getRole());
+            .map(r -> {
+                ApprovalRoleHierarchy hierarchy = new ApprovalRoleHierarchy();
+                hierarchy.setApprovalType(ApprovalType.DEFAULT);
+                hierarchy.setRefId(0L);
+                hierarchy.setRoleOrder(r.getRoleOrder());
+                Role role = new Role();
+                role.setId(r.getId());
+                role.setRoleName(r.getRoleName());
+                hierarchy.setRole(r.getRole());
 
-                    return hierarchy;
-                }).collect(toList());
+                return hierarchy;
+            }).collect(toList());
     }
 
     @Override
     public List<ApprovalRoleHierarchy> getForwardRolesForRoleWithType(Long roleId,
-                                                                      ApprovalType approvalType, Long refId) {
+        ApprovalType approvalType, Long refId) {
 
         final List<ApprovalRoleHierarchy> typeBasedHierarchies = repository
-                .findAllByApprovalTypeEqualsAndRefId(approvalType, refId);
+            .findAllByApprovalTypeEqualsAndRefId(approvalType, refId);
 
         if (CollectionUtils.isNotEmpty(typeBasedHierarchies)) {
             final Optional<ApprovalRoleHierarchy> currentRole = typeBasedHierarchies.stream()
-                    .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
+                .filter(h -> roleId.equals(h.getRole().getId())).findFirst();
 
             return currentRole.map(hierarchy -> typeBasedHierarchies.stream().filter(
-                    h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
-                            .getRoleOrder()).collect(toList())).orElse(typeBasedHierarchies);
+                h -> !roleId.equals(h.getRole().getId()) && h.getRoleOrder() < hierarchy
+                    .getRoleOrder()).collect(toList())).orElse(typeBasedHierarchies);
         }
 
         return defaultRoleHierarchyService.roleHierarchyByCurrentRoleForward(roleId).stream()
@@ -104,8 +108,8 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
                     role.setRoleType(r.getRoleType());
                     hierarchy.setRole(role);
 
-                    return hierarchy;
-                }).collect(toList());
+                return hierarchy;
+            }).collect(toList());
     }
 
     @Override
@@ -209,13 +213,26 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
         }).collect(toList());
 
         if (approvalType.equals(ApprovalType.CAD)) {
+            AtomicReference<Long> orders = new AtomicReference<>(1000L);
             final Role role = roleService.getRoleCAD();
             ApprovalRoleHierarchy approvalRoleHierarchy = new ApprovalRoleHierarchy();
             approvalRoleHierarchy.setApprovalType(approvalType);
             approvalRoleHierarchy.setRefId(refId);
-            approvalRoleHierarchy.setRoleOrder(1000L);
+            approvalRoleHierarchy.setRoleOrder(orders.get());
             approvalRoleHierarchy.setRole(role);
             approvalRoleHierarchyList.add(approvalRoleHierarchy);
+
+            final List<Role> roleList = roleService.getByRoleTypeAndStatus(RoleType.CAD_LEGAL,
+                Status.ACTIVE);
+            roleList.forEach(r -> {
+                orders.set(orders.get() + 1L);
+                ApprovalRoleHierarchy approvalRoleHierarchy1 = new ApprovalRoleHierarchy();
+                approvalRoleHierarchy1.setApprovalType(approvalType);
+                approvalRoleHierarchy1.setRefId(refId);
+                approvalRoleHierarchy1.setRoleOrder(orders.get());
+                approvalRoleHierarchy1.setRole(r);
+                approvalRoleHierarchyList.add(approvalRoleHierarchy1);
+            });
         }
         return approvalRoleHierarchyList;
     }
@@ -251,18 +268,18 @@ public class ApprovalRoleHierarchyServiceImpl implements ApprovalRoleHierarchySe
         final ApprovalRoleHierarchy hierarchyType = list.get(0);
 
         final List<ApprovalRoleHierarchy> available = repository
-                .findAllByApprovalTypeEqualsAndRefId(
-                        hierarchyType.getApprovalType(),
-                        hierarchyType.getRefId());
+            .findAllByApprovalTypeEqualsAndRefId(
+                hierarchyType.getApprovalType(),
+                hierarchyType.getRefId());
 
         if (isFresh(hierarchyType)) {
             repository.deleteInBatch(available);
         } else {
             final List<Long> selectedRoles = list.stream().map(a -> a.getRole().getId())
-                    .collect(toList());
+                .collect(toList());
 
             final List<ApprovalRoleHierarchy> deselectedRoles = available.stream()
-                    .filter(a -> !selectedRoles.contains(a.getRole().getId())).collect(toList());
+                .filter(a -> !selectedRoles.contains(a.getRole().getId())).collect(toList());
 
             repository.deleteInBatch(deselectedRoles);
         }
