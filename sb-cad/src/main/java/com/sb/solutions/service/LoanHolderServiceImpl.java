@@ -114,7 +114,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
         if (isV2) {
             //using getAllUnassignedLoanV2 this function retrieve data by loan approved and grouped by customer
-            return getAllUnassignedLoanV2(s,pageable);
+            return getAllUnassignedLoanV2(s, pageable);
         } else {
             // function retrieve data by customer and fetch loan of customer
             final CustomerInfoSpecBuilder customerInfoSpecBuilder = new CustomerInfoSpecBuilder(s);
@@ -152,10 +152,11 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(
             filterParams);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
-        final List<CustomerLoan> customerLoanDtoList = customerLoanRepository.findAll(specification);
+        final List<CustomerLoan> customerLoanDtoList = customerLoanRepository
+            .findAll(specification);
         final Map<CustomerInfo, Set<CustomerLoan>> tempMap = customerLoanDtoList.stream()
             .collect(groupingBy(CustomerLoan::getLoanHolder, toSet()));
-        tempMap.entrySet().forEach(e->{
+        tempMap.entrySet().forEach(e -> {
             LoanHolderDto holderDto = new LoanHolderDto();
             holderDto.setId(e.getKey().getId());
             holderDto.setAssociateId(e.getKey().getAssociateId());
@@ -170,13 +171,14 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             holderDto.setTotalLoan((long) e.getValue().size());
             finalLoanHolderDtoList.add(holderDto);
         });
-        if(finalLoanHolderDtoList.isEmpty()){
+        if (finalLoanHolderDtoList.isEmpty()) {
             return new PageImpl<>(finalLoanHolderDtoList, pageable,
-               0);
+                0);
         }
         int start = Integer.parseInt(String.valueOf(pageable.getOffset()));
-        int end = (start + pageable.getPageSize()) > finalLoanHolderDtoList.size() ? finalLoanHolderDtoList.size() : (start + pageable.getPageSize());
-        return new PageImpl<>(finalLoanHolderDtoList.subList(start,end), pageable,
+        int end = (start + pageable.getPageSize()) > finalLoanHolderDtoList.size()
+            ? finalLoanHolderDtoList.size() : (start + pageable.getPageSize());
+        return new PageImpl<>(finalLoanHolderDtoList.subList(start, end), pageable,
             finalLoanHolderDtoList.size());
     }
 
@@ -240,6 +242,21 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         Map<String, String> filterParams, Pageable pageable) {
         filterParams.values().removeIf(Objects::isNull);
         return filterCADbyParams(filterParams, pageable);
+    }
+
+    @Override
+    public String assignCadToUser(CadStageDto cadStageDto) {
+        CustomerApprovedLoanCadDocumentation cadDocumentation = customerCadRepository
+            .findById(cadStageDto.getCadId()).get();
+        cadDocumentation.setCadStageList(cadStageMapper
+            .addPresentStageToPreviousList(cadDocumentation.getPreviousList(),
+                cadDocumentation.getCadCurrentStage()));
+        cadDocumentation
+            .setCadCurrentStage(assignStage(cadStageDto.getToUser().getId(),
+                cadDocumentation.getCadCurrentStage()));
+        customerCadRepository
+            .save(cadDocumentation);
+        return SuccessMessage.SUCCESS_ASSIGNED;
     }
 
 

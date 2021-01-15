@@ -15,11 +15,14 @@ public class ApiConstants {
 
     public static final String ASSIGN_LOAN_TO_USER = "/assign";
 
+
     public static final String CAD_ACTION = "/action";
 
     public static final String CAD_ROLE_LIST = "/cad-role-list";
     public static final String GET_BY_ID = "/{id}";
     public static final String UPLOAD_FILE = "/uploadFile";
     public static final String UPLOAD_ADDITIONAL_FILE = "/upload-additional-file";
+
+    public static final String ASSIGN_CAD_TO_USER = "/cad-assign";
 
 }
