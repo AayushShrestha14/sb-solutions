@@ -44,7 +44,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
             + " AND cl.branch_id IN (:bid)) Approved,"
 
             + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
-            + " ON l.id=cl.current_stage_id WHERE cl.document_status=2 AND l.to_role_id IN (:id)"
+            + " ON l.id=cl.current_stage_id WHERE cl.document_status=2 "
             + " AND cl.branch_id IN (:bid) ) Rejected,"
 
             + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
