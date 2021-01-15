@@ -6091,4 +6091,60 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="415-drop-fk-constraint-for-proprietor-table" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_proprietors_list_company_info_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_proprietors_list_proprietors_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_proprietor_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_modified_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_municipality_vdc_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_province_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+                                  constraintName="fk_company_info_proprietors_list_company_info_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+                                  constraintName="fk_company_info_proprietors_list_proprietors_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list_audit"
+                                  constraintName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="proprietor_audit"
+                                  constraintName="FK_proprietor_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_district_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_modified_by_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_municipality_vdc_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_province_id"/>
+    </changeSet>
+    <changeSet id="416-drop-table-company-proprietors-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_proprietors_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_proprietors_list"/>
+    </changeSet>
+    <changeSet id="417-drop-table-company-info-proprietors-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_proprietors_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_proprietors_list_audit"/>
+    </changeSet>
+    <changeSet id="418-drop-table-proprietor-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="proprietor_audit"/>
+        </preConditions>
+        <dropTable tableName="proprietor_audit"/>
+    </changeSet>
+    <changeSet id="419-drop-table-proprietor" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="proprietor"/>
+        </preConditions>
+        <dropTable tableName="proprietor"/>
+    </changeSet>
+
 </databaseChangeLog>
