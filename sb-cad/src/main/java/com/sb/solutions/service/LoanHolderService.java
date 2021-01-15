@@ -28,4 +28,7 @@ public interface LoanHolderService {
 
     Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
         Map<String, String> filterParams, Pageable pageable);
+
+    @Transactional
+    String assignCadToUser(CadStageDto cadStageDto);
 }

@@ -134,4 +134,10 @@ public class CadController {
                     customerInfoId));
     }
 
+    @CadValid
+    @PostMapping(value = ApiConstants.ASSIGN_CAD_TO_USER)
+    public ResponseEntity<?> assignCADToUser(@RequestBody CadStageDto cadStageDto) {
+        return new RestResponseDto().successModel(loanHolderService.assignCadToUser(cadStageDto));
+    }
+
 }
