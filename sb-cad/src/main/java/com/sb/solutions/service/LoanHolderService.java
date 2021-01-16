@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +29,8 @@ public interface LoanHolderService {
 
     Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
         Map<String, String> filterParams, Pageable pageable);
+
+    Map<String , Object> getCadDocumentCount(Map<String , String> param);
 
     @Transactional
     String assignCadToUser(CadStageDto cadStageDto);

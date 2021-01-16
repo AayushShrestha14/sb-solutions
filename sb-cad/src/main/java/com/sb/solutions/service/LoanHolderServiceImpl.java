@@ -1,5 +1,6 @@
 package com.sb.solutions.service;
 
+import java.util.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
@@ -10,6 +11,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.ProductUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -66,11 +70,14 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private final BranchService branchService;
 
+    private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
+
+
     public LoanHolderServiceImpl(CustomerLoanRepository customerLoanRepository,
-        CustomerLoanMapper customerLoanMapper, UserService userService,
-        CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
-        CadStageMapper cadStageMapper,
-        BranchService branchService) {
+                                 CustomerLoanMapper customerLoanMapper, UserService userService,
+                                 CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
+                                 CadStageMapper cadStageMapper,
+                                 BranchService branchService, ApprovalRoleHierarchyService approvalRoleHierarchyService) {
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanMapper = customerLoanMapper;
         this.userService = userService;
@@ -78,6 +85,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         this.customerCadRepository = customerCadRepository;
         this.cadStageMapper = cadStageMapper;
         this.branchService = branchService;
+        this.approvalRoleHierarchyService = approvalRoleHierarchyService;
     }
 
     @Override
@@ -257,6 +265,54 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         customerCadRepository
             .save(cadDocumentation);
         return SuccessMessage.SUCCESS_ASSIGNED;
+    }
+
+    @Override
+    public Map<String, Object> getCadDocumentCount(Map<String, String> filterParams) {
+        Map<String , Object> data = new HashMap<>();
+        User u = userService.getAuthenticatedUser();
+        if (ProductUtils.OFFER_LETTER) {
+            boolean isPresentInCadHierarchy = approvalRoleHierarchyService
+                    .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
+            if(isPresentInCadHierarchy || u.getRole().getRoleType() == RoleType.CAD_ADMIN
+             || u.getRole().getRoleType() == RoleType.CAD_SUPERVISOR){
+                String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                        .map(Object::toString).collect(Collectors.joining(","));
+                data.put("pendingCount" , getCountBySpec("PENDING" , branchAccess));
+                data.put("approvedCount" , getCountBySpec("APPROVED" , branchAccess));
+                data.put("allCount" , getCountBySpec("" , branchAccess));
+                data.put("showCustomerApprove" , true);
+            } else {
+                data.put("showCustomerApprove" , false);
+            }
+        } else {
+            data.put("showCustomerApprove" , false);
+        }
+        return data;
+    }
+
+    long getCountBySpec(String docStatus , String branchAccess) {
+        Map<String, String> filterParams = new HashMap<>();
+        filterParams.put("branchIds" , branchAccess);
+        switch (docStatus) {
+            case "PENDING":
+                //todo verify this from front and replace with enum const value
+                filterParams.put("docStatus" , "OFFER_PENDING");
+                break;
+
+            case "APPROVED":
+                filterParams.put("docStatus" , "OFFER_APPROVED");
+                break;
+
+            default:
+                break;
+        }
+        final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
+                branchAccessAndUserAccess(filterParams));
+        final Specification<CustomerApprovedLoanCadDocumentation> specification = customerCadSpecBuilder
+                .build();
+
+        return  customerCadRepository.count(specification);
     }
 
 

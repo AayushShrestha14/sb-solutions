@@ -1,5 +1,6 @@
 package com.sb.solutions.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -76,7 +77,6 @@ public class CadController {
                 approvalRoleHierarchyService.getRoles(ApprovalType.CAD, 0L));
     }
 
-    // todo use this api
     @PostMapping(value = ApiConstants.CAD_LIST)
     public ResponseEntity<?> getCadList(
         @RequestBody Map<String, String> filterParams,
@@ -139,5 +139,11 @@ public class CadController {
     public ResponseEntity<?> assignCADToUser(@RequestBody CadStageDto cadStageDto) {
         return new RestResponseDto().successModel(loanHolderService.assignCadToUser(cadStageDto));
     }
+
+    @GetMapping(value = ApiConstants.GET_OFFER_LETTER_COUNT)
+    public ResponseEntity<?> getCadCount() {
+        return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
+    }
+
 
 }

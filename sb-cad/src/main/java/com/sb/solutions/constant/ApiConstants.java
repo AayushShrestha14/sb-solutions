@@ -24,5 +24,6 @@ public class ApiConstants {
     public static final String UPLOAD_ADDITIONAL_FILE = "/upload-additional-file";
 
     public static final String ASSIGN_CAD_TO_USER = "/cad-assign";
+    public static final String GET_OFFER_LETTER_COUNT = "/offer-letter-count";
 
 }
