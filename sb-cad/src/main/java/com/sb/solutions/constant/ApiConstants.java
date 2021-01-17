@@ -25,4 +25,6 @@ public class ApiConstants {
 
     public static final String ASSIGN_CAD_TO_USER = "/cad-assign";
 
+    public static final String UPLOAD_SCC_FILE = "/upload-scc";
+
 }
