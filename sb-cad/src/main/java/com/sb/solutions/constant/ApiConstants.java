@@ -22,4 +22,6 @@ public class ApiConstants {
     public static final String UPLOAD_FILE = "/uploadFile";
     public static final String UPLOAD_ADDITIONAL_FILE = "/upload-additional-file";
 
+    public static final String UPLOAD_SCC_FILE = "/upload-scc";
+
 }

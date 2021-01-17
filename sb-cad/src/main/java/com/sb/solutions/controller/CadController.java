@@ -134,4 +134,17 @@ public class CadController {
                     customerInfoId));
     }
 
+    @PostMapping(value = ApiConstants.UPLOAD_SCC_FILE)
+    public ResponseEntity<?> sccFilePath(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("cadId") Long cadId,
+        @RequestParam("branchId") Long branchId,
+        @RequestParam("customerInfoId") Long customerInfoId
+
+    ) {
+        return new RestResponseDto().
+            successModel(customerCadService
+                .sccFilePath(multipartFile, cadId, branchId,
+                    customerInfoId));
+    }
+
 }

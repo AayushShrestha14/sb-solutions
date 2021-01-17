@@ -17,4 +17,7 @@ public interface CustomerCadService extends BaseService<CustomerApprovedLoanCadD
     @Transactional
     String uploadAdditionalDocument(MultipartFile multipartFile, Long cadId,
         String docName,Long branchId,Long customerInfoId);
+
+    @Transactional
+    String sccFilePath(MultipartFile multipartFile, Long cadId,Long branchId,Long customerInfoId);
 }

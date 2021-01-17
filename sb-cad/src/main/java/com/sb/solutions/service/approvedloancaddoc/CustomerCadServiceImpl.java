@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -168,6 +169,20 @@ public class CustomerCadServiceImpl implements CustomerCadService {
             .uploadFile(multipartFile, path, StringUtils.trimAllWhitespace(docName));
         RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
         return String.valueOf(restResponseDto.getDetail());
+    }
+
+    @Override
+    public String sccFilePath(MultipartFile multipartFile, Long cadId,Long branchId,Long customerInfoId){
+        String path = new PathBuilder(UploadDir.initialDocument).buildCustomerCadSccDocPath
+            (branchId, customerInfoId,cadId);
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+
+        ResponseEntity responseEntity = FileUploadUtils
+            .uploadFile(multipartFile, path, StringUtils.trimAllWhitespace(timeStamp));
+        RestResponseDto restResponseDto = (RestResponseDto) responseEntity.getBody();
+        logger.info("Upload Cad SCC doc path {}",restResponseDto.getDetail().toString());
+        return String.valueOf(restResponseDto.getDetail());
+
     }
 
 }

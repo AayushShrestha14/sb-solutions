@@ -271,5 +271,24 @@ public class PathBuilder {
             .toString();
     }
 
+    public String buildCustomerCadSccDocPath(
+        Long branchId,
+        Long customerInfoId
+        ,Long customerApprovedDocId ) {
+        return new StringBuilder(this.basePath)
+            .append("CAD")
+            .append(FILE_SEPARATOR)
+            .append("SCC")
+            .append(FILE_SEPARATOR)
+            .append("Branch-" + branchId)
+            .append(FILE_SEPARATOR)
+            .append("Customer-" + customerInfoId)
+            .append(FILE_SEPARATOR)
+            .append("Cad-"+customerApprovedDocId)
+            .append(FILE_SEPARATOR)
+            .toString();
+    }
+
+
 
 }
