@@ -140,6 +140,19 @@ public class CadController {
         return new RestResponseDto().successModel(loanHolderService.assignCadToUser(cadStageDto));
     }
 
+    @PostMapping(value = ApiConstants.UPLOAD_SCC_FILE)
+    public ResponseEntity<?> sccFilePath(@RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("cadId") Long cadId,
+        @RequestParam("branchId") Long branchId,
+        @RequestParam("customerInfoId") Long customerInfoId
+
+    ) {
+        return new RestResponseDto().
+            successModel(customerCadService
+                .sccFilePath(multipartFile, cadId, branchId,
+                    customerInfoId));
+    }
+
     @GetMapping(value = ApiConstants.GET_OFFER_LETTER_COUNT)
     public ResponseEntity<?> getCadCount() {
         return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));

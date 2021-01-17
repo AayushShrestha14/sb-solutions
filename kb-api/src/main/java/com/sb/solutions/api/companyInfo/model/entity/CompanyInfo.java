@@ -3,7 +3,6 @@ package com.sb.solutions.api.companyInfo.model.entity;
 import com.sb.solutions.api.companyInfo.capital.entity.Capital;
 import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
-import com.sb.solutions.api.companyInfo.shareholderkyc.entity.ShareholderKyc;
 import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
@@ -13,7 +12,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,7 +19,6 @@ import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -37,10 +34,6 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Capital capital;
-
-    @AuditJoinTable
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<ShareholderKyc> shareholderKycList;
 
     private String companyName;
     private String registrationNumber;
