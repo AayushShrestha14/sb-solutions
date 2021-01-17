@@ -278,8 +278,12 @@ public class LoanHolderServiceImpl implements LoanHolderService {
              || u.getRole().getRoleType() == RoleType.CAD_SUPERVISOR){
                 String branchAccess = userService.getRoleAccessFilterByBranch().stream()
                         .map(Object::toString).collect(Collectors.joining(","));
-                data.put("pendingCount" , getCountBySpec("PENDING" , branchAccess));
-                data.put("approvedCount" , getCountBySpec("APPROVED" , branchAccess));
+                data.put("pendingCount" , getCountBySpec(CadDocStatus.OFFER_PENDING.name() , branchAccess));
+                data.put("approvedCount" , getCountBySpec(CadDocStatus.OFFER_APPROVED.name() , branchAccess));
+                data.put("legalPending" , getCountBySpec(CadDocStatus.LEGAL_PENDING.name() , branchAccess));
+                data.put("legalApproved" , getCountBySpec(CadDocStatus.LEGAL_APPROVED.name() , branchAccess));
+                 data.put("disbursementPending" , getCountBySpec(CadDocStatus.DISBURSEMENT_PENDING.name() , branchAccess));
+                data.put("disbursementApproved" , getCountBySpec(CadDocStatus.DISBURSEMENT_APPROVED.name() , branchAccess));
                 data.put("allCount" , getCountBySpec("" , branchAccess));
                 data.put("showCustomerApprove" , true);
             } else {
@@ -295,13 +299,33 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         Map<String, String> filterParams = new HashMap<>();
         filterParams.put("branchIds" , branchAccess);
         switch (docStatus) {
-            case "PENDING":
+            case "OFFER_PENDING":
                 //todo verify this from front and replace with enum const value
-                filterParams.put("docStatus" , "OFFER_PENDING");
+                filterParams.put("docStatus" , CadDocStatus.OFFER_PENDING.name());
                 break;
 
-            case "APPROVED":
-                filterParams.put("docStatus" , "OFFER_APPROVED");
+            case "OFFER_APPROVED":
+                filterParams.put("docStatus" , CadDocStatus.OFFER_APPROVED.name());
+                break;
+
+            case "LEGAL_PENDING":
+                filterParams.put("docStatus" , CadDocStatus.LEGAL_PENDING.name());
+                break;
+
+            case "LEGAL_APPROVED":
+                filterParams.put("docStatus" , CadDocStatus.LEGAL_APPROVED.name());
+                break;
+
+            case "DISBURSEMENT_PENDING":
+                filterParams.put("docStatus" , CadDocStatus.DISBURSEMENT_PENDING.name());
+                break;
+
+            case "DISBURSEMENT_APPROVED":
+                filterParams.put("docStatus" , CadDocStatus.DISBURSEMENT_APPROVED.name());
+                break;
+
+            case "UNASSIGNED":
+                filterParams.put("cadCurrentStage" , null);
                 break;
 
             default:
