@@ -6146,5 +6146,57 @@
         </preConditions>
         <dropTable tableName="proprietor"/>
     </changeSet>
+    <changeSet id="420-drop-fk-constraint-for-shareholder-kyc-table" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_audit_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_shareholder_kyc_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_modified_by_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list"
+                                  constraintName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list"
+                                  constraintName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list_audit"
+                                  constraintName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc_audit"
+                                  constraintName="fk_shareholder_kyc_audit_district_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc_audit"
+                                  constraintName="FK_shareholder_kyc_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_district_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_modified_by_id"/>
+    </changeSet>
+    <changeSet id="421-drop-table-company-shareholder-kyc-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_shareholder_kyc_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_shareholder_kyc_list"/>
+    </changeSet>
+    <changeSet id="422-drop-table-company-info-shareholder-kyc-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_shareholder_kyc_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_shareholder_kyc_list_audit"/>
+    </changeSet>
+    <changeSet id="423-drop-table-shareholder-kyc-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="shareholder_kyc_audit"/>
+        </preConditions>
+        <dropTable tableName="shareholder_kyc_audit"/>
+    </changeSet>
+    <changeSet id="424-drop-table-shareholder-kyc" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="shareholder_kyc"/>
+        </preConditions>
+        <dropTable tableName="shareholder_kyc"/>
+    </changeSet>
 
 </databaseChangeLog>
