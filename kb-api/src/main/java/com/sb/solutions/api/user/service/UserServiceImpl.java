@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,8 +233,15 @@ public class UserServiceImpl implements UserService {
         if (u.getRole().getRoleAccess() != null) {
             if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole()
                 .getRoleAccess().equals(RoleAccess.OWN)) {
-                for (Branch b : u.getBranch()) {
-                    branchIdList.add(b.getId());
+                if(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+                    for(Province p: u.getProvinces()) {
+                        List<Branch> branches = branchRepository.getAllByProvinceIdAndStatus(p.getId(), Status.ACTIVE);
+                        branchIdList.addAll(branches.stream().map(Branch::getId).collect(Collectors.toList()));
+                    }
+                } else {
+                    for (Branch b : u.getBranch()) {
+                        branchIdList.add(b.getId());
+                    }
                 }
             }
 
