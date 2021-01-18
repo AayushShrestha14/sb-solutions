@@ -74,7 +74,7 @@ public class MessageServiceImpl implements MessageService {
                         fromUser.getName(),
                         fromRole.getRoleName(),
                         message.getDocAction().toString().toLowerCase(),
-                        customerLoan.getCustomerInfo().getCustomerName(),
+                        customerLoan.getLoanHolder().getName(),
                         customerLoan.getProposal().getProposedLimit()));
             }
         }
