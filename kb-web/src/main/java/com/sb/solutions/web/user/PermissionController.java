@@ -49,7 +49,9 @@ public class PermissionController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getPermission() {
-        return new RestResponseDto().successModel(permissionService.findAll());
+        return new RestResponseDto().successModel(permissionService.findAll().stream().filter(
+            permission -> !permission.getPermissionName()
+                .equalsIgnoreCase("Credit Administration")));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/chkPerm")
