@@ -108,26 +108,17 @@ public class NavigationController {
             if (size > 0) {
                 menuList.remove(menuDtos.get(0));
             }
-            if (isPresentInCadHierarchy && ProductUtils.FULL_CAD && (!u.getRole().getRoleType()
-                .equals(RoleType.CAD_ADMIN))) {
-
-                if (size == 0) {
-                    menuList.add(getMenuForCADFULL(u));
-                }
-
+            if ((isPresentInCadHierarchy && ProductUtils.FULL_CAD)) {
+                menuList.add(getMenuForCADFULL(u));
+            }
+            if (ProductUtils.FULL_CAD && (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
+                || u.getRole().getRoleType()
+                .equals(RoleType.CAD_ADMIN) || u.getRole().getRoleType()
+                .equals(RoleType.CAD_LEGAL))) {
+                menuList.add(getMenuForCADFULL(u));
             }
 
-            if (u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) && ProductUtils.FULL_CAD) {
-                if (size == 0) {
-                    menuList.add(getMenuForCADFULL(u));
-                }
-            }
-            if (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
-                && ProductUtils.FULL_CAD) {
-                if (size == 0) {
-                    menuList.add(getMenuForCADFULL(u));
-                }
-            }
+
         }
         return new RestResponseDto().successModel(menuList);
     }
