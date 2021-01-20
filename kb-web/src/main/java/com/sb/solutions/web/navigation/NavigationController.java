@@ -113,8 +113,7 @@ public class NavigationController {
             }
             if (ProductUtils.FULL_CAD && (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
                 || u.getRole().getRoleType()
-                .equals(RoleType.CAD_ADMIN) || u.getRole().getRoleType()
-                .equals(RoleType.CAD_LEGAL))) {
+                .equals(RoleType.CAD_ADMIN))) {
                 menuList.add(getMenuForCADFULL(u));
             }
 
