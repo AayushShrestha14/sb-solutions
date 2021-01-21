@@ -30,6 +30,7 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
     private static final String FILTER_BY_DOC_STATUS = "docStatus";
     private static final String FILTER_BY_TO_USER = "toUser";
+    private static final String FILTER_BY_TO_ROLE = "toRole";
     private static final String FILTER_BY_CUSTOMER_NAME = "name";
     private static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
 
@@ -83,6 +84,12 @@ public class CustomerCadSpec implements Specification<CustomerApprovedLoanCadDoc
 
             case FILTER_BY_CUSTOMER_TYPE:
                 return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
+
+            case FILTER_BY_TO_ROLE:
+                return criteriaBuilder
+                    .equal(
+                        root.join("cadCurrentStage", JoinType.LEFT).join(FILTER_BY_TO_ROLE).get("id"),
+                        Long.valueOf(value));
 
             default:
                 return null;
