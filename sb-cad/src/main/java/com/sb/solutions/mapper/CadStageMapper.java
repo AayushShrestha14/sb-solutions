@@ -168,9 +168,8 @@ public class CadStageMapper {
                 Map<String, Long> cadUser = this
                     .getCADUser(oldData.getPreviousList(),
                         oldData.getLoanHolder().getBranch().getId());
-                user.setId(cadUser.get("userId"));
                 role.setId(cadUser.get("roleId"));
-                cadStage.setToUser(user);
+                cadStage.setToUser(null);
                 cadStage.setToRole(role);
                 break;
             case DISBURSEMENT_APPROVED:
