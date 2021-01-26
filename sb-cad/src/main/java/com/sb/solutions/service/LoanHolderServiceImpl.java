@@ -390,7 +390,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             }
         }
 
-        if(user.getRole().getRoleType().equals(RoleType.CAD_LEGAL)){
+        if((user.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) && filterByToUser){
             filterParams.put("toRole", user.getRole().getId().toString());
         }
 
