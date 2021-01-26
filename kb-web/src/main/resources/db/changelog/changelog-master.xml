@@ -6199,4 +6199,11 @@
         <dropTable tableName="shareholder_kyc"/>
     </changeSet>
 
+    <changeSet id="425-alter-table-nepse_price_info-change-data-type" author="bibash">
+        <preConditions onFail="MARK_RAN">
+                <columnExists tableName="nepse_price_info" columnName="avg_days_for_price"/>
+        </preConditions>
+        <modifyDataType tableName="nepse_price_info" columnName="avg_days_for_price" newDataType="varchar(256)"/>
+    </changeSet>
+
 </databaseChangeLog>
