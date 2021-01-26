@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class NepsePriceInfo  extends BaseEntity<Long>{
     private Date sharePriceDate;
-    private Integer avgDaysForPrice;
+    private String avgDaysForPrice;
 
 
 }
