@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.basehttp.BaseHttpService;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
@@ -143,6 +144,11 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public List<Branch> getBranchByProvince(Long pId) {
         return branchRepository.getAllByProvinceIdAndStatus(pId , Status.ACTIVE);
+    }
+
+    @Override
+    public List<Branch> getBranchByProvinceList(List<Province> provinces) {
+        return branchRepository.getAllByProvinceInAndStatus(provinces , Status.ACTIVE);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.sb.solutions.api.branch.repository;
 import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,8 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
     List<BranchDto> getBranch();
 
     List<Branch> getAllByProvinceIdAndStatus(Long pId , Status status);
+
+    List<Branch> getAllByProvinceInAndStatus(List<Province> provinces , Status status);
 
     Branch findByName( String name);
 
