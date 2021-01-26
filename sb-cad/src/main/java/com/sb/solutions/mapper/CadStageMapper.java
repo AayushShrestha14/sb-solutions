@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.user.dto.UserDto;
@@ -46,8 +47,12 @@ public class CadStageMapper {
 
     private final UserService userService;
 
-    public CadStageMapper(UserService userService) {
+    private final RoleService roleService;
+
+    public CadStageMapper(UserService userService,
+        RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     public String addPresentStageToPreviousList(List previousList, CadStage cadStage) {
@@ -90,14 +95,20 @@ public class CadStageMapper {
         Role role = new Role();
         switch (requestedStage.getDocAction()) {
             case FORWARD:
-
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
-                user.setId(requestedStage.getToUser().getId());
                 role.setId(requestedStage.getToRole().getId());
                 cadStage.setDocAction(CADDocAction.FORWARD);
                 stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
-                cadStage.setToUser(user);
+                final Role role1 = roleService.findOne(role.getId());
+                if (role1.getRoleType().equals(RoleType.CAD_LEGAL)) {
+                    stageDto.setCadDocStatus(CadDocStatus.LEGAL_PENDING);
+                    cadStage.setToUser(null);
+                } else {
+                    user.setId(requestedStage.getToUser().getId());
+                    cadStage.setToUser(user);
+                }
+
                 cadStage.setToRole(role);
                 break;
             case BACKWARD:
@@ -134,10 +145,16 @@ public class CadStageMapper {
                     }
                 }
                 cadStage.setDocAction(CADDocAction.BACKWARD);
-
+                final Role fRole = roleService.findOne(cadStage.getFromRole().getId());
+                if (fRole.getRoleType().equals(RoleType.CAD_LEGAL)) {
+                    stageDto.setCadDocStatus(CadDocStatus.LEGAL_PENDING);
+                } else {
+                    stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
+                }
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
-                stageDto.setCadDocStatus(requestedStage.getDocumentStatus());
+
+
                 break;
             case OFFER_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
