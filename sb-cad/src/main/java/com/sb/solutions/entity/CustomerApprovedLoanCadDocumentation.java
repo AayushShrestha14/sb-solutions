@@ -67,6 +67,9 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     private String data;
 
+    @Transient
+    private String disbursementComment;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_additional_doc_list")
     private List<CadAdditionalDocument> additionalDocumentList = new ArrayList<>();

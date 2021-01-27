@@ -1,8 +1,10 @@
 package com.sb.solutions.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.sb.solutions.dto.ExposureDto;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -158,5 +160,10 @@ public class CadController {
         return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
     }
 
+    @PostMapping(value = ApiConstants.POST_ADDITIONAL_DISBURSEMENT)
+    public ResponseEntity<?> saveAdditionalDisbursement(@RequestBody CustomerApprovedLoanCadDocumentation c, @PathVariable Long roleId ) {
+
+        return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
+    }
 
 }
