@@ -239,4 +239,9 @@ public class UserController {
             .successModel(userService.findUserListForSolByRoleIdInAndBranchId(roleIds, bId));
     }
 
+    @GetMapping(value = "/allUser")
+    public ResponseEntity<?> allUser() {
+        return new RestResponseDto().successModel(userService.getAllUserByCurrentRoleBranchAccess());
+    }
+
 }

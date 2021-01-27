@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
@@ -109,6 +111,12 @@ public class BranchController {
         List<BranchCustomerEndDto> branchDtoList = branchCustomerEndMapper
             .mapEntitiesToDtos(branchService.getBranchByProvince(id));
         return new RestResponseDto().successModel(branchDtoList);
+    }
+
+    @PostMapping(value = "/provinceList")
+    public ResponseEntity<?> getBranchByProvinceList(@RequestBody List<Province> provinces) {
+        List<Branch> branchList = branchService.getBranchByProvinceList(provinces);
+        return new RestResponseDto().successModel(branchList);
     }
 
 

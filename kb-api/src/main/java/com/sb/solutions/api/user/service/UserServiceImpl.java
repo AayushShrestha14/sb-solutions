@@ -490,4 +490,16 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<User> getAllUserByCurrentRoleBranchAccess(){
+        List<Branch> branchList = new ArrayList<>();
+        getRoleAccessFilterByBranch().forEach(branchId -> {
+            Branch branch = new Branch();
+            branch.setId(branchId);
+            branchList.add(branch);
+        });
+        return userRepository.findAllByBranchIn(branchList);
+
+    }
+
 }
