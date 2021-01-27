@@ -492,14 +492,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUserByCurrentRoleBranchAccess(){
+        User u = this.getAuthenticatedUser();
+        if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)){
+            return userRepository.findAll().stream().filter(user -> user.getId() != 1).collect(
+                Collectors.toList());
+        }
         List<Branch> branchList = new ArrayList<>();
         getRoleAccessFilterByBranch().forEach(branchId -> {
             Branch branch = new Branch();
             branch.setId(branchId);
             branchList.add(branch);
         });
-        return userRepository.findAllByBranchIn(branchList);
-
+        List<User> filteredUser = new ArrayList<>();
+        if (u.getRole().getRoleAccess() != null){
+            List<User> allUser =  userRepository.findAll().stream().filter(user -> (user.getId() != 1) &&
+                user.getRole().getRoleAccess().equals(RoleAccess.ALL)).collect(
+                Collectors.toList());
+            filteredUser.addAll(allUser);
+        }
+        List<User> selectedBranchUser = userRepository.findAllByBranchIn(branchList);
+        filteredUser.addAll(selectedBranchUser);
+        return filteredUser;
     }
+
 
 }
