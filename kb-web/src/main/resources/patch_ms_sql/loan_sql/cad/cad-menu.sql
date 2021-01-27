@@ -20,7 +20,7 @@ BEGIN
             (16, 'Legal Review Pending','/home/credit/legal-pending', 'edit-2-outline'),
             (18, 'Disbursement Pending','/home/credit/disbursement-pending', 'edit-2-outline'),
             (19, 'Disbursement Approved','/home/credit/disbursement-approved', 'checkmark-circle-outline'),
-            (20, 'CAD File','/home/credit/cad-documents', 'file-text-outline')
+            (20, 'All CAD Files','/home/credit/cad-documents', 'file-text-outline')
             SET IDENTITY_INSERT sub_nav Off
 
 
