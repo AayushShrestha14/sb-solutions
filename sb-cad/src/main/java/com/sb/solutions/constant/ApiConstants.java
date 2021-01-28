@@ -28,4 +28,6 @@ public class ApiConstants {
 
     public static final String UPLOAD_SCC_FILE = "/upload-scc";
 
+    public static final String POST_ADDITIONAL_DISBURSEMENT = "/additional-disbursement/{roleId}";
+
 }
