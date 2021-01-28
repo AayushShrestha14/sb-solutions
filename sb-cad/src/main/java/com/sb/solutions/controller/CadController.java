@@ -163,7 +163,7 @@ public class CadController {
     @PostMapping(value = ApiConstants.POST_ADDITIONAL_DISBURSEMENT)
     public ResponseEntity<?> saveAdditionalDisbursement(@RequestBody CustomerApprovedLoanCadDocumentation c, @PathVariable Long roleId ) {
 
-        return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
+        return new RestResponseDto().successModel(customerCadService.save(c));
     }
 
 }
