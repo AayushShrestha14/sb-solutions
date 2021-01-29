@@ -1,10 +1,8 @@
 package com.sb.solutions.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.sb.solutions.dto.ExposureDto;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +36,9 @@ import com.sb.solutions.validation.constraint.CadValid;
 public class CadController {
 
     private final LoanHolderService loanHolderService;
+
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
+
     @Qualifier("customerCadService")
     private final CustomerCadService customerCadService;
 
@@ -109,7 +109,7 @@ public class CadController {
     }
 
 
-    @PostMapping(path = "/cadCheckListDocUpload")
+    @PostMapping(value = ApiConstants.UPLOAD_LEGAL_FILE)
     public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
         @RequestParam("customerInfoId") Long customerInfoId, @RequestParam("loanID") Long loanId,
         @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
@@ -157,13 +157,15 @@ public class CadController {
 
     @GetMapping(value = ApiConstants.GET_OFFER_LETTER_COUNT)
     public ResponseEntity<?> getCadCount() {
-        return new RestResponseDto().successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
+        return new RestResponseDto()
+            .successModel(loanHolderService.getCadDocumentCount(new HashMap<>()));
     }
 
     @PostMapping(value = ApiConstants.POST_ADDITIONAL_DISBURSEMENT)
-    public ResponseEntity<?> saveAdditionalDisbursement(@RequestBody CustomerApprovedLoanCadDocumentation c, @PathVariable Long roleId ) {
-
-        return new RestResponseDto().successModel(customerCadService.save(c));
+    public ResponseEntity<?> saveAdditionalDisbursement(
+        @RequestBody CustomerApprovedLoanCadDocumentation c, @PathVariable Long roleId) {
+        return new RestResponseDto()
+            .successModel(loanHolderService.saveAdditionalDisbursement(c, roleId));
     }
 
 }

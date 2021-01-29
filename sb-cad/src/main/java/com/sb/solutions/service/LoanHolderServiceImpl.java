@@ -1,19 +1,17 @@
 package com.sb.solutions.service;
 
-import java.util.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.core.utils.ApprovalType;
-import com.sb.solutions.core.utils.ProductUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.address.province.entity.Province;
-import com.sb.solutions.api.branch.service.BranchService;
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.customer.repository.CustomerInfoRepository;
 import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpecBuilder;
@@ -35,6 +35,8 @@ import com.sb.solutions.constant.SuccessMessage;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
+import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.CustomerLoanDto;
 import com.sb.solutions.dto.LoanHolderDto;
@@ -53,6 +55,7 @@ import com.sb.solutions.repository.specification.CustomerCadSpecBuilder;
  **/
 
 @Service
+@Slf4j
 public class LoanHolderServiceImpl implements LoanHolderService {
 
 
@@ -68,24 +71,25 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private final CadStageMapper cadStageMapper;
 
-    private final BranchService branchService;
 
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
+    private final RoleService roleService;
+
 
     public LoanHolderServiceImpl(CustomerLoanRepository customerLoanRepository,
-                                 CustomerLoanMapper customerLoanMapper, UserService userService,
-                                 CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
-                                 CadStageMapper cadStageMapper,
-                                 BranchService branchService, ApprovalRoleHierarchyService approvalRoleHierarchyService) {
+        CustomerLoanMapper customerLoanMapper, UserService userService,
+        CustomerInfoRepository customerInfoRepository, CustomerCadRepository customerCadRepository,
+        CadStageMapper cadStageMapper, ApprovalRoleHierarchyService approvalRoleHierarchyService,
+        RoleService roleService) {
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanMapper = customerLoanMapper;
         this.userService = userService;
         this.customerInfoRepository = customerInfoRepository;
         this.customerCadRepository = customerCadRepository;
         this.cadStageMapper = cadStageMapper;
-        this.branchService = branchService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -268,75 +272,107 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     }
 
     @Override
+    public String saveAdditionalDisbursement(CustomerApprovedLoanCadDocumentation c, Long roleId) {
+        log.info("saving additional Disbursement::for cadId:: {} to roleId:: {}", c.getId(),
+            roleId);
+        final User user = userService.getAuthenticatedUser();
+        c.setCadStageList(cadStageMapper
+            .addPresentStageToPreviousList(c.getPreviousList(),
+                c.getCadCurrentStage()));
+        CadStage cadStage = c.getCadCurrentStage();
+        final Role role = roleService.findOne(roleId);
+        if (role.getRoleType().equals(RoleType.CAD_LEGAL)) {
+            c.setDocStatus(CadDocStatus.LEGAL_PENDING);
+        } else {
+            c.setDocStatus(CadDocStatus.DISBURSEMENT_PENDING);
+        }
+        cadStage.setToRole(role);
+        cadStage.setDocAction(CADDocAction.FORWARD);
+        cadStage.setFromUser(user);
+        cadStage.setFromRole(user.getRole());
+        c.setCadCurrentStage(cadStage);
+        c.setIsAdditionalDisbursement(true);
+        customerCadRepository
+            .save(c);
+        return SuccessMessage.SUCCESS_FORWARD;
+    }
+
+    @Override
     public Map<String, Object> getCadDocumentCount(Map<String, String> filterParams) {
-        Map<String , Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         User u = userService.getAuthenticatedUser();
         if (ProductUtils.OFFER_LETTER) {
             boolean isPresentInCadHierarchy = approvalRoleHierarchyService
-                    .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
-            if(isPresentInCadHierarchy || u.getRole().getRoleType() == RoleType.CAD_ADMIN
-             || u.getRole().getRoleType() == RoleType.CAD_SUPERVISOR){
+                .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
+            if (isPresentInCadHierarchy || u.getRole().getRoleType() == RoleType.CAD_ADMIN
+                || u.getRole().getRoleType() == RoleType.CAD_SUPERVISOR) {
                 String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-                        .map(Object::toString).collect(Collectors.joining(","));
-                data.put("pendingCount" , getCountBySpec(CadDocStatus.OFFER_PENDING.name() , branchAccess));
-                data.put("approvedCount" , getCountBySpec(CadDocStatus.OFFER_APPROVED.name() , branchAccess));
-                data.put("legalPending" , getCountBySpec(CadDocStatus.LEGAL_PENDING.name() , branchAccess));
-                data.put("legalApproved" , getCountBySpec(CadDocStatus.LEGAL_APPROVED.name() , branchAccess));
-                 data.put("disbursementPending" , getCountBySpec(CadDocStatus.DISBURSEMENT_PENDING.name() , branchAccess));
-                data.put("disbursementApproved" , getCountBySpec(CadDocStatus.DISBURSEMENT_APPROVED.name() , branchAccess));
-                data.put("allCount" , getCountBySpec("" , branchAccess));
-                data.put("showCustomerApprove" , true);
+                    .map(Object::toString).collect(Collectors.joining(","));
+                data.put("pendingCount",
+                    getCountBySpec(CadDocStatus.OFFER_PENDING.name(), branchAccess));
+                data.put("approvedCount",
+                    getCountBySpec(CadDocStatus.OFFER_APPROVED.name(), branchAccess));
+                data.put("legalPending",
+                    getCountBySpec(CadDocStatus.LEGAL_PENDING.name(), branchAccess));
+                data.put("legalApproved",
+                    getCountBySpec(CadDocStatus.LEGAL_APPROVED.name(), branchAccess));
+                data.put("disbursementPending",
+                    getCountBySpec(CadDocStatus.DISBURSEMENT_PENDING.name(), branchAccess));
+                data.put("disbursementApproved",
+                    getCountBySpec(CadDocStatus.DISBURSEMENT_APPROVED.name(), branchAccess));
+                data.put("allCount", getCountBySpec("", branchAccess));
+                data.put("showCustomerApprove", true);
             } else {
-                data.put("showCustomerApprove" , false);
+                data.put("showCustomerApprove", false);
             }
         } else {
-            data.put("showCustomerApprove" , false);
+            data.put("showCustomerApprove", false);
         }
         return data;
     }
 
-    long getCountBySpec(String docStatus , String branchAccess) {
+    long getCountBySpec(String docStatus, String branchAccess) {
         Map<String, String> filterParams = new HashMap<>();
-        filterParams.put("branchIds" , branchAccess);
+        filterParams.put("branchIds", branchAccess);
         switch (docStatus) {
             case "OFFER_PENDING":
                 //todo verify this from front and replace with enum const value
-                filterParams.put("docStatus" , CadDocStatus.OFFER_PENDING.name());
+                filterParams.put("docStatus", CadDocStatus.OFFER_PENDING.name());
                 break;
 
             case "OFFER_APPROVED":
-                filterParams.put("docStatus" , CadDocStatus.OFFER_APPROVED.name());
+                filterParams.put("docStatus", CadDocStatus.OFFER_APPROVED.name());
                 break;
 
             case "LEGAL_PENDING":
-                filterParams.put("docStatus" , CadDocStatus.LEGAL_PENDING.name());
+                filterParams.put("docStatus", CadDocStatus.LEGAL_PENDING.name());
                 break;
 
             case "LEGAL_APPROVED":
-                filterParams.put("docStatus" , CadDocStatus.LEGAL_APPROVED.name());
+                filterParams.put("docStatus", CadDocStatus.LEGAL_APPROVED.name());
                 break;
 
             case "DISBURSEMENT_PENDING":
-                filterParams.put("docStatus" , CadDocStatus.DISBURSEMENT_PENDING.name());
+                filterParams.put("docStatus", CadDocStatus.DISBURSEMENT_PENDING.name());
                 break;
 
             case "DISBURSEMENT_APPROVED":
-                filterParams.put("docStatus" , CadDocStatus.DISBURSEMENT_APPROVED.name());
+                filterParams.put("docStatus", CadDocStatus.DISBURSEMENT_APPROVED.name());
                 break;
 
             case "UNASSIGNED":
-                filterParams.put("cadCurrentStage" , null);
+                filterParams.put("cadCurrentStage", null);
                 break;
 
             default:
                 break;
         }
         final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
-                branchAccessAndUserAccess(filterParams));
+            branchAccessAndUserAccess(filterParams));
         final Specification<CustomerApprovedLoanCadDocumentation> specification = customerCadSpecBuilder
-                .build();
+            .build();
 
-        return  customerCadRepository.count(specification);
+        return customerCadRepository.count(specification);
     }
 
 
@@ -390,7 +426,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             }
         }
 
-        if((user.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) && filterByToUser){
+        if ((user.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) && filterByToUser) {
             filterParams.put("toRole", user.getRole().getId().toString());
         }
 

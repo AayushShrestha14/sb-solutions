@@ -27,6 +27,7 @@ public class ApiConstants {
     public static final String GET_OFFER_LETTER_COUNT = "/offer-letter-count";
 
     public static final String UPLOAD_SCC_FILE = "/upload-scc";
+    public static final String UPLOAD_LEGAL_FILE = "/cadCheckListDocUpload";
 
     public static final String POST_ADDITIONAL_DISBURSEMENT = "/additional-disbursement/{roleId}";
 

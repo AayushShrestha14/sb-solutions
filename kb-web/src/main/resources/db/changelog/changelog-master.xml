@@ -6206,4 +6206,15 @@
         <modifyDataType tableName="nepse_price_info" columnName="avg_days_for_price" newDataType="varchar(256)"/>
     </changeSet>
 
+    <changeSet id="426-alter-table-customer-approved-loan-cad-document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="is_additional_disbursement"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="is_additional_disbursement" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
