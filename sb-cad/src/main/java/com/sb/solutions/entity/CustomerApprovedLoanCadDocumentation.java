@@ -1,29 +1,32 @@
 package com.sb.solutions.entity;
 
+import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-
-import com.sb.solutions.api.customer.entity.CustomerInfo;
-import com.sb.solutions.api.loan.dto.LoanStageDto;
-import com.sb.solutions.api.loan.entity.CustomerLoan;
-import com.sb.solutions.core.enitity.BaseEntity;
-import com.sb.solutions.dto.CadStageDto;
-import com.sb.solutions.enums.CadDocStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sb.solutions.core.constant.AppConstant.DATE_FORMAT;
+import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.enums.CadDocStatus;
 
 /**
  * @author : Rujan Maharjan on  12/1/2020
@@ -69,6 +72,8 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     @Transient
     private String disbursementComment;
+
+    private Boolean isAdditionalDisbursement = false;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_additional_doc_list")

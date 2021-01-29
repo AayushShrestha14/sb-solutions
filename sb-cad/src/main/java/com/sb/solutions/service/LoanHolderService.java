@@ -7,6 +7,7 @@ import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +35,7 @@ public interface LoanHolderService {
 
     @Transactional
     String assignCadToUser(CadStageDto cadStageDto);
+
+    @Transactional
+    String saveAdditionalDisbursement(CustomerApprovedLoanCadDocumentation c, Long roleId);
 }
