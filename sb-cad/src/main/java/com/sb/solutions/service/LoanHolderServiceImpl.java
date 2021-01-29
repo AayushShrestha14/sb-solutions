@@ -287,6 +287,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             c.setDocStatus(CadDocStatus.DISBURSEMENT_PENDING);
         }
         cadStage.setToRole(role);
+        cadStage.setToUser(null);
         cadStage.setDocAction(CADDocAction.FORWARD);
         cadStage.setFromUser(user);
         cadStage.setFromRole(user.getRole());
