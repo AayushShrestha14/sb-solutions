@@ -6217,4 +6217,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="426-alter-table-customer-info-add-column-nep-data" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="nep_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="nep_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

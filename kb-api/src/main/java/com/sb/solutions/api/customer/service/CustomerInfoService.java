@@ -29,4 +29,6 @@ public interface CustomerInfoService extends Service<CustomerInfo, Long>,
         CustomerIdType customerIdType, Date date);
 
     String updateObligor(String obligor,Long id);
+
+    Object updateNepaliConfigData(String nepData, Long id);
 }
