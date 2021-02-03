@@ -309,6 +309,13 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     }
 
     @Override
+    public Object updateNepaliConfigData(String nepData, Long id) {
+        CustomerInfo customerInfo = customerInfoRepository.getOne(id);
+        customerInfo.setNepData(nepData);
+        return customerInfoRepository.save(customerInfo);
+    }
+
+    @Override
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
         filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));

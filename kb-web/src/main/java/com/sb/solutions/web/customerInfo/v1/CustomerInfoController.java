@@ -15,13 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
@@ -210,6 +204,14 @@ public class CustomerInfoController {
         return new RestResponseDto()
             .successModel(
                 customerInfoService.updateObligor(customerInfo.getObligor(), customerInfo.getId()));
+
+    }
+
+    @PatchMapping("/update-nep-data/{id}")
+    public ResponseEntity<?> UpdateNepaliConfigData(@RequestBody String nepData , @PathVariable Long id) {
+        return new RestResponseDto()
+                .successModel(
+                        customerInfoService.updateNepaliConfigData(nepData, id));
 
     }
 }
