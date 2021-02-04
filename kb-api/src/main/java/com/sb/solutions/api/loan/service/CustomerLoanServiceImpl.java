@@ -944,7 +944,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public List<CustomerLoan> getFinalUniqueLoansById(Long id) {
-        return customerLoanRepository.findALlUniqueLoanByCustomerId(id);
+        return customerLoanRepository.findCustomerLoansByLoanHolderId(id);
     }
 
     @Override

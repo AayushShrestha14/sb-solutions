@@ -88,6 +88,7 @@ product:
   fullCad: true #only fullCad should not be enable. you should enable offerLetter also
   cbsEnable: false
   checklistLiteVersion: false
+  microLoan: true
 
 #this feature is enabled if cbsEnable is set true
 #url : remote server url

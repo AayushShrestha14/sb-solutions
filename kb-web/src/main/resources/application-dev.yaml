@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;database=las_v2
+    url: jdbc:sqlserver://202.166.201.235:1433;database=mega_cad
     username: sa
-    password: root
+    password: sbdb@141
   jpa:
     show-sql: true
 
