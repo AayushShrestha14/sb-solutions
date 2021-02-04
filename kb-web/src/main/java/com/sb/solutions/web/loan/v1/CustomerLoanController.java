@@ -336,7 +336,7 @@ public class CustomerLoanController {
 
     @GetMapping("/final-loan-list/{id}")
     public ResponseEntity<?> getFinalLoanById(@PathVariable("id") Long id) {
-        return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
+        return new RestResponseDto().successModel(service.getFinalUniqueLoansById(id));
     }
 
     @GetMapping("/loan-holder/{id}/for-combine")
