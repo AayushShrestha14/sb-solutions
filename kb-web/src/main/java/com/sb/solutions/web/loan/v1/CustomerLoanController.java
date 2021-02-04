@@ -334,6 +334,11 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
     }
 
+    @GetMapping("/final-loan-list/{id}")
+    public ResponseEntity<?> getFinalLoanById(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(service.getLoanByLoanHolderId(id));
+    }
+
     @GetMapping("/loan-holder/{id}/for-combine")
     public ResponseEntity<?> getInitialLoanByLoanHolderId(@PathVariable("id") Long id) {
         Map<String, String> filter = new HashMap<>();

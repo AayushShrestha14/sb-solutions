@@ -943,6 +943,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
+    public List<CustomerLoan> getFinalUniqueLoansById(Long id) {
+        return customerLoanRepository.findALlUniqueLoanByCustomerId(id);
+    }
+
+    @Override
     public List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative) {
         String date = new SimpleDateFormat("yyyy-MM-dd")
                 .format(customerRelative.getCitizenshipIssuedDate());
