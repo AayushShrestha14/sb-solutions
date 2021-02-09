@@ -6227,5 +6227,15 @@
             <column name="nep_data" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="427-alter-table-customer-add-column-is-micro-customer" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="is_micro_customer"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="is_micro_customer" type="INT"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
