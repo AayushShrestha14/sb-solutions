@@ -66,6 +66,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     List<CustomerLoan> getLoanByLoanHolderId(Long id);
 
+    List<CustomerLoan> getFinalUniqueLoansById(Long id);
+
     List<CustomerLoan> getLoanByCustomerKycGroup(CustomerRelative customerRelative);
 
     GroupSummaryDto getLoanByCustomerGroup(CustomerGroup customerGroup);
