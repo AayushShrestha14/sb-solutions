@@ -6237,5 +6237,15 @@
             <column name="is_micro_customer" type="INT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="428-alter-table-company-info-add-column-is-micro-customer" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info" columnName="is_micro_customer"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="is_micro_customer" type="INT"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
