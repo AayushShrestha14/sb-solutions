@@ -67,6 +67,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_PROVINCE = "provinceIds";
     public static final String FILTER_BY_NAME = "name";
     public static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
+    public static final String FILTER_BY_USER = "users";
     private final String property;
     private final String value;
 
@@ -324,6 +325,10 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
             case FILTER_BY_CUSTOMER_TYPE:
                 return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
 
+            case FILTER_BY_USER:
+                return criteriaBuilder
+                        .like(root.join("currentStage", JoinType.LEFT).join("toUser").get("name"),
+                                value.toLowerCase() + "%");
             default:
                 return null;
         }
