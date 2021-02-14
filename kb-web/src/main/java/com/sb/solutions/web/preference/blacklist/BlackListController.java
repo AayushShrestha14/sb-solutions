@@ -2,15 +2,12 @@ package com.sb.solutions.web.preference.blacklist;
 
 import java.util.List;
 
+import com.sb.solutions.core.dto.SearchDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sb.solutions.api.preference.blacklist.entity.BlackList;
@@ -40,6 +37,12 @@ public class BlackListController {
                                              @RequestParam("size") int size) {
         return new RestResponseDto().successModel(blackListService
                 .findAllBlackList(PaginationUtils.pageable(page, size)));
+    }
+    @PostMapping(value = "/list")
+    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
+                                    @RequestParam("page") int page, @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(blackListService
+                .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping(value = "/uploadBlackList")
