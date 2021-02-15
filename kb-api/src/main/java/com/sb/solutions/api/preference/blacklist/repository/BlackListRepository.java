@@ -2,7 +2,6 @@ package com.sb.solutions.api.preference.blacklist.repository;
 
 import java.util.List;
 
-import com.sb.solutions.api.nepseCompany.entity.NepseCompany;
 import com.sb.solutions.api.preference.blacklist.entity.BlackList;
 import com.sb.solutions.core.repository.BaseRepository;
 import org.springframework.data.domain.Page;
