@@ -6247,5 +6247,52 @@
             <column name="is_micro_customer" type="INT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="429-create-synopsis-creditworthiness" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="synopsis_creditworthiness"/>
+            </not>
+        </preConditions>
+        <createTable tableName="synopsis_creditworthiness">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_synopsis_creditworthiness_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_synopsis_creditworthiness_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="430-alter-customer-info-add-synopsis-creditworthiness-id" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="synopsis_creditworthiness_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="synopsis_creditworthiness_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_synopsis_creditworthiness_id"
+                             referencedTableName="synopsis_creditworthiness"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
