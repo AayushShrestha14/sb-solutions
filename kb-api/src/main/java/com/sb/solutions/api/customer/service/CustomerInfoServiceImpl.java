@@ -248,8 +248,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             List<Insurance> insurances = Arrays.asList(mapper.convertValue(o, Insurance[].class));
             final List<Insurance> insurance = insuranceService.saveAll(insurances);
             customerInfo1.setInsurance(insurance);
-            insuranceService
-                .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
+            // TODO enable this for insurance expiry
+//            insuranceService
+//                .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CUSTOMER_GROUP))) {
             CustomerGroup customerGroup = objectMapper().convertValue(o, CustomerGroup.class);
             if (customerGroup.getId() == null && customerGroup.getGroupCode() == null) {
