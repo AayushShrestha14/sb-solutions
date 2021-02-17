@@ -6342,4 +6342,53 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="431-create-borrower-portfolio-table" author="Bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="borrower_port_folio"/>
+            </not>
+        </preConditions>
+        <createTable tableName="borrower_port_folio">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_borrower_port_folio_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_borrower_port_folio_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-customer-info-add-borrower-portfolio-id" author="Bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="borrower_port_folio_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="borrower_port_folio_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_borrower_port_folio_id"
+                             referencedTableName="borrower_port_folio"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

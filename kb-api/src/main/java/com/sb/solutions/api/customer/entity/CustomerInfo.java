@@ -2,6 +2,7 @@ package com.sb.solutions.api.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.cicl.entity.Cicl;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
@@ -167,6 +168,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private MicroBaselRiskExposure microBaselRiskExposure;
+
+    @OneToOne
+    private BorrowerPortFolio borrowerPortFolio;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())) {
