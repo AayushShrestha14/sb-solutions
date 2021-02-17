@@ -134,26 +134,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             CIclService cIclService,
             CreditChecklistService creditChecklistService,
             SynopsisCreditworthinessService synopsisCreditworthinessService,
-            BorrowerPortFolioService borrowerPortFolioService) {
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        FinancialService financialService,
-        SiteVisitService siteVisitService,
-        SecurityService securityService,
-        ShareSecurityService shareSecurityService,
-        GuarantorDetailService guarantorDetailService,
-        UserService userService,
-        InsuranceService insuranceService,
-        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-        CreditRiskGradingService creditRiskGradingService,
-        CrgGammaService crgGammaService,
-        CustomerLoanFlagService loanFlagService,
-        IncomeFromAccountServices incomeFromAccountServices,
-        NetTradingAssetsService netTradingAssetsService,
-        CIclService cIclService,
-        CreditChecklistService creditChecklistService,
-        SynopsisCreditworthinessService synopsisCreditworthinessService,
-        MicroBaselRiskExposureService microBaselRiskExposureService
-    ) {
+            BorrowerPortFolioService borrowerPortFolioService,
+            MicroBaselRiskExposureService microBaselRiskExposureService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
