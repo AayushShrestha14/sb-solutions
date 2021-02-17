@@ -20,6 +20,7 @@ public class TemplateNameConstant {
     public static final String INCOME_FROM_ACCOUNT = "Income From Account";
     public static final String CREDIT_CHECKlIST = "Credit Checklist";
     public static final String SYNOPSIS_CREDITWORTHINESS = "Synopsis Creditworthiness";
+    public static final String BORROWER_PORTFOLIO = "Borrower Portfolio";
 
 
 }

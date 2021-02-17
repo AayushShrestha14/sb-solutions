@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 
+import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
+import com.sb.solutions.api.borrowerPortfolio.service.BorrowerPortFolioService;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
@@ -109,26 +111,27 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final NetTradingAssetsService netTradingAssetsService;
     private final CreditChecklistService creditChecklistService;
     private final SynopsisCreditworthinessService synopsisCreditworthinessService;
+    private final BorrowerPortFolioService borrowerPortFolioService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        FinancialService financialService,
-        SiteVisitService siteVisitService,
-        SecurityService securityService,
-        ShareSecurityService shareSecurityService,
-        GuarantorDetailService guarantorDetailService,
-        UserService userService,
-        InsuranceService insuranceService,
-        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-        CreditRiskGradingService creditRiskGradingService,
-        CrgGammaService crgGammaService,
-        CustomerLoanFlagService loanFlagService,
-        IncomeFromAccountServices incomeFromAccountServices,
-        NetTradingAssetsService netTradingAssetsService,
-        CIclService cIclService,
-        CreditChecklistService creditChecklistService,
-        SynopsisCreditworthinessService synopsisCreditworthinessService
-    ) {
+            @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
+            SiteVisitService siteVisitService,
+            SecurityService securityService,
+            ShareSecurityService shareSecurityService,
+            GuarantorDetailService guarantorDetailService,
+            UserService userService,
+            InsuranceService insuranceService,
+            CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+            CreditRiskGradingService creditRiskGradingService,
+            CrgGammaService crgGammaService,
+            CustomerLoanFlagService loanFlagService,
+            IncomeFromAccountServices incomeFromAccountServices,
+            NetTradingAssetsService netTradingAssetsService,
+            CIclService cIclService,
+            CreditChecklistService creditChecklistService,
+            SynopsisCreditworthinessService synopsisCreditworthinessService,
+            BorrowerPortFolioService borrowerPortFolioService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -147,6 +150,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.netTradingAssetsService = netTradingAssetsService;
         this.creditChecklistService = creditChecklistService;
         this.synopsisCreditworthinessService = synopsisCreditworthinessService;
+        this.borrowerPortFolioService = borrowerPortFolioService;
     }
 
 
@@ -290,6 +294,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final SynopsisCreditworthiness synopsisCreditworthiness = synopsisCreditworthinessService
                     .save(objectMapper().convertValue(o, SynopsisCreditworthiness.class));
             customerInfo1.setSynopsisCreditworthiness(synopsisCreditworthiness);
+        }else if ((template.equalsIgnoreCase(TemplateNameConstant.BORROWER_PORTFOLIO))) {
+            final BorrowerPortFolio borrowerPortFolio = borrowerPortFolioService
+                    .save(objectMapper().convertValue(o, BorrowerPortFolio.class));
+            customerInfo1.setBorrowerPortFolio(borrowerPortFolio);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
