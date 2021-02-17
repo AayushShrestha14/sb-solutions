@@ -6294,5 +6294,52 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="431-create-table-micro-basel-risk-exposure" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="micro_basel_risk_exposure"/>
+            </not>
+        </preConditions>
+        <createTable tableName="micro_basel_risk_exposure">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_basel_risk_exposure_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_basel_risk_exposure_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="432-alter-customer-info-add-micro-basel-risk-exposure-id" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="micro_basel_risk_exposure_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="micro_basel_risk_exposure_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_micro_basel_risk_exposure_id"
+                             referencedTableName="micro_basel_risk_exposure"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

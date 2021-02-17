@@ -17,6 +17,7 @@ import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.incomeFromAccount.entity.IncomeFromAccount;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
@@ -163,6 +164,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private SynopsisCreditworthiness synopsisCreditworthiness;
+
+    @OneToOne
+    private MicroBaselRiskExposure microBaselRiskExposure;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())) {

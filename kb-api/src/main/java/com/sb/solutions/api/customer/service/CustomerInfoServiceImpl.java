@@ -19,6 +19,8 @@ import com.google.common.base.Preconditions;
 
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
+import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
+import com.sb.solutions.api.microbaselriskexposure.service.MicroBaselRiskExposureService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 
@@ -109,6 +111,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final NetTradingAssetsService netTradingAssetsService;
     private final CreditChecklistService creditChecklistService;
     private final SynopsisCreditworthinessService synopsisCreditworthinessService;
+    private final MicroBaselRiskExposureService microBaselRiskExposureService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -127,7 +130,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         NetTradingAssetsService netTradingAssetsService,
         CIclService cIclService,
         CreditChecklistService creditChecklistService,
-        SynopsisCreditworthinessService synopsisCreditworthinessService
+        SynopsisCreditworthinessService synopsisCreditworthinessService,
+        MicroBaselRiskExposureService microBaselRiskExposureService
     ) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
@@ -147,6 +151,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.netTradingAssetsService = netTradingAssetsService;
         this.creditChecklistService = creditChecklistService;
         this.synopsisCreditworthinessService = synopsisCreditworthinessService;
+        this.microBaselRiskExposureService = microBaselRiskExposureService;
     }
 
 
@@ -290,6 +295,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final SynopsisCreditworthiness synopsisCreditworthiness = synopsisCreditworthinessService
                     .save(objectMapper().convertValue(o, SynopsisCreditworthiness.class));
             customerInfo1.setSynopsisCreditworthiness(synopsisCreditworthiness);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.BASEL_RISK_EXPOSURE))) {
+            final MicroBaselRiskExposure microBaselRiskExposure = microBaselRiskExposureService
+                    .save(objectMapper().convertValue(o, MicroBaselRiskExposure.class));
+            customerInfo1.setMicroBaselRiskExposure(microBaselRiskExposure);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
