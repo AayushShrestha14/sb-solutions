@@ -3,6 +3,8 @@ package com.sb.solutions.api.preference.blacklist.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.core.dto.SearchDto;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,11 @@ public class BlackListServiceImpl implements BlackListService {
     }
 
     @Override
-    public Page<BlackList> findAllPageable(Object t, Pageable pageable) {
-        return null;
+    public Page<BlackList> findAllPageable(Object object, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
+        return blackListRepository
+                .blackListFilter(s.getName() == null ? "" : s.getName(), pageable);
     }
 
     @Override
