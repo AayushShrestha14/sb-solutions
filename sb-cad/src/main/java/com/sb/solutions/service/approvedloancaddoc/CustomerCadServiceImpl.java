@@ -85,7 +85,8 @@ public class CustomerCadServiceImpl implements CustomerCadService {
 
         final StringBuilder nameBuilder = new StringBuilder().append(offerDocument.getDocName().trim().replaceAll("\\s", "-"))
                 .append("-")
-                .append(customerCad.getLoanHolder().getIdNumber());
+                .append(customerCad.getLoanHolder().getIdNumber().replace("/","-"));
+        logger.info("namebuilder{}:::",nameBuilder);
         logger.info("File Upload Path offer letter {} {}", uploadPath, nameBuilder);
         ResponseEntity responseEntity = FileUploadUtils
                 .uploadFile(multipartFile, uploadPath, nameBuilder.toString());
