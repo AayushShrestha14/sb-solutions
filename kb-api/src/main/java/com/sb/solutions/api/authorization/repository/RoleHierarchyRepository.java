@@ -18,13 +18,13 @@ public interface RoleHierarchyRepository extends JpaRepository<RoleHierarchy, Lo
 
     @Query("SELECT"
         + " new com.sb.solutions.api.authorization.entity.RoleHierarchy("
-        + "r.roleOrder,r.role.roleName,r.role.id)"
+        + "r.roleOrder,r.role.roleName,r.role.id, r.role.roleType)"
         + " FROM RoleHierarchy r   WHERE r.roleOrder < :id AND r.role.roleType <> 0 "
         + "ORDER BY r.roleOrder")
     List<RoleHierarchy> roleHierarchyByCurrentRoleForward(@Param("id") Long id);
 
     @Query("SELECT new com.sb.solutions.api.authorization.entity.RoleHierarchy("
-        + "r.roleOrder,r.role.roleName,r.role.id) FROM RoleHierarchy r"
+        + "r.roleOrder,r.role.roleName,r.role.id, r.role.roleType) FROM RoleHierarchy r"
         + "   WHERE r.roleOrder < :id AND r.role.roleType <> 0 ORDER BY r.roleOrder")
     List<RoleHierarchy> roleHierarchyByCurrentRoleBackward(@Param("id") Long id);
 

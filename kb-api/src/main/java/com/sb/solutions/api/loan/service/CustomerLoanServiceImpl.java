@@ -864,8 +864,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             if(previousLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN || previousLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
                 Map<String, Object> proposalData = gson.fromJson(previousLoan.getProposal().getData(), HashMap.class);
                 proposalData.replace("existingLimit", previousLoan.getProposal().getProposedLimit());
+                proposalData.replace("outStandingLimit", 0);
                 previousLoan.getProposal().setData(gson.toJson(proposalData));
                 previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
+                previousLoan.getProposal().setOutStandingLimit(BigDecimal.ZERO);
             }
         }
         if (previousLoan.getCreditRiskGrading() != null) {
@@ -940,6 +942,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getLoanByLoanHolderId(Long id) {
         return customerLoanRepository.getCustomerLoanByAndLoanHolderId(id);
+    }
+
+    @Override
+    public List<CustomerLoan> getFinalUniqueLoansById(Long id) {
+        return customerLoanRepository.findCustomerLoansByLoanHolderId(id);
     }
 
     @Override
@@ -1148,6 +1155,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         // check if company VAT/PAN registration will expire
         if (loan.getCompanyInfo() != null) {
             companyInfoService.execute(loan.getLoanHolder().getId());
+        }
+
+        if(!ObjectUtils.isEmpty(loan.getLoanHolder().getSecurity())) {
+            HelperDto<Long> dto = new HelperDto<>(loan.getId(), HelperIdType.LOAN);
+            securityService.execute(Optional.of(dto));
         }
 
         // check proposed limit VS considered amount

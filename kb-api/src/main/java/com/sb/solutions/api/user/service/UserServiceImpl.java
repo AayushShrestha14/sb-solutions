@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +127,8 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)) {
+        if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)
+                && user.getRole().getRoleType() != RoleType.CAD_SUPERVISOR) {
             if (user.getBranch().isEmpty()) {
                 throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
             }
@@ -231,8 +233,15 @@ public class UserServiceImpl implements UserService {
         if (u.getRole().getRoleAccess() != null) {
             if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole()
                 .getRoleAccess().equals(RoleAccess.OWN)) {
-                for (Branch b : u.getBranch()) {
-                    branchIdList.add(b.getId());
+                if(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+                    for(Province p: u.getProvinces()) {
+                        List<Branch> branches = branchRepository.getAllByProvinceIdAndStatus(p.getId(), Status.ACTIVE);
+                        branchIdList.addAll(branches.stream().map(Branch::getId).collect(Collectors.toList()));
+                    }
+                } else {
+                    for (Branch b : u.getBranch()) {
+                        branchIdList.add(b.getId());
+                    }
                 }
             }
 
@@ -432,8 +441,13 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userDtoList = new ArrayList<>();
         for (User u : userList) {
             UserDto userDto = new UserDto();
+            RoleDto roleDto = new RoleDto();
+
             BeanUtils.copyProperties(u, userDto);
+            BeanUtils.copyProperties(u.getRole(), roleDto);
+            roleDto.setId(u.getRole().getId());
             userDto.setId(u.getId());
+            userDto.setRole(roleDto);
             userDtoList.add(userDto);
         }
         return userDtoList;
@@ -475,5 +489,31 @@ public class UserServiceImpl implements UserService {
                 Collectors.toList());
 
     }
+
+    @Override
+    public List<User> getAllUserByCurrentRoleBranchAccess(){
+        User u = this.getAuthenticatedUser();
+        if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)){
+            return userRepository.findAll().stream().filter(user -> user.getId() != 1).collect(
+                Collectors.toList());
+        }
+        List<Branch> branchList = new ArrayList<>();
+        getRoleAccessFilterByBranch().forEach(branchId -> {
+            Branch branch = new Branch();
+            branch.setId(branchId);
+            branchList.add(branch);
+        });
+        List<User> filteredUser = new ArrayList<>();
+        if (u.getRole().getRoleAccess() != null){
+            List<User> allUser =  userRepository.findAll().stream().filter(user -> (user.getId() != 1) &&
+                user.getRole().getRoleAccess().equals(RoleAccess.ALL)).collect(
+                Collectors.toList());
+            filteredUser.addAll(allUser);
+        }
+        List<User> selectedBranchUser = userRepository.findAllByBranchIn(branchList);
+        filteredUser.addAll(selectedBranchUser);
+        return filteredUser;
+    }
+
 
 }

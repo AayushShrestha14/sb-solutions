@@ -160,6 +160,8 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     private String obligor;
 
+    private String nepData;
+
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
            Pattern pattern = Pattern.compile("-");

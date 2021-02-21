@@ -41,4 +41,6 @@ public class Document extends BaseEntity<Long> {
     private Status status;
 
     private DocumentCheckType checkType;
+
+    private Boolean containsTemplate;
 }

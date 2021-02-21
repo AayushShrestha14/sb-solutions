@@ -23,5 +23,7 @@ public class DocumentDto extends BaseDto<Long> {
 
     private DocumentCheckType checkType;
 
+    private Boolean containsTemplate;
+
 
 }

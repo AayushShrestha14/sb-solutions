@@ -56,6 +56,9 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
     @Value("${bank.name}")
     private String bankName;
 
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(InsuranceServiceImpl.class);
 
     private final InsuranceRepository repository;
@@ -169,6 +172,7 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
         CustomerLoanFlag flag) {
         final Email emailMaker = new Email();
         emailMaker.setBankName(this.bankName);
+        emailMaker.setAffiliateId(this.affiliateId);
 
         Specification<CustomerLoan> specs = getInsuranceSpecs();
         Map<String, String> t = new HashMap<>();

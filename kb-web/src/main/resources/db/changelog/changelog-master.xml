@@ -5367,4 +5367,865 @@
             <column name="company_legal_document_address" type="VARCHAR(256)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="299-alter-customer-add-individual-json-data" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="individual_json_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="individual_json_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="299-alter-customer-add-individual-json-data-audit" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_audit" columnName="individual_json_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_audit">
+            <column name="individual_json_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="400-create-table-shareholder-kyc" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="shareholder_kyc"/>
+            </not>
+        </preConditions>
+        <createTable tableName="shareholder_kyc">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shareholder_relationship" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relation_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="citizenship_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="citizenship_issued_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mobile_number" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="shareholder_kyc_address" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="401-create-table-shareholder-kyc_audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="shareholder_kyc_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="shareholder_kyc_audit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="shareholder_relationship" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relation_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="citizenship_number" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_shareholder_kyc_audit_district_id"
+                             referencedTableName="district"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="citizenship_issued_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mobile_number" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="shareholder_kyc_address" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="shareholder_kyc_audit" columnNames="id,rev"
+                       constraintName="PK_shareholder_kyc_audit_id_rev"/>
+        <addForeignKeyConstraint baseTableName="shareholder_kyc_audit" baseColumnNames="rev"
+                                 constraintName="FK_shareholder_kyc_audit_rev_revinfo_rev"
+                                 referencedTableName="revinfo" referencedColumnNames="rev"/>
+    </changeSet>
+    <changeSet id="402-create-table-company-info-shareholder-kyc-list" author="Mohammad">
+        <preConditions>
+            <not>
+                <tableExists tableName="company_info_shareholder_kyc_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_info_shareholder_kyc_list">
+            <column name="company_info_id" type="BIGINT">
+                <constraints foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"
+                             referencedTableName="company_info" referencedColumnNames="id"/>
+            </column>
+            <column name="shareholder_kyc_list_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"
+                        referencedTableName="shareholder_kyc" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="403-create-table-company-info-shareholder-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="company_info_shareholder_kyc_list_audit"/>
+            </not>
+        </preConditions>
+        <createTable tableName="company_info_shareholder_kyc_list_audit">
+            <column name="rev" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="company_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shareholder_kyc_list_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="company_info_shareholder_kyc_list_audit"
+                       columnNames="company_info_id,shareholder_kyc_list_id,rev"
+                       constraintName="PK_company_info_shareholder_kyc_list_audit_id_rev"/>
+        <addForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list_audit"
+                                 baseColumnNames="rev"
+                                 constraintName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"
+                                 referencedTableName="revinfo" referencedColumnNames="rev"/>
+    </changeSet>
+
+    <changeSet id="288-cad-stage" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_stage"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_stage">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="comment" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_from_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="to_user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_to_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="from_role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_from_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="to_role_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_to_role_id"
+                             referencedTableName="role"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="doc_action" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_stage_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="289-create-table-cad-file" author="rujan">
+    <preConditions onFail="MARK_RAN">
+        <not>
+            <tableExists tableName="cad_file"/>
+        </not>
+    </preConditions>
+        <createTable tableName="cad_file">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="cad_document_id" type="Bigint">
+                <constraints
+                             foreignKeyName="fk_cad_file_cad_document_id"
+                             referencedTableName="document"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="customer_loan_id" type="BIGINT"/>
+            <column name="path" type="VARCHAR(250)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="initial_information" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="supported_information" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_file_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_cad_file_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="290-create-table-customer-approved-loan-cad-documentation" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_approved_loan_cad_documentation"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_approved_loan_cad_documentation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="loan_holder_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_cad_loan_holder_id"
+                             referencedTableName="customer_info"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="cad_current_stage_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_cad_cad_current_stage_id"
+                             referencedTableName="cad_stage"
+                             referencedColumnNames="id"/>
+            </column>
+
+
+            <column name="cad_stage_list" type="LONGTEXT">
+                <constraints nullable="true"/>
+            </column>
+
+
+            <column name="doc_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="291-create-table-cad_file_customer_approved_loan_cad_file_list" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_file_customer_approved_loan_cad_file_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_file_customer_approved_loan_cad_file_list">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_id"
+                             referencedTableName="customer_approved_loan_cad_documentation"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="cad_file_list_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_cad_file_loan_id"
+                        referencedTableName="cad_file"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="292-create-table-customer-approved-loan-cad-documentation-approved-loan" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="assigned_loan"/>
+            </not>
+        </preConditions>
+        <createTable tableName="assigned_loan">
+            <column name="assigned_loan_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_assigned_loan_id"
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_assigned_customer_approved_loan_cad_documentation_id"
+                        referencedTableName="customer_approved_loan_cad_documentation"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="301-create-table-user-province" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_provinces"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users_provinces">
+            <column name="user_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_user_id"
+                        referencedTableName="users"
+                        referencedColumnNames="id"/>
+            </column>
+            <column name="provinces_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_province_id"
+                        referencedTableName="province"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="302-alter-document-add-contains_template" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="document" columnName="contains_template"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="document">
+            <column name="contains_template" type="boolean"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="303-create-table-offer-document" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="offer_document"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="offer_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="doc_name" type="VARCHAR(256)"/>
+            <column name="initial_information" type="LONGTEXT"/>
+            <column name="path_signed" type="VARCHAR(256)"/>
+            <column name="draft_path" type="VARCHAR(256)"/>
+            <column name="supported_information" type="LONGTEXT"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_offer_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer-offer_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="303-create-table-customer_approved_loan_cad_documentation_offer_document_list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+           <not>
+               <tableExists tableName="customer_approved_loan_cad_documentation_offer_document_list"/>
+           </not>
+        </preConditions>
+        <createTable tableName="customer_approved_loan_cad_documentation_offer_document_list">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT" >
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_third_table_id"
+                             referencedTableName="customer_approved_loan_cad_documentation"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="offer_document_list_id" type="BIGINT" >
+                <constraints nullable="true"
+                             foreignKeyName="fk_offer_document_list_third_table_id"
+                             referencedTableName="offer_document"
+                             referencedColumnNames="id"
+                />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="303-alter-table-customer-aproved-documentation-add-column-fees_and_commission" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="fees_and_commission"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="fees_and_commission" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="304-create-table-exposure" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="exposure"/>
+            </not>
+        </preConditions>
+        <createTable tableName="exposure">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LONGTEXT">
+                <constraints nullable=" false"/>
+            </column>
+            <column name="label" type="VARCHAR2(1000)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_exposure_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_exposure_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="305-alter-table-add-column-exposure-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="expsure_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="exposure_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="306-alter-table-exposure-add-column-previous-data-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="exposure" columnName="history_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="exposure">
+            <column name="history_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="306-alter-table-offer-document-offer-doc-type" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="offer_document" columnName="offer_doc_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="offer_document">
+            <column name="offer_doc_type" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="404-drop-fk-constraint-management-team" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_management_team_list_company_info_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_management_team_list_management_team_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_management_team_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_management_team_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_management_team_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_management_team_modified_by_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+                                  constraintName="fk_company_info_management_team_list_company_info_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list"
+                                  constraintName="fk_company_info_management_team_list_management_team_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_management_team_list_audit"
+                                  constraintName="FK_company_info_management_team_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="management_team_audit"
+                                  constraintName="FK_management_team_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="management_team"
+                                  constraintName="fk_management_team_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="management_team"
+                                  constraintName="fk_management_team_modified_by_id"/>
+    </changeSet>
+    <changeSet id="405-drop-table-company-info-management-team-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_management_team_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_management_team_list"/>
+    </changeSet>
+    <changeSet id="406-drop-table-company-info-management-team-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_management_team_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_management_team_list_audit"/>
+    </changeSet>
+    <changeSet id="407-drop-table-management-team-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="management_team_audit"/>
+        </preConditions>
+        <dropTable tableName="management_team_audit"/>
+    </changeSet>
+    <changeSet id="408-drop-table-management-team" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="management_team"/>
+        </preConditions>
+        <dropTable tableName="management_team"/>
+    </changeSet>
+
+    <changeSet id="409-alter-applicant-add-column-dob" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="applicant" columnName="dob"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="applicant">
+            <column name="dob" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="409-alter-table-customer-approved-documentation-add-column-data" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="410-alter-table-cad-file-add-column-amount" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="amount"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="amount" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="411-alter-table-cad-file-add-column-remarks" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="remarks"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="remarks" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="412-alter-table-cad-file-add-column-uploaded-date" author="buddha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cad_file" columnName="uploaded_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="cad_file">
+            <column name="uploaded_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="413-create-table-cad-additional-document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_additional_document"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="cad_additional_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="doc_name" type="VARCHAR(256)"/>
+            <column name="remarks" type="LONGTEXT"/>
+            <column name="doc_path" type="VARCHAR(256)"/>
+            <column name="upload_on" type="DATETIME"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_cad_additional_document_created_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_cad_additional_document_modified_by_id"
+                  referencedTableName="users"
+                  referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="414-create-table-cad_file_customer_approved_loan_additional_doc_list" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_file_customer_approved_loan_additional_doc_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cad_file_customer_approved_loan_additional_doc_list">
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_customer_approved_loan_cad_documentation_additional_document_id"
+                  referencedTableName="customer_approved_loan_cad_documentation"
+                  referencedColumnNames="id"
+                />
+            </column>
+            <column name="additional_document_list_id" type="BIGINT">
+                <constraints
+                  foreignKeyName="fk_additional_document_id"
+                  referencedTableName="cad_additional_document"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="415-drop-fk-constraint-for-proprietor-table" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_proprietors_list_company_info_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_proprietors_list_proprietors_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_proprietor_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_modified_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_municipality_vdc_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_proprietor_province_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+                                  constraintName="fk_company_info_proprietors_list_company_info_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list"
+                                  constraintName="fk_company_info_proprietors_list_proprietors_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_proprietors_list_audit"
+                                  constraintName="FK_company_info_proprietors_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="proprietor_audit"
+                                  constraintName="FK_proprietor_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_district_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_modified_by_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_municipality_vdc_id"/>
+        <dropForeignKeyConstraint baseTableName="proprietor"
+                                  constraintName="fk_proprietor_province_id"/>
+    </changeSet>
+    <changeSet id="416-drop-table-company-proprietors-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_proprietors_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_proprietors_list"/>
+    </changeSet>
+    <changeSet id="417-drop-table-company-info-proprietors-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_proprietors_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_proprietors_list_audit"/>
+    </changeSet>
+    <changeSet id="418-drop-table-proprietor-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="proprietor_audit"/>
+        </preConditions>
+        <dropTable tableName="proprietor_audit"/>
+    </changeSet>
+    <changeSet id="419-drop-table-proprietor" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="proprietor"/>
+        </preConditions>
+        <dropTable tableName="proprietor"/>
+    </changeSet>
+    <changeSet id="420-drop-fk-constraint-for-shareholder-kyc-table" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_audit_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="FK_shareholder_kyc_audit_rev_revinfo_rev"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_created_by_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_district_id"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_modified_by_id"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list"
+                                  constraintName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list"
+                                  constraintName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
+        <dropForeignKeyConstraint baseTableName="company_info_shareholder_kyc_list_audit"
+                                  constraintName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc_audit"
+                                  constraintName="fk_shareholder_kyc_audit_district_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc_audit"
+                                  constraintName="FK_shareholder_kyc_audit_rev_revinfo_rev"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_created_by_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_district_id"/>
+        <dropForeignKeyConstraint baseTableName="shareholder_kyc"
+                                  constraintName="fk_shareholder_kyc_modified_by_id"/>
+    </changeSet>
+    <changeSet id="421-drop-table-company-shareholder-kyc-list" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_shareholder_kyc_list"/>
+        </preConditions>
+        <dropTable tableName="company_info_shareholder_kyc_list"/>
+    </changeSet>
+    <changeSet id="422-drop-table-company-info-shareholder-kyc-list-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_info_shareholder_kyc_list_audit"/>
+        </preConditions>
+        <dropTable tableName="company_info_shareholder_kyc_list_audit"/>
+    </changeSet>
+    <changeSet id="423-drop-table-shareholder-kyc-audit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="shareholder_kyc_audit"/>
+        </preConditions>
+        <dropTable tableName="shareholder_kyc_audit"/>
+    </changeSet>
+    <changeSet id="424-drop-table-shareholder-kyc" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="shareholder_kyc"/>
+        </preConditions>
+        <dropTable tableName="shareholder_kyc"/>
+    </changeSet>
+
+    <changeSet id="425-alter-table-nepse_price_info-change-data-type" author="bibash">
+        <preConditions onFail="MARK_RAN">
+                <columnExists tableName="nepse_price_info" columnName="avg_days_for_price"/>
+        </preConditions>
+        <modifyDataType tableName="nepse_price_info" columnName="avg_days_for_price" newDataType="varchar(256)"/>
+    </changeSet>
+
+    <changeSet id="426-alter-table-customer-approved-loan-cad-document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="is_additional_disbursement"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="is_additional_disbursement" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="426-alter-table-customer-info-add-column-nep-data" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="nep_data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="nep_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

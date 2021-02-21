@@ -75,6 +75,8 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     List<User> findByRoleIdInAndStatus(List<Long> roleList,Status status);
 
+    List<User> findAllByBranchIn(List<Branch> branches);
+
    
 
 }

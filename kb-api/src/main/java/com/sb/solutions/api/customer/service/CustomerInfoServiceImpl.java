@@ -225,6 +225,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final Security security = securityService
                 .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
+            HelperDto<Long> dto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
+            securityService.execute(Optional.of(dto));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
@@ -241,8 +243,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             List<Insurance> insurances = Arrays.asList(mapper.convertValue(o, Insurance[].class));
             final List<Insurance> insurance = insuranceService.saveAll(insurances);
             customerInfo1.setInsurance(insurance);
-            insuranceService
-                .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
+            // TODO enable this for insurance expiry
+//            insuranceService
+//                .execute(Optional.of(new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO)));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CUSTOMER_GROUP))) {
             CustomerGroup customerGroup = objectMapper().convertValue(o, CustomerGroup.class);
             if (customerGroup.getId() == null && customerGroup.getGroupCode() == null) {
@@ -304,6 +307,13 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     public String updateObligor(String obligor, Long id) {
         customerInfoRepository.updateObligorByCustomerInfoId(obligor, id);
         return null;
+    }
+
+    @Override
+    public Object updateNepaliConfigData(String nepData, Long id) {
+        CustomerInfo customerInfo = customerInfoRepository.getOne(id);
+        customerInfo.setNepData(nepData);
+        return customerInfoRepository.save(customerInfo);
     }
 
     @Override

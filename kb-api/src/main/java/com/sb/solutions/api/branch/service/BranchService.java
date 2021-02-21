@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.service.BaseService;
 import com.sb.solutions.report.core.service.FormReportGeneratorService;
@@ -23,5 +24,10 @@ public interface BranchService extends BaseService<Branch>, FormReportGeneratorS
     List<Branch> getAccessBranchByCurrentUser();
 
     List<Branch> getBranchNoTAssignUser(Long roleId);
+
+    List<Branch> getBranchByProvince(Long pId);
+
+    List<Branch> getBranchByProvinceList(List<Province> provinces);
+
 
 }

@@ -1852,6 +1852,22 @@
   </changeSet>
 
   <changeSet id="40-create-proposal" author="aabishkar">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="proposal" columnName="base_rate"/>
+      <columnExists tableName="proposal" columnName="cib_charge"/>
+      <columnExists tableName="proposal" columnName="proposed_limit"/>
+      <columnExists tableName="proposal" columnName="interest_rate"/>
+      <columnExists tableName="proposal" columnName="premium_rate_on_base_rate"/>
+      <columnExists tableName="proposal" columnName="service_charge"/>
+      <columnExists tableName="proposal" columnName="service_charge_method"/>
+      <columnExists tableName="proposal" columnName="repayment_mode"/>
+      <columnExists tableName="proposal" columnName="tenure_duration_in_months"/>
+      <columnExists tableName="proposal" columnName="purpose_of_submission"/>
+      <columnExists tableName="proposal" columnName="disbursement_criteria"/>
+      <columnExists tableName="proposal" columnName="credit_information_report_status"/>
+      <columnExists tableName="proposal" columnName="income_from_the_account"/>
+      <columnExists tableName="proposal" columnName="borrower_information"/>
+    </preConditions>
     <dropColumn tableName="proposal" columnName="base_rate"/>
     <dropColumn tableName="proposal" columnName="cib_charge"/>
     <dropColumn tableName="proposal" columnName="proposed_limit"/>

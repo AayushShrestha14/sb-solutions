@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
 import ar.com.fdvs.dj.core.layout.LayoutManager;
+import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.ImageBanner;
 import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
@@ -54,9 +55,12 @@ public abstract class Report {
             reportParam.getRightMargin());//define the margin space for each side
         drb.setDefaultStyles(StyleUtil.titleStyle(), null, StyleUtil.headerStyle(),
             StyleUtil.detailStyle());
-        drb.addImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100),
-            ImageBanner.Alignment.Right)
-            .setOddRowBackgroundStyle(oddRowStyle());
+//        drb.addImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100),
+//            ImageBanner.Alignment.Right)
+//            .setOddRowBackgroundStyle(oddRowStyle());
+
+        drb.addFirstPageImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100),
+            ImageBanner.Alignment.Right);
 
         /**
          * We add the columns to the report (through the builder) in the order

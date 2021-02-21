@@ -1,6 +1,9 @@
 package com.sb.solutions.web.user;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,6 +47,8 @@ public class UserController {
     private final MailSenderService mailSenderService;
     @Value("${bank.name}")
     private String bankName;
+    @Value("${bank.affiliateId}")
+    private String affiliateId;
 
     @Autowired
     public UserController(
@@ -150,6 +155,7 @@ public class UserController {
                 referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
             email.setBankName(this.bankName);
+            email.setAffiliateId(this.affiliateId);
             mailSenderService.send(Template.RESET_PASSWORD, email);
 
             return new RestResponseDto().successModel(resetToken);
@@ -162,7 +168,8 @@ public class UserController {
      */
 
     @GetMapping(path = "/get-all-doc-transfer/{id}/branch/{branchId}")
-    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id,@PathVariable Long branchId) {
+    public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id,
+        @PathVariable Long branchId) {
         return new RestResponseDto()
             .successModel(userService.getRoleWiseBranchWiseUserList(null, branchId, id));
     }
@@ -183,6 +190,7 @@ public class UserController {
                     email.setTo(updatedUser.getEmail());
                     email.setToName(updatedUser.getName());
                     email.setBankName(this.bankName);
+                    email.setAffiliateId(this.affiliateId);
                     mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
                     return new RestResponseDto()
                         .successModel(updatedUser);
@@ -229,6 +237,11 @@ public class UserController {
         @PathVariable Long bId) {
         return new RestResponseDto()
             .successModel(userService.findUserListForSolByRoleIdInAndBranchId(roleIds, bId));
+    }
+
+    @GetMapping(value = "/allUser")
+    public ResponseEntity<?> allUser() {
+        return new RestResponseDto().successModel(userService.getAllUserByCurrentRoleBranchAccess());
     }
 
 }
