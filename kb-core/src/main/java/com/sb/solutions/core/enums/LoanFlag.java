@@ -16,9 +16,9 @@ public enum LoanFlag {
     MISSING_REQUIRED_DOCUMENT("5", "Missing Required Document"),
     EMPTY_COMPANY_VAT_PAN_EXPIRY("6",
         "Cannot check Company VAT/PAN registration as expiry date field is empty"),
-    INSUFFICIENT_Fixed_AMOUNT("3",
+    INSUFFICIENT_Fixed_AMOUNT("7",
         "Insufficient Fixed Security considered value. Additional Required is %s"),
-    INSUFFICIENT_VEHICLE_AMOUNT("3",
+    INSUFFICIENT_VEHICLE_AMOUNT("8",
         "Insufficient Vehicle Security considered value. Additional Required is %s");
 
     private final String[] value;
