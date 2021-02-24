@@ -46,10 +46,11 @@ public class ApprovalLimitController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
-    public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto().successModel(approvalLimitService
-            .findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+    public ResponseEntity<?> getPageableBranch(@RequestBody Object obj,
+                                               @RequestParam("page") int page,
+                                               @RequestParam("size") int size) {
+        return new RestResponseDto().successModel(approvalLimitService.findAllPageable(obj,
+                PaginationUtils.pageable(page, size)));
     }
 
 
