@@ -143,6 +143,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         try {
+
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcepath,
                 UploadDir.WINDOWS_PATH + destinationPath);
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourcePathCustomer,

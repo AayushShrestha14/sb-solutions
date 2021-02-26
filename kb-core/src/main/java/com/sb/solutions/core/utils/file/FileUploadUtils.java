@@ -140,6 +140,10 @@ public class FileUploadUtils {
 
     public static void createZip(String sourceDirPath, String zipFilePath) throws IOException {
         deleteFile(zipFilePath);
+        File directory = new File(sourceDirPath);
+        if (!directory.exists()) {
+            return;
+        }
         Path p = Files.createFile(Paths.get(zipFilePath));
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
