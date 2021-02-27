@@ -21,6 +21,8 @@ import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.borrowerPortfolio.service.BorrowerPortFolioService;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
+import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
+import com.sb.solutions.api.microBorrowerFinancial.service.MicroBorrowerFinancialService;
 import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
 import com.sb.solutions.api.microbaselriskexposure.service.MicroBaselRiskExposureService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
@@ -115,6 +117,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final SynopsisCreditworthinessService synopsisCreditworthinessService;
     private final BorrowerPortFolioService borrowerPortFolioService;
     private final MicroBaselRiskExposureService microBaselRiskExposureService;
+    private final MicroBorrowerFinancialService microBorrowerFinancialService;
 
     public CustomerInfoServiceImpl(
             @Autowired CustomerInfoRepository customerInfoRepository,
@@ -135,7 +138,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             CreditChecklistService creditChecklistService,
             SynopsisCreditworthinessService synopsisCreditworthinessService,
             BorrowerPortFolioService borrowerPortFolioService,
-            MicroBaselRiskExposureService microBaselRiskExposureService) {
+            MicroBaselRiskExposureService microBaselRiskExposureService,
+            MicroBorrowerFinancialService microBorrowerFinancialService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -156,6 +160,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.synopsisCreditworthinessService = synopsisCreditworthinessService;
         this.borrowerPortFolioService = borrowerPortFolioService;
         this.microBaselRiskExposureService = microBaselRiskExposureService;
+        this.microBorrowerFinancialService = microBorrowerFinancialService;
     }
 
 
@@ -307,6 +312,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final MicroBaselRiskExposure microBaselRiskExposure = microBaselRiskExposureService
                     .save(objectMapper().convertValue(o, MicroBaselRiskExposure.class));
             customerInfo1.setMicroBaselRiskExposure(microBaselRiskExposure);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.MICRO_BORROWER_FINANCIAL))) {
+            final MicroBorrowerFinancial microBorrowerFinancial = microBorrowerFinancialService
+                .save(objectMapper().convertValue(o, MicroBorrowerFinancial.class));
+            customerInfo1.setMicroBorrowerFinancial(microBorrowerFinancial);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);

@@ -3,6 +3,16 @@ package com.sb.solutions.api.customer.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
+import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
+import com.sb.solutions.core.enums.Gender;
+import com.sb.solutions.core.enums.MaritalStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.ObjectUtils;
+
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.cicl.entity.Cicl;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
@@ -148,6 +158,9 @@ public class CustomerInfo extends BaseEntity<Long> {
     @OneToOne
     private CreditChecklist creditChecklist;
 
+    @OneToOne
+        private MicroBorrowerFinancial microBorrowerFinancial;
+
     @Transient
     private String subSectorDetailCode ;
 
@@ -173,11 +186,11 @@ public class CustomerInfo extends BaseEntity<Long> {
     private BorrowerPortFolio borrowerPortFolio;
 
     public String getSubSectorDetailCode() {
-        if (!ObjectUtils.isEmpty(this.getSubsectorDetail())) {
-            Pattern pattern = Pattern.compile("-");
+        if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
+           Pattern pattern = Pattern.compile("-");
             List<String> list = pattern.splitAsStream(this.getSubsectorDetail())
-                    .map(String::valueOf)
-                    .collect(Collectors.toList());
+                .map(String::valueOf)
+                .collect(Collectors.toList());
             return list.get(0);
 
         }
