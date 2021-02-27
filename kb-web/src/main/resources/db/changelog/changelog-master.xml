@@ -6426,7 +6426,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="430-alter-customer-info-add-column-borrower-financial-id" author="rujan">
+    <changeSet id="430-alter-customer-info-add-column-borrower-financial-id" author="bibash">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_info" columnName="micro_borrower_financial_id"/>
@@ -6438,6 +6438,59 @@
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_info_micro_borrower_financial_id"
                              referencedTableName="micro_borrower_financial"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="430-create-table-marketing-activities" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="marketing_activities"/>
+            </not>
+        </preConditions>
+        <createTable tableName="marketing_activities">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LongText">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_marketing_activities_created_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_marketing_activities_modified_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-customer-info-add-column-marketing-activities-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="marketing_activities_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_info">
+            <column name="marketing_activities_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_marketing_activities_id"
+                             referencedTableName="marketing_activities"
                              referencedColumnNames="id"/>
             </column>
         </addColumn>

@@ -3,6 +3,7 @@ package com.sb.solutions.api.customer.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
+import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
@@ -159,7 +160,10 @@ public class CustomerInfo extends BaseEntity<Long> {
     private CreditChecklist creditChecklist;
 
     @OneToOne
-        private MicroBorrowerFinancial microBorrowerFinancial;
+    private MicroBorrowerFinancial microBorrowerFinancial;
+
+    @OneToOne
+    private MarketingActivities marketingActivities;
 
     @Transient
     private String subSectorDetailCode ;
