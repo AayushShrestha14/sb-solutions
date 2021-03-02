@@ -6248,8 +6248,7 @@
         </preConditions>
 
         <addColumn tableName="customer_loan_audit">
-            <column name="post_approval_doc_id_list" type="Varchar(256)">
-            </column>
+            <column name="post_approval_doc_id_list" type="Varchar(256)"/>
         </addColumn>
     </changeSet>
 
