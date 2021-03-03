@@ -6497,4 +6497,28 @@
 
     </changeSet>
 
+    <changeSet id="427-alter-customer-loan-add-post-approval-doc-list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="post_approval_doc_id_list"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="post_approval_doc_id_list" type="Varchar(256)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="428-alter-customer-loan-audit-add-post-approval-doc-list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="post_approval_doc_id_list"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="post_approval_doc_id_list" type="Varchar(256)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
