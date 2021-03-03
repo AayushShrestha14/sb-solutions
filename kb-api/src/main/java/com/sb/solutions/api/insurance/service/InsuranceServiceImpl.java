@@ -99,73 +99,74 @@ public class InsuranceServiceImpl extends BaseServiceImpl<Insurance, Long> imple
 
     @Override
     public void execute(Optional<HelperDto<Long>> helperDto) {
-        Map<String, String> insuranceFilter = new HashMap<>();
-        insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
-            NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
-        Optional<NotificationMaster> notificationMaster = notificationMasterService
-            .findOneBySpec(insuranceFilter);
-
-        if (!notificationMaster.isPresent()) {
-            LOGGER.error("Insurance Expiry Notification is not configured");
-            return;
-        }
-
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        int daysToExpire = notificationMaster.get().getValue();
-        c.add(Calendar.DAY_OF_MONTH, daysToExpire);
-
-        List<CustomerInfo> loanHolders = new ArrayList<>();
-        if (helperDto.isPresent()) {
-            if (helperDto.get().getIdType().equals(HelperIdType.CUSTOMER_INFO)) {
-                // insurance under customer info
-                loanHolders = Collections
-                    .singletonList(customerInfoRepository.getOne(helperDto.get().getId()));
-            } else if (helperDto.get().getIdType().equals(HelperIdType.LOAN)) {
-                // insurance under loan
-                loanHolders = Collections.singletonList(
-                    customerLoanRepository.getOne(helperDto.get().getId()).getLoanHolder());
-            }
-        } else {
-            // insurance under all loans having insurance template
-            loanHolders = customerLoanRepository.findAll(getInsuranceSpecs())
-                .stream()
-                .map(CustomerLoan::getLoanHolder)
-                .collect(Collectors.toList());
-        }
-        for (CustomerInfo holder : loanHolders) {
-            try {
-                CustomerLoanFlag customerLoanFlag = holder.getLoanFlags()
-                    .stream()
-                    .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.INSURANCE_EXPIRY))
-                    .collect(CustomerLoanFlag.toSingleton());
-                List<Insurance> expiredInsurance = holder.getInsurance()
-                    .stream()
-                    .filter(i -> i.getExpiryDate().compareTo(c.getTime()) <= 0)
-                    .collect(Collectors.toList());
-                boolean flag = !expiredInsurance.isEmpty();
-                if (flag && customerLoanFlag == null) {
-                    customerLoanFlag = new CustomerLoanFlag();
-                    customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
-                    customerLoanFlag.setCustomerInfo(holder);
-                    customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
-                    customerLoanFlag.setOrder(
-                        Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
-                    CustomerLoanFlag savedFlag = customerLoanFlagService.save(customerLoanFlag);
-                    sendInsuranceExpiryEmail(holder, expiredInsurance, savedFlag);     // send mail
-                    return;
-                } else if (!flag && customerLoanFlag != null) {
-                    customerLoanFlagService.deleteById(customerLoanFlag.getId());
-                } else if (flag && customerLoanFlag.getFlag() != null
-                    && (customerLoanFlag.getNotifiedByEmail() == null
-                    || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
-                    sendInsuranceExpiryEmail(holder, expiredInsurance,
-                        customerLoanFlag);     // send mail
-                }
-            } catch (NullPointerException e) {
-                LOGGER.error("Error updating insurance expiry flag {}", e.getMessage());
-            }
-        }
+        //TODO disable insurace expiry
+//        Map<String, String> insuranceFilter = new HashMap<>();
+//        insuranceFilter.put(NotificationMasterSpec.FILTER_BY_NOTIFICATION_KEY,
+//            NotificationMasterType.INSURANCE_EXPIRY_NOTIFY.toString());
+//        Optional<NotificationMaster> notificationMaster = notificationMasterService
+//            .findOneBySpec(insuranceFilter);
+//
+//        if (!notificationMaster.isPresent()) {
+//            LOGGER.error("Insurance Expiry Notification is not configured");
+//            return;
+//        }
+//
+//        Calendar c = Calendar.getInstance();
+//        c.setTime(new Date());
+//        int daysToExpire = notificationMaster.get().getValue();
+//        c.add(Calendar.DAY_OF_MONTH, daysToExpire);
+//
+//        List<CustomerInfo> loanHolders = new ArrayList<>();
+//        if (helperDto.isPresent()) {
+//            if (helperDto.get().getIdType().equals(HelperIdType.CUSTOMER_INFO)) {
+//                // insurance under customer info
+//                loanHolders = Collections
+//                    .singletonList(customerInfoRepository.getOne(helperDto.get().getId()));
+//            } else if (helperDto.get().getIdType().equals(HelperIdType.LOAN)) {
+//                // insurance under loan
+//                loanHolders = Collections.singletonList(
+//                    customerLoanRepository.getOne(helperDto.get().getId()).getLoanHolder());
+//            }
+//        } else {
+//            // insurance under all loans having insurance template
+//            loanHolders = customerLoanRepository.findAll(getInsuranceSpecs())
+//                .stream()
+//                .map(CustomerLoan::getLoanHolder)
+//                .collect(Collectors.toList());
+//        }
+//        for (CustomerInfo holder : loanHolders) {
+//            try {
+//                CustomerLoanFlag customerLoanFlag = holder.getLoanFlags()
+//                    .stream()
+//                    .filter(loanFlag -> loanFlag.getFlag().equals(LoanFlag.INSURANCE_EXPIRY))
+//                    .collect(CustomerLoanFlag.toSingleton());
+//                List<Insurance> expiredInsurance = holder.getInsurance()
+//                    .stream()
+//                    .filter(i -> i.getExpiryDate().compareTo(c.getTime()) <= 0)
+//                    .collect(Collectors.toList());
+//                boolean flag = !expiredInsurance.isEmpty();
+//                if (flag && customerLoanFlag == null) {
+//                    customerLoanFlag = new CustomerLoanFlag();
+//                    customerLoanFlag.setFlag(LoanFlag.INSURANCE_EXPIRY);
+//                    customerLoanFlag.setCustomerInfo(holder);
+//                    customerLoanFlag.setDescription(LoanFlag.INSURANCE_EXPIRY.getValue()[1]);
+//                    customerLoanFlag.setOrder(
+//                        Integer.parseInt(LoanFlag.INSURANCE_EXPIRY.getValue()[0]));
+//                    CustomerLoanFlag savedFlag = customerLoanFlagService.save(customerLoanFlag);
+//                    sendInsuranceExpiryEmail(holder, expiredInsurance, savedFlag);     // send mail
+//                    return;
+//                } else if (!flag && customerLoanFlag != null) {
+//                    customerLoanFlagService.deleteById(customerLoanFlag.getId());
+//                } else if (flag && customerLoanFlag.getFlag() != null
+//                    && (customerLoanFlag.getNotifiedByEmail() == null
+//                    || customerLoanFlag.getNotifiedByEmail().equals(Boolean.FALSE))) {
+//                    sendInsuranceExpiryEmail(holder, expiredInsurance,
+//                        customerLoanFlag);     // send mail
+//                }
+//            } catch (NullPointerException e) {
+//                LOGGER.error("Error updating insurance expiry flag {}", e.getMessage());
+//            }
+//        }
     }
 
     private void sendInsuranceExpiryEmail(CustomerInfo holder, List<Insurance> expiredInsurance,

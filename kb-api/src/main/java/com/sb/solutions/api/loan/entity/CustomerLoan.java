@@ -282,6 +282,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     @OneToOne
     private User solUser;
 
+    private String postApprovalDocIdList;
+
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

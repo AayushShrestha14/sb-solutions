@@ -1,12 +1,15 @@
 package com.sb.solutions.api.approvallimit.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import com.sb.solutions.api.approvallimit.repository.specification.ApprovalLimitSpecBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -71,9 +74,11 @@ public class ApprovalLimitServiceImpl implements ApprovalLimitService {
 
     @Override
     public Page<ApprovalLimit> findAllPageable(Object object, Pageable pageable) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SearchDto s = objectMapper.convertValue(object, SearchDto.class);
-        return approvalLimitRepository.approvalLimitFilter(pageable);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> stringMap = objectMapper.convertValue(object, Map.class);
+        final ApprovalLimitSpecBuilder approvalLimitSpecBuilder = new ApprovalLimitSpecBuilder(stringMap);
+        final Specification<ApprovalLimit> specification = approvalLimitSpecBuilder.build();
+        return approvalLimitRepository.findAll(specification, pageable);
     }
 
     @Override
