@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.ws.rs.core.NoContentException;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.sb.solutions.api.authorization.entity.Role;
@@ -25,6 +27,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.StageDto;
 import com.sb.solutions.entity.CadStage;
@@ -154,27 +157,33 @@ public class CadStageMapper {
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
 
-
                 break;
             case OFFER_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
                 cadStage.setFromUser(currentUser);
                 cadStage.setDocAction(CADDocAction.OFFER_APPROVED);
                 stageDto.setCadDocStatus(CadDocStatus.OFFER_APPROVED);
-                //set RM
-                Map<String, Long> cadMaker = this
-                    .getCADMaker(oldData.getCadStageList(),
-                        oldData.getLoanHolder().getBranch().getId());
-                if (ObjectUtils.isEmpty(cadMaker.get("userId"))) {
-                    cadMaker = this
-                        .getLoanMaker(
-                            oldData.getAssignedLoan().get(0).getPreviousStageList(),
-                            oldData.getAssignedLoan().get(0).getBranch().getId());
-                }
-                user.setId(cadMaker.get("userId"));
-                role.setId(cadMaker.get("roleId"));
+
+                if (requestedStage.getCustomApproveSelection()) {
+                    User u1 = userService.findOne(requestedStage.getToUser().getId());
+                    cadStage.setToUser(u1);
+                    cadStage.setToRole(u1.getRole());
+                } else {
+                    //set RM
+                    Map<String, Long> cadMaker = this
+                        .getCADMaker(oldData.getCadStageList(),
+                            oldData.getLoanHolder().getBranch().getId());
+                    if (ObjectUtils.isEmpty(cadMaker.get("userId"))) {
+                        cadMaker = this
+                            .getLoanMaker(
+                                oldData.getAssignedLoan().get(0).getPreviousStageList(),
+                                oldData.getAssignedLoan().get(0).getBranch().getId());
+                    }
+                    user.setId(cadMaker.get("userId"));
+                    role.setId(cadMaker.get("roleId"));
+
                 cadStage.setToUser(user);
-                cadStage.setToRole(role);
+                cadStage.setToRole(role);}
                 break;
             case LEGAL_APPROVED:
                 cadStage.setFromRole(currentUser.getRole());
@@ -194,6 +203,11 @@ public class CadStageMapper {
                 cadStage.setFromUser(currentUser);
                 stageDto.setCadDocStatus(CadDocStatus.DISBURSEMENT_APPROVED);
                 cadStage.setDocAction(CADDocAction.DISBURSEMENT_APPROVED);
+                if (requestedStage.getCustomApproveSelection()) {
+                    User u1 = userService.findOne(requestedStage.getToUser().getId());
+                    cadStage.setToUser(u1);
+                    cadStage.setToRole(u1.getRole());
+                } else {
                 Map<String, Long> cadMaker1 = this
                     .getCADMaker(oldData.getCadStageList(),
                         oldData.getLoanHolder().getBranch().getId());
@@ -206,7 +220,7 @@ public class CadStageMapper {
                 user.setId(cadMaker1.get("userId"));
                 role.setId(cadMaker1.get("roleId"));
                 cadStage.setToUser(user);
-                cadStage.setToRole(role);
+                cadStage.setToRole(role);}
                 break;
 
         }
@@ -226,12 +240,18 @@ public class CadStageMapper {
                     Collectors.toList());
             final List<User> users = userService
                 .findByRoleAndBranchId(makerList.get(0).getFromRole().getId(), branchID);
-            final List<Long> userIdList = users.stream().map(User::getId)
+            final List<User> activeUser = users.stream()
+                .filter(f -> f.getStatus().equals(Status.ACTIVE)).collect(
+                    Collectors.toList());
+            final List<Long> userIdList = activeUser.stream().map(User::getId)
                 .collect(Collectors.toList());
-            if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
+            if (CollectionUtils.isEmpty(userIdList)) {
+                throw new NoContentException("no Initiator User Found");
+            } else if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
                 map.put("userId", makerList.get(0).getFromUser().getId());
                 map.put("roleId", makerList.get(0).getFromRole().getId());
             } else {
+
                 map.put("userId", users.get(0).getId());
                 map.put("roleId", users.get(0).getRole().getId());
             }
@@ -256,7 +276,10 @@ public class CadStageMapper {
                     Collectors.toList());
             final List<User> users = userService
                 .findByRoleAndBranchId(makerList.get(0).getFromRole().getId(), branchID);
-            final List<Long> userIdList = users.stream().map(User::getId)
+            final List<User> activeUser = users.stream()
+                .filter(f -> f.getStatus().equals(Status.ACTIVE)).collect(
+                    Collectors.toList());
+            final List<Long> userIdList = activeUser.stream().map(User::getId)
                 .collect(Collectors.toList());
             if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
                 map.put("userId", makerList.get(0).getFromUser().getId());
@@ -268,7 +291,7 @@ public class CadStageMapper {
 
 
         } catch (Exception e) {
-            log.error("unable to get users for backward ", e);
+            log.error("unable to get users for backward::getCADMaker ", e);
 
         }
         return map;
@@ -281,7 +304,6 @@ public class CadStageMapper {
             List<CadStage> makerList = mapPreviousList.stream()
                 .filter(a -> a.getFromRole().getRoleName().equalsIgnoreCase("CAD")).collect(
                     Collectors.toList());
-            //todo check user still exist in this role
             if (makerList.isEmpty() || ObjectUtils.isEmpty(makerList)) {
                 List<UserDto> userByRoleCad = userService.getUserByRoleCad();
                 map.put("userId", userByRoleCad.get(0).getId());
@@ -293,7 +315,7 @@ public class CadStageMapper {
 
 
         } catch (Exception e) {
-            log.error("unable to get users for backward ", e);
+            log.error("unable to get users cad User ", e);
 
         }
         return map;

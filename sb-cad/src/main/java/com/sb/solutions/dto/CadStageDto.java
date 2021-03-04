@@ -40,4 +40,6 @@ public class CadStageDto {
 
     private Boolean isBackwardForMaker = false;
 
+    private Boolean customApproveSelection = false;
+
 }
