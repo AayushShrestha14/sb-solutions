@@ -74,6 +74,9 @@ public class BranchServiceImpl implements BranchService {
         if (branch.getId() == null) {
             branch.setStatus(Status.ACTIVE);
         }
+        if (branch.getId() != null) {
+            return branchRepository.save(branch);
+        }
         if (!ObjectUtils.isEmpty(branch.getName())){
             Branch sameBranchNameExist = this.branchRepository.findByName(branch.getName());
             if (sameBranchNameExist != null) {
