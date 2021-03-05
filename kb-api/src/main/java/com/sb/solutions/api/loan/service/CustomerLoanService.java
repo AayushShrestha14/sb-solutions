@@ -83,7 +83,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     List<CustomerLoan> findByCombinedLoanId(long id);
 
-    CustomerLoan saveCadLoanDocument(Long loanId , List<CadDocument> cadDocuments);
+    CustomerLoan saveCadLoanDocument(Long loanId , List<CadDocument> cadDocuments, String data);
 
     CustomerLoan saveCbsNumbers(CustomerLoan loan);
 
