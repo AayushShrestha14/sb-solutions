@@ -72,7 +72,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     private List<Branch> branch;
 
     @NotAudited
-    @OneToMany
+    @ManyToMany
     private List<Province> provinces;
 
     private String signatureImage;
@@ -86,6 +86,15 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     @Transient
     @JsonIgnore
     private List<String> authorityList;
+
+    @NotAudited
+    @ManyToMany
+    @JoinTable(name= "user_role_list",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roleList;
+
+    private Long primaryUserId;
 
     @Override
     @JsonIgnore

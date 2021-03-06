@@ -9,6 +9,8 @@ import com.sb.solutions.core.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.authorization.entity.Role;
@@ -66,5 +68,13 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     List<UserDto> findUserListForSolByRoleIdInAndBranchId(List<Long> roleIds,Long branchId);
 
     List<User> getAllUserByCurrentRoleBranchAccess();
+
+    String logout();
+
+    String updateSecondaryRole(List<Long> roleList,Long id);
+
+    @Transactional
+   String switchUserRole(Role role);
+
 
 }
