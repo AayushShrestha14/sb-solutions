@@ -94,6 +94,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roleList;
 
+    @NotAudited
     private Long primaryUserId;
 
     @Override

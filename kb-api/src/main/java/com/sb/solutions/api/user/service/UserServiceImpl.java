@@ -527,6 +527,9 @@ public class UserServiceImpl implements UserService {
                 .findByPrimaryUserIdAndRoleId(u.getId(), role.getId());
             if (ObjectUtils.isEmpty(searchUserWithRole)) {
                 User createNewUser = new User();
+                List<Branch> branchList = new ArrayList<>();
+                List<Province> provinces = new ArrayList<>();
+
                 BeanUtils.copyProperties(u, createNewUser);
                 createNewUser.setId(null);
                 createNewUser.setVersion(0);
@@ -540,6 +543,11 @@ public class UserServiceImpl implements UserService {
                 if (role.getRoleAccess().equals(RoleAccess.ALL)) {
                     createNewUser.setBranch(new ArrayList<>());
                     createNewUser.setProvinces(new ArrayList<>());
+                } else {
+                    branchList.addAll(u.getBranch());
+                    provinces.addAll(u.getProvinces());
+                    createNewUser.setProvinces(provinces);
+                    createNewUser.setBranch(branchList);
                 }
                 userRepository.save(createNewUser);
             } else {
