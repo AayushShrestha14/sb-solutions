@@ -6336,4 +6336,40 @@
         </addColumn>
     </changeSet>
 
+  <changeSet id="431-alter-province-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="province" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="province">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="432-alter-district-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="district" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="district">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="433-alter-municipality_vdc-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="municipality_vdc" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="municipality_vdc">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
