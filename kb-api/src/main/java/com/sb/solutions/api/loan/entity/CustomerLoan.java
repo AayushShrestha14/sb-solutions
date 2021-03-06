@@ -283,6 +283,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     private User solUser;
 
     private String postApprovalDocIdList;
+    @NotAudited
+    private String data;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();

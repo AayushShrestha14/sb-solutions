@@ -6313,5 +6313,27 @@
             <column name="primary_user_id" type="BIGINT"/>
         </addColumn>
     </changeSet>
+    <changeSet id="429-alter-customer-loan-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="430-alter-customer-loan-audit-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
