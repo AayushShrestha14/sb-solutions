@@ -29,4 +29,6 @@ public class MunicipalityVdc implements Serializable {
     @JoinColumn(name = "district_id")
     private District district;
 
+    private String nepaliName;
+
 }
