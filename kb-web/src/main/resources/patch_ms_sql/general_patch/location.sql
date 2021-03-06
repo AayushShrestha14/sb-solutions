@@ -25,7 +25,7 @@ if(@countDistrict < 75)
 BEGIN
 SET IDENTITY_INSERT district ON
 INSERT  INTO district (id, province_id, name, nepali_name) VALUES
-(1, 1, 'Taplejung', 'ताप्लेजुङ '),
+(1, 1, 'Taplejung', 'ताप्लेजुङ'),
 (2, 1, 'Panchthar', 'पाँचथर' ),
 (3, 1, 'Ilam', 'ईलाम '),
 (4, 1, 'Jhapa','झापा'),
@@ -112,14 +112,14 @@ if(@countMunicipal < 75)
 BEGIN
 
 SET IDENTITY_INSERT municipality_vdc ON
-INSERT INTO municipality_vdc (id, district_id, name,nepali_name) VALUES
+INSERT INTO municipality_vdc (id, district_id, name, nepali_name) VALUES
     (1, 1, 'Phungling','फुङ्लिङ'),
     (2, 1, 'Aatharai Triveni','आठराई त्रिवेणी'),
     (3, 1, 'Sidingawa','सिदिङवा'),
     (4, 1, 'Phakatanglung','फाकतङ्लुङ'),
     (5, 1, 'Mikwa Khola','मिकवा खोला '),
     (6, 1, 'Meringden','मेरिङ्गदेन '),
-    (7, 1, 'Maiwa Khola'',मैवा खोला '),
+    (7, 1, 'Maiwa Khola','मैवा खोला '),
     (8, 1, 'Yangbarak','यङ्बाराक '),
     (9, 1, 'Sirijangha','सिरीजङ्घा'),
     (10, 2, 'Phidim','फिदिम '),
