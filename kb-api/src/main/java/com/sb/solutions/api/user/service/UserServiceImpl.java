@@ -557,43 +557,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public String switchUserRole(Role role) {
         final User u = this.getAuthenticatedUser();
-        String userName;
         if (ObjectUtils.isEmpty(u.getPrimaryUserId())) {
-            User searchUserWithRole = userRepository
-                .findByPrimaryUserIdAndRoleId(u.getId(), role.getId());
-            if (ObjectUtils.isEmpty(searchUserWithRole)) {
-                User createNewUser = new User();
-                List<Branch> branchList = new ArrayList<>();
-                List<Province> provinces = new ArrayList<>();
-
-                BeanUtils.copyProperties(u, createNewUser);
-                createNewUser.setId(null);
-                createNewUser.setVersion(0);
-                createNewUser.setRole(role);
-                createNewUser.setRoleList(new ArrayList<>());
-                createNewUser.setPrimaryUserId(u.getId());
-                userName = u.getUsername().trim() + "-" + StringUtils
-                    .trimAllWhitespace(role.getRoleName());
-                createNewUser.setUsername(
-                    userName);
-                if (role.getRoleAccess().equals(RoleAccess.ALL)) {
-                    createNewUser.setBranch(new ArrayList<>());
-                    createNewUser.setProvinces(new ArrayList<>());
-                } else {
-                    branchList.addAll(u.getBranch());
-                    provinces.addAll(u.getProvinces());
-                    createNewUser.setProvinces(provinces);
-                    createNewUser.setBranch(branchList);
-                }
-                userRepository.save(createNewUser);
-            } else {
-                userName = searchUserWithRole.getUsername();
-            }
+            return this.createUser(u, role);
         } else {
-            userName = this.findOne(u.getPrimaryUserId()).getUsername();
-        }
+            final User primaryUser = this.findOne(u.getPrimaryUserId());
+            assert primaryUser.getRole().getId() != null;
+            if (primaryUser.getRole().getId().equals(role.getId())) {
+                return primaryUser.getUsername();
+            }
+            return this.createUser(primaryUser, role);
 
-        return userName;
+
+        }
     }
 
 
@@ -621,6 +596,42 @@ public class UserServiceImpl implements UserService {
 
         }
         return u;
+    }
+
+    private String createUser(User u, Role role) {
+        String userName;
+        User searchUserWithRole = userRepository
+            .findByPrimaryUserIdAndRoleId(u.getId(), role.getId());
+        if (ObjectUtils.isEmpty(searchUserWithRole)) {
+            User createNewUser = new User();
+            List<Branch> branchList = new ArrayList<>();
+            List<Province> provinces = new ArrayList<>();
+
+            BeanUtils.copyProperties(u, createNewUser);
+            createNewUser.setId(null);
+            createNewUser.setVersion(0);
+            createNewUser.setRole(role);
+            createNewUser.setRoleList(new ArrayList<>());
+            createNewUser.setPrimaryUserId(u.getId());
+            userName = u.getUsername().trim() + "-" + StringUtils
+                .trimAllWhitespace(role.getRoleName());
+            createNewUser.setUsername(
+                userName);
+            if (role.getRoleAccess().equals(RoleAccess.ALL)) {
+                createNewUser.setBranch(new ArrayList<>());
+                createNewUser.setProvinces(new ArrayList<>());
+            } else {
+                branchList.addAll(u.getBranch());
+                provinces.addAll(u.getProvinces());
+                createNewUser.setProvinces(provinces);
+                createNewUser.setBranch(branchList);
+            }
+            userRepository.save(createNewUser);
+        } else {
+            userName = searchUserWithRole.getUsername();
+        }
+
+        return userName;
     }
 
 }
