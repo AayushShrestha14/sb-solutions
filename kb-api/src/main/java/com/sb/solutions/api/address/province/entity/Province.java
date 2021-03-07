@@ -19,5 +19,6 @@ public class Province implements Serializable {
     @GeneratedValue
     private Long id;
     private String name;
+    private String nepaliName;
 
 }
