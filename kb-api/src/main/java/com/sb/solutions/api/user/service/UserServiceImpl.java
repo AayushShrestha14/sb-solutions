@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.sb.solutions.api.address.province.entity.Province;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,7 +28,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.authorization.dto.RoleDto;
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.repository.RoleRepository;
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (user.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC)
-                && user.getRole().getRoleType() != RoleType.CAD_SUPERVISOR) {
+            && user.getRole().getRoleType() != RoleType.CAD_SUPERVISOR) {
             if (user.getBranch().isEmpty()) {
                 throw new InvalidPropertyException(User.class, "Branch", "Branch can not be null");
             }
@@ -233,10 +233,12 @@ public class UserServiceImpl implements UserService {
         if (u.getRole().getRoleAccess() != null) {
             if (u.getRole().getRoleAccess().equals(RoleAccess.SPECIFIC) || u.getRole()
                 .getRoleAccess().equals(RoleAccess.OWN)) {
-                if(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
-                    for(Province p: u.getProvinces()) {
-                        List<Branch> branches = branchRepository.getAllByProvinceIdAndStatus(p.getId(), Status.ACTIVE);
-                        branchIdList.addAll(branches.stream().map(Branch::getId).collect(Collectors.toList()));
+                if (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
+                    for (Province p : u.getProvinces()) {
+                        List<Branch> branches = branchRepository
+                            .getAllByProvinceIdAndStatus(p.getId(), Status.ACTIVE);
+                        branchIdList.addAll(
+                            branches.stream().map(Branch::getId).collect(Collectors.toList()));
                     }
                 } else {
                     for (Branch b : u.getBranch()) {
@@ -294,29 +296,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
-        if (u != null) {
-            List<String> authorityList = userRepository
-                .userApiAuthorities(u.getRole().getId()).stream()
-                .map(object -> Objects.toString(object, null))
-                .collect(Collectors.toList());
-            Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
-                .getContext().getAuthentication().getAuthorities();
-            List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
-            for (String a : authorityList) {
-                updatedAuthorities.add(new SimpleGrantedAuthority(a));
-            }
-            updatedAuthorities.addAll(oldAuthorities);
-            SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                    SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-                    u.getPassword(),
-                    updatedAuthorities)
-            );
-
-            u.setAuthorityList(authorityList);
-
-        }
-        return u;
+        return this.authDetail(u);
     }
 
 
@@ -327,14 +307,16 @@ public class UserServiceImpl implements UserService {
         List<User> finalUserList = new ArrayList<>();
         List<User> users = userRepository.findUserNotDisMissAndActive(Status.ACTIVE);
         List<User> userWithAllAccess = users.stream()
-            .filter(user ->(!user.getRole().getRoleName().equalsIgnoreCase(roleName)) && (!user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (user
+            .filter(user -> (!user.getRole().getRoleName().equalsIgnoreCase(roleName)) && (!user
+                .getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (user
                 .getRole().getRoleAccess().equals(RoleAccess.ALL)) && (!currentUser
                 .equals(user))).collect(
                 Collectors.toList());
         finalUserList.addAll(userWithAllAccess);
         List<User> userWithOwnAndSpecificAccess = users.stream()
             .filter(
-                user ->(!user.getRole().getRoleName().equalsIgnoreCase(roleName)) &&  (!user.getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (!user
+                user -> (!user.getRole().getRoleName().equalsIgnoreCase(roleName)) && (!user
+                    .getRole().getRoleType().equals(RoleType.CAD_ADMIN)) && (!user
                     .getRole().getRoleAccess().equals(RoleAccess.ALL)) && (!currentUser
                     .equals(user))).collect(
                 Collectors.toList());
@@ -491,9 +473,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUserByCurrentRoleBranchAccess(){
+    public List<User> getAllUserByCurrentRoleBranchAccess() {
         User u = this.getAuthenticatedUser();
-        if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)){
+        if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
             return userRepository.findAll().stream().filter(user -> user.getId() != 1).collect(
                 Collectors.toList());
         }
@@ -504,10 +486,11 @@ public class UserServiceImpl implements UserService {
             branchList.add(branch);
         });
         List<User> filteredUser = new ArrayList<>();
-        if (u.getRole().getRoleAccess() != null){
-            List<User> allUser =  userRepository.findAll().stream().filter(user -> (user.getId() != 1) &&
-                user.getRole().getRoleAccess().equals(RoleAccess.ALL)).collect(
-                Collectors.toList());
+        if (u.getRole().getRoleAccess() != null) {
+            List<User> allUser = userRepository.findAll().stream()
+                .filter(user -> (user.getId() != 1) &&
+                    user.getRole().getRoleAccess().equals(RoleAccess.ALL)).collect(
+                    Collectors.toList());
             filteredUser.addAll(allUser);
         }
         List<User> selectedBranchUser = userRepository.findAllByBranchIn(branchList);
@@ -515,5 +498,93 @@ public class UserServiceImpl implements UserService {
         return filteredUser;
     }
 
+    @Override
+    public String logout() {
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore
+            .findTokensByUserName(getAuthenticatedUser().getUsername());
+        for (OAuth2AccessToken tempToken : token) {
+            customJdbcTokenStore.removeAccessToken(tempToken);
+            customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+        }
+        return "SUCCESSFULLY LOGOUT";
+    }
+
+    @Override
+    public String updateSecondaryRole(List<Long> roleIDList, Long id) {
+        final User user = this.findOne(id);
+        List<Role> roleList = roleRepository.findAllByIdInAndStatus(roleIDList, Status.ACTIVE);
+        user.setRoleList(roleList);
+        userRepository.save(user);
+        return "SUCCESSFULLY UPDATED";
+    }
+
+    @Override
+    public String switchUserRole(Role role) {
+        final User u = this.getAuthenticatedUser();
+        String userName;
+        if (ObjectUtils.isEmpty(u.getPrimaryUserId())) {
+            User searchUserWithRole = userRepository
+                .findByPrimaryUserIdAndRoleId(u.getId(), role.getId());
+            if (ObjectUtils.isEmpty(searchUserWithRole)) {
+                User createNewUser = new User();
+                List<Branch> branchList = new ArrayList<>();
+                List<Province> provinces = new ArrayList<>();
+
+                BeanUtils.copyProperties(u, createNewUser);
+                createNewUser.setId(null);
+                createNewUser.setVersion(0);
+                createNewUser.setRole(role);
+                createNewUser.setRoleList(new ArrayList<>());
+                createNewUser.setPrimaryUserId(u.getId());
+                userName = u.getUsername().trim() + "-" + StringUtils
+                    .trimAllWhitespace(role.getRoleName());
+                createNewUser.setUsername(
+                    userName);
+                if (role.getRoleAccess().equals(RoleAccess.ALL)) {
+                    createNewUser.setBranch(new ArrayList<>());
+                    createNewUser.setProvinces(new ArrayList<>());
+                } else {
+                    branchList.addAll(u.getBranch());
+                    provinces.addAll(u.getProvinces());
+                    createNewUser.setProvinces(provinces);
+                    createNewUser.setBranch(branchList);
+                }
+                userRepository.save(createNewUser);
+            } else {
+                userName = searchUserWithRole.getUsername();
+            }
+        } else {
+            userName = this.findOne(u.getPrimaryUserId()).getUsername();
+        }
+
+        return userName;
+    }
+
+
+    private User authDetail(User u) {
+        if (u != null) {
+            List<String> authorityList = userRepository
+                .userApiAuthorities(u.getRole().getId()).stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
+            Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
+                .getContext().getAuthentication().getAuthorities();
+            List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
+            for (String a : authorityList) {
+                updatedAuthorities.add(new SimpleGrantedAuthority(a));
+            }
+            updatedAuthorities.addAll(oldAuthorities);
+            SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                    u.getPassword(),
+                    updatedAuthorities)
+            );
+
+            u.setAuthorityList(authorityList);
+
+        }
+        return u;
+    }
 
 }

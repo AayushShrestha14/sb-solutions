@@ -241,7 +241,24 @@ public class UserController {
 
     @GetMapping(value = "/allUser")
     public ResponseEntity<?> allUser() {
-        return new RestResponseDto().successModel(userService.getAllUserByCurrentRoleBranchAccess());
+        return new RestResponseDto()
+            .successModel(userService.getAllUserByCurrentRoleBranchAccess());
+    }
+
+    @GetMapping(value = "/logout")
+    public ResponseEntity<?> logout() {
+        return new RestResponseDto().successModel(userService.logout());
+    }
+
+    @PostMapping(value = "/update-roles/{id}")
+    public ResponseEntity<?> logout(@PathVariable("id") Long id,
+        @RequestBody List<Long> roleIDList) {
+        return new RestResponseDto().successModel(userService.updateSecondaryRole(roleIDList, id));
+    }
+
+    @PostMapping(value = "/switch-user")
+    public ResponseEntity<?> switchUser(@RequestBody Role role) {
+        return new RestResponseDto().successModel(userService.switchUserRole(role));
     }
 
 }
