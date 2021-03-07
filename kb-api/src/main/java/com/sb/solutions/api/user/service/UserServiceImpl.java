@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +38,8 @@ import com.sb.solutions.api.authorization.repository.RoleRepository;
 import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
+import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
@@ -48,6 +51,7 @@ import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleAccess;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
+import com.sb.solutions.core.exception.LoanExistInUserException;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.csv.CsvMaker;
@@ -512,9 +516,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateSecondaryRole(List<Long> roleIDList, Long id) {
         final User user = this.findOne(id);
+        if (!ObjectUtils.isEmpty(user.getPrimaryUserId())) {
+            throw new ServiceValidationException("Cannot add secondary role for secondary User");
+        }
+        List<Role> previousRoleList = user.getRoleList();
         List<Role> roleList = roleRepository.findAllByIdInAndStatus(roleIDList, Status.ACTIVE);
         user.setRoleList(roleList);
+        List<Role> result = previousRoleList.stream()
+            .filter(element -> !roleList.contains(element))
+            .collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(result)) {
+            List<DocStatus> docStatusList = new ArrayList<>();
+            docStatusList.add(DocStatus.DISCUSSION);
+            docStatusList.add(DocStatus.PENDING);
+            docStatusList.add(DocStatus.DOCUMENTATION);
+            docStatusList.add(DocStatus.UNDER_REVIEW);
+            docStatusList.add(DocStatus.VALUATION);
+            List<CustomerLoan> customerLoanList = customerLoanRepository
+                .getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleAndDocumentStatusIn(
+                    user.getId(), roleList, docStatusList);
+            if (!CollectionUtils.isEmpty(customerLoanList)) {
+                String roles = customerLoanList.stream()
+                    .map(CustomerLoan::getCurrentStage)
+                    .map(LoanStage::getToRole)
+                    .filter(FilterJsonUtils.distinctByKey(Role::getId))
+                    .map(Role::getRoleName)
+                    .collect(Collectors.joining(","));
+                throw new LoanExistInUserException(
+                    String.format(roles, "%s contains Loan ! Please Transfer or forward!!"),
+                    customerLoanList);
+            }
+        }
+
         userRepository.save(user);
+
         return "SUCCESSFULLY UPDATED";
     }
 
