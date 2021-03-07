@@ -230,7 +230,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     List<CustomerLoan> findCustomerLoansByLoanHolderId(@Param("loanHolderId") Long loanHolderId);
 
 
-    List<CustomerLoan> getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleAndDocumentStatusIn(
+    List<CustomerLoan> getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleInAndDocumentStatusIn(
         Long id, List<Role> roleList,
         List<DocStatus> docStatus);
 }

@@ -534,8 +534,8 @@ public class UserServiceImpl implements UserService {
             docStatusList.add(DocStatus.UNDER_REVIEW);
             docStatusList.add(DocStatus.VALUATION);
             List<CustomerLoan> customerLoanList = customerLoanRepository
-                .getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleAndDocumentStatusIn(
-                    user.getId(), roleList, docStatusList);
+                .getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleInAndDocumentStatusIn(
+                    user.getId(), result, docStatusList);
             if (!CollectionUtils.isEmpty(customerLoanList)) {
                 String roles = customerLoanList.stream()
                     .map(CustomerLoan::getCurrentStage)
