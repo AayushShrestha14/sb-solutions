@@ -83,7 +83,7 @@ product:
   eligibility: true
   dms: false
   nepTemplate: true
-  cadLiteVersion: false
+  cadLiteVersion: true
   loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
   fullCad: true #only fullCad should not be enable. you should enable offerLetter also
   cbsEnable: false

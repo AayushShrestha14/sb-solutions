@@ -6372,4 +6372,29 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="434-alter-customer-loan-add-authority-review-comments" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="authority_review_comments"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan">
+      <column name="authority_review_comments" type="LONGTEXT">
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet id="434-alter-customer-loan-audit-add-authority-review-comments" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan_audit" columnName="authority_review_comments"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan_audit">
+      <column name="authority_review_comments" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+
 </databaseChangeLog>
