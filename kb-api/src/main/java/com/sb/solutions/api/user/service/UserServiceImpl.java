@@ -1,7 +1,9 @@
 package com.sb.solutions.api.user.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ import com.sb.solutions.api.branch.dto.BranchDto;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.repository.BranchRepository;
 import com.sb.solutions.api.loan.LoanStage;
+import com.sb.solutions.api.loan.dao.CustomerApprovedLoanDao;
+import com.sb.solutions.api.loan.dto.CustomerApprovedLoanDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.user.dto.UserDto;
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final CustomerLoanRepository customerLoanRepository;
     private final CustomJdbcTokenStore customJdbcTokenStore;
+    private final CustomerApprovedLoanDao customerApprovedLoanDao;
 
     public UserServiceImpl(
         @Autowired UserRepository userRepository,
@@ -77,13 +82,15 @@ public class UserServiceImpl implements UserService {
         @Autowired RoleRepository roleRepository,
         @Autowired CustomJdbcTokenStore customJdbcTokenStore,
         @Autowired BCryptPasswordEncoder passwordEncoder,
-        @Autowired CustomerLoanRepository customerLoanRepository) {
+        @Autowired CustomerLoanRepository customerLoanRepository,
+        CustomerApprovedLoanDao customerApprovedLoanDao) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
         this.roleRepository = roleRepository;
         this.customJdbcTokenStore = customJdbcTokenStore;
         this.customerLoanRepository = customerLoanRepository;
+        this.customerApprovedLoanDao = customerApprovedLoanDao;
     }
 
     @Override
@@ -536,16 +543,33 @@ public class UserServiceImpl implements UserService {
             List<CustomerLoan> customerLoanList = customerLoanRepository
                 .getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleInAndDocumentStatusIn(
                     user.getId(), result, docStatusList);
-            if (!CollectionUtils.isEmpty(customerLoanList)) {
-                String roles = customerLoanList.stream()
+            List<CustomerApprovedLoanDto> userCadDocuments = customerApprovedLoanDao
+                .getCADLoanInCurrentUser(user.getId(), result.stream().map(Role::getId).collect(
+                    Collectors.toList()));
+            Map<String, Object> map = new HashMap<>();
+            if (!CollectionUtils.isEmpty(customerLoanList) || !CollectionUtils
+                .isEmpty(userCadDocuments)) {
+                map.put("customerLoan",
+                    CollectionUtils.isEmpty(customerLoanList) ? new ArrayList<>()
+                        : userCadDocuments);
+                map.put("cadDocument", CollectionUtils.isEmpty(userCadDocuments) ? new ArrayList<>()
+                    : concatData(userCadDocuments));
+                List<String> rolesLoan = customerLoanList.stream()
                     .map(CustomerLoan::getCurrentStage)
                     .map(LoanStage::getToRole)
                     .filter(FilterJsonUtils.distinctByKey(Role::getId))
                     .map(Role::getRoleName)
-                    .collect(Collectors.joining(","));
+                    .collect(Collectors.toList());
+                List<String> cadRoles = userCadDocuments.stream()
+                    .map(CustomerApprovedLoanDto::getRoleName)
+                    .collect(Collectors.toList());
+                List<String> allRoleList = new ArrayList<>();
+                allRoleList.addAll(cadRoles);
+                allRoleList.addAll(rolesLoan);
+                String roles = allRoleList.stream().distinct().collect(Collectors.joining(","));
                 throw new LoanExistInUserException(
                     String.format(roles, "%s contains Loan ! Please Transfer or forward!!"),
-                    customerLoanList);
+                    map);
             }
         }
 
@@ -569,6 +593,11 @@ public class UserServiceImpl implements UserService {
 
 
         }
+    }
+
+    @Override
+    public List<User> getSecondaryUserByPrimaryUserID(Long id) {
+        return userRepository.findAllByPrimaryUserId(id);
     }
 
 
@@ -632,6 +661,27 @@ public class UserServiceImpl implements UserService {
         }
 
         return userName;
+    }
+
+    private List<CustomerApprovedLoanDto> concatData(List<CustomerApprovedLoanDto> dtos) {
+        List<CustomerApprovedLoanDto> distinctBYIdList = dtos.stream()
+            .filter(FilterJsonUtils.distinctByKey(CustomerApprovedLoanDto::getId)).collect(
+                Collectors.toList());
+
+        distinctBYIdList.forEach(d -> {
+            String loanFacility = dtos.stream().filter(c -> c.getId().equals(d.getId()))
+                .map(CustomerApprovedLoanDto::getFacilityName).collect(
+                    Collectors.joining(","));
+            d.setFacilityName(loanFacility);
+
+            BigDecimal proposedAmount = BigDecimal.valueOf(dtos.stream().filter(c -> c.getId().equals(d.getId()))
+                .map(CustomerApprovedLoanDto::getProposedAmount).mapToDouble(BigDecimal::doubleValue)
+                .sum());
+            d.setProposedAmount(proposedAmount);
+
+        });
+
+        return distinctBYIdList;
     }
 
 }

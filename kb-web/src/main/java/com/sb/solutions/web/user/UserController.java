@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -192,6 +193,13 @@ public class UserController {
                     email.setBankName(this.bankName);
                     email.setAffiliateId(this.affiliateId);
                     mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
+                    if (ObjectUtils.isEmpty(updatedUser.getPrimaryUserId())) {
+                        List<User> secondaryUser = userService
+                            .getSecondaryUserByPrimaryUserID(updatedUser.getId());
+                        secondaryUser.forEach(user1 -> {
+                            userService.updatePassword(user1.getUsername(), u.getPassword());
+                        });
+                    }
                     return new RestResponseDto()
                         .successModel(updatedUser);
                 }
@@ -209,6 +217,13 @@ public class UserController {
             return new RestResponseDto().failureModel("Invalid Old Password");
         }
         userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
+        if (ObjectUtils.isEmpty(user.getPrimaryUserId())) {
+            List<User> secondaryUser = userService
+                .getSecondaryUserByPrimaryUserID(user.getId());
+            secondaryUser.forEach(user1 -> {
+                userService.updatePassword(user1.getUsername(), passwordDto.getNewPassword());
+            });
+        }
         return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
