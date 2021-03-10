@@ -283,6 +283,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     private User solUser;
 
     private String postApprovalDocIdList;
+
+    private String authorityReviewComments;
     @NotAudited
     private String data;
 
