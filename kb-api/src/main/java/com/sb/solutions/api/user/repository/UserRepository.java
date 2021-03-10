@@ -80,6 +80,8 @@ public interface UserRepository extends JpaRepository<User, Long>,
 
     User findByPrimaryUserIdAndRoleId(Long pId,Long rId);
 
+    List<User> findAllByPrimaryUserId(Long id);
+
 
 
 

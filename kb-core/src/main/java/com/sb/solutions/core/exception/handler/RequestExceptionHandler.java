@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.exception.LoanExistInUserException;
 
 @ControllerAdvice
 public class RequestExceptionHandler {
@@ -162,6 +163,14 @@ public class RequestExceptionHandler {
         RestResponseDto restResponseDto = new RestResponseDto();
         restResponseDto.setMessage(error.getMessage());
         return new ResponseEntity<>(restResponseDto, HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @ExceptionHandler(LoanExistInUserException.class)
+    public ResponseEntity<?> loanExistInUserExceptionHandler(LoanExistInUserException error) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setMessage(error.getMessage());
+        restResponseDto.setDetail(error.getObject());
+        return new ResponseEntity<>(restResponseDto, HttpStatus.FORBIDDEN);
     }
 
 }

@@ -76,5 +76,7 @@ public interface UserService extends BaseService<User>, UserDetailsService {
     @Transactional
    String switchUserRole(Role role);
 
+    List<User>  getSecondaryUserByPrimaryUserID(Long id);
+
 
 }
