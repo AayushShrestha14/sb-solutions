@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.ws.rs.core.NoContentException;
+
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.collect.Lists;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.exception.LoanExistInUserException;
 
 @ControllerAdvice
 public class RequestExceptionHandler {
@@ -153,6 +156,21 @@ public class RequestExceptionHandler {
         response.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoContentException.class)
+    public ResponseEntity<?> NoContentExceptionHandler(NoContentException error) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setMessage(error.getMessage());
+        return new ResponseEntity<>(restResponseDto, HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @ExceptionHandler(LoanExistInUserException.class)
+    public ResponseEntity<?> loanExistInUserExceptionHandler(LoanExistInUserException error) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setMessage(error.getMessage());
+        restResponseDto.setDetail(error.getObject());
+        return new ResponseEntity<>(restResponseDto, HttpStatus.FORBIDDEN);
     }
 
 }

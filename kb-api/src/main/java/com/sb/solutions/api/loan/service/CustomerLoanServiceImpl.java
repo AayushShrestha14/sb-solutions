@@ -245,6 +245,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public CustomerLoan findOne(Long id) {
         CustomerLoan customerLoan = customerLoanRepository.findById(id).get();
+        String data = customerLoan.getData();
         if (ProductUtils.NEP_TEMPLATE) {
             Map<String, String> filterParams = new HashMap<>();
             filterParams.put("customerLoan.id", String.valueOf(id));
@@ -260,7 +261,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 getLoanByCustomerGroup(customerLoan.getLoanHolder().getCustomerGroup()));
         }
         if (customerLoan.getDocumentStatus().equals(DocStatus.APPROVED)) {
-
             String basePath = new PathBuilder(UploadDir.initialDocument)
                 .buildLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
                     customerLoan.getBranch().getId(),
@@ -275,7 +275,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 FileReader reader = new FileReader(filePath);
                 Object obj = jsonParser.parse(reader);
                 customerLoan = objectMapper.convertValue(obj, CustomerLoan.class);
-
             } catch (Exception e) {
                 logger.error("unable to parse json file of customerLoanId {}", id);
                 List<CustomerActivity> activity = activityService
@@ -325,6 +324,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan.getLoanHolder().setLoanFlags(customerLoan.getLoanHolder().getLoanFlags()
             .stream().filter(lf -> lf.getFlag() != LoanFlag.INSURANCE_EXPIRY
                 && lf.getFlag() != LoanFlag.COMPANY_VAT_PAN_EXPIRY && lf.getFlag() != LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY).collect(Collectors.toList()));
+        customerLoan.setData(data);
         return mapLoanHolderToCustomerLoan(customerLoan);
     }
 
@@ -1473,12 +1473,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments) {
+    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments, String data) {
         CustomerLoan customerLoan = customerLoanRepository.findById(loanId).orElse(null);
         if (customerLoan == null) {
             throw new ServiceValidationException("No customer loan found!!!");
         }
-
+        customerLoan.setData(data);
         customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));
         return customerLoanRepository.save(customerLoan);
     }

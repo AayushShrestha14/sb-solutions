@@ -6521,4 +6521,123 @@
         </addColumn>
     </changeSet>
 
+
+  <changeSet id="429-create-table-multiple-role" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="user_role_list"/>
+      </not>
+    </preConditions>
+    <createTable tableName="user_role_list">
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="true"
+          foreignKeyName="fk_user_role_list_user_id"
+          referencedTableName="users"
+          referencedColumnNames="id"
+        />
+      </column>
+      <column name="role_id" type="BIGINT">
+        <constraints
+          foreignKeyName="fk_user_role_list_role_id"
+          referencedTableName="role"
+          referencedColumnNames="id"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+    <changeSet id="430-alter-users-add-column-primary-user-id" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="users" columnName="primary_user_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="users">
+            <column name="primary_user_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="429-alter-customer-loan-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="430-alter-customer-loan-audit-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+  <changeSet id="431-alter-province-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="province" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="province">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="432-alter-district-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="district" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="district">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="433-alter-municipality_vdc-add-column-nepali-name" author="rujan">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="municipality_vdc" columnName="nepali_name"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="municipality_vdc">
+      <column name="nepali_name" type="NVARCHAR(50)"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="434-alter-customer-loan-add-authority-review-comments" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan" columnName="authority_review_comments"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan">
+      <column name="authority_review_comments" type="LONGTEXT">
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet id="434-alter-customer-loan-audit-add-authority-review-comments" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_loan_audit" columnName="authority_review_comments"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="customer_loan_audit">
+      <column name="authority_review_comments" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+
 </databaseChangeLog>

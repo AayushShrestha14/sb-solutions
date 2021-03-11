@@ -64,7 +64,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_LOAN_ASSIGNED_TO_USER = "postApprovalAssignStatus";
     private static final String FILTER_BY_POST_APPROVAL_CURRENT_USER = "postApprovalAssignedUser";
     private static final String FILTER_BY_NOT_IN_LOAN_IDS = "notLoanIds";
-    private static final String FILTER_BY_PROVINCE = "provinceIds";
+    private static final String FILTER_BY_BRANCH_PROVINCE_ID = "provinceId";
     public static final String FILTER_BY_NAME = "name";
     public static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
     public static final String FILTER_BY_USER = "users";
@@ -306,7 +306,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Predicate predicate1 = exp1.in(list1).not();
                 return criteriaBuilder.and(predicate1);
 
-            case FILTER_BY_PROVINCE:
+            case FILTER_BY_BRANCH_PROVINCE_ID:
                 Pattern pattern2 = Pattern.compile(",");
                 List<Long> list2 = pattern2.splitAsStream(value)
                     .map(Long::valueOf)

@@ -27,7 +27,7 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
     private static final String FILTER_BY_BRANCH = "branchIds";
     private static final String FILTER_BY_ID_REG_PLACE = "idRegPlace";
     private static final String FILTER_BY_GROUP_ID = "groupId";
-    private static final String FILTER_BY_PROVINCE = "provinceIds";
+    private static final String FILTER_BY_BRANCH_PROVINCE_ID = "provinceId";
     private final String property;
     private final String value;
 
@@ -69,7 +69,7 @@ public class CustomerInfoSpec implements Specification<CustomerInfo> {
                 Predicate predicate = exp.in(list);
                 return criteriaBuilder.and(predicate);
 
-            case FILTER_BY_PROVINCE:
+            case FILTER_BY_BRANCH_PROVINCE_ID:
                 Pattern pattern1 = Pattern.compile(",");
                 List<Long> list1 = pattern1.splitAsStream(value)
                     .map(Long::valueOf)
