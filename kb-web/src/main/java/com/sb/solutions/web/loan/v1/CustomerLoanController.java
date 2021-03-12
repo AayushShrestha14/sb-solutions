@@ -160,9 +160,9 @@ public class CustomerLoanController {
                     value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody Object searchDto,
-                                                @RequestParam("page") int page, @RequestParam("size") int size) {
+                                                @RequestParam("page") int page, @RequestParam("size") int size) { ;
         return new RestResponseDto()
-                .successModel(service.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
+                .successModel(service.getLoanByCustomerInfo(searchDto, PaginationUtils.pageable(page, size)));
     }
 
     @PostMapping("/all")
