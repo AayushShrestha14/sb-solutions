@@ -643,6 +643,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticatedUser();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
+        if(ProductUtils.CUSTOMER_BASE_LOAN){
+            return customerLoanRepository.statusCountCustomerWise(u.getRole().getId(), branchAccess, u.getId());
+        }
         return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
 
