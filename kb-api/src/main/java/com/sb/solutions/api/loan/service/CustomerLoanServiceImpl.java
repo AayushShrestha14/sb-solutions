@@ -1591,13 +1591,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .getResultList();
 
         // Create Count Query
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        CriteriaQuery<CustomerInfoLoanDto> countQuery = cb.createQuery(CustomerInfoLoanDto.class);
         Root<CustomerLoan> customerLoanRootCount = countQuery.from(CustomerLoan.class);
 
-        countQuery.select(cb.count(customerLoanRootCount));
-        Long count = em.createQuery(
+        countQuery.select(
+            cb.construct(
+                CustomerInfoLoanDto.class,
+                root.get("loanHolder"))).distinct(true);
+        int count = em.createQuery(
             countQuery.where(innerSpec.toPredicate(customerLoanRootCount, countQuery, cb)))
-            .getSingleResult();
+            .getResultList().size();
         return new PageImpl<CustomerInfoLoanDto>(resultList, pageable, count);
 
 
