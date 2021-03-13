@@ -6396,5 +6396,56 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="435-create-table-m-group" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="mgroup_info"/>
+      </not>
+    </preConditions>
+    <createTable tableName="mgroup_info">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="group_code" type="VARCHAR(200)"/>
+      <column name="detail_information" type="LONGTEXT"/>
+
+      <column name="created_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_m_group_info_modified_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="created_by_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_m_group_info_created_by_id"
+                     referencedTableName="users"
+                     referencedColumnNames="id"/>
+      </column>
+      <column name="last_modified_at" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="INT" defaultValueNumeric="0"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="436-alter-customer-info-add-m-group-id" author="bibash">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="customer_info" columnName="m_group_info_id"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="customer_info">
+      <column name="m_group_info_id" type="BIGINT">
+        <constraints nullable="true"
+                     foreignKeyName="fk_customer_info_m_group_id"
+                     referencedTableName="mgroup_info"
+                     referencedColumnNames="id"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 
 </databaseChangeLog>

@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sb.solutions.api.mGroupInfo.entity.MGroupInfo;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
@@ -161,6 +162,9 @@ public class CustomerInfo extends BaseEntity<Long> {
     private String obligor;
 
     private String nepData;
+
+    @OneToOne
+    private MGroupInfo mGroupInfo;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
