@@ -230,9 +230,18 @@ public class CustomerLoanController {
     @PostMapping(value = "/committee-pull")
     public ResponseEntity<?> getCommitteePull(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto()
-            .successModel(
-                service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
+
+        if (ProductUtils.CUSTOMER_BASE_LOAN) {
+            return new RestResponseDto()
+                .successModel(
+                    service.getLoanByCustomerInfoCommitteePULL(searchDto, PaginationUtils.pageable(page, size)));
+        } else {
+            return new RestResponseDto()
+                .successModel(
+                    service.getCommitteePull(searchDto, PaginationUtils.pageable(page, size)));
+
+        }
+
     }
 
     @GetMapping(path = "/stats")

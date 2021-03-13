@@ -57,9 +57,9 @@ public class Mapper {
         if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) && (!loanActionDto
             .getDocAction()
             .equals(DocAction.TRANSFER))) {
-            Preconditions.checkArgument(
-                customerLoan.getCurrentStage().getToUser().getId() == currentUser.getId(),
-                "Sorry this document is not under you!!");
+            if( !customerLoan.getCurrentStage().getToUser().getId().equals(currentUser.getId())){
+                throw new ServiceValidationException("Sorry this document is not under you!!");
+            }
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
                Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
@@ -145,15 +145,16 @@ public class Mapper {
         if ((loanActionDto.getDocAction().equals(DocAction.FORWARD)) && currentUser.getRole()
             .getRoleType().equals(
                 RoleType.MAKER)) {
-            if (loanActionDto.getIsSol()) {
+
+            if (loanActionDto.isSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
                     "Please Select Approval User for Loan " + customerLoan.getLoan().getName());
                 user.setId(loanActionDto.getSolUser().getId());
-                customerLoan.setIsSol(loanActionDto.getIsSol());
+                customerLoan.setIsSol(true);
                 customerLoan.setSolUser(user);
             } else {
-                customerLoan.setIsSol(loanActionDto.getIsSol());
+                customerLoan.setIsSol(loanActionDto.isSol());
                 customerLoan.setSolUser(null);
             }
         }

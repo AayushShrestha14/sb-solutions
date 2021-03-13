@@ -88,7 +88,16 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     CustomerLoan saveCbsNumbers(CustomerLoan loan);
 
+    /**
+     * Loan Fetch By customerInfo Entity
+     * MEGA BANK SPECIFIC
+     *
+     * @param searchDto
+     * @param pageable
+     * @return
+     */
     Page<CustomerInfoLoanDto> getLoanByCustomerInfo(Object searchDto, Pageable pageable);
+    Page<CustomerInfoLoanDto> getLoanByCustomerInfoCommitteePULL(Object searchDto, Pageable pageable);
 
 
 }
