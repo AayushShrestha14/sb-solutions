@@ -17,11 +17,21 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 
+import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
+import com.sb.solutions.api.borrowerPortfolio.service.BorrowerPortFolioService;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
+import com.sb.solutions.api.marketingActivities.MarketingActivities;
+import com.sb.solutions.api.marketingActivities.service.MarketingActivitiesService;
+import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
+import com.sb.solutions.api.microBorrowerFinancial.service.MicroBorrowerFinancialService;
+import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
+import com.sb.solutions.api.microbaselriskexposure.service.MicroBaselRiskExposureService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 
+import com.sb.solutions.api.synopsisOfCreditwothiness.entity.SynopsisCreditworthiness;
+import com.sb.solutions.api.synopsisOfCreditwothiness.service.SynopsisCreditworthinessService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,25 +116,34 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final IncomeFromAccountServices incomeFromAccountServices;
     private final NetTradingAssetsService netTradingAssetsService;
     private final CreditChecklistService creditChecklistService;
+    private final SynopsisCreditworthinessService synopsisCreditworthinessService;
+    private final BorrowerPortFolioService borrowerPortFolioService;
+    private final MicroBaselRiskExposureService microBaselRiskExposureService;
+    private final MicroBorrowerFinancialService microBorrowerFinancialService;
+    private final MarketingActivitiesService marketingActivitiesService;
 
     public CustomerInfoServiceImpl(
-        @Autowired CustomerInfoRepository customerInfoRepository,
-        FinancialService financialService,
-        SiteVisitService siteVisitService,
-        SecurityService securityService,
-        ShareSecurityService shareSecurityService,
-        GuarantorDetailService guarantorDetailService,
-        UserService userService,
-        InsuranceService insuranceService,
-        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-        CreditRiskGradingService creditRiskGradingService,
-        CrgGammaService crgGammaService,
-        CustomerLoanFlagService loanFlagService,
-        IncomeFromAccountServices incomeFromAccountServices,
-        NetTradingAssetsService netTradingAssetsService,
-        CIclService cIclService,
-        CreditChecklistService creditChecklistService
-    ) {
+            @Autowired CustomerInfoRepository customerInfoRepository,
+            FinancialService financialService,
+            SiteVisitService siteVisitService,
+            SecurityService securityService,
+            ShareSecurityService shareSecurityService,
+            GuarantorDetailService guarantorDetailService,
+            UserService userService,
+            InsuranceService insuranceService,
+            CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+            CreditRiskGradingService creditRiskGradingService,
+            CrgGammaService crgGammaService,
+            CustomerLoanFlagService loanFlagService,
+            IncomeFromAccountServices incomeFromAccountServices,
+            NetTradingAssetsService netTradingAssetsService,
+            CIclService cIclService,
+            CreditChecklistService creditChecklistService,
+            SynopsisCreditworthinessService synopsisCreditworthinessService,
+            BorrowerPortFolioService borrowerPortFolioService,
+            MicroBaselRiskExposureService microBaselRiskExposureService,
+            MicroBorrowerFinancialService microBorrowerFinancialService,
+            MarketingActivitiesService marketingActivitiesService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -142,6 +161,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.incomeFromAccountServices = incomeFromAccountServices;
         this.netTradingAssetsService = netTradingAssetsService;
         this.creditChecklistService = creditChecklistService;
+        this.synopsisCreditworthinessService = synopsisCreditworthinessService;
+        this.borrowerPortFolioService = borrowerPortFolioService;
+        this.microBaselRiskExposureService = microBaselRiskExposureService;
+        this.microBorrowerFinancialService = microBorrowerFinancialService;
+        this.marketingActivitiesService = marketingActivitiesService;
     }
 
 
@@ -281,6 +305,26 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final CreditChecklist creditChecklist = creditChecklistService
                 .save(objectMapper().convertValue(o, CreditChecklist.class));
             customerInfo1.setCreditChecklist(creditChecklist);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.SYNOPSIS_CREDITWORTHINESS))) {
+            final SynopsisCreditworthiness synopsisCreditworthiness = synopsisCreditworthinessService
+                    .save(objectMapper().convertValue(o, SynopsisCreditworthiness.class));
+            customerInfo1.setSynopsisCreditworthiness(synopsisCreditworthiness);
+        }else if ((template.equalsIgnoreCase(TemplateNameConstant.BORROWER_PORTFOLIO))) {
+            final BorrowerPortFolio borrowerPortFolio = borrowerPortFolioService
+                    .save(objectMapper().convertValue(o, BorrowerPortFolio.class));
+            customerInfo1.setBorrowerPortFolio(borrowerPortFolio);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.BASEL_RISK_EXPOSURE))) {
+            final MicroBaselRiskExposure microBaselRiskExposure = microBaselRiskExposureService
+                    .save(objectMapper().convertValue(o, MicroBaselRiskExposure.class));
+            customerInfo1.setMicroBaselRiskExposure(microBaselRiskExposure);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.MICRO_BORROWER_FINANCIAL))) {
+            final MicroBorrowerFinancial microBorrowerFinancial = microBorrowerFinancialService
+                .save(objectMapper().convertValue(o, MicroBorrowerFinancial.class));
+            customerInfo1.setMicroBorrowerFinancial(microBorrowerFinancial);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.MARKETING_ACTIVITIES))) {
+            final MarketingActivities marketingActivities = marketingActivitiesService
+                .save(objectMapper().convertValue(o, MarketingActivities.class));
+            customerInfo1.setMarketingActivities(marketingActivities);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
