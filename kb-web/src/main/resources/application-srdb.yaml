@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;database=srdb_v2
+    username: sa
+    password: sbdb@141
+
+bank:
+  affiliateId: srdb
+  name: Shine Resunga Development Bank Limited
+  website: https://www.srdb.com.np/
+
+product:
+  las: true
+  offerletter: false
+  memo: false
+  account: true
+  eligibility: true
+  dms: false
+  nepTemplate: false
+  cadLiteVersion: true
+  loanApprovalHierarchyLevel: DEFAULT #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  fullCad: false #only fullCad should not be enable. you should enable offerLetter also
+  cbsEnable: true
+  checklistLiteVersion: false
+  microLoan: false
+
+#this feature is enabled if cbsEnable is set true
+#url : remote server url
+app:
+  datasource:
+    cbs:
+      url: jdbc:sqlserver://localhost:1433;database=cbs
+      username: sa
+      password: sbdb@141
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    tableName: cbs_group
+    uniqueKey: obligor
