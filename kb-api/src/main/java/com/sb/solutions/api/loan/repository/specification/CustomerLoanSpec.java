@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 import com.google.gson.Gson;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
@@ -68,6 +69,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_NAME = "name";
     public static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
     public static final String FILTER_BY_USER = "users";
+    public static final String FILTER_BY_BUSINESS_UNIT = "clientType";
+    public static final String FILTER_BY_LOAN_HOLDER_CODE = "customerCode";
     private final String property;
     private final String value;
 
@@ -323,12 +326,23 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                         value.toLowerCase() + "%");
 
             case FILTER_BY_CUSTOMER_TYPE:
-                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
+                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"),
+                    CustomerType.valueOf(value));
 
             case FILTER_BY_USER:
                 return criteriaBuilder
-                        .like(root.join("currentStage", JoinType.LEFT).join("toUser").get("name"),
-                                value.toLowerCase() + "%");
+                    .like(root.join("currentStage", JoinType.LEFT).join("toUser").get("name"),
+                        value.toLowerCase() + "%");
+
+            case FILTER_BY_BUSINESS_UNIT:
+                return criteriaBuilder
+                    .equal(root.join("loanHolder").get("clientType"), ClientType.valueOf(value));
+
+            case FILTER_BY_LOAN_HOLDER_CODE:
+                return criteriaBuilder
+                    .like(root.join("loanHolder", JoinType.LEFT).get(property),
+                        value.toLowerCase() + "%");
+
             default:
                 return null;
         }
