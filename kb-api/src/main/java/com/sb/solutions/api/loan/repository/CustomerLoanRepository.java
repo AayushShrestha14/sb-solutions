@@ -233,4 +233,35 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     List<CustomerLoan> getCustomerLoanByCurrentStageToUserPrimaryUserIdAndCurrentStageToRoleInAndDocumentStatusIn(
         Long id, List<Role> roleList,
         List<DocStatus> docStatus);
+
+
+    @Query(value = "SELECT "
+        + "(SELECT  (COUNT(Distinct cl.loan_holder_id)) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status  in(4,5,6,7)  AND l.to_role_id IN (:id)"
+        + " AND cl.branch_id IN (:bid) AND l.to_user_id=:uid And cl.child_id IS NULL) initial,"
+
+        + "(SELECT  (COUNT(Distinct cl.loan_holder_id)) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=0 AND l.to_role_id IN (:id)"
+        + " AND cl.branch_id IN (:bid) AND l.to_user_id=:uid And cl.child_id IS NULL) pending,"
+
+        + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=1"
+        + " AND cl.branch_id IN (:bid) And cl.child_id IS NULL) Approved,"
+
+        + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=2 "
+        + " AND cl.branch_id IN (:bid) And cl.child_id IS NULL) Rejected,"
+
+        + "(SELECT  COUNT(cl.id) FROM customer_loan cl LEFT JOIN loan_stage l"
+        + " ON l.id=cl.current_stage_id WHERE cl.document_status=3"
+        + " AND cl.branch_id IN (:bid) And cl.child_id IS NULL) Closed,"
+
+        + "(SELECT  COUNT(cl.id) FROM customer_loan cl"
+        + " LEFT JOIN loan_stage l ON l.id=cl.current_stage_id WHERE "
+        + "  cl.branch_id IN (:bid) And cl.child_id IS NULL)total,"
+
+        + "(SELECT COUNT(cl.id) FROM customer_loan cl WHERE cl.notify = 1 AND "
+        + "cl.noted_by IS NULL And cl.child_id IS NULL) notify", nativeQuery = true)
+    Map<String, Integer> statusCountCustomerWise(@Param("id") Long id, @Param("bid") List<Long> bid,
+        @Param("uid") Long uid);
 }
