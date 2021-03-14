@@ -34,6 +34,10 @@ public class ProductUtils {
 
     public static Boolean CHECK_LIST_LITE_VERSION;
 
+    public static Boolean CUSTOMER_BASE_LOAN;
+
+
+
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
 
@@ -115,6 +119,12 @@ public class ProductUtils {
     public void setCheckListLiteVersion(Boolean value){
         CHECK_LIST_LITE_VERSION = value;
         productUtilsMap.put("CHECK_LIST_LITE_VERSION", value);
+    }
+
+    @Value("${product.customerBaseLoan}")
+    public void setCustomerBaseLoan(Boolean customerBaseLoan) {
+        CUSTOMER_BASE_LOAN = customerBaseLoan;
+        productUtilsMap.put("CUSTOMER_BASE_LOAN", customerBaseLoan);
     }
 
     public static Map<String, Object> getProductUtilsMap() {

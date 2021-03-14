@@ -8,7 +8,7 @@ spring:
   jmx:
     default-domain: las
   profiles:
-    active: qa
+    active: dev
   thymeleaf:
     enabled: true
     check-template-location: true
@@ -89,6 +89,7 @@ product:
   cbsEnable: false
   checklistLiteVersion: false
   microLoan: true
+  customerBaseLoan : true
 
 #this feature is enabled if cbsEnable is set true
 #url : remote server url

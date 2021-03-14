@@ -14,6 +14,7 @@ import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
 import com.sb.solutions.api.guarantor.entity.Guarantor;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerInfoLoanDto;
 import com.sb.solutions.api.loan.dto.GroupSummaryDto;
 import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -83,9 +84,20 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     List<CustomerLoan> findByCombinedLoanId(long id);
 
-    CustomerLoan saveCadLoanDocument(Long loanId , List<CadDocument> cadDocuments, String data);
+    CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments, String data);
 
     CustomerLoan saveCbsNumbers(CustomerLoan loan);
+
+    /**
+     * Loan Fetch By customerInfo Entity
+     * MEGA BANK SPECIFIC
+     *
+     * @param searchDto
+     * @param pageable
+     * @return
+     */
+    Page<CustomerInfoLoanDto> getLoanByCustomerInfo(Object searchDto, Pageable pageable);
+    Page<CustomerInfoLoanDto> getLoanByCustomerInfoCommitteePULL(Object searchDto, Pageable pageable);
 
 
 }

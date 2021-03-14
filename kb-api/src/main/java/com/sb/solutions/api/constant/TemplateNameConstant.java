@@ -19,6 +19,11 @@ public class TemplateNameConstant {
     public static final String CICL = "CICL";
     public static final String INCOME_FROM_ACCOUNT = "Income From Account";
     public static final String CREDIT_CHECKlIST = "Credit Checklist";
+    public static final String MICRO_BORROWER_FINANCIAL = "Micro Borrower Financial";
+    public static final String SYNOPSIS_CREDITWORTHINESS = "Synopsis Creditworthiness";
+    public static final String BORROWER_PORTFOLIO = "Borrower Portfolio";
+    public static final String BASEL_RISK_EXPOSURE = "Basel Risk Exposure";
+    public static final String MARKETING_ACTIVITIES = "Marketing Activities";
 
 
 }
