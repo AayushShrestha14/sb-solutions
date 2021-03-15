@@ -6639,5 +6639,22 @@
     </addColumn>
   </changeSet>
 
+    <changeSet id="435-alter-table-guarantor-add-addressline-column" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="permanent_address_line_one"/>
+                <columnExists tableName="guarantor" columnName="permanent_address_line_two"/>
+                <columnExists tableName="guarantor" columnName="temporary_address_line_one"/>
+                <columnExists tableName="guarantor" columnName="temporary_address_line_two"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="permanent_address_line_one" type="varchar(256)"/>
+            <column name="permanent_address_line_two" type="varchar(256)"/>
+            <column name="temporary_address_line_one" type="varchar(256)"/>
+            <column name="temporary_address_line_two" type="varchar(256)"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>
