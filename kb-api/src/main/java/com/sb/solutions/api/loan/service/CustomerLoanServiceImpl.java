@@ -30,6 +30,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,6 +44,7 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +86,7 @@ import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerInfoLoanDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
@@ -121,6 +127,7 @@ import com.sb.solutions.core.enums.LoanType;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.BankUtils;
+import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
@@ -138,6 +145,8 @@ import com.sb.solutions.report.core.model.Report;
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
+    @Autowired
+    EntityManager em;
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanServiceImpl.class);
     private static final String DESCRIPTION_APPROVED = "%s has been approved Successfully";
     private final CustomerLoanRepository customerLoanRepository;
@@ -167,6 +176,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
+
     Gson gson = new Gson();
     private final ObjectMapper objectMapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
@@ -202,7 +212,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         ActivityService activityService,
         CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
         CustomerGeneralDocumentService customerGeneralDocumentService,
-        CadDocumentService cadDocumentService) {
+        CadDocumentService cadDocumentService
+    ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -323,7 +334,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         // skip insurace , pan expiry for loan forward and approve
         customerLoan.getLoanHolder().setLoanFlags(customerLoan.getLoanHolder().getLoanFlags()
             .stream().filter(lf -> lf.getFlag() != LoanFlag.INSURANCE_EXPIRY
-                && lf.getFlag() != LoanFlag.COMPANY_VAT_PAN_EXPIRY && lf.getFlag() != LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY).collect(Collectors.toList()));
+                && lf.getFlag() != LoanFlag.COMPANY_VAT_PAN_EXPIRY
+                && lf.getFlag() != LoanFlag.EMPTY_COMPANY_VAT_PAN_EXPIRY)
+            .collect(Collectors.toList()));
         customerLoan.setData(data);
         return mapLoanHolderToCustomerLoan(customerLoan);
     }
@@ -630,6 +643,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticatedUser();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
+        if(ProductUtils.CUSTOMER_BASE_LOAN){
+            return customerLoanRepository.statusCountCustomerWise(u.getRole().getId(), branchAccess, u.getId());
+        }
         return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
 
@@ -1473,7 +1489,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments, String data) {
+    public CustomerLoan saveCadLoanDocument(Long loanId, List<CadDocument> cadDocuments,
+        String data) {
         CustomerLoan customerLoan = customerLoanRepository.findById(loanId).orElse(null);
         if (customerLoan == null) {
             throw new ServiceValidationException("No customer loan found!!!");
@@ -1494,6 +1511,176 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         customerLoan1.setCbsLoanFileNumber(customerLoans.getCbsLoanFileNumber());
         return customerLoanRepository.save(customerLoan1);
     }
+
+    /**
+     * Mega Bank Specific Method
+     */
+
+    @Override
+    public Page<CustomerInfoLoanDto> getLoanByCustomerInfo(Object searchDto, Pageable pageable) {
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        User u = userService.getAuthenticatedUser();
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+            .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("currentUserRole", u.getRole() == null ? null : u.getRole().getId().toString());
+        s.put("toUser", u == null ? null : u.getId().toString());
+        s.put("branchIds", branchAccess);
+        Page<CustomerInfoLoanDto> customerInfoLoanDtoPage = criteriaSearch(s, pageable);
+
+        List<CustomerInfoLoanDto> finalDtos = customerInfoLoanDtoPage.getContent();
+        List<CustomerInfoLoanDto> list = new ArrayList<>();
+        finalDtos.forEach(customerInfoLoanDto -> {
+                s.put("loanHolderId", customerInfoLoanDto.getCustomerInfo().getId().toString());
+                logger.info("filter params {}", s);
+                CustomerLoanSpecBuilder customerLoanSpecBuilderInner = new CustomerLoanSpecBuilder(s);
+                Specification<CustomerLoan> innerSpec = customerLoanSpecBuilderInner.build();
+                List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(innerSpec);
+                List<CustomerLoan> singleLoanList = customerLoanList.stream()
+                    .filter(f -> ObjectUtils.isEmpty(f.getCombinedLoan())).collect(
+                        Collectors.toList());
+                List<CustomerLoan> combineLoanListMap = customerLoanList.stream()
+                    .filter(f -> !ObjectUtils.isEmpty(f.getCombinedLoan()))
+                    .collect(Collectors.toList());
+                List<CustomerLoan> combineLoanListMapDistinct = combineLoanListMap.stream()
+                    .filter(FilterJsonUtils.distinctByKey(o -> o.getCombinedLoan().getId())).collect(
+                        Collectors.toList());
+
+                List<Map<Long, List<CustomerLoan>>> maps = new ArrayList<>();
+                combineLoanListMapDistinct.forEach(map -> {
+                    Map<Long, List<CustomerLoan>> m = new HashMap<>();
+
+                    List<CustomerLoan> customerLoanList1 = combineLoanListMap.stream().filter(f ->
+                        Objects.equals(f.getCombinedLoan().getId(), map.getCombinedLoan().getId()))
+                        .collect(
+                            Collectors.toList());
+
+                    m.put(map.getCombinedLoan().getId(), customerLoanList1);
+                    maps.add(m);
+
+
+                });
+
+                customerInfoLoanDto.setCombineList(maps);
+                customerInfoLoanDto.setLoanSingleList(singleLoanList);
+                list.add(customerInfoLoanDto);
+
+            }
+        );
+
+        return new PageImpl<>(list, pageable, customerInfoLoanDtoPage.getTotalElements());
+
+    }
+
+    @Override
+    public Page<CustomerInfoLoanDto> getLoanByCustomerInfoCommitteePULL(Object searchDto,
+        Pageable pageable) {
+        User u = userService.getAuthenticatedUser();
+        if (u.getRole().getRoleType().equals(RoleType.COMMITTEE)) {
+            Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+            String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+            if (s.containsKey("branchIds")) {
+                branchAccess = s.get("branchIds");
+            }
+            s.put("branchIds", branchAccess);
+            s.put("currentUserRole", u.getRole().getId().toString());
+            s.put("toUser",
+                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
+                    .getId()
+                    .toString());
+            s.values().removeIf(Objects::isNull);
+            logger.info("query for pull {}", s);
+            Page<CustomerInfoLoanDto> customerInfoLoanDtoPage = criteriaSearch(s, pageable);
+
+            List<CustomerInfoLoanDto> finalDtos = customerInfoLoanDtoPage.getContent();
+            List<CustomerInfoLoanDto> list = new ArrayList<>();
+            finalDtos.forEach(customerInfoLoanDto -> {
+                s.put("loanHolderId", customerInfoLoanDto.getCustomerInfo().getId().toString());
+                logger.info("filter params {}", s);
+                CustomerLoanSpecBuilder customerLoanSpecBuilderInner = new CustomerLoanSpecBuilder(s);
+                Specification<CustomerLoan> innerSpec = customerLoanSpecBuilderInner.build();
+                List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(innerSpec);
+                for (CustomerLoan c : customerLoanList) {
+                    for (LoanStageDto l : c.getPreviousList()) {
+                        if (l.getToUser().getId().equals(u.getId())) {
+                            c.setPulled(true);
+                            break;
+                        }
+                    }
+                }
+                List<CustomerLoan> singleLoanList = customerLoanList.stream()
+                    .filter(f -> ObjectUtils.isEmpty(f.getCombinedLoan())).collect(
+                        Collectors.toList());
+                List<CustomerLoan> combineLoanListMap = customerLoanList.stream()
+                    .filter(f -> !ObjectUtils.isEmpty(f.getCombinedLoan()))
+                    .collect(Collectors.toList());
+                List<CustomerLoan> combineLoanListMapDistinct = combineLoanListMap.stream()
+                    .filter(FilterJsonUtils.distinctByKey(o -> o.getCombinedLoan().getId())).collect(
+                        Collectors.toList());
+
+                List<Map<Long, List<CustomerLoan>>> maps = new ArrayList<>();
+                combineLoanListMapDistinct.forEach(map -> {
+                    Map<Long, List<CustomerLoan>> m = new HashMap<>();
+
+                    List<CustomerLoan> customerLoanList1 = combineLoanListMap.stream().filter(f ->
+                        Objects.equals(f.getCombinedLoan().getId(), map.getCombinedLoan().getId()))
+                        .collect(
+                            Collectors.toList());
+
+                    m.put(map.getCombinedLoan().getId(), customerLoanList1);
+                    maps.add(m);
+
+
+                });
+
+                customerInfoLoanDto.setCombineList(maps);
+                customerInfoLoanDto.setLoanSingleList(singleLoanList);
+                list.add(customerInfoLoanDto);
+
+            });
+            return new PageImpl<>(list, pageable, customerInfoLoanDtoPage.getTotalElements());
+        }
+        return null;
+    }
+
+
+    private Page<CustomerInfoLoanDto> criteriaSearch(Map<String, String> s, Pageable pageable) {
+        logger.info("filter Customer ::: {}", s);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<CustomerInfoLoanDto> q = cb.createQuery(CustomerInfoLoanDto.class);
+        Root<CustomerLoan> root = q.from(CustomerLoan.class);
+
+        q.select(
+            cb.construct(
+                CustomerInfoLoanDto.class,
+                root.get("loanHolder"))).distinct(true);
+
+        CustomerLoanSpecBuilder customerLoanSpecBuilderInner = new CustomerLoanSpecBuilder(s);
+        Specification<CustomerLoan> innerSpec = customerLoanSpecBuilderInner.build();
+        List<CustomerInfoLoanDto> resultList = em
+            .createQuery(q.where(innerSpec.toPredicate(root, q, cb)))
+            .setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize())
+            .getResultList();
+
+        // Create Count Query
+        CriteriaQuery<CustomerInfoLoanDto> countQuery = cb.createQuery(CustomerInfoLoanDto.class);
+        Root<CustomerLoan> customerLoanRootCount = countQuery.from(CustomerLoan.class);
+
+        countQuery.select(
+            cb.construct(
+                CustomerInfoLoanDto.class,
+                root.get("loanHolder"))).distinct(true);
+        int count = em.createQuery(
+            countQuery.where(innerSpec.toPredicate(customerLoanRootCount, countQuery, cb)))
+            .getResultList().size();
+        return new PageImpl<CustomerInfoLoanDto>(resultList, pageable, count);
+
+
+    }
+
 
 }
 

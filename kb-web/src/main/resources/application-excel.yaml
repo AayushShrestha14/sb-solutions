@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;database=excel_v2
+    username: sa
+    password: sbdb@141
+
+bank:
+  affiliateId: excel
+  name: Excel Development Bank Ltd.
+  website: http://www.edb.com.np/
+
+product:
+  las: true
+  offerletter: true
+  memo: false
+  account: false
+  eligibility: false
+  dms: false
+  nepTemplate: false
+  cadLiteVersion: false
+  loanApprovalHierarchyLevel: LOAN #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  fullCad: true #only fullCad should not be enable. you should enable offerLetter also
+  cbsEnable: true
+  checklistLiteVersion: true
+  microLoan: false
+
+#this feature is enabled if cbsEnable is set true
+#url : remote server url
+app:
+  datasource:
+    cbs:
+      url: jdbc:sqlserver://150.107.205.62:1433;database=cbs
+      username: sa
+      password: sbdb@141
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    tableName: cbs_group
+    uniqueKey: obligor

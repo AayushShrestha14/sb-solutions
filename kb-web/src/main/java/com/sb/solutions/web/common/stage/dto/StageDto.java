@@ -45,7 +45,7 @@ public class StageDto extends BaseDto<Long> {
 
     private Long customerOfferLetterId;
 
-    private Boolean isSol;
+    private boolean isSol = false;
 
     private UserDto solUser;
 
