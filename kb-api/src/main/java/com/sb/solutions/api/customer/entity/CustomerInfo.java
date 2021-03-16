@@ -1,10 +1,21 @@
 package com.sb.solutions.api.customer.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
+import com.sb.solutions.api.mGroupInfo.entity.MGroupInfo;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
@@ -188,6 +199,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private BorrowerPortFolio borrowerPortFolio;
+
+    @OneToOne
+    private MGroupInfo mGroupInfo;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
