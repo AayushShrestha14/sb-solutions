@@ -90,6 +90,13 @@ public class Guarantor extends BaseEntity<Long> {
     private String background;
     private String guarantorLegalDocumentAddress;
 
-
+    @NotAudited
+    private String permanentAddressLineOne;
+    @NotAudited
+    private String permanentAddressLineTwo;
+    @NotAudited
+    private String temporaryAddressLineOne;
+    @NotAudited
+    private String temporaryAddressLineTwo;
 
 }
