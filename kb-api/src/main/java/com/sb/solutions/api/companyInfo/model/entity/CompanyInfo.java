@@ -56,8 +56,10 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
     private String succession;
     private String businessAndIndustry;
 
+
     private String companyJsonData;
 
+    @NotAudited
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyLocations companyLocations;
 

@@ -6707,5 +6707,22 @@
     </addColumn>
   </changeSet>
 
+    <changeSet id="437-drop-table-company-location-audit" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_locations_audit"/>
+        </preConditions>
+
+        <dropTable tableName="company_locations_audit"/>
+    </changeSet>
+
+    <changeSet id="438-alter-drop-table-company-location" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="company_locations" columnName="address"/>
+        </preConditions>
+
+        <modifyDataType tableName="company_locations" columnName="address" newDataType="LONGTEXT"/>
+
+    </changeSet>
+
 
 </databaseChangeLog>
