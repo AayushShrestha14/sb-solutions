@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;database=srdb_v2
+    url: jdbc:sqlserver://202.166.201.235:1433;database=srdb_v2
     username: sa
     password: sbdb@141
 
@@ -18,7 +18,7 @@ product:
   dms: false
   nepTemplate: false
   cadLiteVersion: true
-  loanApprovalHierarchyLevel: DEFAULT #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
   fullCad: false #only fullCad should not be enable. you should enable offerLetter also
   cbsEnable: true
   checklistLiteVersion: false
