@@ -6724,5 +6724,13 @@
 
     </changeSet>
 
+    <changeSet id="440-alter-nepse-company-modify-column-name" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="nepse_company" columnName="company_Code"/>
+        </preConditions>
+
+        <renameColumn tableName="nepse_company" oldColumnName="company_Code" newColumnName="company_code"/>
+    </changeSet>
+
 
 </databaseChangeLog>
