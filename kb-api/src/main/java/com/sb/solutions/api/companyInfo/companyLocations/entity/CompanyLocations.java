@@ -18,7 +18,6 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@EntityListeners({AuditingEntityListener.class})
 public class CompanyLocations extends BaseEntity<Long> {
 
     private String houseNumber;
