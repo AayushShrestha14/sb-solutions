@@ -23,6 +23,7 @@ product:
   cbsEnable: true
   checklistLiteVersion: false
   microLoan: false
+  customerBaseLoan : false
 
 #this feature is enabled if cbsEnable is set true
 #url : remote server url
