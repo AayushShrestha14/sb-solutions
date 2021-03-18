@@ -24,6 +24,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sb.solutions.api.basehttp.BaseHttp;
 import com.sb.solutions.api.basehttp.BaseHttpRepo;
@@ -249,5 +250,8 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
         return new BankUtils();
     }
 
-
+    @RequestMapping("/")
+    public String errorPage() {
+        return "error";
+    }
 }
