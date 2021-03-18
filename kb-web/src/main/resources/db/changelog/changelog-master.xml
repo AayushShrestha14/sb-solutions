@@ -6753,28 +6753,5 @@
 
     </changeSet>
 
-    <changeSet id="292-create-table-customer-approved-loan-cad-documentation-approved-loan" author="rujan">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="assigned_loan"/>
-            </not>
-        </preConditions>
-        <createTable tableName="assigned_loan">
-            <column name="assigned_loan_id" type="BIGINT">
-                <constraints nullable="true"
-                  foreignKeyName="fk_assigned_loan_id"
-                  referencedTableName="customer_loan"
-                  referencedColumnNames="id"
-                />
-            </column>
-            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
-                <constraints
-                  foreignKeyName="fk_assigned_customer_approved_loan_cad_documentation_id"
-                  referencedTableName="customer_approved_loan_cad_documentation"
-                  referencedColumnNames="id"/>
-            </column>
-        </createTable>
-    </changeSet>
-
 
 </databaseChangeLog>
