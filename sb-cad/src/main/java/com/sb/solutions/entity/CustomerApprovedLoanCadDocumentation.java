@@ -78,9 +78,9 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     private Boolean isAdditionalDisbursement = false;
 
-    @ManyToMany
-    @JoinTable(name = "calcd_cad_document")
-    private List<CadDocument> requiredDocument = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(name = "calcd_cad_document")
+//    private List<CadDocument> requiredDocument = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_additional_doc_list")
