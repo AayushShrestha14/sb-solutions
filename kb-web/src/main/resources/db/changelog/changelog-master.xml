@@ -6732,5 +6732,26 @@
         <renameColumn tableName="nepse_company" oldColumnName="company_Code" newColumnName="company_code"/>
     </changeSet>
 
+    <changeSet id="441-alter-customer_approved_loan_cad_documentation" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="nep_data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="nep_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="442-alter-customer_approved_loan_cad_documentation" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_approved_loan_cad_documentation" columnName="nep_data"/>
+        </preConditions>
+
+        <modifyDataType tableName="customer_approved_loan_cad_documentation" columnName="nep_data" newDataType="NVARCHAR(MAX)"/>
+
+    </changeSet>
+
 
 </databaseChangeLog>

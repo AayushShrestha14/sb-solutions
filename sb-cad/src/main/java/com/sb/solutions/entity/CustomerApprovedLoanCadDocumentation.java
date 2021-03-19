@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.enums.CadDocStatus;
@@ -70,10 +71,16 @@ public class CustomerApprovedLoanCadDocumentation extends BaseEntity<Long> {
 
     private String data;
 
+    private String nepData;
+
     @Transient
     private String disbursementComment;
 
     private Boolean isAdditionalDisbursement = false;
+
+    @ManyToMany
+    @JoinTable(name = "calcd_cad_document")
+    private List<CadDocument> requiredDocument = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "cad_file_customer_approved_loan_additional_doc_list")
