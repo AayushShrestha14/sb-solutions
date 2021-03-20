@@ -6753,5 +6753,28 @@
 
     </changeSet>
 
+    <changeSet id="443-create-table-customer-approved-loan-cad-documentation-calcd_cad_document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="calcd_cad_document"/>
+            </not>
+        </preConditions>
+        <createTable tableName="calcd_cad_document">
+            <column name="required_document_id" type="BIGINT">
+                <constraints nullable="true"
+                  foreignKeyName="fk_required_document_id"
+                  referencedTableName="document"
+                  referencedColumnNames="id"
+                />
+            </column>
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints
+                  foreignKeyName="fk_required_document_customer_approved_loan_cad_documentation_id"
+                  referencedTableName="customer_approved_loan_cad_documentation"
+                  referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>
