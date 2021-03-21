@@ -35,8 +35,7 @@ public class ProductUtils {
     public static Boolean CHECK_LIST_LITE_VERSION;
 
     public static Boolean CUSTOMER_BASE_LOAN;
-
-
+    public static Boolean CONFIGURE_LEGAL_DOCUMENT;
 
 
     private static Map<String, Object> productUtilsMap = new HashMap<>();
@@ -96,7 +95,6 @@ public class ProductUtils {
     }
 
 
-
     /**
      * Full cad represent work flow of cad respect to offer letter,legal document and disbursement
      * Each type have their own stages
@@ -116,9 +114,15 @@ public class ProductUtils {
     }
 
     @Value("${product.checklistLiteVersion}")
-    public void setCheckListLiteVersion(Boolean value){
+    public void setCheckListLiteVersion(Boolean value) {
         CHECK_LIST_LITE_VERSION = value;
         productUtilsMap.put("CHECK_LIST_LITE_VERSION", value);
+    }
+
+    @Value("${product.configureLegalDocument}")
+    public void setConfigureLegalDocument(Boolean configureLegalDocument) {
+        CONFIGURE_LEGAL_DOCUMENT = configureLegalDocument;
+        productUtilsMap.put("CONFIGURE_LEGAL_DOCUMENT", configureLegalDocument);
     }
 
     @Value("${product.customerBaseLoan}")
