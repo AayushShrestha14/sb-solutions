@@ -643,8 +643,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public Map<String, Integer> statusCount() {
         User u = userService.getAuthenticatedUser();
         List<Long> branchAccess = userService.getRoleAccessFilterByBranch();
-        if(ProductUtils.CUSTOMER_BASE_LOAN){
-            return customerLoanRepository.statusCountCustomerWise(u.getRole().getId(), branchAccess, u.getId());
+        if (ProductUtils.CUSTOMER_BASE_LOAN) {
+            return customerLoanRepository
+                .statusCountCustomerWise(u.getRole().getId(), branchAccess, u.getId());
         }
         return customerLoanRepository.statusCount(u.getRole().getId(), branchAccess, u.getId());
     }
@@ -1587,10 +1588,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             }
             s.put("branchIds", branchAccess);
             s.put("currentUserRole", u.getRole().getId().toString());
-            s.put("toUser",
-                userService.findByRoleIdAndIsDefaultCommittee(u.getRole().getId(), true).get(0)
-                    .getId()
-                    .toString());
             s.values().removeIf(Objects::isNull);
             logger.info("query for pull {}", s);
             Page<CustomerInfoLoanDto> customerInfoLoanDtoPage = criteriaSearch(s, pageable);
@@ -1600,16 +1597,23 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             finalDtos.forEach(customerInfoLoanDto -> {
                 s.put("loanHolderId", customerInfoLoanDto.getCustomerInfo().getId().toString());
                 logger.info("filter params {}", s);
-                CustomerLoanSpecBuilder customerLoanSpecBuilderInner = new CustomerLoanSpecBuilder(s);
+                CustomerLoanSpecBuilder customerLoanSpecBuilderInner = new CustomerLoanSpecBuilder(
+                    s);
                 Specification<CustomerLoan> innerSpec = customerLoanSpecBuilderInner.build();
                 List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(innerSpec);
                 for (CustomerLoan c : customerLoanList) {
+
+                    if (Objects.requireNonNull(c.getCurrentStage().getToUser().getId())
+                        .equals(u.getId())) {
+                        c.setPulled(true);
+                    }
                     for (LoanStageDto l : c.getPreviousList()) {
                         if (l.getToUser().getId().equals(u.getId())) {
                             c.setPulled(true);
                             break;
                         }
                     }
+
                 }
                 List<CustomerLoan> singleLoanList = customerLoanList.stream()
                     .filter(f -> ObjectUtils.isEmpty(f.getCombinedLoan())).collect(
@@ -1618,7 +1622,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .filter(f -> !ObjectUtils.isEmpty(f.getCombinedLoan()))
                     .collect(Collectors.toList());
                 List<CustomerLoan> combineLoanListMapDistinct = combineLoanListMap.stream()
-                    .filter(FilterJsonUtils.distinctByKey(o -> o.getCombinedLoan().getId())).collect(
+                    .filter(FilterJsonUtils.distinctByKey(o -> o.getCombinedLoan().getId()))
+                    .collect(
                         Collectors.toList());
 
                 List<Map<Long, List<CustomerLoan>>> maps = new ArrayList<>();
