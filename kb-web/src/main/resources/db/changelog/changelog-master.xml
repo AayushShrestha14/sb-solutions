@@ -6775,6 +6775,40 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="444-create-loan-config-loan-config-renew-with-enhancement" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="loan_config_renew_with_enhancement"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="loan_config_renew_with_enhancement">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_loan_config_renew_with_enhancement_loan_config_id"
+                        referencedColumnNames="id"
+                        referencedTableName="loan_config"
+                />
+            </column>
+            <column name="renew_with_enhancement_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_loan_config_renew_with_enhancement_id"
+                             referencedColumnNames="id"
+                             referencedTableName="document"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="445-alter-proposal-add-enhance-limit-amount-column" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="proposal" columnName="enhance_limit_amount"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="proposal">
+            <column name="enhance_limit_amount" type="DECIMAL"/>
+        </addColumn>
+    </changeSet>
 
 
 </databaseChangeLog>
