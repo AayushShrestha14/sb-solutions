@@ -6810,5 +6810,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="446-alter-table-customer-relative-add-column-age" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_relative" columnName="age"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_relative">
+            <column name="age" type="INT"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>
