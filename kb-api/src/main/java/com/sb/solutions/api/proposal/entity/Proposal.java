@@ -53,6 +53,8 @@ public class Proposal extends BaseEntity<Long> {
     private String tenorOfEachDeal;
     @NotAudited
     private String cashMarginMethod;
+    @NotAudited
+    private Double enhanceLimitAmount;
 
 
     @Transient

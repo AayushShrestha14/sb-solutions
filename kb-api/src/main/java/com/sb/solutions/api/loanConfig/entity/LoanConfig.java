@@ -86,6 +86,10 @@ public class LoanConfig extends BaseEntity<Long> {
     @Where(clause = "status = 1")
     private List<Document> approvedDocument;
 
+    @ManyToMany
+    @Where(clause = "status = 1")
+    private List<Document> renewWithEnhancement;
+
     private Long totalPoints = 0L;
 
     private Boolean enableEligibility;

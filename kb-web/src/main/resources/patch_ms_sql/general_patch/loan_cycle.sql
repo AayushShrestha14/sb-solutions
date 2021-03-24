@@ -135,3 +135,17 @@ BEGIN
             SET IDENTITY_INSERT loan_cycle OFF
         END
 END;
+
+BEGIN
+    DECLARE @count SMALLINT
+    SET @count = (SELECT COUNT(*) FROM loan_cycle lc WHERE lc.cycle = 'Renew With Enhancement')
+    IF (@count = 0)
+BEGIN
+            SET IDENTITY_INSERT loan_cycle ON
+            INSERT INTO loan_cycle (id, cycle, label, created_by_id, modified_by_id, created_at, last_modified_at,
+                                    version)
+            VALUES ('13', 'Renew With Enhancement', 'Document required during renew with enhancement of loan', null, null,
+                    '2021-03-22', '2021-03-22', '0')
+            SET IDENTITY_INSERT loan_cycle OFF
+END
+END;

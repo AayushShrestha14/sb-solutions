@@ -10,7 +10,8 @@ public enum LoanType {
     CLOSURE_LOAN("Closure Loan"),
     ENHANCED_LOAN("Enhanced Loan"),
     PARTIAL_SETTLEMENT_LOAN("Partial Settlement Loan"),
-    FULL_SETTLEMENT_LOAN("Full Settlement Loan");
+    FULL_SETTLEMENT_LOAN("Full Settlement Loan"),
+    RENEW_WITH_ENHANCEMENT("Renew with Enhancement");
 
     private final String value;
 
