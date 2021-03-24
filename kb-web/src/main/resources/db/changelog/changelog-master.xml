@@ -6810,5 +6810,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="447-alter-offer-document-alter-datatype-loan-amount-words" author="sudil">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="offer_document" columnName="initial_information"/>
+        </preConditions>
+        <modifyDataType tableName="offer_document" columnName="initial_information" newDataType="NVARCHAR(MAX)"/>
+    </changeSet>
+    <changeSet id="448-alter-offer-document-alter-datatype-loan-amount-words" author="sudil">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="offer_document" columnName="supported_information"/>
+        </preConditions>
+        <modifyDataType tableName="offer_document" columnName="supported_information" newDataType="NVARCHAR(MAX)"/>
+    </changeSet>
+
 
 </databaseChangeLog>
