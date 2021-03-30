@@ -16,12 +16,14 @@ import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
 import com.sb.solutions.api.mGroupInfo.entity.MGroupInfo;
+import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.ObjectUtils;
 
@@ -202,6 +204,10 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private MGroupInfo mGroupInfo;
+
+    @NotAudited
+    @ManyToMany
+    private List<ReportingInfoLevel> reportingInfoLevels;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
