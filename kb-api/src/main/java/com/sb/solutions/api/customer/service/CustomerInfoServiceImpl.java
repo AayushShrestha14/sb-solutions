@@ -339,13 +339,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final List<ReportingInfoLevel> reportingInfoLevels = objectMapper().convertValue(o,
                     typeFactory.constructCollectionType(List.class, ReportingInfoLevel.class));
             customerInfo1.setReportingInfoLevels(reportingInfoLevels);
-            //            final List<ReportingInfoLevel> reportingInfoLevels = reportingInfoLevelService
-//                    .saveAll(objectMapper().convertValue(o, new TypeReference<List<ReportingInfoLevel>>() {
-//                        @Override
-//                        public Type getType() {
-//                            return super.getType();
-//                        }
-//                    }));
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
