@@ -1,5 +1,7 @@
 package com.sb.solutions.api.customer.service;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -13,8 +15,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.base.Preconditions;
 
 import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
@@ -30,6 +34,8 @@ import com.sb.solutions.api.microbaselriskexposure.service.MicroBaselRiskExposur
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 
+import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
+import com.sb.solutions.api.reportinginfo.service.ReportingInfoLevelService;
 import com.sb.solutions.api.synopsisOfCreditwothiness.entity.SynopsisCreditworthiness;
 import com.sb.solutions.api.synopsisOfCreditwothiness.service.SynopsisCreditworthinessService;
 import lombok.extern.slf4j.Slf4j;
@@ -121,6 +127,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final MicroBaselRiskExposureService microBaselRiskExposureService;
     private final MicroBorrowerFinancialService microBorrowerFinancialService;
     private final MarketingActivitiesService marketingActivitiesService;
+    private final ReportingInfoLevelService reportingInfoLevelService;
 
     public CustomerInfoServiceImpl(
             @Autowired CustomerInfoRepository customerInfoRepository,
@@ -143,7 +150,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             BorrowerPortFolioService borrowerPortFolioService,
             MicroBaselRiskExposureService microBaselRiskExposureService,
             MicroBorrowerFinancialService microBorrowerFinancialService,
-            MarketingActivitiesService marketingActivitiesService) {
+            MarketingActivitiesService marketingActivitiesService,
+            ReportingInfoLevelService reportingInfoLevelService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -166,6 +174,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.microBaselRiskExposureService = microBaselRiskExposureService;
         this.microBorrowerFinancialService = microBorrowerFinancialService;
         this.marketingActivitiesService = marketingActivitiesService;
+        this.reportingInfoLevelService = reportingInfoLevelService;
     }
 
 
@@ -325,6 +334,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final MarketingActivities marketingActivities = marketingActivitiesService
                 .save(objectMapper().convertValue(o, MarketingActivities.class));
             customerInfo1.setMarketingActivities(marketingActivities);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.CUSTOMER_REPORTING_INFO))) {
+            TypeFactory typeFactory = objectMapper().getTypeFactory();
+            final List<ReportingInfoLevel> reportingInfoLevels = objectMapper().convertValue(o,
+                    typeFactory.constructCollectionType(List.class, ReportingInfoLevel.class));
+            customerInfo1.setReportingInfoLevels(reportingInfoLevels);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);

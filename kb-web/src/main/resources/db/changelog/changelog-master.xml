@@ -6834,5 +6834,28 @@
         <modifyDataType tableName="offer_document" columnName="supported_information" newDataType="NVARCHAR(MAX)"/>
     </changeSet>
 
+    <changeSet id="448-create-customer_info_reporting_info_levels" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_info_reporting_info_levels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_info_reporting_info_levels">
+            <column name="customer_info_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_reporting_info_levels_customer_loan_id_customer_loan_id"
+                             referencedTableName="customer_info"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="reporting_info_levels_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_reporting_info_levels_reporting_info_levels_id_reporting_info_level_id"
+                             referencedTableName="reporting_info_level"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>
