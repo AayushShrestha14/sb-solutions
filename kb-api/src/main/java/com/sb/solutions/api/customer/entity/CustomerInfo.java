@@ -209,6 +209,9 @@ public class CustomerInfo extends BaseEntity<Long> {
     @ManyToMany
     private List<ReportingInfoLevel> reportingInfoLevels;
 
+    @NotAudited
+    private String data;
+
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
            Pattern pattern = Pattern.compile("-");
