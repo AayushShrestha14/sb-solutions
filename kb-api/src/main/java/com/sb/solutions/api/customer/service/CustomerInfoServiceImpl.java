@@ -339,7 +339,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final List<ReportingInfoLevel> reportingInfoLevels = objectMapper().convertValue(o,
                     typeFactory.constructCollectionType(List.class, ReportingInfoLevel.class));
             customerInfo1.setReportingInfoLevels(reportingInfoLevels);
-        } else if ((template.equalsIgnoreCase(TemplateNameConstant.PREVIOUS_COMMENT))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.COMMENTS))) {
             String data = objectMapper().convertValue(o, String.class);
             customerInfo1.setData(data);
         }

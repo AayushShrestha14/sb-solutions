@@ -6857,7 +6857,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="449-alter-table-customer-info-add-column-data" author="Mohammad">
+    <changeSet id="449-alter-table-customer-info-add-column-data" author="Ashish">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="customer_info" columnName="data"/>
