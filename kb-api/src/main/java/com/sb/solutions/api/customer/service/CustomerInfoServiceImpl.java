@@ -340,8 +340,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
                     typeFactory.constructCollectionType(List.class, ReportingInfoLevel.class));
             customerInfo1.setReportingInfoLevels(reportingInfoLevels);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.COMMENTS))) {
-            String data = objectMapper().convertValue(o, String.class);
-            customerInfo1.setData(data);
+            try {
+                String data = objectMapper().writeValueAsString(o);
+                customerInfo1.setData(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
