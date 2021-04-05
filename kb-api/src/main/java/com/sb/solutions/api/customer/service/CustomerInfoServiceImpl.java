@@ -102,7 +102,7 @@ import com.sb.solutions.report.core.model.Report;
 @Service
 @Slf4j
 public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long> implements
-    CustomerInfoService {
+        CustomerInfoService {
 
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
@@ -183,10 +183,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         CustomerInfo customerInfo = new CustomerInfo();
         User user = userService.getAuthenticatedUser();
         Preconditions.checkArgument(user.getRole().getRoleType() == RoleType.MAKER,
-            "You are not Authorize to save customer info");
+                "You are not Authorize to save customer info");
         if (o instanceof Customer) {
             customerInfo = customerInfoRepository
-                .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.INDIVIDUAL);
+                    .findByAssociateIdAndCustomerType(((Customer) o).getId(), CustomerType.INDIVIDUAL);
             log.info("Saving customer into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -207,15 +207,15 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setGender(((Customer) o).getGender());
             customerInfo.setMaritalStatus(((Customer) o).getMaritalStatus());
             customerInfo
-                .setCustomerLegalDocumentAddress(((Customer) o).getCustomerLegalDocumentAddress());
+                    .setCustomerLegalDocumentAddress(((Customer) o).getCustomerLegalDocumentAddress());
 
         }
 
         if (o instanceof CompanyInfo) {
 
             customerInfo = customerInfoRepository
-                .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(),
-                    CustomerType.INSTITUTION);
+                    .findByAssociateIdAndCustomerType(((CompanyInfo) o).getId(),
+                            CustomerType.INSTITUTION);
             log.info("Saving company into customer info {}", o);
             if (ObjectUtils.isEmpty(customerInfo)) {
                 customerInfo = new CustomerInfo();
@@ -246,30 +246,30 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         final CustomerInfo customerInfo1 = customerInfo.get();
         if ((template.equalsIgnoreCase(TemplateNameConstant.SITE_VISIT))) {
             final SiteVisit siteVisit = siteVisitService
-                .save(objectMapper().convertValue(o, SiteVisit.class));
+                    .save(objectMapper().convertValue(o, SiteVisit.class));
             customerInfo1.setSiteVisit(siteVisit);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.FINANCIAL))) {
 
             final Financial financial = financialService
-                .save(objectMapper().convertValue(o, Financial.class));
+                    .save(objectMapper().convertValue(o, Financial.class));
             customerInfo1.setFinancial(financial);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.SECURITY))) {
 
             final Security security = securityService
-                .save(objectMapper().convertValue(o, Security.class));
+                    .save(objectMapper().convertValue(o, Security.class));
             customerInfo1.setSecurity(security);
             HelperDto<Long> dto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
             securityService.execute(Optional.of(dto));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.SHARE_SECURITY))) {
 
             final ShareSecurity shareSecurity = shareSecurityService
-                .save(objectMapper().convertValue(o, ShareSecurity.class));
+                    .save(objectMapper().convertValue(o, ShareSecurity.class));
             customerInfo1.setShareSecurity(shareSecurity);
             HelperDto<Long> helperDto = new HelperDto<>(customerInfoId, HelperIdType.CUSTOMER_INFO);
             shareSecurityService.execute(Optional.of(helperDto));
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.GUARANTOR))) {
             final GuarantorDetail guarantors = guarantorDetailService
-                .save(objectMapper().convertValue(o, GuarantorDetail.class));
+                    .save(objectMapper().convertValue(o, GuarantorDetail.class));
             customerInfo1.setGuarantors(guarantors);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.INSURANCE))) {
             ObjectMapper mapper = new ObjectMapper();
@@ -288,37 +288,37 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             }
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG_ALPHA))) {
             final CreditRiskGradingAlpha creditRiskGradingAlpha = creditRiskGradingAlphaService
-                .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
+                    .save(objectMapper().convertValue(o, CreditRiskGradingAlpha.class));
             customerInfo1.setCreditRiskGradingAlpha(creditRiskGradingAlpha);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG))) {
             final CreditRiskGrading creditRiskGrading = creditRiskGradingService
-                .save(objectMapper().convertValue(o, CreditRiskGrading.class));
+                    .save(objectMapper().convertValue(o, CreditRiskGrading.class));
             customerInfo1.setCreditRiskGrading(creditRiskGrading);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CRG_GAMMA))) {
             final CrgGamma crgGamma = crgGammaService
-                .save(objectMapper().convertValue(o, CrgGamma.class));
+                    .save(objectMapper().convertValue(o, CrgGamma.class));
             customerInfo1.setCrgGamma(crgGamma);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CICL))) {
             final Cicl cicl = cIclService
-                .save(objectMapper().convertValue(o, Cicl.class));
+                    .save(objectMapper().convertValue(o, Cicl.class));
             customerInfo1.setCicl(cicl);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.INCOME_FROM_ACCOUNT))) {
             final IncomeFromAccount incomeFromAccount = incomeFromAccountServices
-                .save(objectMapper().convertValue(o, IncomeFromAccount.class));
+                    .save(objectMapper().convertValue(o, IncomeFromAccount.class));
             customerInfo1.setIncomeFromAccount(incomeFromAccount);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.NET_TRADING_ASSETS))) {
             final NetTradingAssets netTradingAssets = netTradingAssetsService
-                .save(objectMapper().convertValue(o, NetTradingAssets.class));
+                    .save(objectMapper().convertValue(o, NetTradingAssets.class));
             customerInfo1.setNetTradingAssets(netTradingAssets);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CREDIT_CHECKlIST))) {
             final CreditChecklist creditChecklist = creditChecklistService
-                .save(objectMapper().convertValue(o, CreditChecklist.class));
+                    .save(objectMapper().convertValue(o, CreditChecklist.class));
             customerInfo1.setCreditChecklist(creditChecklist);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.SYNOPSIS_CREDITWORTHINESS))) {
             final SynopsisCreditworthiness synopsisCreditworthiness = synopsisCreditworthinessService
                     .save(objectMapper().convertValue(o, SynopsisCreditworthiness.class));
             customerInfo1.setSynopsisCreditworthiness(synopsisCreditworthiness);
-        }else if ((template.equalsIgnoreCase(TemplateNameConstant.BORROWER_PORTFOLIO))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.BORROWER_PORTFOLIO))) {
             final BorrowerPortFolio borrowerPortFolio = borrowerPortFolioService
                     .save(objectMapper().convertValue(o, BorrowerPortFolio.class));
             customerInfo1.setBorrowerPortFolio(borrowerPortFolio);
@@ -328,17 +328,31 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo1.setMicroBaselRiskExposure(microBaselRiskExposure);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.MICRO_BORROWER_FINANCIAL))) {
             final MicroBorrowerFinancial microBorrowerFinancial = microBorrowerFinancialService
-                .save(objectMapper().convertValue(o, MicroBorrowerFinancial.class));
+                    .save(objectMapper().convertValue(o, MicroBorrowerFinancial.class));
             customerInfo1.setMicroBorrowerFinancial(microBorrowerFinancial);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.MARKETING_ACTIVITIES))) {
             final MarketingActivities marketingActivities = marketingActivitiesService
-                .save(objectMapper().convertValue(o, MarketingActivities.class));
+                    .save(objectMapper().convertValue(o, MarketingActivities.class));
             customerInfo1.setMarketingActivities(marketingActivities);
         } else if ((template.equalsIgnoreCase(TemplateNameConstant.CUSTOMER_REPORTING_INFO))) {
             TypeFactory typeFactory = objectMapper().getTypeFactory();
             final List<ReportingInfoLevel> reportingInfoLevels = objectMapper().convertValue(o,
                     typeFactory.constructCollectionType(List.class, ReportingInfoLevel.class));
             customerInfo1.setReportingInfoLevels(reportingInfoLevels);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.COMMENTS))) {
+            try {
+                String data = objectMapper().writeValueAsString(o);
+                customerInfo1.setData(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.PREVIOUS_SECURITY))) {
+            try {
+                String data = objectMapper().writeValueAsString(o);
+                customerInfo1.setData(data);
+            } catch (Exception e) {
+                log.error("unable to set data for previous Security {}", e.getMessage());
+            }
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
@@ -351,11 +365,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
     @Override
     public CustomerInfo findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(
-        CustomerType customerType, String idNumber, String idRegPlace,
-        CustomerIdType customerIdType, Date date) {
+            CustomerType customerType, String idNumber, String idRegPlace,
+            CustomerIdType customerIdType, Date date) {
         return customerInfoRepository
-            .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(customerType, idNumber,
-                idRegPlace, customerIdType, date);
+                .findByCustomerTypeAndIdNumberAndIdRegPlaceAndIdTypeAndIdRegDate(customerType, idNumber,
+                        idRegPlace, customerIdType, date);
     }
 
     /**
@@ -379,7 +393,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         filterParams.values().removeIf(Objects::isNull);
         filterParams.values().removeIf(value -> value.equals("null") || value.equals("undefined"));
         String branchAccess = userService.getRoleAccessFilterByBranch().stream()
-            .map(Object::toString).collect(Collectors.joining(","));
+                .map(Object::toString).collect(Collectors.joining(","));
         if (filterParams.containsKey("branchIds")) {
             branchAccess = filterParams.get("branchIds");
         }
@@ -407,7 +421,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Format format = new Format() {
             @Override
             public StringBuffer format(Object o, StringBuffer stringBuffer,
-                FieldPosition fieldPosition) {
+                                       FieldPosition fieldPosition) {
                 return stringBuffer.append(o.toString().toUpperCase());
             }
 
@@ -417,53 +431,53 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             }
         };
         AbstractColumn columnBranch = ColumnBuilder.getNew()
-            .setColumnProperty("branch.name", String.class.getName())
-            .setTitle("Branch").setWidth(100)
-            .build();
+                .setColumnProperty("branch.name", String.class.getName())
+                .setTitle("Branch").setWidth(100)
+                .build();
 
         AbstractColumn columnName = ColumnBuilder.getNew()
-            .setColumnProperty("name", String.class.getName())
-            .setTitle("Name").setWidth(100)
-            .build();
+                .setColumnProperty("name", String.class.getName())
+                .setTitle("Name").setWidth(100)
+                .build();
         AbstractColumn customerType = ColumnBuilder.getNew()
-            .setColumnProperty("customerType", CustomerType.class.getName())
-            .setTitle("Customer Type").setWidth(100).setTextFormatter(format)
-            .build();
+                .setColumnProperty("customerType", CustomerType.class.getName())
+                .setTitle("Customer Type").setWidth(100).setTextFormatter(format)
+                .build();
 
         AbstractColumn idType = ColumnBuilder.getNew()
-            .setColumnProperty("idType", CustomerIdType.class.getName())
-            .setTitle("  ID Type  ").setWidth(100).setTextFormatter(format)
-            .build();
+                .setColumnProperty("idType", CustomerIdType.class.getName())
+                .setTitle("  ID Type  ").setWidth(100).setTextFormatter(format)
+                .build();
         AbstractColumn idNumber = ColumnBuilder.getNew()
-            .setColumnProperty("idNumber", String.class.getName())
-            .setTitle("ID Number").setWidth(100)
-            .build();
+                .setColumnProperty("idNumber", String.class.getName())
+                .setTitle("ID Number").setWidth(100)
+                .build();
 
         AbstractColumn issuePlace = ColumnBuilder.getNew()
-            .setColumnProperty("idRegPlace", String.class.getName())
-            .setTitle("ID Issue Place").setWidth(100)
-            .build();
+                .setColumnProperty("idRegPlace", String.class.getName())
+                .setTitle("ID Issue Place").setWidth(100)
+                .build();
         AbstractColumn email = ColumnBuilder.getNew()
-            .setColumnProperty("email", String.class.getName())
-            .setTitle("Email").setWidth(100)
-            .build();
+                .setColumnProperty("email", String.class.getName())
+                .setTitle("Email").setWidth(100)
+                .build();
         AbstractColumn contactNumber = ColumnBuilder.getNew()
-            .setColumnProperty("contactNo", String.class.getName())
-            .setTitle("Contact No.").setWidth(100)
-            .build();
+                .setColumnProperty("contactNo", String.class.getName())
+                .setTitle("Contact No.").setWidth(100)
+                .build();
         AbstractColumn columnAssociate = ColumnBuilder.getNew()
-            .setColumnProperty("createdAt", Date.class.getName())
-            .setTitle("Associate Since").setWidth(100).setPattern("dd MMM, YYYY")
-            .build();
+                .setColumnProperty("createdAt", Date.class.getName())
+                .setTitle("Associate Since").setWidth(100).setPattern("dd MMM, YYYY")
+                .build();
         return Arrays
-            .asList(columnBranch, columnName, customerType, idType, idNumber, issuePlace, email,
-                contactNumber, columnAssociate);
+                .asList(columnBranch, columnName, customerType, idType, idNumber, issuePlace, email,
+                        contactNumber, columnAssociate);
     }
 
     @Override
     public ReportParam populate(Optional optional) {
         String filePath = new PathBuilder(UploadDir.initialDocument)
-            .buildBuildFormDownloadPath("customer");
+                .buildBuildFormDownloadPath("customer");
         Map<String, String> map = objectMapper().convertValue(optional.get(), Map.class);
         Specification<CustomerInfo> specification = getSpec(map).build();
         List customerInfoList = customerInfoRepository.findAll(specification);
@@ -487,10 +501,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             filterBy = " Filter By : " + sb.toString().substring(0, sb.toString().length() - 2);
         }
         return ReportParam.builder().reportName("Customer Report").title(title())
-            .subTitle(filterBy).columns(columns()).data(customerInfoList)
-            .reportType(ReportType.FORM_REPORT)
-            .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
-            .build();
+                .subTitle(filterBy).columns(columns()).data(customerInfoList)
+                .reportType(ReportType.FORM_REPORT)
+                .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
+                .build();
 
     }
 
@@ -498,7 +512,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     public String csv(Object searchDto) {
         Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
         return new PathBuilder(UploadDir.initialDocument)
-            .buildBuildFormDownloadPath("customer") + report.getFileName();
+                .buildBuildFormDownloadPath("customer") + report.getFileName();
 
     }
 
