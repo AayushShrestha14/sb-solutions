@@ -26,6 +26,7 @@ public class TemplateNameConstant {
     public static final String MARKETING_ACTIVITIES = "Marketing Activities";
     public static final String CUSTOMER_REPORTING_INFO = "Customer Reporting Info";
     public static final String COMMENTS = "Comments";
+    public static final String PREVIOUS_SECURITY = "PreviousSecurity";
 
 
 }
