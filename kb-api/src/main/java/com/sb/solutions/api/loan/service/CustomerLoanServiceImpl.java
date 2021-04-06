@@ -52,8 +52,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.builders.GroupBuilder;
+import ar.com.fdvs.dj.domain.constants.GroupLayout;
+import ar.com.fdvs.dj.domain.entities.DJGroup;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
+import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
@@ -136,6 +141,7 @@ import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
 import com.sb.solutions.report.core.model.Report;
+import com.sb.solutions.report.core.util.StyleUtil;
 
 
 /**
@@ -145,8 +151,6 @@ import com.sb.solutions.report.core.model.Report;
 @Service
 public class CustomerLoanServiceImpl implements CustomerLoanService {
 
-    @Autowired
-    EntityManager em;
     private static final Logger logger = LoggerFactory.getLogger(CustomerLoanServiceImpl.class);
     private static final String DESCRIPTION_APPROVED = "%s has been approved Successfully";
     private final CustomerLoanRepository customerLoanRepository;
@@ -176,13 +180,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
-
-    Gson gson = new Gson();
     private final ObjectMapper objectMapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
+    @Autowired
+    EntityManager em;
+    Gson gson = new Gson();
     private List customerGroupLogList = new ArrayList();
+
 
     public CustomerLoanServiceImpl(
         CustomerLoanRepository customerLoanRepository,
@@ -1295,23 +1301,18 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return "Form Report For Loan";
     }
 
+
     @Override
     public List<AbstractColumn> columns() {
-        AbstractColumn columnBranch = ColumnBuilder.getNew()
-            .setColumnProperty("branch.name", String.class.getName())
-            .setTitle("Branch").setWidth(85)
-            .build();
 
         AbstractColumn columnName = ColumnBuilder.getNew()
-            .setColumnProperty("loanHolder.name", String.class.getName())
-            .setTitle("Name").setWidth(100)
+            .setColumnProperty("data", String.class.getName())
+            .setTitle("Customer Info").setWidth(100)
             .build();
-
         AbstractColumn columnLoanName = ColumnBuilder.getNew()
             .setColumnProperty("loan.name", String.class.getName())
             .setTitle("Loan Name").setWidth(85)
             .build();
-
         AbstractColumn columnCurrentPosition = ColumnBuilder.getNew()
             .setColumnProperty("toUser.name", String.class.getName())
             .setTitle("Current Position").setWidth(85)
@@ -1323,10 +1324,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         AbstractColumn columnCreatedAt = ColumnBuilder.getNew()
             .setColumnProperty("createdAt", String.class.getName())
             .setTitle("Created At").setWidth(85)
-            .build();
-        AbstractColumn columnCustomerType = ColumnBuilder.getNew()
-            .setColumnProperty("loanHolder.customerType", CustomerType.class.getName())
-            .setTitle("Customer Type").setWidth(100)
             .build();
         AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
             .setColumnProperty("loanPendingSpan", Long.class.getName())
@@ -1357,7 +1354,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .setTitle("Status").setWidth(85)
             .build();
 
-        return Arrays.asList(columnBranch, columnName, columnCustomerType, columnLoanName,
+        return Arrays.asList(columnName, columnLoanName,
             columnProposedAmount, columnTypes, columnLoanCategory, columnStatus,
             columnCurrentPosition, columnDesignation,
             columnCreatedAt, columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays);
@@ -1395,6 +1392,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
             customerLoanCsvDto.setCompanyInfo(c.getCompanyInfo());
             customerLoanCsvDto.setLoanHolder(c.getLoanHolder());
+            StringBuilder stringBuilder = new StringBuilder()
+                .append(c.getLoanHolder().getName())
+                .append(" - ")
+                .append(c.getBranch().getName())
+                .append(" - ")
+                .append(c.getLoanHolder().getCustomerType());
+            customerLoanCsvDto.setData(stringBuilder.toString());
             customerLoanCsvDto.setLoan(c.getLoan());
             customerLoanCsvDto.setProposal(c.getProposal());
             customerLoanCsvDto.setLoanType(c.getLoanType());
@@ -1429,8 +1433,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         String filePath = getDownloadPath();
+        GroupBuilder gb1 = new GroupBuilder();
+        //		 define the criteria column to group by (columnState)
+        DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columns().get(0))
+            .setGroupLayout(GroupLayout.VALUE_IN_HEADER)
+            .setDefaultColumnHeaderStyle(StyleUtil.headerVairalbleStyle())
+            .addFooterVariable(columns().get(2), DJCalculation.SUM,
+                StyleUtil.headerVairalbleStyle())
+            // tells the group how to be shown, there are manyposibilities, see the GroupLayout for more.
+            .build();
+
         return ReportParam.builder().reportName("Catalogue Report")
             .title(title())
+            .djGroups(Arrays.asList(g1))
             .subTitle(subTitle()).columns(columns()).data(csvDto).reportType(ReportType.FORM_REPORT)
             .filePath(UploadDir.WINDOWS_PATH + filePath).exportType(ExportType.XLS)
             .build();

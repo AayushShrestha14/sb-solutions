@@ -36,9 +36,7 @@ public class StyleUtil {
     public static Style headerVairalbleStyle() {
         Style headerVariables = new Style();
         headerVariables.setFont(Font.ARIAL_MEDIUM_BOLD);
-//        headerVariables.setBorderBottom(Border.THIN());
-        headerVariables.setHorizontalAlign(HorizontalAlign.RIGHT);
-        headerVariables.setVerticalAlign(VerticalAlign.MIDDLE);
+        headerVariables.setBackgroundColor(Color.pink);
         return headerVariables;
     }
 
