@@ -12,14 +12,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
+import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.PostApprovalAssignStatus;
+import com.sb.solutions.core.enums.RoleType;
 
 /**
  * @author Rujan Maharjan on 6/4/2019
@@ -264,4 +268,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         + "cl.noted_by IS NULL And cl.child_id IS NULL) notify", nativeQuery = true)
     Map<String, Integer> statusCountCustomerWise(@Param("id") Long id, @Param("bid") List<Long> bid,
         @Param("uid") Long uid);
+
+    Boolean existsByLoanHolderIdAndDocumentStatusAndCurrentStageToRoleRoleTypeNot(@Param("loanHolderId") Long loanHolderId,@Param("status") DocStatus status,@Param("roleType") RoleType roleType);
+
+
 }
