@@ -30,4 +30,8 @@ public class LoanStageDto extends BaseDto<Long> {
 
     private String comment;
 
+
+    public LoanStageDto(UserDto toUser) {
+        this.toUser = toUser;
+    }
 }

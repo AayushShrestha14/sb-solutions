@@ -427,6 +427,11 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(cadDocument);
     }
 
+    @GetMapping("/customer-editable/{id}")
+    public ResponseEntity<?> isCustomerEditable(@PathVariable Long id) {
+        return new RestResponseDto().successModel(service.checkCustomerIsEditable(id));
+    }
+
     private String actionType(LoanType loanType) {
         switch (loanType) {
             case NEW_LOAN:
