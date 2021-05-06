@@ -135,6 +135,12 @@ public class Customer extends BaseEntity<Long> implements EntityValidator {
     @NotAudited
     private Boolean isMicroCustomer;
 
+    @NotAudited
+    private String jointInfo;
+
+    @Transient
+    private Boolean isJointCustomer;
+
     @Override
     public Pair<Boolean, String> valid() {
         final String validationMsg =
