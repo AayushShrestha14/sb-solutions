@@ -196,6 +196,12 @@ public class CustomerInfo extends BaseEntity<Long> {
     @JsonProperty("data")
     private String data;
 
+    @Transient
+    private String jointInfo;
+
+    @NotAudited
+    private Boolean isJointCustomer;
+
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){
            Pattern pattern = Pattern.compile("-");
