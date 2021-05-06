@@ -193,11 +193,11 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             }
             customerInfo.setAssociateId(((Customer) o).getId());
             customerInfo.setCustomerType(CustomerType.INDIVIDUAL);
-            customerInfo.setName(((Customer) o).getCustomerName());
-            customerInfo.setIdType(CustomerIdType.CITIZENSHIP);
             customerInfo.setIdNumber(((Customer) o).getCitizenshipNumber());
             customerInfo.setIdRegPlace(((Customer) o).getCitizenshipIssuedPlace());
             customerInfo.setIdRegDate(((Customer) o).getCitizenshipIssuedDate());
+            customerInfo.setName(((Customer) o).getCustomerName());
+            customerInfo.setIdType(CustomerIdType.CITIZENSHIP);
             customerInfo.setContactNo(((Customer) o).getContactNumber());
             customerInfo.setEmail(((Customer) o).getEmail());
             customerInfo.setCustomerCode(((Customer) o).getCustomerCode());
@@ -208,6 +208,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             customerInfo.setMaritalStatus(((Customer) o).getMaritalStatus());
             customerInfo
                     .setCustomerLegalDocumentAddress(((Customer) o).getCustomerLegalDocumentAddress());
+            customerInfo.setJointInfo(((Customer) o).getJointInfo());
+            customerInfo.setIsJointCustomer(((Customer) o).getIsJointCustomer());
 
         }
 

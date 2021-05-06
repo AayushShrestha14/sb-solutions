@@ -6856,17 +6856,25 @@
             </column>
         </createTable>
     </changeSet>
-
-    <changeSet id="449-alter-table-customer-info-add-column-data" author="Ashish">
+    <changeSet id="449-alter-table-customer-add-column-joint-info" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="customer_info" columnName="data"/>
+                <columnExists tableName="customer" columnName="joint_info"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="joint_info" type="NVARCHAR(MAX)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="450-alter-table-customer-info-add-column-is-joint-customer" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="is_joint_customer"/>
             </not>
         </preConditions>
         <addColumn tableName="customer_info">
-            <column name="data" type="NVARCHAR(MAX)"/>
+            <column name="is_joint_customer" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
-
 
 </databaseChangeLog>
