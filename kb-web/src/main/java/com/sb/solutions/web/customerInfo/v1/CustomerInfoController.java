@@ -214,4 +214,12 @@ public class CustomerInfoController {
                         customerInfoService.updateNepaliConfigData(nepData, id));
 
     }
+
+    @PostMapping("/update-customer-branch/{customerInfoId}")
+    public ResponseEntity<?> updateCustomerBranch(@RequestBody Long branchId, @PathVariable Long customerInfoId) {
+        return new RestResponseDto()
+            .successModel(
+                customerInfoService.updateCustomerBranch(customerInfoId, branchId));
+
+    }
 }
