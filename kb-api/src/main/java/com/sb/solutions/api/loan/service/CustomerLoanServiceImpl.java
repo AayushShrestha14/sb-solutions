@@ -1666,6 +1666,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return null;
     }
 
+    @Override
+    public Boolean checkCustomerIsEditable(Long loanHolderId) {
+        if (userService.getAuthenticatedUser().getRole().getRoleType().equals(RoleType.MAKER)) {
+            return !customerLoanRepository
+                .existsByLoanHolderIdAndDocumentStatusAndCurrentStageToRoleRoleTypeNot(loanHolderId,
+                    DocStatus.PENDING, RoleType.MAKER);
+        } else {
+            return false;
+        }
+
+
+    }
+
 
     private Page<CustomerInfoLoanDto> criteriaSearch(Map<String, String> s, Pageable pageable) {
         logger.info("filter Customer ::: {}", s);

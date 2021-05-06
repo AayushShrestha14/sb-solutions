@@ -146,15 +146,15 @@ public class Mapper {
             .getRoleType().equals(
                 RoleType.MAKER)) {
 
-            if (loanActionDto.isSol()) {
+            if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
                     "Please Select Approval User for Loan " + customerLoan.getLoan().getName());
                 user.setId(loanActionDto.getSolUser().getId());
-                customerLoan.setIsSol(true);
+                customerLoan.setIsSol(Boolean.TRUE);
                 customerLoan.setSolUser(user);
             } else {
-                customerLoan.setIsSol(loanActionDto.isSol());
+                customerLoan.setIsSol(Boolean.FALSE);
                 customerLoan.setSolUser(null);
             }
         }
