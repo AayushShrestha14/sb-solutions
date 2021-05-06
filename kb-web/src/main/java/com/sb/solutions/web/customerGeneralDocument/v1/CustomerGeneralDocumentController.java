@@ -87,4 +87,11 @@ public class CustomerGeneralDocumentController {
         return new RestResponseDto()
             .successModel(customerGeneralDocumentService.findByCustomerInfoId(customerInfoID));
     }
+
+    @PostMapping("/delete-document/{id}/{customerInfoId}")
+    public ResponseEntity deleteDocument(@RequestBody String path, @PathVariable Long id,
+        @PathVariable Long customerInfoId) {
+        return new RestResponseDto()
+            .successModel(customerGeneralDocumentService.deleteByDocId(id, customerInfoId, path));
+    }
 }
