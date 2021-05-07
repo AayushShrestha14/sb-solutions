@@ -11,4 +11,7 @@ import com.sb.solutions.core.service.Service;
 public interface CustomerGeneralDocumentService extends Service<CustomerGeneralDocument, Long> {
 
     List<CustomerGeneralDocument> findByCustomerInfoId(Long id);
+
+    String deleteByDocId(Long id,Long customerInfoId,String path);
+
 }
