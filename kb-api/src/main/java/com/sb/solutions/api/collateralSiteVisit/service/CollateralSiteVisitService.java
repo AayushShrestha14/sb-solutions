@@ -13,7 +13,7 @@ public interface CollateralSiteVisitService extends BaseService<CollateralSiteVi
 
     CollateralSiteVisit saveCollateralSiteVisit(Long securityId, CollateralSiteVisit collateralSiteVisit);
 
-    List<CollateralSiteVisit> getCollateralSiteVisitBySecurityName(String securityName);
+    List<CollateralSiteVisit> getCollateralSiteVisitBySecurityNameAndSecurityAndId(String securityName, Long Id);
 
-    CollateralSiteVisit getCollateralBySiteVisitDate(LocalDate siteVisitDate);
+    CollateralSiteVisit getCollateralBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id);
 }

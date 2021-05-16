@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface CollateralSiteVisitRepository extends JpaRepository<CollateralSiteVisit, Long> {
 
-    List<CollateralSiteVisit> findCollateralSiteVisitBySecurityName(String securityName);
+    List<CollateralSiteVisit> findCollateralSiteVisitBySecurityNameAndSecurity_Id(String securityName, Long Id);
 
-    CollateralSiteVisit findCollateralSiteVisitBySiteVisitDate(LocalDate siteVisitDate);
+    CollateralSiteVisit findCollateralSiteVisitBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id);
 }

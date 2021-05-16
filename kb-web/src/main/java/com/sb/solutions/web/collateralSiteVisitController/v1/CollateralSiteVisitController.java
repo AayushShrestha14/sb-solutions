@@ -30,14 +30,14 @@ public class CollateralSiteVisitController {
         return new RestResponseDto().successModel(service.saveCollateralSiteVisit(securityId, collateralSiteVisit));
     }
 
-    @GetMapping("/{securityName}")
-    public ResponseEntity<?> getCollateralSiteVisitBySecurityName(@PathVariable("securityName") String securityName) {
-        return new RestResponseDto().successModel(service.getCollateralSiteVisitBySecurityName(securityName));
+    @GetMapping("/{securityName}/{id}")
+    public ResponseEntity<?> getCollateralSiteVisitBySecurityNameAndSecurityAndId(@PathVariable("securityName") String securityName, @PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(service.getCollateralSiteVisitBySecurityNameAndSecurityAndId(securityName, id));
     }
 
-    @GetMapping("/site-visit/{siteVisitDate}")
-    public ResponseEntity<?> getCollateralBySiteVisitDate(@PathVariable("siteVisitDate")String siteVisitDate) {
+    @GetMapping("/site-visit/{siteVisitDate}/{id}")
+    public ResponseEntity<?> getCollateralBySiteVisitDateAndId(@PathVariable("siteVisitDate")String siteVisitDate, @PathVariable("id") Long id) {
         LocalDate localDate = LocalDate.parse(siteVisitDate);
-        return new RestResponseDto().successModel(service.getCollateralBySiteVisitDate(localDate));
+        return new RestResponseDto().successModel(service.getCollateralBySiteVisitDateAndId(localDate, id));
     }
 }

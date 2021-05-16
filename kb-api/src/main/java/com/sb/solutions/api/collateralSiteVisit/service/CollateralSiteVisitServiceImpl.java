@@ -61,12 +61,12 @@ public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitServic
     }
 
     @Override
-    public List<CollateralSiteVisit> getCollateralSiteVisitBySecurityName(String securityName) {
-        return repository.findCollateralSiteVisitBySecurityName(securityName);
+    public List<CollateralSiteVisit> getCollateralSiteVisitBySecurityNameAndSecurityAndId(String securityName, Long id) {
+        return repository.findCollateralSiteVisitBySecurityNameAndSecurity_Id(securityName, id);
     }
 
     @Override
-    public CollateralSiteVisit getCollateralBySiteVisitDate(LocalDate siteVisitDate) {
-        return repository.findCollateralSiteVisitBySiteVisitDate(siteVisitDate);
+    public CollateralSiteVisit getCollateralBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id) {
+        return repository.findCollateralSiteVisitBySiteVisitDateAndId(siteVisitDate, Id);
     }
 }
