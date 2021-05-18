@@ -14,4 +14,6 @@ public interface CollateralSiteVisitRepository extends JpaRepository<CollateralS
     List<CollateralSiteVisit> findCollateralSiteVisitBySecurityNameAndSecurity_Id(String securityName, Long Id);
 
     CollateralSiteVisit findCollateralSiteVisitBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id);
+
+    List<CollateralSiteVisit> findCollateralSiteVisitBySecurity_Id(Long Id);
 }

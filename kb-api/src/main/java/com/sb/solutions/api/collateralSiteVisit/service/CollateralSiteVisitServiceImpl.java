@@ -69,4 +69,9 @@ public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitServic
     public CollateralSiteVisit getCollateralBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id) {
         return repository.findCollateralSiteVisitBySiteVisitDateAndId(siteVisitDate, Id);
     }
+
+    @Override
+    public List<CollateralSiteVisit> getCollateralSiteVisitBySecurityId(Long Id) {
+        return repository.findCollateralSiteVisitBySecurity_Id(Id);
+    }
 }
