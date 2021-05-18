@@ -6877,4 +6877,84 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="451-alter-nepse-company-add-column-name" author="sunil">
+        <preConditions onFail="MARK_RAN"><not>
+
+
+            <columnExists tableName="nepse_company" columnName="price_earning_ratio"/>
+            <columnExists tableName="nepse_company" columnName="price_to_book_value"/>
+            <columnExists tableName="nepse_company" columnName="dividend_yield"/>
+            <columnExists tableName="nepse_company" columnName="dividend_payout_ratio"/>
+        </not>
+        </preConditions>
+
+        <addColumn tableName="nepse_company">
+            <column name="price_earning_ratio" type="DECIMAL(12, 2)"/>
+            <column name="price_to_book_value" type="BIGINT"/>
+            <column name="dividend_yield" type="DECIMAL(12, 2)"/>
+            <column name="dividend_payout_ratio" type="DECIMAL(12, 2)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="452-create-table-collateral-site-visit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="collateral_site_visit"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="collateral_site_visit">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="site_visit_json_data" type="NVARCHAR(MAX)"/>
+            <column name="security_name" type="VARCHAR(256)"/>
+            <column name="site_visit_date" type="DATE"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="security_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="collateral_site_visit"
+                                 baseColumnNames="security_id"
+                                 constraintName="fk_collateral_site_visit_security_id"
+                                 referencedTableName="security"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+<!--    <changeSet id="453-create-security-collateral-site-visit-table" author="Mohammad">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <tableExists tableName="security_collateral_site_visits"/>-->
+<!--            </not>-->
+<!--        </preConditions>-->
+<!--        <createTable tableName="security_collateral_site_visits">-->
+<!--            <column name="security_id" type="BIGINT">-->
+<!--                <constraints foreignKeyName="fk_security_security_collateral_site_visit_id"-->
+<!--                             referencedTableName="security"-->
+<!--                             referencedColumnNames="id"/>-->
+<!--            </column>-->
+<!--            <column name="collateral_site_visits_id" type="BIGINT">-->
+<!--                <constraints foreignKeyName="fk_security_collateral_site_visit_security_collateral_site_visit_id"-->
+<!--                             referencedTableName="collateral_site_visit"-->
+<!--                             referencedColumnNames="id"/>-->
+<!--            </column>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

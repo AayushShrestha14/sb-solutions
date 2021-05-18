@@ -13,4 +13,6 @@ public interface CustomerGeneralDocumentRepository extends
 
     List<CustomerGeneralDocument> findByCustomerInfoId(Long id);
 
+    CustomerGeneralDocument findCustomerGeneralDocumentByDocumentIdAndCustomerInfoId(Long id,Long customerInfoId);
+
 }
