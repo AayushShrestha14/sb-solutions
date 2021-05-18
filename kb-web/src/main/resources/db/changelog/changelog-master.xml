@@ -6937,24 +6937,4 @@
                                  referencedTableName="security"
                                  referencedColumnNames="id"/>
     </changeSet>
-
-<!--    <changeSet id="453-create-security-collateral-site-visit-table" author="Mohammad">-->
-<!--        <preConditions onFail="MARK_RAN">-->
-<!--            <not>-->
-<!--                <tableExists tableName="security_collateral_site_visits"/>-->
-<!--            </not>-->
-<!--        </preConditions>-->
-<!--        <createTable tableName="security_collateral_site_visits">-->
-<!--            <column name="security_id" type="BIGINT">-->
-<!--                <constraints foreignKeyName="fk_security_security_collateral_site_visit_id"-->
-<!--                             referencedTableName="security"-->
-<!--                             referencedColumnNames="id"/>-->
-<!--            </column>-->
-<!--            <column name="collateral_site_visits_id" type="BIGINT">-->
-<!--                <constraints foreignKeyName="fk_security_collateral_site_visit_security_collateral_site_visit_id"-->
-<!--                             referencedTableName="collateral_site_visit"-->
-<!--                             referencedColumnNames="id"/>-->
-<!--            </column>-->
-<!--        </createTable>-->
-<!--    </changeSet>-->
 </databaseChangeLog>

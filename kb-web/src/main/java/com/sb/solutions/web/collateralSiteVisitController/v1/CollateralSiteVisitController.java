@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.Path;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,5 +40,10 @@ public class CollateralSiteVisitController {
     public ResponseEntity<?> getCollateralBySiteVisitDateAndId(@PathVariable("siteVisitDate")String siteVisitDate, @PathVariable("id") Long id) {
         LocalDate localDate = LocalDate.parse(siteVisitDate);
         return new RestResponseDto().successModel(service.getCollateralBySiteVisitDateAndId(localDate, id));
+    }
+
+    @GetMapping("/site-visit/{id}")
+    public ResponseEntity<?> getCollateralSiteVisitBySecurityId(@PathVariable("id") Long id) {
+        return new RestResponseDto().successModel(service.getCollateralSiteVisitBySecurityId(id));
     }
 }
