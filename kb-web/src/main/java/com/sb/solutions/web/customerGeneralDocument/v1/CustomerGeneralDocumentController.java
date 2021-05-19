@@ -71,6 +71,10 @@ public class CustomerGeneralDocumentController {
             customerGeneralDocument.setDocument(document);
             customerGeneralDocument.setCustomerInfoId(customerInfoId);
         }
+        else {
+            int version = customerGeneralDocument.getVersion();
+            customerGeneralDocument.setVersion(version + 1);
+        }
         Long branchId = userService.getAuthenticatedUser().getBranch().get(0).getId();
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
