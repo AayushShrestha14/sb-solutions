@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.customer.entity.CustomerInfo;
 import com.sb.solutions.api.document.entity.Document;
-import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.enums.CadDocStatus;
