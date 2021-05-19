@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.ws.rs.core.NoContentException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +36,7 @@ import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.service.LoanHolderService;
 import com.sb.solutions.service.approvedloancaddoc.CustomerCadService;
+import com.sb.solutions.service.report.CadReportService;
 import com.sb.solutions.validation.constraint.CadValid;
 
 
@@ -54,16 +54,20 @@ public class CadController {
 
     private final UserService userService;
 
+    private final CadReportService reportService;
+
     @Qualifier("customerCadService")
     private final CustomerCadService customerCadService;
 
     public CadController(LoanHolderService loanHolderService,
         ApprovalRoleHierarchyService approvalRoleHierarchyService,
         UserService userService,
+        CadReportService reportService,
         CustomerCadService customerCadService) {
         this.loanHolderService = loanHolderService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
         this.userService = userService;
+        this.reportService = reportService;
         this.customerCadService = customerCadService;
     }
 
@@ -210,6 +214,12 @@ public class CadController {
             .successModel(
                 userList.stream().filter(f->f.getStatus().equals(Status.ACTIVE)).collect(
                     Collectors.toList()));
+    }
+
+    @PostMapping(value = ApiConstants.GET_REPORT)
+    public ResponseEntity<?> getReport(
+        @RequestBody Map<String, String> filterParams) {
+        return new RestResponseDto().successModel(reportService.reportPath(filterParams));
     }
 
 }

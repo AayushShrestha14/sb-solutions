@@ -31,5 +31,6 @@ public class ApiConstants {
 
     public static final String POST_ADDITIONAL_DISBURSEMENT = "/additional-disbursement/{roleId}";
     public static final String GET_USER_BY_BRANCH_IN_CAD = "/users/{branchId}";
+    public static final String GET_REPORT = "/report";
 
 }
