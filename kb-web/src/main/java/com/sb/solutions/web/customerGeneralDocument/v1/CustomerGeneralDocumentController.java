@@ -1,6 +1,7 @@
 package com.sb.solutions.web.customerGeneralDocument.v1;
 
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.document.service.DocumentService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +38,14 @@ public class CustomerGeneralDocumentController {
 
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final UserService userService;
+    private final DocumentService documentService;
 
     public CustomerGeneralDocumentController(
-        CustomerGeneralDocumentService customerGeneralDocumentService,
-        UserService userService) {
+            CustomerGeneralDocumentService customerGeneralDocumentService,
+            UserService userService, DocumentService documentService) {
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.userService = userService;
+        this.documentService = documentService;
     }
 
     @PostMapping
@@ -55,21 +58,26 @@ public class CustomerGeneralDocumentController {
     public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile multipartFile,
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
-        @RequestParam("documentId") Long documentId,
-        @RequestParam("customerInfoId") Long id,
+        @RequestParam("documentId") String documentId,
+        @RequestParam("customerInfoId") String id,
         @RequestParam("customerType") String customerType
     ) {
-        CustomerGeneralDocument customerGeneralDocument = new CustomerGeneralDocument();
-        Document document = new Document();
-        document.setId(documentId);
-        customerGeneralDocument.setDocument(document);
+        Long customerInfoId = Long.valueOf(id);
+        Long docId = Long.valueOf(documentId);
+        CustomerGeneralDocument customerGeneralDocument = customerGeneralDocumentService.findByCustomerInfoIdAndDocumentId(customerInfoId, docId);
+        if (customerGeneralDocument == null) {
+            customerGeneralDocument = new CustomerGeneralDocument();
+            Document document = documentService.findOne(docId);
+            customerGeneralDocument.setDocument(document);
+            customerGeneralDocument.setCustomerInfoId(customerInfoId);
+        }
         Long branchId = userService.getAuthenticatedUser().getBranch().get(0).getId();
         Preconditions.checkNotNull(name.equals("undefined") || name.equals("null") ? null
             : (StringUtils.isEmpty(name) ? null : name), "Customer Name "
             + "is required to upload file.");
 
         String basePath = new PathBuilder(UploadDir.initialDocument)
-            .buildCustomerInfoBasePathWithId(id, branchId, customerType);
+            .buildCustomerInfoBasePathWithId(customerInfoId, branchId, customerType);
         String uploadPath = new StringBuilder(basePath)
             .append("generalDoc")
             .append("/")
@@ -79,6 +87,7 @@ public class CustomerGeneralDocumentController {
             .uploadFile(multipartFile, uploadPath, documentName);
         customerGeneralDocument
             .setDocPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
+        customerGeneralDocumentService.save(customerGeneralDocument);
         return new RestResponseDto().successModel(customerGeneralDocument);
     }
 
