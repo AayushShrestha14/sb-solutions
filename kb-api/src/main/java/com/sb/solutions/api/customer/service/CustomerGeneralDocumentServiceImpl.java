@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +22,12 @@ import com.sb.solutions.core.utils.file.DeleteFileUtils;
 public class CustomerGeneralDocumentServiceImpl implements CustomerGeneralDocumentService {
 
     private final CustomerGeneralDocumentRepository customerGeneralDocumentRepository;
+    private final DocumentService documentService;
 
     public CustomerGeneralDocumentServiceImpl(
-        @Autowired CustomerGeneralDocumentRepository customerGeneralDocumentRepository) {
+            @Autowired CustomerGeneralDocumentRepository customerGeneralDocumentRepository, DocumentService documentService) {
         this.customerGeneralDocumentRepository = customerGeneralDocumentRepository;
+        this.documentService = documentService;
     }
 
     @Override
@@ -83,5 +87,11 @@ public class CustomerGeneralDocumentServiceImpl implements CustomerGeneralDocume
         customerGeneralDocumentRepository.delete(generalDocument);
         DeleteFileUtils.deleteFile(path);
         return "SUCCESSFULLY DELETED";
+    }
+
+    @Override
+    public CustomerGeneralDocument findByCustomerInfoIdAndDocumentId(Long customerInfoId, Long documentId) {
+        Document document = documentService.findOne(documentId);
+        return customerGeneralDocumentRepository.findByCustomerInfoIdAndDocument(customerInfoId, document);
     }
 }

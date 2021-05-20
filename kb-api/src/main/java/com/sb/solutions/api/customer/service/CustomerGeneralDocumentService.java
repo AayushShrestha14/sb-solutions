@@ -14,4 +14,6 @@ public interface CustomerGeneralDocumentService extends Service<CustomerGeneralD
 
     String deleteByDocId(Long id,Long customerInfoId,String path);
 
+    CustomerGeneralDocument findByCustomerInfoIdAndDocumentId(Long customerInfoId, Long documentId);
+
 }
