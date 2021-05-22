@@ -71,6 +71,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_USER = "users";
     public static final String FILTER_BY_BUSINESS_UNIT = "clientType";
     public static final String FILTER_BY_LOAN_HOLDER_CODE = "customerCode";
+
+    public static final String FILTER_BY_LOAN_TAG = "loanTag";
     private final String property;
     private final String value;
 
@@ -342,6 +344,8 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 return criteriaBuilder
                     .like(root.join("loanHolder", JoinType.LEFT).get(property),
                         value.toLowerCase() + "%");
+            case FILTER_BY_LOAN_TAG:
+                return  criteriaBuilder.equal(root.join("loan").get("loanTag") , LoanTag.valueOf(value));
 
             default:
                 return null;
