@@ -106,7 +106,7 @@ public class CadController {
         @RequestParam("page") int page,
         @RequestParam("size") int size) {
         return new RestResponseDto().successModel(loanHolderService
-            .getAllByFilterParams(filterParams, PaginationUtils.pageable(page, size)));
+            .getAllByFilterParams(filterParams, PaginationUtils.pageableWithSort(page, size,"docStatus")));
     }
 
     @GetMapping(value = ApiConstants.GET_BY_ID)
