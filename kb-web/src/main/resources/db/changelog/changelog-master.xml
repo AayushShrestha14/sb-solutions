@@ -7001,6 +7001,54 @@
                              referencedColumnNames="id"/>
             </column>
         </addColumn>
+    </changeSet>
 
+    <changeSet id="61-create-crg-micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="crg_micro"/>
+            </not>
+        </preConditions>
+        <createTable tableName="crg_micro">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="61-alter-customer-loan-add-crg_micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="crg_micro_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="crg_micro_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_crg_micro_id"
+                             referencedTableName="crg_micro"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
