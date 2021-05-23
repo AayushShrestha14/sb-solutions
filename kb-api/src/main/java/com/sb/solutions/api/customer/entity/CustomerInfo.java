@@ -16,6 +16,7 @@ import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
 import com.sb.solutions.api.mGroupInfo.entity.MGroupInfo;
+import com.sb.solutions.api.microOtherParameters.MicroOtherParameters;
 import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
@@ -157,6 +158,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private MicroBorrowerFinancial microBorrowerFinancial;
+
+    @OneToOne
+    private MicroOtherParameters microOtherParameters;
 
     @OneToOne
     private MarketingActivities marketingActivities;
