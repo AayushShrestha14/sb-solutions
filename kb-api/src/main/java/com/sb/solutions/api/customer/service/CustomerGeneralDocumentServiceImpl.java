@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.repository.CustomerGeneralDocumentRepository;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
 
 /**
  * @author : Rujan Maharjan on  8/25/2020
@@ -19,10 +22,12 @@ import com.sb.solutions.api.customer.repository.CustomerGeneralDocumentRepositor
 public class CustomerGeneralDocumentServiceImpl implements CustomerGeneralDocumentService {
 
     private final CustomerGeneralDocumentRepository customerGeneralDocumentRepository;
+    private final DocumentService documentService;
 
     public CustomerGeneralDocumentServiceImpl(
-        @Autowired CustomerGeneralDocumentRepository customerGeneralDocumentRepository) {
+            @Autowired CustomerGeneralDocumentRepository customerGeneralDocumentRepository, DocumentService documentService) {
         this.customerGeneralDocumentRepository = customerGeneralDocumentRepository;
+        this.documentService = documentService;
     }
 
     @Override
@@ -74,5 +79,19 @@ public class CustomerGeneralDocumentServiceImpl implements CustomerGeneralDocume
     @Override
     public List<CustomerGeneralDocument> findByCustomerInfoId(Long id) {
         return customerGeneralDocumentRepository.findByCustomerInfoId(id);
+    }
+
+    @Override
+    public String deleteByDocId(Long id,Long customerInfoId,String path) {
+        CustomerGeneralDocument generalDocument = customerGeneralDocumentRepository.findCustomerGeneralDocumentByDocumentIdAndCustomerInfoId(id,customerInfoId);
+        customerGeneralDocumentRepository.delete(generalDocument);
+        DeleteFileUtils.deleteFile(path);
+        return "SUCCESSFULLY DELETED";
+    }
+
+    @Override
+    public CustomerGeneralDocument findByCustomerInfoIdAndDocumentId(Long customerInfoId, Long documentId) {
+        Document document = documentService.findOne(documentId);
+        return customerGeneralDocumentRepository.findByCustomerInfoIdAndDocument(customerInfoId, document);
     }
 }

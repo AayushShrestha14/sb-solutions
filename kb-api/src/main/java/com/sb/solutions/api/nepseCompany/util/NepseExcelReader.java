@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,11 +25,16 @@ import com.sb.solutions.core.utils.file.FileUploadUtils;
  * this is utility to read excel load for nepse company
  */
 public class NepseExcelReader {
+
     private static final Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
     private static final int COMPANY_NAME_COLUMN_POS = 0;
     private static final int SHARE_AMOUNT_COLUMN_POS = 1;
     private static final int COMPANY_CODE_COLUMN_POS = 2;
     private static final int SHARE_TYPE_COLUMN_POS = 3;
+    private static final int PRICE_EARNING_RATIO_COLUMN_POS = 4;
+    private static final int PRICE_TO_BOOK_VALUE_COLUMN_POS = 5;
+    private static final int DIVIDEND_YIELD_COLUMN_POS = 6;
+    private static final int DIVIDEND_PAYOUT_RATIO_COLUMN_POS = 7;
 
     private NepseExcelReader() {
     }
@@ -51,10 +57,12 @@ public class NepseExcelReader {
                 NepseCompany nepseCompany = new NepseCompany();
 
                 if (row.getCell(COMPANY_NAME_COLUMN_POS).toString() != null) {
-                    nepseCompany.setCompanyName(row.getCell(COMPANY_NAME_COLUMN_POS).getStringCellValue());
+                    nepseCompany
+                        .setCompanyName(row.getCell(COMPANY_NAME_COLUMN_POS).getStringCellValue());
                 }
                 if (row.getCell(SHARE_AMOUNT_COLUMN_POS).toString() != null) {
-                    nepseCompany.setAmountPerUnit(row.getCell(SHARE_AMOUNT_COLUMN_POS).getNumericCellValue());
+                    nepseCompany.setAmountPerUnit(
+                        row.getCell(SHARE_AMOUNT_COLUMN_POS).getNumericCellValue());
                 }
                 if (row.getCell(COMPANY_CODE_COLUMN_POS).toString() != null) {
                     nepseCompany.setCompanyCode(row.getCell(COMPANY_CODE_COLUMN_POS).toString());
@@ -70,6 +78,22 @@ public class NepseExcelReader {
                     }
                     nepseCompany.setShareType(
                         ShareType.valueOf(row.getCell(3).getStringCellValue().toUpperCase()));
+                }
+                Cell additionalCell = row.getCell(PRICE_EARNING_RATIO_COLUMN_POS);
+                if (null != additionalCell && additionalCell.toString() != null) {
+                    nepseCompany.setPriceEarningRatio(additionalCell.getNumericCellValue());
+                }
+                additionalCell = row.getCell(PRICE_TO_BOOK_VALUE_COLUMN_POS);
+                if (null != additionalCell && additionalCell.toString() != null) {
+                    nepseCompany.setPriceToBookValue(additionalCell.getNumericCellValue());
+                }
+                additionalCell = row.getCell(DIVIDEND_YIELD_COLUMN_POS);
+                if (null != additionalCell && additionalCell.toString() != null) {
+                    nepseCompany.setDividendYield(additionalCell.getNumericCellValue());
+                }
+                additionalCell = row.getCell(DIVIDEND_PAYOUT_RATIO_COLUMN_POS);
+                if (null != additionalCell && additionalCell.toString() != null) {
+                    nepseCompany.setDividendPayoutRatio(additionalCell.getNumericCellValue());
                 }
                 nepseCompanyList.add(nepseCompany);
             });
