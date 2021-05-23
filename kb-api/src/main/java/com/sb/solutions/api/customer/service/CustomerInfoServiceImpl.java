@@ -396,8 +396,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     public CustomerInfo updateCustomerBranch(Long customerInfoId, Long branchId) {
         CustomerInfo customerInfo = customerInfoRepository.getOne(customerInfoId);
         customerInfo.setBranch(branchService.findOne(branchId));
-        // todo
-        return customerInfo;
+        return customerInfoRepository.save(customerInfo);
     }
 
     @Override

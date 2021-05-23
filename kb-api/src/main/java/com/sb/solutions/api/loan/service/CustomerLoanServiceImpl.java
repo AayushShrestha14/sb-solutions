@@ -37,6 +37,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -60,6 +61,8 @@ import ar.com.fdvs.dj.domain.entities.DJGroup;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
+import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
@@ -184,6 +187,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
+    private final BranchService branchService;
+
     @Autowired
     EntityManager em;
     Gson gson = new Gson();
@@ -213,12 +218,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         InsuranceService insuranceService,
         NotificationMasterService notificationMasterService,
         CustomerLoanFlagService customerLoanFlagService,
-
         CustomerInfoService customerInfoService,
         ActivityService activityService,
         CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
         CustomerGeneralDocumentService customerGeneralDocumentService,
-        CadDocumentService cadDocumentService
+        CadDocumentService cadDocumentService,
+        BranchService branchService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -247,6 +252,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.cadDocumentService = cadDocumentService;
+        this.branchService = branchService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -978,6 +984,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public List<CustomerLoan> getLoanByLoanHolderId(Long id) {
         return customerLoanRepository.getCustomerLoanByAndLoanHolderId(id);
+    }
+
+    @Override
+    public List<CustomerLoan> getAllLoansByLoanHolderId(Long loanHolderId) {
+        return customerLoanRepository.findAllByLoanHolderId(loanHolderId);
     }
 
     @Override
@@ -1714,6 +1725,44 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     }
 
+    @Override
+    public void transferLoanToOtherBranch(CustomerLoan customerLoan, Long branchId, User currentUser) {
+        if (currentUser.getRole().getRoleType().equals(RoleType.ADMIN)
+            || currentUser.getUsername().equalsIgnoreCase("SPADMIN")) {
+            if (customerLoan.getCurrentStage() == null
+                || customerLoan.getCurrentStage().getToRole() == null
+                || customerLoan.getCurrentStage().getToUser() == null) {
+                logger.warn("Empty current Stage{}", customerLoan.getCurrentStage());
+                throw new ServiceValidationException("Unable to perform task");
+            }
+            String oldBranchName = customerLoan.getBranch().getName();
+            Branch newBranch = this.branchService.findOne(branchId);
+            customerLoan.setBranch(newBranch);
+            CustomerLoan customerLoan1 = customerLoanRepository.save(customerLoan);
+            CustomerActivity customerActivity = null;
+            try {
+                customerActivity = CustomerActivity.builder()
+                    .customerLoanId(customerLoan1.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.LOAN_TRANSFER)
+                    .modifiedOn(new Date())
+                    .modifiedBy(currentUser)
+                    .profile(customerLoan1.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(customerLoan1))
+                    .description(String.format("%s has been successfully transferred from %s branch to %s branch",
+                        customerLoan1.getLoan().getName(), oldBranchName, newBranch.getName()))
+                    .build();
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (JsonProcessingException e) {
+                throw new ServiceValidationException(
+                    "Unable to add customer activity!");
+            }
+            oldBranchName = null;
+        } else {
+            throw new ServiceValidationException(
+                "Transfer Failed: You are not authorized to perform this action!!!");
+        }
+    }
 
 }
 
