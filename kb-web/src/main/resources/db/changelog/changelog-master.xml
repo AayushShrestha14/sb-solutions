@@ -6950,4 +6950,105 @@
         <modifyDataType tableName="customer_info" columnName="nep_data" newDataType="NVARCHAR(MAX)"/>
 
     </changeSet>
+
+    <changeSet id="61-create-table-micro-other-parameters" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="micro_other_parameters"/>
+            </not>
+        </preConditions>
+        <createTable tableName="micro_other_parameters">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LongText">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_other_parameters_created_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_other_parameters_modified_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="61-alter-customer-info-add-column-other-parameters-id" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="micro_other_parameters_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_info">
+            <column name="micro_other_parameters_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_micro_other_parameters_id"
+                             referencedTableName="micro_other_parameters"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="61-create-crg-micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="crg_micro"/>
+            </not>
+        </preConditions>
+        <createTable tableName="crg_micro">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="61-alter-customer-loan-add-crg_micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="crg_micro_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="crg_micro_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_crg_micro_id"
+                             referencedTableName="crg_micro"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.api.crgMicro.service.CrgMicroService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,6 +168,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final SiteVisitService siteVisitService;
     private final FinancialService financialService;
     private final CreditRiskGradingAlphaService creditRiskGradingAlphaService;
+    private final CrgMicroService crgMicroService;
     private final CreditRiskGradingLambdaService creditRiskGradingLambdaService;
     private final SecurityService securityService;
     private final ProposalService proposalService;
@@ -207,6 +209,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         SiteVisitService siteVisitService,
         FinancialService financialService,
         CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+        CrgMicroService crgMicroService,
         CreditRiskGradingLambdaService creditRiskGradingLambdaService,
         SecurityService securityservice,
         ProposalService proposalService,
@@ -236,6 +239,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.siteVisitService = siteVisitService;
         this.financialService = financialService;
         this.creditRiskGradingAlphaService = creditRiskGradingAlphaService;
+        this.crgMicroService = crgMicroService;
         this.creditRiskGradingLambdaService = creditRiskGradingLambdaService;
         this.securityService = securityservice;
         this.proposalService = proposalService;
@@ -468,6 +472,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan.getCreditRiskGradingLambda() != null) {
             customerLoan.setCreditRiskGradingLambda(this.creditRiskGradingLambdaService
                 .save(customerLoan.getCreditRiskGradingLambda()));
+        }
+
+        if (customerLoan.getCrgMicro() != null) {
+            customerLoan.setCrgMicro(this.crgMicroService
+                    .save(customerLoan.getCrgMicro()));
         }
 
         if (customerLoan.getCrgGamma() != null) {
@@ -940,6 +949,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             previousLoan.getCreditRiskGradingLambda().setId(null);
             previousLoan.setCreditRiskGradingLambda(
                 creditRiskGradingLambdaService.save(previousLoan.getCreditRiskGradingLambda()));
+        }
+        if (previousLoan.getCrgMicro() != null) {
+            previousLoan.getCrgMicro().setId(null);
+            previousLoan.setCrgMicro(
+                    crgMicroService.save(previousLoan.getCrgMicro()));
         }
         if (previousLoan.getCrgGamma() != null) {
             previousLoan.getCrgGamma().setId(null);

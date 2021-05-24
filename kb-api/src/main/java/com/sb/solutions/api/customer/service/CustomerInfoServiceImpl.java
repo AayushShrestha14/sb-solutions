@@ -1,7 +1,5 @@
 package com.sb.solutions.api.customer.service;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -15,7 +13,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -30,6 +27,8 @@ import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.marketingActivities.service.MarketingActivitiesService;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
 import com.sb.solutions.api.microBorrowerFinancial.service.MicroBorrowerFinancialService;
+import com.sb.solutions.api.microOtherParameters.MicroOtherParameters;
+import com.sb.solutions.api.microOtherParameters.service.MicroOtherParametersService;
 import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
 import com.sb.solutions.api.microbaselriskexposure.service.MicroBaselRiskExposureService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
@@ -127,6 +126,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final BorrowerPortFolioService borrowerPortFolioService;
     private final MicroBaselRiskExposureService microBaselRiskExposureService;
     private final MicroBorrowerFinancialService microBorrowerFinancialService;
+    private final MicroOtherParametersService microOtherParametersService;
     private final MarketingActivitiesService marketingActivitiesService;
     private final ReportingInfoLevelService reportingInfoLevelService;
     private final BranchService branchService;
@@ -152,6 +152,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             BorrowerPortFolioService borrowerPortFolioService,
             MicroBaselRiskExposureService microBaselRiskExposureService,
             MicroBorrowerFinancialService microBorrowerFinancialService,
+            MicroOtherParametersService microOtherParametersService,
             MarketingActivitiesService marketingActivitiesService,
             ReportingInfoLevelService reportingInfoLevelService,
             BranchService branchService) {
@@ -176,6 +177,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.borrowerPortFolioService = borrowerPortFolioService;
         this.microBaselRiskExposureService = microBaselRiskExposureService;
         this.microBorrowerFinancialService = microBorrowerFinancialService;
+        this.microOtherParametersService = microOtherParametersService;
         this.marketingActivitiesService = marketingActivitiesService;
         this.reportingInfoLevelService = reportingInfoLevelService;
         this.branchService = branchService;
@@ -336,7 +338,12 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final MicroBorrowerFinancial microBorrowerFinancial = microBorrowerFinancialService
                     .save(objectMapper().convertValue(o, MicroBorrowerFinancial.class));
             customerInfo1.setMicroBorrowerFinancial(microBorrowerFinancial);
-        } else if ((template.equalsIgnoreCase(TemplateNameConstant.MARKETING_ACTIVITIES))) {
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.MICRO_OTHER_PARAMETERS))) {
+            final MicroOtherParameters microOtherParameters = microOtherParametersService
+                    .save(objectMapper().convertValue(o, MicroOtherParameters.class));
+            customerInfo1.setMicroOtherParameters(microOtherParameters);
+        }
+        else if ((template.equalsIgnoreCase(TemplateNameConstant.MARKETING_ACTIVITIES))) {
             final MarketingActivities marketingActivities = marketingActivitiesService
                     .save(objectMapper().convertValue(o, MarketingActivities.class));
             customerInfo1.setMarketingActivities(marketingActivities);
