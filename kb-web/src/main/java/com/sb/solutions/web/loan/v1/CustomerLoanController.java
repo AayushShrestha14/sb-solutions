@@ -432,6 +432,12 @@ public class CustomerLoanController {
         return new RestResponseDto().successModel(service.checkCustomerIsEditable(id));
     }
 
+    @GetMapping("/change-loan/customer-loan-id/{id}/loan-config-id/{lId}")
+    public ResponseEntity<?> performChangeLoan(@PathVariable Long id,@PathVariable Long lId) {
+        service.changeLoan(id,lId);
+        return new RestResponseDto().successModel("SUCCESS");
+    }
+
     private String actionType(LoanType loanType) {
         switch (loanType) {
             case NEW_LOAN:

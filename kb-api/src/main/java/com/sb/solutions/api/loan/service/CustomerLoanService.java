@@ -100,4 +100,6 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
     Page<CustomerInfoLoanDto> getLoanByCustomerInfoCommitteePULL(Object searchDto, Pageable pageable);
 
     Boolean checkCustomerIsEditable(Long loanHolderId);
+
+    void changeLoan(Long customerLoanId,Long loanConfigId);
 }
