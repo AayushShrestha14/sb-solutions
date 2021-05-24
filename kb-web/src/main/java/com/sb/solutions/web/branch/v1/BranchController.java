@@ -119,5 +119,8 @@ public class BranchController {
         return new RestResponseDto().successModel(branchList);
     }
 
-
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getAuthenticated(@PathVariable Long id) {
+        return new RestResponseDto().successModel(branchService.findOne(id));
+    }
 }

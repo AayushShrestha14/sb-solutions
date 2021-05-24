@@ -29,6 +29,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
@@ -274,6 +275,12 @@ public class UserController {
     @PostMapping(value = "/switch-user")
     public ResponseEntity<?> switchUser(@RequestBody Role role) {
         return new RestResponseDto().successModel(userService.switchUserRole(role));
+    }
+
+    @GetMapping(value = "/users/branch/{bId}/maker-active")
+    public ResponseEntity<?> getUserListByBranchIdAndMakerActive(@PathVariable("bId") Long bId) {
+        return new RestResponseDto()
+            .successModel(userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, bId));
     }
 
 }

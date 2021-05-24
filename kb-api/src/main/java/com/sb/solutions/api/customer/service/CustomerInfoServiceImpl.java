@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 
 import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
 import com.sb.solutions.api.borrowerPortfolio.service.BorrowerPortFolioService;
+import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
 import com.sb.solutions.api.marketingActivities.MarketingActivities;
@@ -128,6 +129,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final MicroOtherParametersService microOtherParametersService;
     private final MarketingActivitiesService marketingActivitiesService;
     private final ReportingInfoLevelService reportingInfoLevelService;
+    private final BranchService branchService;
 
     public CustomerInfoServiceImpl(
             @Autowired CustomerInfoRepository customerInfoRepository,
@@ -152,7 +154,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             MicroBorrowerFinancialService microBorrowerFinancialService,
             MicroOtherParametersService microOtherParametersService,
             MarketingActivitiesService marketingActivitiesService,
-            ReportingInfoLevelService reportingInfoLevelService) {
+            ReportingInfoLevelService reportingInfoLevelService,
+            BranchService branchService) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
         this.financialService = financialService;
@@ -177,6 +180,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.microOtherParametersService = microOtherParametersService;
         this.marketingActivitiesService = marketingActivitiesService;
         this.reportingInfoLevelService = reportingInfoLevelService;
+        this.branchService = branchService;
     }
 
 
@@ -394,6 +398,13 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     public Object updateNepaliConfigData(String nepData, Long id) {
         CustomerInfo customerInfo = customerInfoRepository.getOne(id);
         customerInfo.setNepData(nepData);
+        return customerInfoRepository.save(customerInfo);
+    }
+
+    @Override
+    public CustomerInfo updateCustomerBranch(Long customerInfoId, Long branchId) {
+        CustomerInfo customerInfo = customerInfoRepository.getOne(customerInfoId);
+        customerInfo.setBranch(branchService.findOne(branchId));
         return customerInfoRepository.save(customerInfo);
     }
 
