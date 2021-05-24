@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.crgMicro.entity.CrgMicro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -235,6 +236,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToOne
     private CreditRiskGradingLambda creditRiskGradingLambda;
+
+    @NotAudited
+    @OneToOne
+    private CrgMicro crgMicro;
 
     @NotAudited
     @OneToOne
