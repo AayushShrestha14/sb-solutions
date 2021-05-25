@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
-import com.sb.solutions.core.enums.LoanType;
+
+import com.sb.solutions.api.user.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.common.stage.mapper.StageMapper;
+import com.sb.solutions.web.customerInfo.v1.dto.CustomerTransferDTO;
 import com.sb.solutions.web.loan.v1.dto.BarChartDto;
 import com.sb.solutions.web.loan.v1.dto.SeriesDto;
 import com.sb.solutions.web.user.dto.UserDto;
@@ -44,12 +47,15 @@ public class Mapper {
     private static final Logger logger = LoggerFactory.getLogger(Mapper.class);
     private final StageMapper stageMapper;
     private final ApprovalLimitService approvalLimitService;
+    private final UserService userService;
     Gson gson = new Gson();
 
     public Mapper(@Autowired StageMapper stageMapper,
-        @Autowired ApprovalLimitService approvalLimitService) {
+        @Autowired ApprovalLimitService approvalLimitService,
+        UserService userService) {
         this.stageMapper = stageMapper;
         this.approvalLimitService = approvalLimitService;
+        this.userService = userService;
     }
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
@@ -216,5 +222,63 @@ public class Mapper {
             charts.add(barChart);
         }
         return charts;
+    }
+
+    public CustomerLoan transferBranchMapper(CustomerTransferDTO transferDTO, CustomerLoan customerLoan,
+        User currentUser) {
+        if (currentUser.getRole().getRoleType().equals(RoleType.ADMIN) || currentUser.getUsername().equalsIgnoreCase("SPADMIN")) {
+            if (transferDTO.getDocAction().equals(DocAction.TRANSFER)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+                objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+                List previousList = customerLoan.getPreviousList();
+                List previousListTemp = new ArrayList();
+                LoanStage loanStage = new LoanStage();
+                if (customerLoan.getCurrentStage() != null) {
+                    loanStage = customerLoan.getCurrentStage();
+                    Map<String, String> tempLoanStage = objectMapper
+                        .convertValue(loanStage, Map.class);
+                    try {
+                        previousList.forEach(p -> {
+                            try {
+                                Map<String, String> previous = objectMapper
+                                    .convertValue(p, Map.class);
+                                previousListTemp.add(objectMapper.writeValueAsString(previous));
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException("Failed to handle JSON data");
+                            }
+                        });
+                        String currentLoanJsonValue = objectMapper.writeValueAsString(tempLoanStage);
+                        previousListTemp.add(currentLoanJsonValue);
+                        loanStage.setFromUser(loanStage.getToUser());
+                        loanStage.setFromRole(loanStage.getToRole());
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Failed to get stage data");
+                    }
+                }
+                customerLoan.setPreviousStageList(previousListTemp.toString());
+                customerLoan.setPreviousList(previousListTemp);
+                User toUser = userService.findOne(transferDTO.getToUserId());
+                if(customerLoan.getCurrentStage() == null){
+                    loanStage.setFromUser(toUser);
+                    loanStage.setFromRole(toUser.getRole());
+                }
+                loanStage.setToUser(toUser);
+                loanStage.setToRole(toUser.getRole());
+                loanStage.setDocAction(transferDTO.getDocAction());
+                loanStage.setComment("Transferred by " + currentUser.getRole().getRoleName() + ". " + transferDTO.getComment());
+                objectMapper.convertValue(loanStage, LoanStage.class);
+                customerLoan.setCurrentStage(loanStage);
+                customerLoan.setCreatedBy(toUser.getId());  //can not be set
+                return customerLoan;
+            } else {
+                throw new ServiceValidationException(
+                    "Transfer Failed: Action other than branch transfer detected!!!");
+            }
+        } else {
+            throw new ServiceValidationException(
+                "Transfer Failed: You are not authorized to transfer branch!!!");
+        }
     }
 }

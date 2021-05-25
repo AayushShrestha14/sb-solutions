@@ -54,7 +54,7 @@ public class Proposal extends BaseEntity<Long> {
     @NotAudited
     private String cashMarginMethod;
     @NotAudited
-    private Double enhanceLimitAmount;
+    private BigDecimal enhanceLimitAmount;
 
 
     @Transient
