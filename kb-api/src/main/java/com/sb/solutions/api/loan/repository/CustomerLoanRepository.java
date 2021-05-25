@@ -18,6 +18,7 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
 import com.sb.solutions.api.user.dto.UserDto;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.core.enums.DocAction;
@@ -273,5 +274,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
 
     Boolean existsByLoanHolderIdAndDocumentStatusAndCurrentStageToRoleRoleTypeNot(@Param("loanHolderId") Long loanHolderId,@Param("status") DocStatus status,@Param("roleType") RoleType roleType);
 
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE CustomerLoan c SET c.loan = :loanConfig,c.currentStage=:currentStage,c.previousStageList=:previousList   WHERE c.id = :id")
+    void updateLoanConfigByCustomerLoanId(@Param("loanConfig") LoanConfig loanConfig, @Param("id") Long id,@Param("currentStage")LoanStage currentStage,@Param("previousList")String previousList);
 }

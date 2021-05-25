@@ -104,6 +104,8 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     Boolean checkCustomerIsEditable(Long loanHolderId);
 
+    void changeLoan(Long customerLoanId,Long loanConfigId);
+
     @Transactional
     void transferLoanToOtherBranch(CustomerLoan customerLoan, Long branchId, User currentUser);
 }

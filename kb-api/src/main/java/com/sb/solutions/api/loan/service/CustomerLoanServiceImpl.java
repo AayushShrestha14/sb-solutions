@@ -41,7 +41,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.api.crgMicro.service.CrgMicroService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +69,7 @@ import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
 import com.sb.solutions.api.creditRiskGradingAlpha.service.CreditRiskGradingAlphaService;
 import com.sb.solutions.api.creditRiskGradingLambda.service.CreditRiskGradingLambdaService;
 import com.sb.solutions.api.crg.service.CrgGammaService;
+import com.sb.solutions.api.crgMicro.service.CrgMicroService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
@@ -112,6 +112,8 @@ import com.sb.solutions.api.loan.mapper.NepaliTemplateMapper;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
 import com.sb.solutions.api.loan.repository.CustomerLoanRepositoryJdbcTemplate;
 import com.sb.solutions.api.loan.repository.specification.CustomerLoanSpecBuilder;
+import com.sb.solutions.api.loanConfig.entity.LoanConfig;
+import com.sb.solutions.api.loanConfig.service.LoanConfigService;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.loanflag.service.CustomerLoanFlagService;
 import com.sb.solutions.api.nepalitemplate.entity.NepaliTemplate;
@@ -188,6 +190,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
+    private final LoanConfigService loanConfigService;
     private final ObjectMapper objectMapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -229,6 +232,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
         CustomerGeneralDocumentService customerGeneralDocumentService,
         CadDocumentService cadDocumentService,
+        LoanConfigService loanConfigService,
         BranchService branchService
     ) {
         this.customerLoanRepository = customerLoanRepository;
@@ -260,6 +264,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.cadDocumentService = cadDocumentService;
         this.branchService = branchService;
+        this.loanConfigService = loanConfigService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -476,7 +481,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         if (customerLoan.getCrgMicro() != null) {
             customerLoan.setCrgMicro(this.crgMicroService
-                    .save(customerLoan.getCrgMicro()));
+                .save(customerLoan.getCrgMicro()));
         }
 
         if (customerLoan.getCrgGamma() != null) {
@@ -953,7 +958,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getCrgMicro() != null) {
             previousLoan.getCrgMicro().setId(null);
             previousLoan.setCrgMicro(
-                    crgMicroService.save(previousLoan.getCrgMicro()));
+                crgMicroService.save(previousLoan.getCrgMicro()));
         }
         if (previousLoan.getCrgGamma() != null) {
             previousLoan.getCrgGamma().setId(null);
@@ -1706,6 +1711,59 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
 
+    }
+
+    @Override
+    public void changeLoan(Long customerLoanId, Long loanConfigId) {
+        final User u = userService.getAuthenticatedUser();
+        if (u.getRole().getRoleType() == RoleType.MAKER) {
+            LoanConfig loanConfig = loanConfigService.findOne(loanConfigId);
+            CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            List previousList = customerLoan.getPreviousList();
+            List previousListTemp = new ArrayList();
+            LoanStage loanStage = new LoanStage();
+            if (customerLoan.getCurrentStage() != null) {
+                loanStage = customerLoan.getCurrentStage();
+                if (!loanStage.getToUser().equals(u)) {
+                    throw new ServiceValidationException(
+                        "This Loan is not under you");
+                }
+                Map<String, String> tempLoanStage = objectMapper
+                    .convertValue(customerLoan.getCurrentStage(), Map.class);
+                try {
+                    previousList.forEach(p -> {
+                        try {
+                            Map<String, String> previous = objectMapper.convertValue(p, Map.class);
+
+                            previousListTemp.add(objectMapper.writeValueAsString(previous));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Failed to handle JSON data");
+                        }
+                    });
+                    String jsonValue = objectMapper.writeValueAsString(tempLoanStage);
+                    previousListTemp.add(jsonValue);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Failed to Get Stage data");
+                }
+            }
+            loanStage.setFromRole(u.getRole());
+            loanStage.setFromUser(u);
+            loanStage.setToRole(u.getRole());
+            loanStage.setToUser(u);
+            loanStage.setDocAction(DocAction.CHANGE_LOAN);
+            loanStage.setComment(
+                "Loan has been Changed From " + customerLoan.getLoan().getName() + " to "
+                    + loanConfig.getName());
+            customerLoanRepository
+                .updateLoanConfigByCustomerLoanId(loanConfig, customerLoanId, loanStage,
+                    previousListTemp.toString());
+        } else {
+            throw new ServiceValidationException("You do not have permission to perform Task");
+        }
     }
 
 
