@@ -917,11 +917,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .fromJson(previousLoan.getProposal().getData(), HashMap.class);
                 proposalData
                     .replace("existingLimit", previousLoan.getProposal().getProposedLimit());
-                proposalData.replace("outStandingLimit", 0);
+                proposalData.replace("enhanceLimitAmount", 0);
                 previousLoan.getProposal().setData(gson.toJson(proposalData));
                 previousLoan.getProposal()
                     .setExistingLimit(previousLoan.getProposal().getProposedLimit());
-                previousLoan.getProposal().setOutStandingLimit(BigDecimal.ZERO);
+                previousLoan.getProposal().setEnhanceLimitAmount(BigDecimal.ZERO);
             }
         }
         if (previousLoan.getCreditRiskGrading() != null) {
