@@ -1717,6 +1717,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             LoanStage loanStage = new LoanStage();
             if (customerLoan.getCurrentStage() != null) {
                 loanStage = customerLoan.getCurrentStage();
+                if (!loanStage.getToUser().equals(u)) {
+                    throw new ServiceValidationException(
+                        "This Loan is not under you");
+                }
                 Map<String, String> tempLoanStage = objectMapper
                     .convertValue(customerLoan.getCurrentStage(), Map.class);
                 try {
