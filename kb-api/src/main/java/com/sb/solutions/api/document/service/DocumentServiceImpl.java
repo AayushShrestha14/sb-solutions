@@ -36,7 +36,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final LoanCycleRepository loanCycleRepository;
 
     public DocumentServiceImpl(@Autowired DocumentRepository documentRepository,
-        @Autowired LoanCycleRepository loanCycleRepository) {
+                               @Autowired LoanCycleRepository loanCycleRepository) {
         this.documentRepository = documentRepository;
         this.loanCycleRepository = loanCycleRepository;
     }
@@ -93,8 +93,16 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String saveList(List<Long> ids, LoanCycle loanCycle) {
         Status status = Status.valueOf("ACTIVE");
+        if (ids.size() == 0) {
+            for (Document document : documentRepository
+                    .findByLoanCycleContainingAndStatus(loanCycle, status)) {
+                document.getLoanCycle().remove(loanCycle);
+                documentRepository.save(document);
+            }
+            return "Success";
+        }
         for (Document document : documentRepository
-            .findByLoanCycleContainingAndStatus(loanCycle, status)) {
+                .findByLoanCycleContainingAndStatus(loanCycle, status)) {
             document.getLoanCycle().remove(loanCycle);
         }
         for (Long id : ids) {
@@ -114,28 +122,28 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public String downloadAllDoc(String sourcepath, String SourcePathCustomer, String SourceCadDocPath) {
         String rootth = String.join("/",
-            (Arrays.asList(sourcepath.split("/"))
-                .subList(0, Arrays.asList(sourcepath
-                    .split("/")).size() - 1)));
+                (Arrays.asList(sourcepath.split("/"))
+                        .subList(0, Arrays.asList(sourcepath
+                                .split("/")).size() - 1)));
 
         String destinationPath = rootth
-            + "/zipFolder/customerDocument.zip";
+                + "/zipFolder/customerDocument.zip";
 
         String destinationCadDocumentPath = null;
 
         if (ProductUtils.CAD_LITE_VERSION) {
             destinationCadDocumentPath = rootth
-                + "/zipFolder/cadDocument.zip";
+                    + "/zipFolder/cadDocument.zip";
         }
 
         String destinationCustomerDocumentPath = rootth
-            + "/zipFolder/loanDocument.zip";
+                + "/zipFolder/loanDocument.zip";
 
         String parentDocumentPath = rootth
-            + "/allDocument.zip";
+                + "/allDocument.zip";
 
         String sourcePathParent = rootth
-            + "/zipFolder/";
+                + "/zipFolder/";
 
         Path path = Paths.get(FilePath.getOSPath() + sourcePathParent);
         if (!Files.exists(path)) {
@@ -145,15 +153,15 @@ public class DocumentServiceImpl implements DocumentService {
         try {
 
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcepath,
-                UploadDir.WINDOWS_PATH + destinationPath);
+                    UploadDir.WINDOWS_PATH + destinationPath);
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourcePathCustomer,
-                UploadDir.WINDOWS_PATH + destinationCustomerDocumentPath);
+                    UploadDir.WINDOWS_PATH + destinationCustomerDocumentPath);
             if (!ObjectUtils.isEmpty(SourceCadDocPath)) {
                 FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + SourceCadDocPath,
-                    UploadDir.WINDOWS_PATH + destinationCadDocumentPath);
+                        UploadDir.WINDOWS_PATH + destinationCadDocumentPath);
             }
             FileUploadUtils.createZip(UploadDir.WINDOWS_PATH + sourcePathParent,
-                UploadDir.WINDOWS_PATH + parentDocumentPath);
+                    UploadDir.WINDOWS_PATH + parentDocumentPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
