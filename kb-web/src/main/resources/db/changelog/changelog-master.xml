@@ -7051,4 +7051,15 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="62-alter-reporting-info-add-type" author="Sulav">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="reporting_info" columnName="type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="reporting_info">
+            <column name="type" type="CHAR">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

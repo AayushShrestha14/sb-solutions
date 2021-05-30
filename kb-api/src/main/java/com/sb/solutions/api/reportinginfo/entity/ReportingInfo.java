@@ -23,6 +23,8 @@ import com.sb.solutions.core.enums.Status;
 @EqualsAndHashCode(callSuper = true)
 public class ReportingInfo extends BaseEntity<Long> {
 
+    // c = customer, f = facility
+    private String type;
     private String name;
 
     private Status status;
