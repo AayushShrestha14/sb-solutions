@@ -15,6 +15,7 @@ import com.sb.solutions.api.reportinginfo.entity.ReportingInfo;
 public class ReportingInfoSpec implements Specification<ReportingInfo> {
 
     private static final String FILTER_BY_NAME = "name";
+    private static final String FILTER_BY_TYPE = "type";
 
     private final String property;
     private final String value;
@@ -26,11 +27,13 @@ public class ReportingInfoSpec implements Specification<ReportingInfo> {
 
     @Override
     public Predicate toPredicate(Root<ReportingInfo> root, CriteriaQuery<?> query,
-        CriteriaBuilder criteriaBuilder) {
+                                 CriteriaBuilder criteriaBuilder) {
         switch (property) {
             case FILTER_BY_NAME:
                 return criteriaBuilder.like(criteriaBuilder.lower(root.get(FILTER_BY_NAME)),
-                    "%" + value.toLowerCase() + "%");
+                        "%" + value.toLowerCase() + "%");
+            case FILTER_BY_TYPE:
+                return criteriaBuilder.equal(root.get(FILTER_BY_TYPE), value);
             default:
                 return null;
         }
