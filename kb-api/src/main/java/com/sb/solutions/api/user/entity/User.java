@@ -5,11 +5,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sb.solutions.api.address.province.entity.Province;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,12 +27,15 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.sb.solutions.api.address.province.entity.Province;
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.core.enitity.BaseEntity;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.string.NameFormatter;
 
@@ -89,7 +101,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
 
     @NotAudited
     @ManyToMany
-    @JoinTable(name= "user_role_list",
+    @JoinTable(name = "user_role_list",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roleList;
@@ -100,9 +112,13 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         for (String a : this.getAuthorityList()) {
             authorities.add(new SimpleGrantedAuthority(a));
+        }
+        if (RoleType.ADMIN == this.role.getRoleType()) {
+            authorities.addAll(AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
         }
         return authorities;
     }

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,7 @@ public class ValuatorController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Valuator valuator) {
         return new RestResponseDto().successModel(valuatorService.save(valuator));
@@ -42,6 +44,7 @@ public class ValuatorController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @PostMapping(value = "/list")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getPageable(@RequestBody Object searchObject,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
@@ -49,6 +52,7 @@ public class ValuatorController {
                 .pageable(page, size)));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/statusCount")
     public ResponseEntity<?> getValuatorStatusCount() {
         return new RestResponseDto().successModel(valuatorService.valuatorStatusCount());
