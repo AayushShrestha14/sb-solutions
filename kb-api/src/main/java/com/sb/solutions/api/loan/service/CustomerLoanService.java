@@ -108,4 +108,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     @Transactional
     void transferLoanToOtherBranch(CustomerLoan customerLoan, Long branchId, User currentUser);
+
+    @Transactional
+    void deleteLoanByMakerAndAdmin(Long customerLoanId);
 }

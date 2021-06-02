@@ -160,7 +160,7 @@ public class UserController {
             email.setAffiliateId(this.affiliateId);
             mailSenderService.send(Template.RESET_PASSWORD, email);
 
-            return new RestResponseDto().successModel(resetToken);
+            return new RestResponseDto().successModel("SUCCESS");
         }
     }
 
