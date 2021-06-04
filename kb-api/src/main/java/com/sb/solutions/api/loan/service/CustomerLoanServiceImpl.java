@@ -499,7 +499,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
         postLoanConditionCheck(savedCustomerLoan);
-        logger.info("I am above save");
 
         if (!customerLoan.getNepaliTemplates().isEmpty()) {
             List<NepaliTemplate> nepaliTemplates = nepaliTemplateMapper
@@ -520,14 +519,14 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             });
             savedCustomerLoan.setCustomerDocument(customerDocuments);
 
-//            String refNumber = new StringBuilder().append(LocalDate.now().getYear())
-//                .append(LocalDate.now().getMonthValue())
-//                .append(LocalDate.now().getDayOfMonth()).append(SEPERATOR_FRONT_SLASH)
-//                .append(customerLoan.getLoan().getId()).append(SEPERATOR_FRONT_SLASH)
-//                .append(
-//                    StringUtil.getAcronym(customerLoan.getLoanCategory().name(), SEPERATOR_BLANK))
-//                .append(SEPERATOR_FRONT_SLASH).append(customerLoan.getId()).toString();
-//            customerLoanRepository.updateReferenceNo(refNumber, customerLoan.getId());
+            String refNumber = new StringBuilder().append(LocalDate.now().getYear())
+                .append(LocalDate.now().getMonthValue())
+                .append(LocalDate.now().getDayOfMonth()).append(SEPERATOR_FRONT_SLASH)
+                .append(customerLoan.getLoan().getId()).append(SEPERATOR_FRONT_SLASH)
+                .append(
+                    StringUtil.getAcronym(customerLoan.getLoanCategory().name(), SEPERATOR_BLANK))
+                .append(SEPERATOR_FRONT_SLASH).append(customerLoan.getId()).toString();
+            customerLoanRepository.updateReferenceNo(refNumber, customerLoan.getId());
         }
         return savedCustomerLoan;
     }
