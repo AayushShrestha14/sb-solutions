@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -235,7 +236,8 @@ public class CustomerLoanController {
         if (ProductUtils.CUSTOMER_BASE_LOAN) {
             return new RestResponseDto()
                 .successModel(
-                    service.getLoanByCustomerInfoCommitteePULL(searchDto, PaginationUtils.pageable(page, size)));
+                    service.getLoanByCustomerInfoCommitteePULL(searchDto,
+                        PaginationUtils.pageable(page, size)));
         } else {
             return new RestResponseDto()
                 .successModel(
@@ -450,8 +452,15 @@ public class CustomerLoanController {
     }
 
     @GetMapping("/change-loan/customer-loan-id/{id}/loan-config-id/{lId}")
-    public ResponseEntity<?> performChangeLoan(@PathVariable Long id,@PathVariable Long lId) {
-        service.changeLoan(id,lId);
+    public ResponseEntity<?> performChangeLoan(@PathVariable Long id, @PathVariable Long lId) {
+        service.changeLoan(id, lId);
+        return new RestResponseDto().successModel("SUCCESS");
+    }
+
+    @DeleteMapping("/delete-loan/{id}")
+    public ResponseEntity<?> deleteLoanByAdminAndMaker(@PathVariable Long id) {
+        logger.info("Delete Loan {}", id);
+        service.deleteLoanByMakerAndAdmin(id);
         return new RestResponseDto().successModel("SUCCESS");
     }
 

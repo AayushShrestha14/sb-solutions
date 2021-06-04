@@ -1817,7 +1817,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     }
 
     @Override
-    public void transferLoanToOtherBranch(CustomerLoan customerLoan, Long branchId, User currentUser) {
+    public void transferLoanToOtherBranch(CustomerLoan customerLoan, Long branchId,
+        User currentUser) {
         if (currentUser.getRole().getRoleType().equals(RoleType.ADMIN)
             || currentUser.getUsername().equalsIgnoreCase("SPADMIN")) {
             if (customerLoan.getCurrentStage() == null
@@ -1840,8 +1841,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .modifiedBy(currentUser)
                     .profile(customerLoan1.getLoanHolder())
                     .data(objectMapper.writeValueAsString(customerLoan1))
-                    .description(String.format("%s has been successfully transferred from %s branch to %s branch",
-                        customerLoan1.getLoan().getName(), oldBranchName, newBranch.getName()))
+                    .description(String
+                        .format("%s has been successfully transferred from %s branch to %s branch",
+                            customerLoan1.getLoan().getName(), oldBranchName, newBranch.getName()))
                     .build();
                 activityService.saveCustomerActivity(customerActivity);
             } catch (JsonProcessingException e) {
@@ -1852,6 +1854,46 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else {
             throw new ServiceValidationException(
                 "Transfer Failed: You are not authorized to perform this action!!!");
+        }
+    }
+
+    @Override
+    public void deleteLoanByMakerAndAdmin(Long customerLoanId) {
+        final User u = userService.getAuthenticatedUser();
+        if (u.getRole().getRoleType().equals(RoleType.MAKER) || (u.getRole().getRoleType()
+            .equals(RoleType.ADMIN))) {
+            final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
+            LoanStage l = customerLoan.getCurrentStage();
+            if (u.getRole().getRoleType().equals(RoleType.MAKER)) {
+                if (l.getToUser().equals(u)) {
+                    customerLoanRepository.deleteById(customerLoanId);
+                }
+            } else {
+                if (l.getToRole().getRoleType().equals(RoleType.MAKER)) {
+                    customerLoanRepository.deleteById(customerLoanId);
+                }
+            }
+            try {
+                CustomerActivity customerActivity = CustomerActivity.builder()
+                    .customerLoanId(customerLoan.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.DELETE_LOAN)
+                    .modifiedOn(new Date())
+                    .modifiedBy(u)
+                    .profile(customerLoan.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(customerLoan))
+                    .description(String
+                        .format("Customer: %s loan Facilty: %s deteted by %s",
+                            customerLoan.getLoanHolder().getName(),
+                            customerLoan.getLoan().getName(), u.getName()))
+                    .build();
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (JsonProcessingException e) {
+                throw new ServiceValidationException(
+                    "Unable to add customer activity!");
+            }
+        } else {
+            throw new ServiceValidationException("You don't have Permission to delete this file");
         }
     }
 
