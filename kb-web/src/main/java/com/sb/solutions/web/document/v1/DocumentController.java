@@ -127,11 +127,12 @@ public class DocumentController {
         String action = actionType(customerLoan.getLoanType());
 
         String customerLoanDocumentPath = new PathBuilder(UploadDir.initialDocument)
-                .buildLoanDocumentUploadBasePathWithId(customerLoan.getLoanHolder().getId(),
+                .buildLoanDocumentUploadBasePathWithLoanId(customerLoan.getLoanHolder().getId(),
                         customerLoan.getBranch().getId(),
                         customerLoan.getLoanHolder().getCustomerType().name(),
                         action,
-                        customerLoan.getLoan().getId());
+                        customerLoan.getLoan().getId(),
+                        customerLoan.getId().toString());
 
         String customerPath = new PathBuilder(UploadDir.initialDocument)
                 .buildCustomerInfoBasePathWithId(customerLoan.getLoanHolder().getId(),

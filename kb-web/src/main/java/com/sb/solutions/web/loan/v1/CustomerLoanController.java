@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -274,6 +275,7 @@ public class CustomerLoanController {
         @RequestParam("documentId") Long documentId,
         @RequestParam("loanHolderId") Long loanHolderId,
         @RequestParam("customerType") String customerType,
+        @RequestParam(required = false, defaultValue = "") String actualLoanId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         CustomerDocument customerDocument = new CustomerDocument();
@@ -293,18 +295,33 @@ public class CustomerLoanController {
         Preconditions.checkNotNull(customerType, "Customer Type Cannot be null");
         Preconditions.checkNotNull(loanId, "Loan  Cannot be null");
 
-        String uploadPath = new PathBuilder(UploadDir.initialDocument)
-            .buildLoanDocumentUploadBasePathWithId(loanHolderId,
-                branchId,
-                customerType,
-                action,
-                loanId);
+        if (StringUtils.isEmpty(actualLoanId)) {
+            String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                    .buildLoanDocumentUploadBasePathWithId(loanHolderId,
+                            branchId,
+                            customerType,
+                            action,
+                            loanId);
+            logger.info("File Upload Path {}", uploadPath);
+            ResponseEntity<?> responseEntity = FileUploadUtils
+                    .uploadFile(multipartFile, uploadPath, documentName);
+            customerDocument
+                    .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
 
-        logger.info("File Upload Path {}", uploadPath);
-        ResponseEntity<?> responseEntity = FileUploadUtils
-            .uploadFile(multipartFile, uploadPath, documentName);
-        customerDocument
-            .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
+        } else {
+            String uploadPath = new PathBuilder(UploadDir.initialDocument)
+                    .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
+                            branchId,
+                            customerType,
+                            action,
+                            loanId, actualLoanId);
+
+            logger.info("File Upload Path {}", uploadPath);
+            ResponseEntity<?> responseEntity = FileUploadUtils
+                    .uploadFile(multipartFile, uploadPath, documentName);
+            customerDocument
+                    .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
+        }
         return new RestResponseDto().successModel(customerDocument);
     }
 
