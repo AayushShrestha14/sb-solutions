@@ -110,7 +110,7 @@ public class StageMapper {
                 if (maker.isPresent()) {
                     // verifed that maker user is still maker user for paticular branch
                     targetMakerUser = userDto;
-                    targerMakerRole = stage.getToRole();
+                    targerMakerRole = stage.getFromRole();
                 } else {
                     /*
                      loan maker is no more maker user, he might get promoted with other role, so check
