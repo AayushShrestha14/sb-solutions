@@ -43,8 +43,11 @@ public class CustomerLoanCsvDto {
     private LoanStage currentStage;
 
     private Branch branch;
+    private Branch Province;
 
     private User toUser;
+    private User FromUser;
+    private String stageUsers;
 
     private Role toRole;
 
