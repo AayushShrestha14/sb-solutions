@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -444,6 +445,14 @@ public class CustomerLoanController {
     public ResponseEntity<?> deleteLoanByAdminAndMaker(@PathVariable Long id) {
         logger.info("Delete Loan {}", id);
         service.deleteLoanByMakerAndAdmin(id);
+        return new RestResponseDto().successModel("SUCCESS");
+    }
+
+    @PostMapping("/re-initiate-loan")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MAKER')")
+    public ResponseEntity<?> reInitiateLoan(@Valid @RequestBody StageDto stageDto) {
+        logger.info("Re-initiate Loan {}", stageDto.getCustomerLoanId());
+        service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
         return new RestResponseDto().successModel("SUCCESS");
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import com.sb.solutions.api.customerRelative.entity.CustomerRelative;
@@ -111,4 +112,7 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     @Transactional
     void deleteLoanByMakerAndAdmin(Long customerLoanId);
+
+    @Transactional
+    void reInitiateRejectedLoan(Long customerLoanId, String comment);
 }

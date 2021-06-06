@@ -120,6 +120,9 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
         if (RoleType.ADMIN == this.role.getRoleType()) {
             authorities.addAll(AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
         }
+        if (RoleType.MAKER == this.role.getRoleType()) {
+            authorities.addAll(AuthorityUtils.createAuthorityList("ROLE_MAKER"));
+        }
         return authorities;
     }
 
