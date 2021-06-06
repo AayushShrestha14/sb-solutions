@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -507,6 +508,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         if (isNewLoan) {
+            List<CustomerDocument> customerDocuments = savedCustomerLoan.getCustomerDocument();
+            customerDocuments.forEach( customerDocument -> {
+                String docPath = customerDocument.getDocumentPath();
+                String documentPath[]= docPath.split("document");
+                documentPath[0] = documentPath[0] + "loan-loan-" + savedCustomerLoan.getId() + "/"+ "doc";
+                String newDocPath = documentPath[0] + documentPath[1];
+                customerDocument.setDocumentPath(newDocPath);
+                FileUploadUtils.moveFile(docPath, newDocPath);
+            });
+            savedCustomerLoan.setCustomerDocument(customerDocuments);
 
             String refNumber = new StringBuilder().append(LocalDate.now().getYear())
                 .append(LocalDate.now().getMonthValue())
@@ -515,10 +526,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 .append(
                     StringUtil.getAcronym(customerLoan.getLoanCategory().name(), SEPERATOR_BLANK))
                 .append(SEPERATOR_FRONT_SLASH).append(customerLoan.getId()).toString();
-
             customerLoanRepository.updateReferenceNo(refNumber, customerLoan.getId());
         }
-
         return savedCustomerLoan;
     }
 
