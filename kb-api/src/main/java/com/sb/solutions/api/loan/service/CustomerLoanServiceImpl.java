@@ -1903,10 +1903,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final User currentUser = userService.getAuthenticatedUser();
         if (currentUser.getRole().getRoleType() == RoleType.MAKER || (currentUser.getRole()
             .getRoleType() == RoleType.ADMIN)) {
+            // is the logged in user Admin or Maker user
             final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
             if (customerLoan.getCurrentStage() != null) {
+                // is current stage present
                 LoanStage currentStage = customerLoan.getCurrentStage();
-                List<LoanStageDto> distinctPreviousList = customerLoan.getDistinctPreviousList();
                 List<LoanStageDto> previousList = customerLoan.getPreviousList();
                 List previousListTemp = new ArrayList();
                 Map<String, String> currentStageTemp = this.objectMapper
@@ -1932,38 +1933,46 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoan.setPreviousList(previousListTemp);
                 User toUser = null;
                 if (currentUser.getRole().getRoleType() == RoleType.MAKER) {
+                    // if the current logged in user is a maker user
                     toUser = currentUser;
                 } else {
                     List<User> makerUsers = this.userService
                         .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER,
                             customerLoan.getBranch().getId());
+                    // get all active maker users of the branch
                     if (makerUsers == null || makerUsers.isEmpty()) {
                         throw new ServiceValidationException("No active maker user exists!");
                     }
                     if (makerUsers.size() == 1) {
+                        // if the branch has single maker
                         toUser = makerUsers.get(0);
                     } else {
                         Optional<User> optionalUser = makerUsers.stream()
                             .filter(m->m.getId() == currentStage.getToUser().getId())
                             .findAny();
                         if (optionalUser.isPresent()) {
+                            // if current stage to user is active
                             toUser = optionalUser.get();
                         } else {
                             optionalUser = makerUsers.stream()
                                 .filter(m->m.getId() == currentStage.getFromUser().getId())
                                 .findAny();
                             if (optionalUser.isPresent()){
+                                // if current stage from user is active
                                 toUser = optionalUser.get();
                             } else {
                                 for (int i = previousList.size()-1; i>=0; i--) {
                                     LoanStageDto previousLoanStageDto = previousList.get(i);
                                     if (previousLoanStageDto.getFromUser().getRole().getRoleType() == RoleType.MAKER){
+                                        // if previous stage from user is maker user
                                         toUser =
                                             makerUsers.stream()
                                                 .filter(u -> u.getId() == previousLoanStageDto.getFromUser().getId())
                                                 .findAny()
                                                 .orElse(null);
+                                        // if previous stage maker user is active
                                         if (toUser != null) {
+                                            // break loop if Maker user is found in this previous stage
                                             break;
                                         }
                                     }
