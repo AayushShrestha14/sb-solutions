@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +41,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +131,6 @@ import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.dto.BaseDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.DocumentCheckType;
@@ -147,6 +144,7 @@ import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
@@ -662,7 +660,27 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     customerLoan1.getLoanHolder().getName(), customerLoan1.getLoan().getName(), e);
             }
         }
-
+        if (customerLoan1.getCurrentStage().getDocAction() == DocAction.RE_INITIATE) {
+            try {
+                CustomerActivity customerActivity = CustomerActivity.builder()
+                    .customerLoanId(customerLoan1.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.RE_INITIATE_LOAN)
+                    .modifiedOn(new Date())
+                    .modifiedBy(user)
+                    .profile(customerLoan1.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(customerLoan1))
+                    .description(String
+                        .format("Customer: %s loan facility: %s re-initiated by %s",
+                            customerLoan1.getLoanHolder().getName(),
+                            customerLoan1.getLoan().getName(), user.getName()))
+                    .build();
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (JsonProcessingException e) {
+                throw new ServiceValidationException(
+                    "Error: Unable to add customer activity!");
+            }
+        }
     }
 
     @Override
@@ -1898,133 +1916,129 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
     }
 
-    @Override
+    /*@Override
     public void reInitiateRejectedLoan(Long customerLoanId, String comment) {
         final User currentUser = userService.getAuthenticatedUser();
-        if (currentUser.getRole().getRoleType() == RoleType.MAKER || (currentUser.getRole()
-            .getRoleType() == RoleType.ADMIN)) {
-            // is the logged in user Admin or Maker user
-            final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
-            if (customerLoan.getCurrentStage() != null) {
-                // is current stage present
-                LoanStage currentStage = customerLoan.getCurrentStage();
-                List<LoanStageDto> previousList = customerLoan.getPreviousList();
-                List previousListTemp = new ArrayList();
-                Map<String, String> currentStageTemp = this.objectMapper
-                    .convertValue(currentStage, Map.class);
-                try {
-                    previousList.forEach(p -> {
-                        try {
-                            Map<String, String> previous = this.objectMapper
-                                .convertValue(p, Map.class);
-                            previousListTemp
-                                .add(this.objectMapper.writeValueAsString(previous));
-                        } catch (JsonProcessingException e) {
-                            throw new RuntimeException("Failed to handle JSON data");
-                        }
-                    });
-                    String currentLoanJsonValue = this.objectMapper
-                        .writeValueAsString(currentStageTemp);
-                    previousListTemp.add(currentLoanJsonValue);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("Failed to get stage data");
-                }
-                customerLoan.setPreviousStageList(previousListTemp.toString());
-                customerLoan.setPreviousList(previousListTemp);
-                User toUser = null;
-                if (currentUser.getRole().getRoleType() == RoleType.MAKER) {
-                    // if the current logged in user is a maker user
-                    toUser = currentUser;
-                } else {
-                    List<User> makerUsers = this.userService
-                        .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER,
-                            customerLoan.getBranch().getId());
-                    // get all active maker users of the branch
-                    if (makerUsers == null || makerUsers.isEmpty()) {
-                        throw new ServiceValidationException("No active maker user exists!");
+        final CustomerLoan customerLoan = customerLoanRepository.getOne(customerLoanId);
+        if (customerLoan.getCurrentStage() != null) {
+            // is current stage present
+            LoanStage currentStage = customerLoan.getCurrentStage();
+            List<LoanStageDto> previousList = customerLoan.getPreviousList();
+            List previousListTemp = new ArrayList();
+            Map<String, String> currentStageTemp = this.objectMapper
+                .convertValue(currentStage, Map.class);
+            try {
+                previousList.forEach(p -> {
+                    try {
+                        Map<String, String> previous = this.objectMapper
+                            .convertValue(p, Map.class);
+                        previousListTemp
+                            .add(this.objectMapper.writeValueAsString(previous));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Failed to handle JSON data");
                     }
-                    if (makerUsers.size() == 1) {
-                        // if the branch has single maker
-                        toUser = makerUsers.get(0);
+                });
+                String currentLoanJsonValue = this.objectMapper
+                    .writeValueAsString(currentStageTemp);
+                previousListTemp.add(currentLoanJsonValue);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Failed to get stage data");
+            }
+            customerLoan.setPreviousStageList(previousListTemp.toString());
+            customerLoan.setPreviousList(previousListTemp);
+            User toUser = null;
+            if (currentUser.getRole().getRoleType() == RoleType.MAKER) {
+                // if the current logged in user is a maker user
+                toUser = currentUser;
+            } else {
+                List<User> makerUsers = this.userService
+                    .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER,
+                        customerLoan.getBranch().getId());
+                // get all active maker users of the branch
+                if (makerUsers == null || makerUsers.isEmpty()) {
+                    throw new ServiceValidationException("No active maker user exists!");
+                }
+                if (makerUsers.size() == 1) {
+                    // if the branch has single maker
+                    toUser = makerUsers.get(0);
+                } else {
+                    Optional<User> optionalUser = makerUsers.stream()
+                        .filter(m -> m.getId() == currentStage.getToUser().getId())
+                        .findAny();
+                    if (optionalUser.isPresent()) {
+                        // if current stage to user is active
+                        toUser = optionalUser.get();
                     } else {
-                        Optional<User> optionalUser = makerUsers.stream()
-                            .filter(m->m.getId() == currentStage.getToUser().getId())
+                        optionalUser = makerUsers.stream()
+                            .filter(m -> m.getId() == currentStage.getFromUser().getId())
                             .findAny();
                         if (optionalUser.isPresent()) {
-                            // if current stage to user is active
+                            // if current stage from user is active
                             toUser = optionalUser.get();
                         } else {
-                            optionalUser = makerUsers.stream()
-                                .filter(m->m.getId() == currentStage.getFromUser().getId())
-                                .findAny();
-                            if (optionalUser.isPresent()){
-                                // if current stage from user is active
-                                toUser = optionalUser.get();
-                            } else {
-                                for (int i = previousList.size()-1; i>=0; i--) {
-                                    LoanStageDto previousLoanStageDto = previousList.get(i);
-                                    if (previousLoanStageDto.getFromUser().getRole().getRoleType() == RoleType.MAKER){
-                                        // if previous stage from user is maker user
-                                        toUser =
-                                            makerUsers.stream()
-                                                .filter(u -> u.getId() == previousLoanStageDto.getFromUser().getId())
-                                                .findAny()
-                                                .orElse(null);
-                                        // if previous stage maker user is active
-                                        if (toUser != null) {
-                                            // break loop if Maker user is found in this previous stage
-                                            break;
-                                        }
+                            for (int i = previousList.size() - 1; i >= 0; i--) {
+                                LoanStageDto previousLoanStageDto = previousList.get(i);
+                                if (previousLoanStageDto.getFromUser().getRole().getRoleType()
+                                    == RoleType.MAKER) {
+                                    // if previous stage from user is maker user
+                                    toUser =
+                                        makerUsers.stream()
+                                            .filter(
+                                                u -> u.getId() == previousLoanStageDto.getFromUser()
+                                                    .getId())
+                                            .findAny()
+                                            .orElse(null);
+                                    // if previous stage maker user is active
+                                    if (toUser != null) {
+                                        // break loop if Maker user is found in this previous stage
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if (toUser == null) {
-                    throw new AssertionError("No active maker user exists!");
-                }
-                currentStage.setFromUser(currentStage.getToUser());
-                currentStage.setFromRole(currentStage.getToRole());
-                currentStage.setToUser(toUser);
-                currentStage.setToRole(toUser.getRole());
-                currentStage.setDocAction(DocAction.RE_INITIATE);
-                currentStage.setComment(
-                    DocAction.RE_INITIATE + " by " + currentUser.getRole().getRoleName() + ". Remarks: "
-                        + comment);
-                this.objectMapper.convertValue(currentStage, LoanStage.class);
-                customerLoan.setCurrentStage(currentStage);
-                customerLoan.setDocumentStatus(DocStatus.PENDING);
-                customerLoan.setCreatedBy(toUser.getId()); // can be set if modifiable
-                CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
-                try {
-                    CustomerActivity customerActivity = CustomerActivity.builder()
-                        .customerLoanId(savedCustomerLoan.getId())
-                        .activityType(ActivityType.MANUAL)
-                        .activity(Activity.RE_INITIATE_LOAN)
-                        .modifiedOn(new Date())
-                        .modifiedBy(currentUser)
-                        .profile(savedCustomerLoan.getLoanHolder())
-                        .data(objectMapper.writeValueAsString(savedCustomerLoan))
-                        .description(String
-                            .format("Customer: %s loan facility: %s re-initiated by %s",
-                                savedCustomerLoan.getLoanHolder().getName(),
-                                savedCustomerLoan.getLoan().getName(), currentUser.getName()))
-                        .build();
-                    activityService.saveCustomerActivity(customerActivity);
-                } catch (JsonProcessingException e) {
-                    throw new ServiceValidationException(
-                        "Error: Unable to add customer activity!");
-                }
-            } else {
+            }
+            if (toUser == null) {
+                throw new AssertionError("No active maker user exists!");
+            }
+            currentStage.setFromUser(currentStage.getToUser());
+            currentStage.setFromRole(currentStage.getToRole());
+            currentStage.setToUser(toUser);
+            currentStage.setToRole(toUser.getRole());
+            currentStage.setDocAction(DocAction.RE_INITIATE);
+            currentStage.setComment(
+                DocAction.RE_INITIATE + " by " + currentUser.getRole().getRoleName() + ". Remarks: "
+                    + comment);
+            this.objectMapper.convertValue(currentStage, LoanStage.class);
+            customerLoan.setCurrentStage(currentStage);
+            customerLoan.setDocumentStatus(DocStatus.PENDING);
+            customerLoan.setCreatedBy(toUser.getId()); // can be set if modifiable
+            CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
+            try {
+                CustomerActivity customerActivity = CustomerActivity.builder()
+                    .customerLoanId(savedCustomerLoan.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.RE_INITIATE_LOAN)
+                    .modifiedOn(new Date())
+                    .modifiedBy(currentUser)
+                    .profile(savedCustomerLoan.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(savedCustomerLoan))
+                    .description(String
+                        .format("Customer: %s loan facility: %s re-initiated by %s",
+                            savedCustomerLoan.getLoanHolder().getName(),
+                            savedCustomerLoan.getLoan().getName(), currentUser.getName()))
+                    .build();
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (JsonProcessingException e) {
                 throw new ServiceValidationException(
-                    "Error: Stage not found for this loan.");
+                    "Error: Unable to add customer activity!");
             }
         } else {
             throw new ServiceValidationException(
-                "Error: You are not authorized to re-initiate this loan.");
+                "Error: Stage not found for this loan.");
         }
-    }
+    }*/
 
     private List<CustomerLoanFilterDto> customerBaseLoanFetch(
         Specification<CustomerLoan> innerSpec) {

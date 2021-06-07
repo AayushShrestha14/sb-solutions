@@ -1,7 +1,11 @@
 package com.sb.solutions.web.loan.v1.mapper;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,9 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
-
-import com.sb.solutions.api.user.service.UserService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.sb.solutions.api.loan.StatisticDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
 import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.RoleType;
@@ -62,10 +64,16 @@ public class Mapper {
         User currentUser) {
         if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) && (!loanActionDto
             .getDocAction()
-            .equals(DocAction.TRANSFER))) {
+            .equals(DocAction.TRANSFER)) && (loanActionDto.getDocAction()
+            != DocAction.RE_INITIATE)) {
             if( !customerLoan.getCurrentStage().getToUser().getId().equals(currentUser.getId())){
                 throw new ServiceValidationException("Sorry this document is not under you!!");
             }
+        }
+        if (loanActionDto.getDocAction() == DocAction.RE_INITIATE
+            && customerLoan.getDocumentStatus() != DocStatus.REJECTED) {
+            throw new ServiceValidationException(
+                "Re-initiate failed: Document status should be REJECTED!");
         }
         if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
                Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
@@ -91,7 +99,6 @@ public class Mapper {
                         throw new RuntimeException("Amount Exceed");
                     }
                 }
-
             }
             if (loanActionDto.isNotify()) {
                 customerLoan.setNotify(true);
@@ -151,7 +158,6 @@ public class Mapper {
         if ((loanActionDto.getDocAction().equals(DocAction.FORWARD)) && currentUser.getRole()
             .getRoleType().equals(
                 RoleType.MAKER)) {
-
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
@@ -172,11 +178,8 @@ public class Mapper {
         if (stageDto.getDocAction().equals(DocAction.NOTED)) {
             customerLoan.setNotedBy(currentUser.getId());
         } else if (currentStage.getDocAction().equals(DocAction.CLOSED)
-            || currentStage.getDocAction().equals(DocAction.APPROVED)
-            || currentStage.getDocAction().equals(DocAction.REJECT)) {
-
+            || currentStage.getDocAction().equals(DocAction.APPROVED)) {
             logger.error("Error while performing the action");
-
             throw new ServiceValidationException(
                 "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
@@ -198,7 +201,6 @@ public class Mapper {
                 logger.error(loanFlags.get(0).getDescription());
                 throw new RuntimeException(loanFlags.get(0).getDescription());
             }
-
         }
         return stageMapper
             .mapper(stageDto, previousList, LoanStage.class, createdBy, currentStage, currentUser,

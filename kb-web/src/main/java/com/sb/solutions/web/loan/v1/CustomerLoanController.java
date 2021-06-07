@@ -2,6 +2,7 @@ package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -469,7 +470,16 @@ public class CustomerLoanController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MAKER')")
     public ResponseEntity<?> reInitiateLoan(@Valid @RequestBody StageDto stageDto) {
         logger.info("Re-initiate Loan {}", stageDto.getCustomerLoanId());
-        service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
+        stageDto.setDocAction(DocAction.RE_INITIATE);
+        stageDto.setDocumentStatus(DocStatus.PENDING);
+        User currentUser = userService.getAuthenticatedUser();
+        final CustomerLoan c = mapper
+            .actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()),
+                currentUser);
+        c.setModifiedBy(currentUser.getId());
+        c.setLastModifiedAt(new Date());
+        service.sendForwardBackwardLoan(c);
+        // service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
         return new RestResponseDto().successModel("SUCCESS");
     }
 
