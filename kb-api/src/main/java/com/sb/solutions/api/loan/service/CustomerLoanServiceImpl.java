@@ -1930,57 +1930,53 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 }
                 customerLoan.setPreviousStageList(previousListTemp.toString());
                 customerLoan.setPreviousList(previousListTemp);
-                currentStage.setFromUser(currentStage.getToUser());
-                currentStage.setFromRole(currentStage.getToRole());
                 User toUser = null;
                 if (currentUser.getRole().getRoleType() == RoleType.MAKER) {
                     toUser = currentUser;
                 } else {
-                    if (currentStage.getToUser().getRole().getRoleType() == RoleType.MAKER) {
-                        toUser = currentStage.getToUser();
-                    } else if (currentStage.getFromUser().getRole().getRoleType()
-                        == RoleType.MAKER) {
-                        toUser = currentStage.getFromUser();
+                    List<User> makerUsers = this.userService
+                        .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER,
+                            customerLoan.getBranch().getId());
+                    if (makerUsers == null || makerUsers.isEmpty()) {
+                        throw new ServiceValidationException("No active maker user exists!");
+                    }
+                    if (makerUsers.size() == 1) {
+                        toUser = makerUsers.get(0);
                     } else {
-                        List<User> makerUsers = this.userService
-                            .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER,
-                                customerLoan.getBranch().getId());
-                        if (makerUsers.size() == 1) {
-                            toUser = makerUsers.get(0);
+                        Optional<User> optionalUser = makerUsers.stream()
+                            .filter(m->m.getId() == currentStage.getToUser().getId())
+                            .findAny();
+                        if (optionalUser.isPresent()) {
+                            toUser = optionalUser.get();
                         } else {
-                            List<Long> userIdList = previousList.stream()
-                                .sorted(Collections.reverseOrder(Comparator.comparing(BaseDto::getCreatedAt)))
-                                .filter(ls -> ls.getFromUser().getRole().getRoleType() == RoleType.MAKER)
-                                .map(loanStageDto1 -> loanStageDto1.getFromUser().getId())
-                                .collect(Collectors.toList());
-                            for (Long userId : userIdList) {
-                                toUser = makerUsers.stream().filter(
-                                    u -> u.getId() == userId).findFirst()
-                                    .orElse(null);
-                                if (toUser != null) {
-                                    break;
+                            optionalUser = makerUsers.stream()
+                                .filter(m->m.getId() == currentStage.getFromUser().getId())
+                                .findAny();
+                            if (optionalUser.isPresent()){
+                                toUser = optionalUser.get();
+                            } else {
+                                for (int i = previousList.size()-1; i>=0; i--) {
+                                    LoanStageDto previousLoanStageDto = previousList.get(i);
+                                    if (previousLoanStageDto.getFromUser().getRole().getRoleType() == RoleType.MAKER){
+                                        toUser =
+                                            makerUsers.stream()
+                                                .filter(u -> u.getId() == previousLoanStageDto.getFromUser().getId())
+                                                .findAny()
+                                                .orElse(null);
+                                        if (toUser != null) {
+                                            break;
+                                        }
+                                    }
                                 }
                             }
-                            /*distinctPreviousList.sort(Comparator.comparing(BaseDto::getCreatedAt));
-                            for (LoanStageDto loanStageDto : distinctPreviousList) {
-                                toUser =
-                                    makerUsers.stream()
-                                        .filter(u -> u.getId() == loanStageDto.getToUser().getId())
-                                        .findAny()
-                                        .orElse(
-                                            makerUsers.stream().filter(
-                                                u -> u.getId() == loanStageDto.getFromUser()
-                                                    .getId()).findAny()
-                                                .orElse(null)
-                                        );
-                                if (toUser != null) {
-                                    break;
-                                }
-                            }*/
                         }
                     }
                 }
-                assert toUser != null;
+                if (toUser == null) {
+                    throw new AssertionError("No active maker user exists!");
+                }
+                currentStage.setFromUser(currentStage.getToUser());
+                currentStage.setFromRole(currentStage.getToRole());
                 currentStage.setToUser(toUser);
                 currentStage.setToRole(toUser.getRole());
                 currentStage.setDocAction(DocAction.RE_INITIATE);
