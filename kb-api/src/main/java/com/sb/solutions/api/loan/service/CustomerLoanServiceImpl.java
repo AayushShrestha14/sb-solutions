@@ -1,68 +1,12 @@
 package com.sb.solutions.api.loan.service;
 
-import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
-import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
-
-import java.io.File;
-import java.io.FileReader;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.api.customer.enums.ClientType;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
-import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
-import ar.com.fdvs.dj.domain.DJCalculation;
-import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
-import ar.com.fdvs.dj.domain.builders.GroupBuilder;
-import ar.com.fdvs.dj.domain.constants.GroupLayout;
-import ar.com.fdvs.dj.domain.entities.DJGroup;
-import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
-import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
@@ -75,6 +19,7 @@ import com.sb.solutions.api.crgMicro.service.CrgMicroService;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
@@ -97,15 +42,7 @@ import com.sb.solutions.api.insurance.service.InsuranceService;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
-import com.sb.solutions.api.loan.dto.CustomerInfoLoanDto;
-import com.sb.solutions.api.loan.dto.CustomerLoanCsvDto;
-import com.sb.solutions.api.loan.dto.CustomerLoanDto;
-import com.sb.solutions.api.loan.dto.CustomerLoanFilterDto;
-import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
-import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
-import com.sb.solutions.api.loan.dto.GroupDto;
-import com.sb.solutions.api.loan.dto.GroupSummaryDto;
-import com.sb.solutions.api.loan.dto.LoanStageDto;
+import com.sb.solutions.api.loan.dto.*;
 import com.sb.solutions.api.loan.entity.CadDocument;
 import com.sb.solutions.api.loan.entity.CustomerDocument;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -133,12 +70,7 @@ import com.sb.solutions.api.vehiclesecurity.service.VehicleSecurityService;
 import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.constant.FilePath;
 import com.sb.solutions.core.constant.UploadDir;
-import com.sb.solutions.core.enums.DocAction;
-import com.sb.solutions.core.enums.DocStatus;
-import com.sb.solutions.core.enums.DocumentCheckType;
-import com.sb.solutions.core.enums.LoanFlag;
-import com.sb.solutions.core.enums.LoanType;
-import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.*;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.repository.customCriteria.BaseCriteriaQuery;
 import com.sb.solutions.core.repository.customCriteria.dto.CriteriaDto;
@@ -146,13 +78,50 @@ import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
 import com.sb.solutions.report.core.model.Report;
-import com.sb.solutions.report.core.util.StyleUtil;
+import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileReader;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
+import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
 
 
 /**
@@ -1349,88 +1318,57 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     public List<AbstractColumn> columns() {
         AbstractColumn columnProvince = ColumnBuilder.getNew()
                 .setColumnProperty("province.province.name", String.class.getName())
-                .setTitle("Province").setWidth(170)
+                .setTitle("Province").setWidth(85)
                 .build();
 
         AbstractColumn columnCreatedAt = ColumnBuilder.getNew()
                 .setColumnProperty("createdAt", String.class.getName())
-                .setTitle("Received Date").setWidth(170)
+                .setTitle("Received Date").setWidth(85)
                 .build();
 
         AbstractColumn columnLoanId = ColumnBuilder.getNew()
-                .setColumnProperty("loan.id", Long.class.getName())
-                .setTitle("Loan Id").setWidth(240)
+                .setColumnProperty("loanIdCode", String.class.getName())
+                .setTitle("Loan Id").setWidth(100)
                 .build();
 
         AbstractColumn columnBranch = ColumnBuilder.getNew()
                 .setColumnProperty("branch.name", String.class.getName())
-                .setTitle("Branch").setWidth(240)
+                .setTitle("Branch").setWidth(100)
                 .build();
 
         AbstractColumn columnName = ColumnBuilder.getNew()
                 .setColumnProperty("data", String.class.getName())
-                .setTitle("Customer Info").setWidth(240)
+                .setTitle("Customer Info").setWidth(100)
                 .build();
 
         AbstractColumn columnBusinessType = ColumnBuilder.getNew()
                 .setColumnProperty("loanHolder.clientType", ClientType.class.getName())
-                .setTitle("Business Unit").setWidth(170)
+                .setTitle("Business Unit").setWidth(85)
                 .build();
 
         AbstractColumn columnTypes = ColumnBuilder.getNew()
                 .setColumnProperty("loanType", LoanType.class.getName())
-                .setTitle("Proposal Type").setWidth(170)
+                .setTitle("Proposal Type").setWidth(85)
                 .build();
 
         AbstractColumn columnProposedAmount = ColumnBuilder.getNew()
                 .setColumnProperty("proposal.proposedLimit", BigDecimal.class.getName())
-                .setTitle("Total Limit").setWidth(170)
+                .setTitle("Total Limit").setWidth(85)
                 .build();
 
         AbstractColumn columnCurrentPosition = ColumnBuilder.getNew()
                 .setColumnProperty("toUser.name", String.class.getName())
-                .setTitle("Picked By").setWidth(170)
+                .setTitle("Picked By").setWidth(85)
                 .build();
 
         AbstractColumn columnStageUsers = ColumnBuilder.getNew()
                 .setColumnProperty("stageUsers", String.class.getName())
-                .setTitle("Last Returned By").setWidth(170)
+                .setTitle("Last Returned By").setWidth(85)
                 .build();
-
-//        AbstractColumn columnLoanName = ColumnBuilder.getNew()
-//                .setColumnProperty("loan.id", String.class.getName())
-//                .setTitle("Loan Name").setWidth(85)
-//                .build();
-
-
-//        AbstractColumn columnLoanPendingSpan = ColumnBuilder.getNew()
-//                .setColumnProperty("loanPendingSpan", Long.class.getName())
-//                .setTitle("Loan Pending Span").setWidth(80)
-//                .build();
-//
-//        AbstractColumn columnPossessionUnderDays = ColumnBuilder.getNew()
-//                .setColumnProperty("loanPossession", Long.class.getName())
-//                .setTitle("Possession Under Days").setWidth(80)
-//                .build();
-//        AbstractColumn columnLifeSpan = ColumnBuilder.getNew()
-//                .setColumnProperty("loanSpan", Long.class.getName())
-//                .setTitle("Loan Life span").setWidth(80)
-//                .build();
-//
-//        AbstractColumn columnLoanCategory = ColumnBuilder.getNew()
-//                .setColumnProperty("loanCategory", LoanApprovalType.class.getName())
-//                .setTitle("Loan Category").setWidth(85)
-//                .build();
-//        AbstractColumn columnStatus = ColumnBuilder.getNew()
-//                .setColumnProperty("documentStatus", DocStatus.class.getName())
-//                .setTitle("Status").setWidth(85)
-//                .build();
 
         return Arrays.asList(
                 columnProvince, columnCreatedAt, columnLoanId, columnBranch, columnName,
                 columnBusinessType, columnTypes, columnProposedAmount, columnCurrentPosition, columnStageUsers
-//                columnLoanName, columnLoanCategory, columnStatus, columnDesignation,
-//                columnLoanPendingSpan, columnLifeSpan, columnPossessionUnderDays
         );
     }
 
@@ -1463,6 +1401,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setCustomerInfo(c.getCustomerInfo());
             customerLoanCsvDto.setCompanyInfo(c.getCompanyInfo());
             customerLoanCsvDto.setLoanHolder(c.getLoanHolder());
+            ClientType clientType = c.getLoanHolder().getClientType();
+            String clientTypeCode = "";
+            if (clientType != null) {
+                clientTypeCode = clientType.toString().substring(0, Math.min(clientType.toString().length(), 3)).toUpperCase() + "-";
+            }
+            StringBuilder sb = new StringBuilder()
+                    .append(clientTypeCode)
+                    .append(c.getBranch().getBranchCode())
+                    .append("-")
+                    .append(c.getRefNo());
+            customerLoanCsvDto.setLoanIdCode(sb.toString());
 
             customerLoanCsvDto.setData(c.getLoanHolder().getName());
             customerLoanCsvDto.setLoan(c.getLoan());
@@ -1472,12 +1421,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setDocumentStatus(c.getDocumentStatus());
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
-            StringBuilder stringBuilder = new StringBuilder()
+            StringBuilder stringBuilder1 = new StringBuilder()
                     .append("Returned by: ")
                     .append(c.getCurrentStage().getFromUser().getName())
                     .append(" Pending: ")
                     .append(c.getCurrentStage().getToUser().getName());
-            customerLoanCsvDto.setStageUsers(stringBuilder.toString());
+            customerLoanCsvDto.setStageUsers(stringBuilder1.toString());
             if (c.getDocumentStatus() == DocStatus.PENDING
                     || c.getDocumentStatus() == DocStatus.DOCUMENTATION
                     || c.getDocumentStatus() == DocStatus.VALUATION

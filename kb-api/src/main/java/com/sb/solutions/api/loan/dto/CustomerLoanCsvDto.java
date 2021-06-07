@@ -29,6 +29,7 @@ public class CustomerLoanCsvDto {
     private Customer customerInfo;
 
     private LoanConfig loan;
+    private String loanIdCode;
 
     private CompanyInfo companyInfo;
 
