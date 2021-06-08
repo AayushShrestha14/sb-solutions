@@ -46,8 +46,8 @@ public class StageMapper {
         currentStage.setDocAction(stageDto.getDocAction());
         currentStage.setComment(stageDto.getComment());
 
-        if (!stageDto.getDocAction().equals(DocAction.TRANSFER) && !stageDto.getDocAction()
-            .equals(DocAction.PULLED) && stageDto.getDocAction() != DocAction.RE_INITIATE) {
+        if (stageDto.getDocAction() != DocAction.TRANSFER && stageDto.getDocAction()
+            != DocAction.PULLED && stageDto.getDocAction() != DocAction.RE_INITIATE) {
             currentStage.setFromUser(currentUser);
             currentStage.setFromRole(currentUser.getRole());
         } else {
@@ -55,9 +55,9 @@ public class StageMapper {
             currentStage.setFromRole(currentStage.getToRole());
             currentStage.setComment(
                 (stageDto.getDocAction() == DocAction.RE_INITIATE ? "Re-initiated by " : "Transfer By ")
-                    + loggedUser.getRole().getRoleName() + ". " + stageDto.getComment());
+                    + loggedUser.getName() + "(" + loggedUser.getRole().getRoleName() + "). " + stageDto.getComment());
         }
-        if (stageDto.getDocAction().equals(DocAction.PULLED)) {
+        if (stageDto.getDocAction() == DocAction.PULLED) {
             currentStage.setComment("PULLED");
             currentStage.setToUser(currentUser);
             currentStage.setToRole(currentUser.getRole());
@@ -66,19 +66,22 @@ public class StageMapper {
             currentStage.setToUser(stageDto.getToUser());
             currentStage.setToRole(stageDto.getToRole());
         }
-        if (stageDto.getDocAction().equals(DocAction.BACKWARD) || stageDto.getDocAction() == DocAction.RE_INITIATE) {
-            if (stageDto.getDocAction() == DocAction.RE_INITIATE && currentUser.getRole().getRoleType() == RoleType.MAKER) {
+        if (stageDto.getDocAction() == DocAction.BACKWARD
+            || stageDto.getDocAction() == DocAction.RE_INITIATE) {
+            if (stageDto.getDocAction() == DocAction.RE_INITIATE
+                && currentUser.getRole().getRoleType() == RoleType.MAKER) {
                 // if current re-initiating user is maker user
                 currentStage.setToUser(currentUser);
                 currentStage.setToRole(currentUser.getRole());
-            } else
-            currentStage = this
-                .sendBackward(previousList, currentStage, currentUser, createdBy, customerLoan);
+            } else {
+                currentStage = this
+                    .sendBackward(previousList, currentStage, currentUser, createdBy, customerLoan);
+            }
         }
-        if (stageDto.getDocAction().equals(DocAction.APPROVED)
-            || stageDto.getDocAction().equals(DocAction.CLOSED)
-            || stageDto.getDocAction().equals(DocAction.REJECT)
-            || stageDto.getDocAction().equals(DocAction.NOTED)) {
+        if (stageDto.getDocAction() == DocAction.APPROVED
+            || stageDto.getDocAction() == DocAction.CLOSED
+            || stageDto.getDocAction() == DocAction.REJECT
+            || stageDto.getDocAction() == DocAction.NOTED) {
             currentStage = this.approvedCloseReject(currentStage, currentUser);
         }
         return objectMapper.convertValue(currentStage, classType);

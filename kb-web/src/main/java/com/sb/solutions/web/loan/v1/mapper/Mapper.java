@@ -62,9 +62,8 @@ public class Mapper {
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
         User currentUser) {
-        if ((!loanActionDto.getDocAction().equals(DocAction.PULLED)) && (!loanActionDto
-            .getDocAction()
-            .equals(DocAction.TRANSFER)) && (loanActionDto.getDocAction()
+        if ((loanActionDto.getDocAction() != DocAction.PULLED) && (loanActionDto
+            .getDocAction() != DocAction.TRANSFER) && (loanActionDto.getDocAction()
             != DocAction.RE_INITIATE)) {
             if( !customerLoan.getCurrentStage().getToUser().getId().equals(currentUser.getId())){
                 throw new ServiceValidationException("Sorry this document is not under you!!");
@@ -75,7 +74,7 @@ public class Mapper {
             throw new ServiceValidationException(
                 "Re-initiate failed: Document status should be REJECTED!");
         }
-        if (loanActionDto.getDocAction().equals(DocAction.APPROVED)) {
+        if (loanActionDto.getDocAction() == DocAction.APPROVED) {
                Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
                proposalData.replace("existingLimit" , customerLoan.getProposal().getProposedLimit());
                customerLoan.getProposal().setData(gson.toJson(proposalData));
@@ -136,10 +135,10 @@ public class Mapper {
                 throw new RuntimeException("Failed to Get Stage data");
             }
         }
-        if (loanActionDto.getDocAction().equals(DocAction.FORWARD)
-            || loanActionDto.getDocAction().equals(DocAction.BACKWARD)) {
-            if (customerLoan.getDocumentStatus().equals(DocStatus.UNDER_REVIEW) || customerLoan
-                .getDocumentStatus().equals(DocStatus.PENDING)) {
+        if (loanActionDto.getDocAction() == DocAction.FORWARD
+            || loanActionDto.getDocAction() == DocAction.BACKWARD) {
+            if (customerLoan.getDocumentStatus() == DocStatus.UNDER_REVIEW || customerLoan
+                .getDocumentStatus() == DocStatus.PENDING) {
                 customerLoan.setDocumentStatus(DocStatus.PENDING);
             } else {
                 throw new ServiceValidationException(
@@ -155,9 +154,8 @@ public class Mapper {
                 currentUserDto, customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
-        if ((loanActionDto.getDocAction().equals(DocAction.FORWARD)) && currentUser.getRole()
-            .getRoleType().equals(
-                RoleType.MAKER)) {
+        if ((loanActionDto.getDocAction() == DocAction.FORWARD) && currentUser.getRole()
+            .getRoleType() == RoleType.MAKER) {
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
@@ -175,16 +173,16 @@ public class Mapper {
 
     private LoanStage loanStages(StageDto stageDto, List previousList, Long createdBy,
         StageDto currentStage, UserDto currentUser, CustomerLoan customerLoan) {
-        if (stageDto.getDocAction().equals(DocAction.NOTED)) {
+        if (stageDto.getDocAction() == DocAction.NOTED) {
             customerLoan.setNotedBy(currentUser.getId());
-        } else if (currentStage.getDocAction().equals(DocAction.CLOSED)
-            || currentStage.getDocAction().equals(DocAction.APPROVED)) {
+        } else if (currentStage.getDocAction() == DocAction.CLOSED
+            || currentStage.getDocAction() == DocAction.APPROVED) {
             logger.error("Error while performing the action");
             throw new ServiceValidationException(
                 "Cannot Perform the action. Document has been " + currentStage.getDocAction());
         }
         // TODO: Separate alert message for no user and disabled user
-        if (stageDto.getDocAction().equals(DocAction.FORWARD)) {
+        if (stageDto.getDocAction() == DocAction.FORWARD) {
             if (stageDto.getToRole() == null || stageDto.getToUser() == null) {
                 logger.error("Error while performing the action");
                 throw new ServiceValidationException(

@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +48,7 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -467,20 +467,26 @@ public class CustomerLoanController {
     }
 
     @PostMapping("/re-initiate-loan")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MAKER')")
     public ResponseEntity<?> reInitiateLoan(@Valid @RequestBody StageDto stageDto) {
-        logger.info("Re-initiate Loan {}", stageDto.getCustomerLoanId());
-        stageDto.setDocAction(DocAction.RE_INITIATE);
-        stageDto.setDocumentStatus(DocStatus.PENDING);
         User currentUser = userService.getAuthenticatedUser();
-        final CustomerLoan c = mapper
-            .actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()),
-                currentUser);
-        c.setModifiedBy(currentUser.getId());
-        c.setLastModifiedAt(new Date());
-        service.sendForwardBackwardLoan(c);
-        // service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
-        return new RestResponseDto().successModel("SUCCESS");
+        if (currentUser.getRole().getRoleType() == RoleType.ADMIN
+            || currentUser.getRole().getRoleType() == RoleType.MAKER) {
+            logger.info("Re-initiate Loan {}", stageDto.getCustomerLoanId());
+            stageDto.setDocAction(DocAction.RE_INITIATE);
+            stageDto.setDocumentStatus(DocStatus.PENDING);
+            final CustomerLoan c = mapper
+                .actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()),
+                    currentUser);
+            c.setModifiedBy(currentUser.getId());
+            c.setLastModifiedAt(new Date());
+            service.sendForwardBackwardLoan(c);
+            // service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
+            return new RestResponseDto().successModel("SUCCESS");
+        } else {
+            return new RestResponseDto()
+                .failureModel(
+                    "Failure: You are not authorized!!!");
+        }
     }
 
     private String actionType(LoanType loanType) {
