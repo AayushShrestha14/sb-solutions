@@ -1,10 +1,14 @@
 package com.sb.solutions.api.loan.service;
 
+import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
+import ar.com.fdvs.dj.domain.builders.GroupBuilder;
 import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
+import ar.com.fdvs.dj.domain.constants.GroupLayout;
+import ar.com.fdvs.dj.domain.entities.DJGroup;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
@@ -91,6 +96,7 @@ import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
 import com.sb.solutions.report.core.model.Report;
+import com.sb.solutions.report.core.util.StyleUtil;
 
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -169,7 +175,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
     private final LoanConfigService loanConfigService;
-    private long countUser, countBranch;
+    private long countCustomer, countBranch;
     private BigDecimal totalLoan;
     private final ObjectMapper objectMapper = new ObjectMapper()
         .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
@@ -1325,8 +1331,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public String subTitle() {
-        return "Generated on: " + LocalDate.now() + " || Total Users: " + Long
-            .toString(this.countUser) + " || Total Branches: " + Long
+        return "Generated on: " + LocalDate.now() + " || Total Customers: " + Long
+            .toString(this.countCustomer) + " || Total Branches: " + Long
             .toString(this.countBranch) + " || Total Loan Amount: " + totalLoan.toString();
     }
 
@@ -1411,13 +1417,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+
         List csvDto = new ArrayList();
         this.countBranch = customerLoanList.stream()
             .map(c -> c.getBranch().getBranchCode())
             .distinct()
             .count();
-        this.countUser = customerLoanList.stream()
-            .map(c -> c.getCustomerInfo())
+        this.countCustomer = customerLoanList.stream()
+            .map(c -> c.getLoanHolder().getId())
+            .distinct()
             .count();
         this.totalLoan = customerLoanList.stream()
             .map(c -> c.getProposal().getProposedLimit())
@@ -1441,10 +1449,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             customerLoanCsvDto.setToUser(c.getCurrentStage().getToUser());
             customerLoanCsvDto.setCreatedAt(formatCsvDate(c.getCurrentStage().getCreatedAt()));
             StringBuilder stringBuilder1 = new StringBuilder()
-                .append("Returned by: ")
-                .append(c.getCurrentStage().getFromUser().getName())
-                .append(" Pending: ")
-                .append(c.getCurrentStage().getToUser().getName());
+                .append(c.getCurrentStage().getFromUser().getName());
             customerLoanCsvDto.setStageUsers(stringBuilder1.toString());
             if (c.getDocumentStatus() == DocStatus.PENDING
                 || c.getDocumentStatus() == DocStatus.DOCUMENTATION
@@ -1471,11 +1476,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
 
         String filePath = getDownloadPath();
+        GroupBuilder gb1 = new GroupBuilder();
+        //		 define the criteria column to group by (columnState)
+        DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columns().get(4))
+            .setGroupLayout(new GroupLayout(false, false, false, true, false))
+            .build();
 
         return ReportParam.builder().reportName("Catalogue Report")
             .title(title())
             .subTitleStyle(subTitleStyle())
             .subTitle(subTitle())
+            .djGroups(Arrays.asList(g1))
             .columns(columns())
             .data(csvDto)
             .reportType(ReportType.FORM_REPORT)
