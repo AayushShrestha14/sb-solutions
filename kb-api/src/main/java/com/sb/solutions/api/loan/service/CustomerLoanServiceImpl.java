@@ -135,6 +135,8 @@ import java.util.stream.Collectors;
 
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 
 
 /**
@@ -1390,7 +1392,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .build();
 
         return Arrays.asList(
-            columnProvince, columnCreatedAt, columnLoanId, columnBranch, columnName,
+            columnName, columnProvince, columnCreatedAt, columnLoanId, columnBranch,
             columnBusinessType, columnTypes, columnProposedAmount, columnCurrentPosition,
             columnStageUsers
         );
@@ -1417,6 +1419,10 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         final CustomerLoanSpecBuilder customerLoanSpecBuilder = new CustomerLoanSpecBuilder(s);
         final Specification<CustomerLoan> specification = customerLoanSpecBuilder.build();
         final List<CustomerLoan> customerLoanList = customerLoanRepository.findAll(specification);
+        final List<CustomerLoan> tempList = customerLoanList.stream()
+            .sorted(
+                (o1, o2) -> o1.getLoanHolder().getName().compareTo(o2.getLoanHolder().getName()))
+            .collect(Collectors.toList());
 
         List csvDto = new ArrayList();
         this.countBranch = customerLoanList.stream()
@@ -1431,7 +1437,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .map(c -> c.getProposal().getProposedLimit())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        for (CustomerLoan c : customerLoanList) {
+        for (CustomerLoan c : tempList) {
             CustomerLoanCsvDto customerLoanCsvDto = new CustomerLoanCsvDto();
             customerLoanCsvDto.setBranch(c.getBranch());
             customerLoanCsvDto.setProvince(c.getBranch());
@@ -1478,7 +1484,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         String filePath = getDownloadPath();
         GroupBuilder gb1 = new GroupBuilder();
         //		 define the criteria column to group by (columnState)
-        DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columns().get(4))
+        DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columns().get(0))
             .setGroupLayout(new GroupLayout(false, false, false, true, false))
             .build();
 
