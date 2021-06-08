@@ -1325,8 +1325,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
     @Override
     public String subTitle() {
-        return "Total Users: " + Long.toString(this.countUser) + " Total Branches: " + Long
-            .toString(this.countBranch) + " Total Loan Amount: " + totalLoan.toString();
+        return "Generated on: " + LocalDate.now() + " || Total Users: " + Long
+            .toString(this.countUser) + " || Total Branches: " + Long
+            .toString(this.countBranch) + " || Total Loan Amount: " + totalLoan.toString();
     }
 
 
@@ -1417,7 +1418,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .count();
         this.countUser = customerLoanList.stream()
             .map(c -> c.getCustomerInfo())
-            .distinct()
             .count();
         this.totalLoan = customerLoanList.stream()
             .map(c -> c.getProposal().getProposedLimit())
