@@ -104,8 +104,8 @@ public class StageMapper {
             if (stage.getFromRole().getRoleType() == RoleType.MAKER) {
                 UserDto userDto = stage.getFromUser();
                 // check maker is active or not
-                Optional<User> maker = makers.stream().findAny()
-                    .filter(user -> user.getId() == userDto.getId());
+                Optional<User> maker = makers.stream()
+                    .filter(user -> user.getId() == userDto.getId()).findAny();
 
                 if (maker.isPresent()) {
                     // verifed that maker user is still maker user for paticular branch
@@ -116,8 +116,8 @@ public class StageMapper {
                      loan maker is no more maker user, he might get promoted with other role, so check
                      whether loan creator is still maker user, if he/she is assign other wise pick  any one active maker user
                      */
-                    maker = makers.stream().findAny()
-                        .filter(user -> user.getId() == createdBy);
+                    maker = makers.stream()
+                        .filter(user -> user.getId() == createdBy).findAny();
                     if (maker.isPresent()) {
                         targetMakerUser = objectMapper.convertValue(maker.get(), UserDto.class);
                         targerMakerRole = objectMapper
