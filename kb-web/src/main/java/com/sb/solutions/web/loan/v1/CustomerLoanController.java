@@ -2,6 +2,7 @@ package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -462,6 +464,29 @@ public class CustomerLoanController {
         logger.info("Delete Loan {}", id);
         service.deleteLoanByMakerAndAdmin(id);
         return new RestResponseDto().successModel("SUCCESS");
+    }
+
+    @PostMapping("/re-initiate-loan")
+    public ResponseEntity<?> reInitiateLoan(@Valid @RequestBody StageDto stageDto) {
+        User currentUser = userService.getAuthenticatedUser();
+        if (currentUser.getRole().getRoleType() == RoleType.ADMIN
+            || currentUser.getRole().getRoleType() == RoleType.MAKER) {
+            logger.info("Re-initiate Loan {}", stageDto.getCustomerLoanId());
+            stageDto.setDocAction(DocAction.RE_INITIATE);
+            stageDto.setDocumentStatus(DocStatus.PENDING);
+            final CustomerLoan c = mapper
+                .actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()),
+                    currentUser);
+            c.setModifiedBy(currentUser.getId());
+            c.setLastModifiedAt(new Date());
+            service.sendForwardBackwardLoan(c);
+            // service.reInitiateRejectedLoan(stageDto.getCustomerLoanId(), stageDto.getComment());
+            return new RestResponseDto().successModel("SUCCESS");
+        } else {
+            return new RestResponseDto()
+                .failureModel(
+                    "Failure: You are not authorized!!!");
+        }
     }
 
     private String actionType(LoanType loanType) {
