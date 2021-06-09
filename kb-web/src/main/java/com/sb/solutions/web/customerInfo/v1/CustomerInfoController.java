@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
@@ -225,36 +227,36 @@ public class CustomerInfoController {
 
     }
 
-    /*@PostMapping("/update-customer-branch/{customerInfoId}")
-    public ResponseEntity<?> updateCustomerBranch(@RequestBody Long branchId, @PathVariable Long customerInfoId) {
-        return new RestResponseDto()
-            .successModel(
-                customerInfoService.updateCustomerBranch(customerInfoId, branchId));
-
-    }*/
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/transfer-customer-other-branch")
-    public ResponseEntity<?> transferCustomerWithLoansToOtherBranch(@Valid @RequestBody CustomerTransferDTO transferDto) {
-        logger.info("CustomerTransferDTO::: = " + transferDto.toString());
+    public ResponseEntity<?> transferCustomerWithLoansToOtherBranch(
+        @Valid @RequestBody CustomerTransferDTO transferDto) {
         User currentUser = userService.getAuthenticatedUser();
-        if (transferDto.getCustomerInfoId() != null && transferDto.getToUserId() != null && transferDto.getToBranchId() != null) {
-            List<CustomerLoan> customerLoans = customerLoanService
-                .getAllLoansByLoanHolderId(transferDto.getCustomerInfoId());
-            customerLoans.forEach(customerLoan -> {
-                final CustomerLoan loan = mapper
-                    .transferBranchMapper(transferDto, customerLoan, currentUser);
-                CustomerLoan loan1 = customerLoanService.save(loan);
-                customerLoanService
-                    .transferLoanToOtherBranch(loan1, transferDto.getToBranchId(), currentUser);
-            });
-            CustomerInfo customerInfo = customerInfoService
-                .updateCustomerBranch(transferDto.getCustomerInfoId(), transferDto.getToBranchId());
-            return new RestResponseDto()
-                .successModel(customerInfo);
+        if (transferDto.getDocAction() == DocAction.TRANSFER) {
+            if (transferDto.getCustomerInfoId() != null && transferDto.getToUserId() != null
+                && transferDto.getToBranchId() != null) {
+                List<CustomerLoan> customerLoans = customerLoanService
+                    .getAllLoansByLoanHolderId(transferDto.getCustomerInfoId());
+                customerLoans.forEach(customerLoan -> {
+                    final CustomerLoan loan = mapper
+                        .transferBranchMapper(transferDto, customerLoan, currentUser);
+                    CustomerLoan loan1 = customerLoanService.save(loan);
+                    customerLoanService
+                        .transferLoanToOtherBranch(loan1, transferDto.getToBranchId(),
+                            currentUser);
+                });
+                customerInfoService.updateCustomerBranch(transferDto.getCustomerInfoId(),
+                    transferDto.getToBranchId());
+                return new RestResponseDto()
+                    .successModel("SUCCESS");
+            } else {
+                return new RestResponseDto()
+                    .failureModel("Failure : Some data missing.");
+            }
         } else {
             return new RestResponseDto()
-                .failureModel("Failure : Some data missing.");
+                .failureModel(
+                    "Failure: Action other than transfer detected!!!");
         }
-
     }
 }
