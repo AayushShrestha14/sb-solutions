@@ -41,7 +41,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +144,7 @@ import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
 import com.sb.solutions.report.core.bean.ReportParam;
 import com.sb.solutions.report.core.enums.ExportType;
@@ -660,7 +660,27 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     customerLoan1.getLoanHolder().getName(), customerLoan1.getLoan().getName(), e);
             }
         }
-
+        if (customerLoan1.getCurrentStage().getDocAction() == DocAction.RE_INITIATE) {
+            try {
+                CustomerActivity customerActivity = CustomerActivity.builder()
+                    .customerLoanId(customerLoan1.getId())
+                    .activityType(ActivityType.MANUAL)
+                    .activity(Activity.RE_INITIATE_LOAN)
+                    .modifiedOn(new Date())
+                    .modifiedBy(user)
+                    .profile(customerLoan1.getLoanHolder())
+                    .data(objectMapper.writeValueAsString(customerLoan1))
+                    .description(String
+                        .format("Customer: %s loan facility: %s re-initiated by %s",
+                            customerLoan1.getLoanHolder().getName(),
+                            customerLoan1.getLoan().getName(), user.getName()))
+                    .build();
+                activityService.saveCustomerActivity(customerActivity);
+            } catch (JsonProcessingException e) {
+                throw new ServiceValidationException(
+                    "Error: Unable to add customer activity!");
+            }
+        }
     }
 
     @Override
@@ -1882,7 +1902,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                     .profile(customerLoan.getLoanHolder())
                     .data(objectMapper.writeValueAsString(customerLoan))
                     .description(String
-                        .format("Customer: %s loan Facilty: %s deteted by %s",
+                        .format("Customer: %s loan Facility: %s deleted by %s",
                             customerLoan.getLoanHolder().getName(),
                             customerLoan.getLoan().getName(), u.getName()))
                     .build();
