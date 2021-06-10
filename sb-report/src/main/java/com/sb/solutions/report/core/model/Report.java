@@ -85,7 +85,7 @@ public abstract class Report {
          * add some more options to the report (through the builder)
          */
         drb.setUseFullPageWidth(
-            true);  //we tell the report to use the full width of the page. this rezises
+            false);  //we tell the report to use the full width of the page. this rezises
         //the columns width proportionally to meat the page width.
         drb.setIgnorePagination(true);
         DynamicReport dr = drb.build(); //Finally build the report!
