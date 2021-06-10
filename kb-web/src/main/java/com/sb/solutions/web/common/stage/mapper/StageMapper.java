@@ -98,18 +98,6 @@ public class StageMapper {
             throw new RuntimeException("No active Maker User Exists");
         }
 
-        if (currentStage.getFromRole().getRoleType() == RoleType.MAKER) {
-            UserDto userDto = currentStage.getFromUser();
-            // check maker is active or not
-            Optional<User> maker = makers.stream()
-                .filter(user -> user.getId() == userDto.getId()).findAny();
-            if (maker.isPresent()) {
-                // verified that maker user is still maker user for particular branch
-                currentStage.setToUser(userDto);
-                currentStage.setToRole(currentStage.getFromRole());
-                return currentStage;
-            }
-        }
         UserDto targetMakerUser = null;
         RoleDto targerMakerRole = null;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -120,6 +108,13 @@ public class StageMapper {
         for (int i = size - 1; i >= 0; i--) {
             StageDto stage = objectMapper.convertValue(previousList.get(i), StageDto.class);
             if (stage.getFromRole().getRoleType() == RoleType.MAKER) {
+                if (stage.getDocAction() == DocAction.TRANSFER) {
+                    if (stage.getToRole().getRoleType() == RoleType.MAKER) {
+                        currentStage.setToUser(stage.getToUser());
+                        currentStage.setToRole(stage.getToRole());
+                        return currentStage;
+                    }
+                }
                 UserDto userDto = stage.getFromUser();
                 // check maker is active or not
                 Optional<User> maker = makers.stream()
@@ -148,6 +143,13 @@ public class StageMapper {
                     }
                 }
                 break;
+            }
+            if (stage.getDocAction() == DocAction.TRANSFER) {
+                if (stage.getToRole().getRoleType() == RoleType.MAKER) {
+                    currentStage.setToUser(stage.getToUser());
+                    currentStage.setToRole(stage.getToRole());
+                    return currentStage;
+                }
             }
         }
         currentStage.setToUser(targetMakerUser);
