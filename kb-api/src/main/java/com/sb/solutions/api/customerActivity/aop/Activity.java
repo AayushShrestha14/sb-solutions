@@ -19,7 +19,8 @@ public enum Activity {
     CRG_GAMMA_UPDATE("CRG GAMMA Update"),
     CICL_UPDATE("CICL Update"),
     LOAN_TRANSFER("Loan Transfer"),
-    DELETE_LOAN("Delete Loan");
+    DELETE_LOAN("Delete Loan"),
+    RE_INITIATE_LOAN("Re-Initiate Loan");
 
 
     private final String value;

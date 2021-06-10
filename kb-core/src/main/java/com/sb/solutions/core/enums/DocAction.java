@@ -17,7 +17,8 @@ public enum DocAction {
     PULLED("Pulled"),
     BACKWARD_TO_COMMITTEE("Backward To Committee"),
     ASSIGNED("Assigned"),
-    CHANGE_LOAN("Change loan");
+    CHANGE_LOAN("Change loan"),
+    RE_INITIATE("Re Initiated");
 
     private final String value;
 
