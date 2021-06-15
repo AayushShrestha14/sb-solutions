@@ -1,7 +1,6 @@
 package com.sb.solutions.api.customer.entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -11,14 +10,21 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sb.solutions.api.previouremark.entity.PreviousRemarks;
+import com.sb.solutions.api.borrowerPortfolio.entity.BorrowerPortFolio;
+import com.sb.solutions.api.marketingActivities.MarketingActivities;
+import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
+import com.sb.solutions.api.mGroupInfo.entity.MGroupInfo;
+import com.sb.solutions.api.microOtherParameters.MicroOtherParameters;
+import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.ObjectUtils;
 
@@ -37,10 +43,12 @@ import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.incomeFromAccount.entity.IncomeFromAccount;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loanflag.entity.CustomerLoanFlag;
+import com.sb.solutions.api.microbaselriskexposure.entity.MicroBaselRiskExposure;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
+import com.sb.solutions.api.synopsisOfCreditwothiness.entity.SynopsisCreditworthiness;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.string.NameFormatter;
@@ -149,7 +157,13 @@ public class CustomerInfo extends BaseEntity<Long> {
     private CreditChecklist creditChecklist;
 
     @OneToOne
-    private PreviousRemarks previousRemarks;
+    private MicroBorrowerFinancial microBorrowerFinancial;
+
+    @OneToOne
+    private MicroOtherParameters microOtherParameters;
+
+    @OneToOne
+    private MarketingActivities marketingActivities;
 
     @Transient
     private String subSectorDetailCode ;
@@ -165,6 +179,32 @@ public class CustomerInfo extends BaseEntity<Long> {
     private String obligor;
 
     private String nepData;
+
+    @OneToOne
+    private SynopsisCreditworthiness synopsisCreditworthiness;
+
+    @OneToOne
+    private MicroBaselRiskExposure microBaselRiskExposure;
+
+    @OneToOne
+    private BorrowerPortFolio borrowerPortFolio;
+
+    @OneToOne
+    private MGroupInfo mGroupInfo;
+
+    @NotAudited
+    @ManyToMany
+    private List<ReportingInfoLevel> reportingInfoLevels;
+
+    @NotAudited
+    @JsonProperty("data")
+    private String data;
+
+    @Transient
+    private String jointInfo;
+
+    @NotAudited
+    private Boolean isJointCustomer;
 
     public String getSubSectorDetailCode() {
         if (!ObjectUtils.isEmpty(this.getSubsectorDetail())){

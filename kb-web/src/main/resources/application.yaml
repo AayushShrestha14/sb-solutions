@@ -84,11 +84,13 @@ product:
   dms: false
   nepTemplate: true
   cadLiteVersion: false
-  loanApprovalHierarchyLevel: LOAN_TYPE #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
+  loanApprovalHierarchyLevel: LOAN #DEAFULT = Disable Approval Hierarchy, LOAN_TYPE = Enable Approval Hierarchy for loan type, LOAN = Enable Role Hierarchy for loan
   fullCad: true #only fullCad should not be enable. you should enable offerLetter also
   cbsEnable: false
-  checklistLiteVersion: false
+  checklistLiteVersion: true
   microLoan: true
+  customerBaseLoan : true
+  configureLegalDocument: true #set true if check if checklistLiteVersion is true and config in cad dashboard by cad
 
 #this feature is enabled if cbsEnable is set true
 #url : remote server url

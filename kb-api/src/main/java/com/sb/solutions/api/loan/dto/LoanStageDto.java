@@ -18,9 +18,7 @@ public class LoanStageDto extends BaseDto<Long> {
 
     private UserDto fromUser;
 
-
     private RoleDto fromRole;
-
 
     private UserDto toUser;
 

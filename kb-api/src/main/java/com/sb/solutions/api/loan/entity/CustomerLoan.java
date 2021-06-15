@@ -29,9 +29,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.sb.solutions.api.creditRiskGradingLambda.entity.CreditRiskGradingLambda;
-import com.sb.solutions.api.user.entity.User;
-import com.sb.solutions.core.enums.PostApprovalAssignStatus;
+import com.sb.solutions.api.crgMicro.entity.CrgMicro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,9 +46,11 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.creditRiskGrading.entity.CreditRiskGrading;
 import com.sb.solutions.api.creditRiskGradingAlpha.entity.CreditRiskGradingAlpha;
+import com.sb.solutions.api.creditRiskGradingLambda.entity.CreditRiskGradingLambda;
 import com.sb.solutions.api.crg.entity.CrgGamma;
 import com.sb.solutions.api.customer.entity.Customer;
 import com.sb.solutions.api.customer.entity.CustomerInfo;
+import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.dms.dmsloanfile.entity.DmsLoanFile;
 import com.sb.solutions.api.financial.entity.Financial;
 import com.sb.solutions.api.group.entity.Group;
@@ -59,7 +59,6 @@ import com.sb.solutions.api.guarantor.entity.GuarantorDetail;
 import com.sb.solutions.api.insurance.entity.Insurance;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.dto.CustomerOfferLetterDto;
-import com.sb.solutions.api.loan.dto.GroupSummaryDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.dto.NepaliTemplateDto;
 import com.sb.solutions.api.loanConfig.entity.LoanConfig;
@@ -68,10 +67,12 @@ import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.sharesecurity.ShareSecurity;
 import com.sb.solutions.api.siteVisit.entity.SiteVisit;
+import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.vehiclesecurity.entity.VehicleSecurity;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enums.DocStatus;
 import com.sb.solutions.core.enums.LoanType;
+import com.sb.solutions.core.enums.PostApprovalAssignStatus;
 import com.sb.solutions.core.enums.Priority;
 
 /**
@@ -202,8 +203,8 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @ManyToMany
     @JoinTable(name = "customer_loan_guarantor",
-            joinColumns = @JoinColumn(name = "customer_loan_id"),
-            inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
+        joinColumns = @JoinColumn(name = "customer_loan_id"),
+        inverseJoinColumns = @JoinColumn(name = "guarantor_id"))
     private Set<Guarantor> taggedGuarantors;
 
     @Lob
@@ -235,6 +236,10 @@ public class CustomerLoan extends BaseEntity<Long> {
     @NotAudited
     @OneToOne
     private CreditRiskGradingLambda creditRiskGradingLambda;
+
+    @NotAudited
+    @OneToOne
+    private CrgMicro crgMicro;
 
     @NotAudited
     @OneToOne
@@ -276,11 +281,17 @@ public class CustomerLoan extends BaseEntity<Long> {
     private String cbsLoanFileNumber;
 
     @NotAudited
-    private Boolean isSol = false;
+    private Boolean isSol = Boolean.FALSE;
 
     @NotAudited
     @OneToOne
     private User solUser;
+
+    private String postApprovalDocIdList;
+
+    private String authorityReviewComments;
+    @NotAudited
+    private String data;
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
@@ -296,7 +307,7 @@ public class CustomerLoan extends BaseEntity<Long> {
             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             try {
                 this.previousList = objectMapper.readValue(this.getPreviousStageList(),
-                        typeFactory.constructCollectionType(List.class, LoanStageDto.class));
+                    typeFactory.constructCollectionType(List.class, LoanStageDto.class));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -308,12 +319,24 @@ public class CustomerLoan extends BaseEntity<Long> {
 
     public List<LoanStageDto> getDistinctPreviousList() {
         Collection<LoanStageDto> list =
-                CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils
-                        .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
+            CollectionUtils.isEmpty(this.getPreviousList()) || CollectionUtils
+                .isEmpty(this.previousList) ? new ArrayList<>() : this.getPreviousList();
         return list.stream()
-                .filter(distinctByKey(
-                        p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
-                .filter(p -> !p.getToUser().getIsDefaultCommittee())
-                .collect(Collectors.toList());
+            .filter(distinctByKey(
+                p -> (p.getToUser() == null ? p.getToRole().getId() : p.getToUser().getId())))
+            .filter(p -> !p.getToUser().getIsDefaultCommittee())
+            .collect(Collectors.toList());
+    }
+
+    public LoanApprovalType getLoanCategory() {
+        return this.loanApprovalTypeByLoanHolder();
+    }
+
+    private LoanApprovalType loanApprovalTypeByLoanHolder() {
+        CustomerType customerType = this.loanHolder.getCustomerType();
+        if (customerType.equals(CustomerType.INDIVIDUAL)) {
+            return LoanApprovalType.INDIVIDUAL;
+        }
+        return LoanApprovalType.INSTITUTION;
     }
 }

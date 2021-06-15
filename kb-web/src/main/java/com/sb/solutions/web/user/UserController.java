@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
@@ -158,7 +160,7 @@ public class UserController {
             email.setAffiliateId(this.affiliateId);
             mailSenderService.send(Template.RESET_PASSWORD, email);
 
-            return new RestResponseDto().successModel(resetToken);
+            return new RestResponseDto().successModel("SUCCESS");
         }
     }
 
@@ -192,6 +194,13 @@ public class UserController {
                     email.setBankName(this.bankName);
                     email.setAffiliateId(this.affiliateId);
                     mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
+                    if (ObjectUtils.isEmpty(updatedUser.getPrimaryUserId())) {
+                        List<User> secondaryUser = userService
+                            .getSecondaryUserByPrimaryUserID(updatedUser.getId());
+                        secondaryUser.forEach(user1 -> {
+                            userService.updatePassword(user1.getUsername(), u.getPassword());
+                        });
+                    }
                     return new RestResponseDto()
                         .successModel(updatedUser);
                 }
@@ -209,6 +218,13 @@ public class UserController {
             return new RestResponseDto().failureModel("Invalid Old Password");
         }
         userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
+        if (ObjectUtils.isEmpty(user.getPrimaryUserId())) {
+            List<User> secondaryUser = userService
+                .getSecondaryUserByPrimaryUserID(user.getId());
+            secondaryUser.forEach(user1 -> {
+                userService.updatePassword(user1.getUsername(), passwordDto.getNewPassword());
+            });
+        }
         return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
@@ -241,7 +257,30 @@ public class UserController {
 
     @GetMapping(value = "/allUser")
     public ResponseEntity<?> allUser() {
-        return new RestResponseDto().successModel(userService.getAllUserByCurrentRoleBranchAccess());
+        return new RestResponseDto()
+            .successModel(userService.getAllUserByCurrentRoleBranchAccess());
+    }
+
+    @GetMapping(value = "/logout")
+    public ResponseEntity<?> logout() {
+        return new RestResponseDto().successModel(userService.logout());
+    }
+
+    @PostMapping(value = "/update-roles/{id}")
+    public ResponseEntity<?> logout(@PathVariable("id") Long id,
+        @RequestBody List<Long> roleIDList) {
+        return new RestResponseDto().successModel(userService.updateSecondaryRole(roleIDList, id));
+    }
+
+    @PostMapping(value = "/switch-user")
+    public ResponseEntity<?> switchUser(@RequestBody Role role) {
+        return new RestResponseDto().successModel(userService.switchUserRole(role));
+    }
+
+    @GetMapping(value = "/users/branch/{bId}/maker-active")
+    public ResponseEntity<?> getUserListByBranchIdAndMakerActive(@PathVariable("bId") Long bId) {
+        return new RestResponseDto()
+            .successModel(userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, bId));
     }
 
 }

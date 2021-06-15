@@ -175,6 +175,20 @@ public class FileUploadUtils {
 
     }
 
+    // Move document
+    public static void moveFile(String oldDocPath, String newDocPath) {
+        try {
+            Path oldPath = Paths.get(FilePath.getOSPath() + oldDocPath);
+            File oldFile = oldPath.toFile();
+            Path newPath = Paths.get(FilePath.getOSPath() + newDocPath);
+            File newFile = newPath.toFile();
+            FileUtils.rename(oldFile, newFile);
+
+        } catch (IOException e) {
+            logger.error("Error while saving file {}", e);
+        }
+    }
+
 
 }
 

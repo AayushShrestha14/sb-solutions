@@ -22,4 +22,11 @@ public class NepseCompany extends BaseEntity<Long> {
     private Double amountPerUnit;
     private String companyCode;
     private ShareType shareType;
+    private Double priceEarningRatio;
+    private Double priceToBookValue;
+    private Double dividendYield;
+    private Double dividendPayoutRatio;
+
+
+
 }

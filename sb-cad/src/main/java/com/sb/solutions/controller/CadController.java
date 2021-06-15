@@ -1,10 +1,15 @@
 package com.sb.solutions.controller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,15 +20,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
+import com.sb.solutions.api.authorization.entity.Role;
+import com.sb.solutions.api.user.entity.User;
+import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.constant.ApiConstants;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.RoleAccess;
+import com.sb.solutions.core.enums.RoleType;
+import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.service.LoanHolderService;
 import com.sb.solutions.service.approvedloancaddoc.CustomerCadService;
+import com.sb.solutions.service.report.CadReportService;
 import com.sb.solutions.validation.constraint.CadValid;
 
 
@@ -39,14 +52,22 @@ public class CadController {
 
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
+    private final UserService userService;
+
+    private final CadReportService reportService;
+
     @Qualifier("customerCadService")
     private final CustomerCadService customerCadService;
 
     public CadController(LoanHolderService loanHolderService,
         ApprovalRoleHierarchyService approvalRoleHierarchyService,
+        UserService userService,
+        CadReportService reportService,
         CustomerCadService customerCadService) {
         this.loanHolderService = loanHolderService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
+        this.userService = userService;
+        this.reportService = reportService;
         this.customerCadService = customerCadService;
     }
 
@@ -69,7 +90,7 @@ public class CadController {
 
     @PostMapping(value = ApiConstants.CAD_ACTION)
     public ResponseEntity<?> action(@RequestBody CadStageDto cadStageDto) {
-        return new RestResponseDto().successModel(loanHolderService.cadAction(cadStageDto));
+         return new RestResponseDto().successModel(loanHolderService.cadAction(cadStageDto));
     }
 
     @GetMapping(value = ApiConstants.CAD_ROLE_LIST)
@@ -85,7 +106,7 @@ public class CadController {
         @RequestParam("page") int page,
         @RequestParam("size") int size) {
         return new RestResponseDto().successModel(loanHolderService
-            .getAllByFilterParams(filterParams, PaginationUtils.pageable(page, size)));
+            .getAllByFilterParams(filterParams, PaginationUtils.pageableWithSort(page, size,"docStatus")));
     }
 
     @GetMapping(value = ApiConstants.GET_BY_ID)
@@ -166,6 +187,39 @@ public class CadController {
         @RequestBody CustomerApprovedLoanCadDocumentation c, @PathVariable Long roleId) {
         return new RestResponseDto()
             .successModel(loanHolderService.saveAdditionalDisbursement(c, roleId));
+    }
+
+    @GetMapping(value = ApiConstants.GET_USER_BY_BRANCH_IN_CAD)
+    public ResponseEntity<?> getRoleListPresentInCAD(@PathVariable("branchId") Long branchId) {
+        List<User> userList = new ArrayList<>();
+        List<ApprovalRoleHierarchy> approvalRoleHierarchyList = approvalRoleHierarchyService
+            .getRoles(ApprovalType.CAD, 0L);
+        List<ApprovalRoleHierarchy> approvalRoleHierarchyNotMaker = approvalRoleHierarchyList
+            .stream().filter(f ->
+                !f.getRole().getRoleType().equals(RoleType.MAKER)).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(approvalRoleHierarchyNotMaker)) {
+            approvalRoleHierarchyNotMaker.sort(
+                Comparator
+                    .comparing(ApprovalRoleHierarchy::getRoleOrder, Comparator.reverseOrder()));
+            Role role = approvalRoleHierarchyNotMaker.get(0).getRole();
+            if (role.getRoleAccess().equals(RoleAccess.ALL)) {
+                userList = userService.findByRoleId(role.getId());
+            } else {
+                userList = userService.findByRoleAndBranchId(role.getId(), branchId);
+            }
+        }
+        userList
+            .addAll(userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, branchId));
+        return new RestResponseDto()
+            .successModel(
+                userList.stream().filter(f->f.getStatus().equals(Status.ACTIVE)).collect(
+                    Collectors.toList()));
+    }
+
+    @PostMapping(value = ApiConstants.GET_REPORT)
+    public ResponseEntity<?> getReport(
+        @RequestBody Map<String, String> filterParams) {
+        return new RestResponseDto().successModel(reportService.reportPath(filterParams));
     }
 
 }

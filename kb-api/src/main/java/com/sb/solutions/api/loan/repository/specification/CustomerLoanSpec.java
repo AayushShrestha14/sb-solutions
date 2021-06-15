@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 import com.google.gson.Gson;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.constant.AppConstant;
@@ -64,10 +65,14 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     private static final String FILTER_BY_LOAN_ASSIGNED_TO_USER = "postApprovalAssignStatus";
     private static final String FILTER_BY_POST_APPROVAL_CURRENT_USER = "postApprovalAssignedUser";
     private static final String FILTER_BY_NOT_IN_LOAN_IDS = "notLoanIds";
-    private static final String FILTER_BY_PROVINCE = "provinceIds";
+    private static final String FILTER_BY_BRANCH_PROVINCE_ID = "provinceId";
     public static final String FILTER_BY_NAME = "name";
     public static final String FILTER_BY_CUSTOMER_TYPE = "customerType";
     public static final String FILTER_BY_USER = "users";
+    public static final String FILTER_BY_BUSINESS_UNIT = "clientType";
+    public static final String FILTER_BY_LOAN_HOLDER_CODE = "customerCode";
+
+    public static final String FILTER_BY_LOAN_TAG = "loanTag";
     private final String property;
     private final String value;
 
@@ -306,7 +311,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                 Predicate predicate1 = exp1.in(list1).not();
                 return criteriaBuilder.and(predicate1);
 
-            case FILTER_BY_PROVINCE:
+            case FILTER_BY_BRANCH_PROVINCE_ID:
                 Pattern pattern2 = Pattern.compile(",");
                 List<Long> list2 = pattern2.splitAsStream(value)
                     .map(Long::valueOf)
@@ -323,12 +328,25 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                         value.toLowerCase() + "%");
 
             case FILTER_BY_CUSTOMER_TYPE:
-                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"), CustomerType.valueOf(value));
+                return criteriaBuilder.equal(root.join("loanHolder").get("customerType"),
+                    CustomerType.valueOf(value));
 
             case FILTER_BY_USER:
                 return criteriaBuilder
-                        .like(root.join("currentStage", JoinType.LEFT).join("toUser").get("name"),
-                                value.toLowerCase() + "%");
+                    .like(root.join("currentStage", JoinType.LEFT).join("toUser").get("name"),
+                        value.toLowerCase() + "%");
+
+            case FILTER_BY_BUSINESS_UNIT:
+                return criteriaBuilder
+                    .equal(root.join("loanHolder").get("clientType"), ClientType.valueOf(value));
+
+            case FILTER_BY_LOAN_HOLDER_CODE:
+                return criteriaBuilder
+                    .like(root.join("loanHolder", JoinType.LEFT).get(property),
+                        value.toLowerCase() + "%");
+            case FILTER_BY_LOAN_TAG:
+                return  criteriaBuilder.equal(root.join("loan").get("loanTag") , LoanTag.valueOf(value));
+
             default:
                 return null;
         }

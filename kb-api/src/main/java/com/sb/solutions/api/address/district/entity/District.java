@@ -29,4 +29,6 @@ public class District implements Serializable {
     @JoinColumn(name = "province_id")
     private Province province;
 
+    private String nepaliName;
+
 }

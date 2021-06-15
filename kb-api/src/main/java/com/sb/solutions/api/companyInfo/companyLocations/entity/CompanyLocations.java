@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -17,8 +18,6 @@ import com.sb.solutions.core.enitity.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@EntityListeners({AuditingEntityListener.class})
-@Audited
 public class CompanyLocations extends BaseEntity<Long> {
 
     private String houseNumber;

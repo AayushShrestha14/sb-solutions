@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,14 +27,20 @@ import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.customer.service.CustomerInfoService;
 import com.sb.solutions.api.customerActivity.aop.Activity;
 import com.sb.solutions.api.customerActivity.aop.CustomerActivityLog;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.service.CustomerLoanService;
+import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
+import com.sb.solutions.core.enums.DocAction;
 import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
+import com.sb.solutions.web.customerInfo.v1.dto.CustomerTransferDTO;
+import com.sb.solutions.web.loan.v1.mapper.Mapper;
 
 /**
  * @author : Rujan Maharjan on  8/10/2020
@@ -45,18 +54,21 @@ public class CustomerInfoController {
     private final CustomerInfoService customerInfoService;
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final UserService userService;
+    private final CustomerLoanService customerLoanService;
+    private final Mapper mapper;
 
 
     @Autowired
     public CustomerInfoController(
         CustomerInfoService customerInfoService,
         CustomerGeneralDocumentService customerGeneralDocumentService,
-        UserService userService) {
+        UserService userService,
+        CustomerLoanService customerLoanService, Mapper mapper) {
         this.customerInfoService = customerInfoService;
-
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.userService = userService;
-
+        this.customerLoanService = customerLoanService;
+        this.mapper = mapper;
     }
 
     @PostMapping("/list")
@@ -213,5 +225,38 @@ public class CustomerInfoController {
                 .successModel(
                         customerInfoService.updateNepaliConfigData(nepData, id));
 
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/transfer-customer-other-branch")
+    public ResponseEntity<?> transferCustomerWithLoansToOtherBranch(
+        @Valid @RequestBody CustomerTransferDTO transferDto) {
+        User currentUser = userService.getAuthenticatedUser();
+        if (transferDto.getDocAction() == DocAction.TRANSFER) {
+            if (transferDto.getCustomerInfoId() != null && transferDto.getToUserId() != null
+                && transferDto.getToBranchId() != null) {
+                List<CustomerLoan> customerLoans = customerLoanService
+                    .getAllLoansByLoanHolderId(transferDto.getCustomerInfoId());
+                customerLoans.forEach(customerLoan -> {
+                    final CustomerLoan loan = mapper
+                        .transferBranchMapper(transferDto, customerLoan, currentUser);
+                    CustomerLoan loan1 = customerLoanService.save(loan);
+                    customerLoanService
+                        .transferLoanToOtherBranch(loan1, transferDto.getToBranchId(),
+                            currentUser);
+                });
+                customerInfoService.updateCustomerBranch(transferDto.getCustomerInfoId(),
+                    transferDto.getToBranchId());
+                return new RestResponseDto()
+                    .successModel("SUCCESS");
+            } else {
+                return new RestResponseDto()
+                    .failureModel("Failure : Some data missing.");
+            }
+        } else {
+            return new RestResponseDto()
+                .failureModel(
+                    "Failure: Action other than transfer detected!!!");
+        }
     }
 }

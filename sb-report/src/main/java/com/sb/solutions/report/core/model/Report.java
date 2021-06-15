@@ -1,7 +1,5 @@
 package com.sb.solutions.report.core.model;
 
-import static com.sb.solutions.report.core.util.StyleUtil.oddRowStyle;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
 import ar.com.fdvs.dj.core.layout.LayoutManager;
-import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.ImageBanner;
 import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
@@ -59,7 +56,8 @@ public abstract class Report {
 //            ImageBanner.Alignment.Right)
 //            .setOddRowBackgroundStyle(oddRowStyle());
 
-        drb.addFirstPageImageBanner(getAbsolutePathForLogoImage(), new Integer(100), new Integer(100),
+        drb.addFirstPageImageBanner(getAbsolutePathForLogoImage(), new Integer(100),
+            new Integer(100),
             ImageBanner.Alignment.Right);
 
         /**
@@ -69,6 +67,8 @@ public abstract class Report {
 
         for (AbstractColumn ac : reportParam.getColumns()) {
             drb.addColumn(ac);
+
+
         }
 
         /**
@@ -85,9 +85,9 @@ public abstract class Report {
          * add some more options to the report (through the builder)
          */
         drb.setUseFullPageWidth(
-            true);  //we tell the report to use the full width of the page. this rezises
+            false);  //we tell the report to use the full width of the page. this rezises
         //the columns width proportionally to meat the page width.
-
+        drb.setIgnorePagination(true);
         DynamicReport dr = drb.build(); //Finally build the report!
         return dr;
     }

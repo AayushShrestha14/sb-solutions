@@ -24,6 +24,7 @@ import com.sb.solutions.core.constant.AppConstant;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.navigation.dto.MenuDto;
 import com.sb.solutions.web.navigation.mapper.MenuMapper;
@@ -119,7 +120,9 @@ public class NavigationController {
 
 
         }
-        return new RestResponseDto().successModel(menuList);
+        return new RestResponseDto().successModel(
+            menuList.stream().filter(FilterJsonUtils.distinctByKey(MenuDto::getTitle)).collect(
+                Collectors.toList()));
     }
 
 

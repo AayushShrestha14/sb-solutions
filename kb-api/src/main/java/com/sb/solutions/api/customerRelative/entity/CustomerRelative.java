@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.sb.solutions.core.enitity.BaseEntity;
@@ -36,4 +37,7 @@ public class CustomerRelative extends BaseEntity<Long> {
     private String citizenshipIssuedPlace;
 
     private Date citizenshipIssuedDate;
+
+    @NotAudited
+    private Integer age;
 }

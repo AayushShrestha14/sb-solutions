@@ -20,4 +20,5 @@ public interface CustomerCadService extends BaseService<CustomerApprovedLoanCadD
 
     @Transactional
     String sccFilePath(MultipartFile multipartFile, Long cadId,Long branchId,Long customerInfoId);
+
 }

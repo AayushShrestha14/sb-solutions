@@ -1,6 +1,8 @@
 package com.sb.solutions.api.loan.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.authorization.entity.Role;
@@ -20,11 +22,14 @@ import com.sb.solutions.core.enums.LoanType;
  * @author yunish on 11/12/2019
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerLoanCsvDto {
 
     private Customer customerInfo;
 
     private LoanConfig loan;
+    private String loanIdCode;
 
     private CompanyInfo companyInfo;
 
@@ -39,8 +44,11 @@ public class CustomerLoanCsvDto {
     private LoanStage currentStage;
 
     private Branch branch;
+    private Branch Province;
 
     private User toUser;
+    private User FromUser;
+    private String stageUsers;
 
     private Role toRole;
 
@@ -53,5 +61,8 @@ public class CustomerLoanCsvDto {
     private long loanPossession;
 
     private String createdAt;
+
+    //this is a placeholder for combining two or more props
+    private String data;
 
 }

@@ -4828,17 +4828,17 @@
         <createTable tableName="loan_config_approved_document">
             <column name="loan_config_id" type="BIGINT">
                 <constraints
-                  nullable="false"
-                  foreignKeyName="fk_loan_config_approved_document_loan_config_id"
-                  referencedColumnNames="id"
-                  referencedTableName="loan_config"
+                        nullable="false"
+                        foreignKeyName="fk_loan_config_approved_document_loan_config_id"
+                        referencedColumnNames="id"
+                        referencedTableName="loan_config"
                 />
             </column>
             <column name="approved_document_id" type="BIGINT">
                 <constraints nullable="false"
-                  foreignKeyName="fk_loan_config_approved_document_id"
-                  referencedColumnNames="id"
-                  referencedTableName="document"/>
+                             foreignKeyName="fk_loan_config_approved_document_id"
+                             referencedColumnNames="id"
+                             referencedTableName="document"/>
             </column>
         </createTable>
     </changeSet>
@@ -4846,7 +4846,7 @@
     <changeSet id="377-create-table-cad-document" author="buddha">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="cad_document" />
+                <tableExists tableName="cad_document"/>
             </not>
         </preConditions>
         <createTable tableName="cad_document">
@@ -4856,26 +4856,26 @@
             <column name="document_path" type="VARCHAR(256)"/>
             <column name="document_id" type="BIGINT">
                 <constraints nullable="false"
-                  foreignKeyName="fk_cad_document_id"
-                  referencedTableName="document"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_document_id"
+                             referencedTableName="document"
+                             referencedColumnNames="id"/>
             </column>
             <column name="customer_loan_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_loan_cad_document_id"
-                  referencedTableName="customer_loan"
-                  referencedColumnNames="id"/>
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"/>
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_customer_cad_document_created_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_customer_cad_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_customer_cad_document_modified_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_customer_cad_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATETIME">
                 <constraints nullable="false"/>
@@ -4896,14 +4896,14 @@
         <createTable tableName="customer_loan_cad_document">
             <column name="customer_loan_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_cad_document_customer_loan_id"
-                  referencedTableName="customer_loan"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_document_customer_loan_id"
+                             referencedTableName="customer_loan"
+                             referencedColumnNames="id"/>
             </column>
             <column name="cad_document_id" type="BIGINT">
                 <constraints foreignKeyName="fk_customer_cad_document_id"
-                  referencedTableName="cad_document"
-                  referencedColumnNames="id"/>
+                             referencedTableName="cad_document"
+                             referencedColumnNames="id"/>
             </column>
         </createTable>
     </changeSet>
@@ -5033,7 +5033,6 @@
     </changeSet>
 
 
-
     <changeSet id="386-alter-table-role-add-column-authority_label" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -5090,7 +5089,7 @@
 
     <changeSet id="287-alter-table-crg-question-remove-column-customer_type" author="Amulya">
         <preConditions>
-                <columnExists tableName="crg_question" columnName="customer_type"/>
+            <columnExists tableName="crg_question" columnName="customer_type"/>
         </preConditions>
         <dropColumn tableName="crg_question" columnName="customer_type"/>
     </changeSet>
@@ -5195,19 +5194,19 @@
     </changeSet>
 
     <changeSet id="394-alter-table-customer-loan-add-column-sol-user" author="rujan">
-    <preConditions onFail="MARK_RAN">
-        <not>
-            <columnExists tableName="customer_loan" columnName="sol_user_id"/>
-        </not>
-    </preConditions>
-    <addColumn tableName="customer_loan">
-        <column name="sol_user_id" type="BIGINT">
-            <constraints nullable="true"
-              foreignKeyName="fk_sol_user_users_id"
-              referencedTableName="users"
-              referencedColumnNames="id"/>
-        </column>
-    </addColumn>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="sol_user_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="sol_user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_sol_user_users_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
     </changeSet>
 
     <changeSet id="393-alter-customer-info-add-gender" author="Mohammad">
@@ -5300,11 +5299,11 @@
     </changeSet>
 
     <changeSet id="395-create-table-cbs-group" author="rujan">
-    <preConditions onFail="MARK_RAN">
-        <not>
-            <tableExists tableName="cbs_group"/>
-        </not>
-    </preConditions>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cbs_group"/>
+            </not>
+        </preConditions>
         <createTable tableName="cbs_group">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -5499,8 +5498,9 @@
         </preConditions>
         <createTable tableName="company_info_shareholder_kyc_list">
             <column name="company_info_id" type="BIGINT">
-                <constraints foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"
-                             referencedTableName="company_info" referencedColumnNames="id"/>
+                <constraints
+                        foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"
+                        referencedTableName="company_info" referencedColumnNames="id"/>
             </column>
             <column name="shareholder_kyc_list_id" type="BIGINT">
                 <constraints
@@ -5600,11 +5600,11 @@
     </changeSet>
 
     <changeSet id="289-create-table-cad-file" author="rujan">
-    <preConditions onFail="MARK_RAN">
-        <not>
-            <tableExists tableName="cad_file"/>
-        </not>
-    </preConditions>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cad_file"/>
+            </not>
+        </preConditions>
         <createTable tableName="cad_file">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -5612,9 +5612,9 @@
 
             <column name="cad_document_id" type="Bigint">
                 <constraints
-                             foreignKeyName="fk_cad_file_cad_document_id"
-                             referencedTableName="document"
-                             referencedColumnNames="id"/>
+                        foreignKeyName="fk_cad_file_cad_document_id"
+                        referencedTableName="document"
+                        referencedColumnNames="id"/>
             </column>
             <column name="customer_loan_id" type="BIGINT"/>
             <column name="path" type="VARCHAR(250)">
@@ -5827,19 +5827,19 @@
 
     <changeSet id="303-create-table-customer_approved_loan_cad_documentation_offer_document_list" author="bibash">
         <preConditions onFail="MARK_RAN">
-           <not>
-               <tableExists tableName="customer_approved_loan_cad_documentation_offer_document_list"/>
-           </not>
+            <not>
+                <tableExists tableName="customer_approved_loan_cad_documentation_offer_document_list"/>
+            </not>
         </preConditions>
         <createTable tableName="customer_approved_loan_cad_documentation_offer_document_list">
-            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT" >
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_customer_approved_loan_cad_documentation_third_table_id"
                              referencedTableName="customer_approved_loan_cad_documentation"
                              referencedColumnNames="id"
                 />
             </column>
-            <column name="offer_document_list_id" type="BIGINT" >
+            <column name="offer_document_list_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_offer_document_list_third_table_id"
                              referencedTableName="offer_document"
@@ -6048,15 +6048,15 @@
             <column name="upload_on" type="DATETIME"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_cad_additional_document_created_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_additional_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_cad_additional_document_modified_by_id"
-                  referencedTableName="users"
-                  referencedColumnNames="id"/>
+                             foreignKeyName="fk_cad_additional_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
             </column>
             <column name="created_at" type="DATETIME">
                 <constraints nullable="false"/>
@@ -6077,16 +6077,16 @@
         <createTable tableName="cad_file_customer_approved_loan_additional_doc_list">
             <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
                 <constraints nullable="true"
-                  foreignKeyName="fk_customer_approved_loan_cad_documentation_additional_document_id"
-                  referencedTableName="customer_approved_loan_cad_documentation"
-                  referencedColumnNames="id"
+                             foreignKeyName="fk_customer_approved_loan_cad_documentation_additional_document_id"
+                             referencedTableName="customer_approved_loan_cad_documentation"
+                             referencedColumnNames="id"
                 />
             </column>
             <column name="additional_document_list_id" type="BIGINT">
                 <constraints
-                  foreignKeyName="fk_additional_document_id"
-                  referencedTableName="cad_additional_document"
-                  referencedColumnNames="id"/>
+                        foreignKeyName="fk_additional_document_id"
+                        referencedTableName="cad_additional_document"
+                        referencedColumnNames="id"/>
             </column>
         </createTable>
     </changeSet>
@@ -6148,8 +6148,10 @@
     </changeSet>
     <changeSet id="420-drop-fk-constraint-for-shareholder-kyc-table" author="Mohammad">
         <preConditions onFail="MARK_RAN">
-            <foreignKeyConstraintExists foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
-            <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
+            <foreignKeyConstraintExists
+                    foreignKeyName="fk_company_info_shareholder_kyc_list_company_info_id_shareholder_kyc_list_id"/>
+            <foreignKeyConstraintExists
+                    foreignKeyName="fk_shareholder_kyc_list_shareholder_kyc_list_id_shareholder_kyc_id"/>
             <foreignKeyConstraintExists foreignKeyName="FK_company_info_shareholder_kyc_list_audit_rev_revinfo_rev"/>
             <foreignKeyConstraintExists foreignKeyName="fk_shareholder_kyc_audit_district_id"/>
             <foreignKeyConstraintExists foreignKeyName="FK_shareholder_kyc_audit_rev_revinfo_rev"/>
@@ -6201,7 +6203,7 @@
 
     <changeSet id="425-alter-table-nepse_price_info-change-data-type" author="bibash">
         <preConditions onFail="MARK_RAN">
-                <columnExists tableName="nepse_price_info" columnName="avg_days_for_price"/>
+            <columnExists tableName="nepse_price_info" columnName="avg_days_for_price"/>
         </preConditions>
         <modifyDataType tableName="nepse_price_info" columnName="avg_days_for_price" newDataType="varchar(256)"/>
     </changeSet>
@@ -6209,7 +6211,8 @@
     <changeSet id="426-alter-table-customer-approved-loan-cad-document" author="rujan">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="is_additional_disbursement"/>
+                <columnExists tableName="customer_approved_loan_cad_documentation"
+                              columnName="is_additional_disbursement"/>
             </not>
         </preConditions>
         <addColumn tableName="customer_approved_loan_cad_documentation">
@@ -6227,26 +6230,45 @@
             <column name="nep_data" type="LONGTEXT"/>
         </addColumn>
     </changeSet>
-
-    <changeSet id="427-create-table-previous-remarks" author="aayush">
+    <changeSet id="427-alter-table-customer-add-column-is-micro-customer" author="bibash">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="previous_remarks"/>
+                <columnExists tableName="customer" columnName="is_micro_customer"/>
             </not>
         </preConditions>
-        <createTable tableName="previous_remarks">
+        <addColumn tableName="customer">
+            <column name="is_micro_customer" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="428-alter-table-company-info-add-column-is-micro-customer" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info" columnName="is_micro_customer"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="is_micro_customer" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="429-create-synopsis-creditworthiness" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="synopsis_creditworthiness"/>
+            </not>
+        </preConditions>
+        <createTable tableName="synopsis_creditworthiness">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_previous_remarks_created_by_id"
+                             foreignKeyName="fk_synopsis_creditworthiness_created_by_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
             <column name="modified_by_id" type="BIGINT">
                 <constraints nullable="true"
-                             foreignKeyName="fk_previous_remarks_modified_by_id"
+                             foreignKeyName="fk_synopsis_creditworthiness_modified_by_id"
                              referencedTableName="users"
                              referencedColumnNames="id"/>
             </column>
@@ -6260,15 +6282,784 @@
             <column name="data" type="LONGTEXT"/>
         </createTable>
     </changeSet>
-    <changeSet id="426-alter-table-customer-info-add-previous-remarks-data" author="aayush">
+    <changeSet id="430-alter-customer-info-add-synopsis-creditworthiness-id" author="Mohammad">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="customer_info" columnName="previous_remarks_id"/>
+                <columnExists tableName="customer_info" columnName="synopsis_creditworthiness_id"/>
             </not>
         </preConditions>
         <addColumn tableName="customer_info">
-            <column name="previous_remarks_id" type="BIGINT"/>
+            <column name="synopsis_creditworthiness_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_synopsis_creditworthiness_id"
+                             referencedTableName="synopsis_creditworthiness"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="431-create-table-micro-basel-risk-exposure" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="micro_basel_risk_exposure"/>
+            </not>
+        </preConditions>
+        <createTable tableName="micro_basel_risk_exposure">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_basel_risk_exposure_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_basel_risk_exposure_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="432-alter-customer-info-add-micro-basel-risk-exposure-id" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="micro_basel_risk_exposure_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="micro_basel_risk_exposure_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_micro_basel_risk_exposure_id"
+                             referencedTableName="micro_basel_risk_exposure"
+                             referencedColumnNames="id"/>
+            </column>
         </addColumn>
     </changeSet>
 
+    <changeSet id="431-create-borrower-portfolio-table" author="Bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="borrower_port_folio"/>
+            </not>
+        </preConditions>
+        <createTable tableName="borrower_port_folio">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_borrower_port_folio_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_borrower_port_folio_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-customer-info-add-borrower-portfolio-id" author="Bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="borrower_port_folio_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="borrower_port_folio_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_borrower_port_folio_id"
+                             referencedTableName="borrower_port_folio"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="430-create-table-micro-borrower-financial" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="micro_borrower_financial"/>
+            </not>
+        </preConditions>
+        <createTable tableName="micro_borrower_financial">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LongText">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_borrower_financial_created_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_borrower_financial_modified_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-customer-info-add-column-borrower-financial-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="micro_borrower_financial_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_info">
+            <column name="micro_borrower_financial_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_micro_borrower_financial_id"
+                             referencedTableName="micro_borrower_financial"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="430-create-table-marketing-activities" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="marketing_activities"/>
+            </not>
+        </preConditions>
+        <createTable tableName="marketing_activities">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LongText">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_marketing_activities_created_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_marketing_activities_modified_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-customer-info-add-column-marketing-activities-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="marketing_activities_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_info">
+            <column name="marketing_activities_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_marketing_activities_id"
+                             referencedTableName="marketing_activities"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="427-alter-customer-loan-add-post-approval-doc-list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="post_approval_doc_id_list"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="post_approval_doc_id_list" type="Varchar(256)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="428-alter-customer-loan-audit-add-post-approval-doc-list" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="post_approval_doc_id_list"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="post_approval_doc_id_list" type="Varchar(256)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="429-create-table-multiple-role" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_role_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_role_list">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_user_role_list_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_user_role_list_role_id"
+                        referencedTableName="role"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="430-alter-users-add-column-primary-user-id" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="users" columnName="primary_user_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="users">
+            <column name="primary_user_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="429-alter-customer-loan-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="430-alter-customer-loan-audit-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="431-alter-province-add-column-nepali-name" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="province" columnName="nepali_name"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="province">
+            <column name="nepali_name" type="NVARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="432-alter-district-add-column-nepali-name" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="district" columnName="nepali_name"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="district">
+            <column name="nepali_name" type="NVARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="433-alter-municipality_vdc-add-column-nepali-name" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="municipality_vdc" columnName="nepali_name"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="municipality_vdc">
+            <column name="nepali_name" type="NVARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="434-alter-customer-loan-add-authority-review-comments" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="authority_review_comments"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan">
+            <column name="authority_review_comments" type="LONGTEXT">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="434-alter-customer-loan-audit-add-authority-review-comments" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan_audit" columnName="authority_review_comments"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_loan_audit">
+            <column name="authority_review_comments" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="435-alter-table-guarantor-add-addressline-column" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="guarantor" columnName="permanent_address_line_one"/>
+                <columnExists tableName="guarantor" columnName="permanent_address_line_two"/>
+                <columnExists tableName="guarantor" columnName="temporary_address_line_one"/>
+                <columnExists tableName="guarantor" columnName="temporary_address_line_two"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="guarantor">
+            <column name="permanent_address_line_one" type="varchar(256)"/>
+            <column name="permanent_address_line_two" type="varchar(256)"/>
+            <column name="temporary_address_line_one" type="varchar(256)"/>
+            <column name="temporary_address_line_two" type="varchar(256)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="435-create-table-m-group" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mgroup_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="mgroup_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="group_code" type="VARCHAR(200)"/>
+            <column name="detail_information" type="LONGTEXT"/>
+
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_m_group_info_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_m_group_info_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="436-alter-customer-info-add-m-group-id" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="m_group_info_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="m_group_info_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_m_group_id"
+                             referencedTableName="mgroup_info"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="437-drop-table-company-location-audit" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="company_locations_audit"/>
+        </preConditions>
+
+        <dropTable tableName="company_locations_audit"/>
+    </changeSet>
+
+    <changeSet id="438-alter-drop-table-company-location" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="company_locations" columnName="address"/>
+        </preConditions>
+
+        <modifyDataType tableName="company_locations" columnName="address" newDataType="LONGTEXT"/>
+
+    </changeSet>
+
+    <changeSet id="440-alter-nepse-company-modify-column-name" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="nepse_company" columnName="company_Code"/>
+        </preConditions>
+
+        <renameColumn tableName="nepse_company" oldColumnName="company_Code" newColumnName="company_code"/>
+    </changeSet>
+
+    <changeSet id="441-alter-customer_approved_loan_cad_documentation" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_approved_loan_cad_documentation" columnName="nep_data"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_approved_loan_cad_documentation">
+            <column name="nep_data" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="442-alter-customer_approved_loan_cad_documentation" author="suvecha">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_approved_loan_cad_documentation" columnName="nep_data"/>
+        </preConditions>
+
+        <modifyDataType tableName="customer_approved_loan_cad_documentation" columnName="nep_data"
+                        newDataType="NVARCHAR(MAX)"/>
+
+    </changeSet>
+
+    <changeSet id="443-create-table-customer-approved-loan-cad-documentation-calcd_cad_document" author="rujan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="calcd_cad_document"/>
+            </not>
+        </preConditions>
+        <createTable tableName="calcd_cad_document">
+            <column name="required_document_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_required_document_id"
+                             referencedTableName="document"
+                             referencedColumnNames="id"
+                />
+            </column>
+            <column name="customer_approved_loan_cad_documentation_id" type="BIGINT">
+                <constraints
+                        foreignKeyName="fk_required_document_customer_approved_loan_cad_documentation_id"
+                        referencedTableName="customer_approved_loan_cad_documentation"
+                        referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="444-create-loan-config-loan-config-renew-with-enhancement" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="loan_config_renew_with_enhancement"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="loan_config_renew_with_enhancement">
+            <column name="loan_config_id" type="BIGINT">
+                <constraints
+                        nullable="false"
+                        foreignKeyName="fk_loan_config_renew_with_enhancement_loan_config_id"
+                        referencedColumnNames="id"
+                        referencedTableName="loan_config"
+                />
+            </column>
+            <column name="renew_with_enhancement_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_loan_config_renew_with_enhancement_id"
+                             referencedColumnNames="id"
+                             referencedTableName="document"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="445-alter-proposal-add-enhance-limit-amount-column" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="proposal" columnName="enhance_limit_amount"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="proposal">
+            <column name="enhance_limit_amount" type="DECIMAL"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="446-alter-table-customer-relative-add-column-age" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_relative" columnName="age"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_relative">
+            <column name="age" type="INT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="447-alter-offer-document-alter-datatype-loan-amount-words" author="sudil">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="offer_document" columnName="initial_information"/>
+        </preConditions>
+        <modifyDataType tableName="offer_document" columnName="initial_information" newDataType="NVARCHAR(MAX)"/>
+    </changeSet>
+    <changeSet id="448-alter-offer-document-alter-datatype-loan-amount-words" author="sudil">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="offer_document" columnName="supported_information"/>
+        </preConditions>
+        <modifyDataType tableName="offer_document" columnName="supported_information" newDataType="NVARCHAR(MAX)"/>
+    </changeSet>
+
+    <changeSet id="448-create-customer_info_reporting_info_levels" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_info_reporting_info_levels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="customer_info_reporting_info_levels">
+            <column name="customer_info_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_reporting_info_levels_customer_loan_id_customer_loan_id"
+                             referencedTableName="customer_info"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="reporting_info_levels_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_reporting_info_levels_reporting_info_levels_id_reporting_info_level_id"
+                             referencedTableName="reporting_info_level"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="449-alter-table-customer-add-column-joint-info" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer" columnName="joint_info"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer">
+            <column name="joint_info" type="NVARCHAR(MAX)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="450-alter-table-customer-info-add-column-is-joint-customer" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="is_joint_customer"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="is_joint_customer" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="451-alter-nepse-company-add-column-name" author="sunil">
+        <preConditions onFail="MARK_RAN">
+            <not>
+
+
+                <columnExists tableName="nepse_company" columnName="price_earning_ratio"/>
+                <columnExists tableName="nepse_company" columnName="price_to_book_value"/>
+                <columnExists tableName="nepse_company" columnName="dividend_yield"/>
+                <columnExists tableName="nepse_company" columnName="dividend_payout_ratio"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="nepse_company">
+            <column name="price_earning_ratio" type="DECIMAL(12, 2)"/>
+            <column name="price_to_book_value" type="BIGINT"/>
+            <column name="dividend_yield" type="DECIMAL(12, 2)"/>
+            <column name="dividend_payout_ratio" type="DECIMAL(12, 2)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="452-create-table-collateral-site-visit" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="collateral_site_visit"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="collateral_site_visit">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="site_visit_json_data" type="NVARCHAR(MAX)"/>
+            <column name="security_name" type="VARCHAR(256)"/>
+            <column name="site_visit_date" type="DATE"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="security_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="collateral_site_visit"
+                                 baseColumnNames="security_id"
+                                 constraintName="fk_collateral_site_visit_security_id"
+                                 referencedTableName="security"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="453-alter-customer-info" author="sulav">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="customer_info" columnName="nep_data"/>
+        </preConditions>
+
+        <modifyDataType tableName="customer_info" columnName="nep_data" newDataType="NVARCHAR(MAX)"/>
+
+    </changeSet>
+
+    <changeSet id="61-create-table-micro-other-parameters" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="micro_other_parameters"/>
+            </not>
+        </preConditions>
+        <createTable tableName="micro_other_parameters">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="data" type="LongText">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_other_parameters_created_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_micro_other_parameters_modified_by_id_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="61-alter-customer-info-add-column-other-parameters-id" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="micro_other_parameters_id"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="customer_info">
+            <column name="micro_other_parameters_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_info_micro_other_parameters_id"
+                             referencedTableName="micro_other_parameters"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="61-create-crg-micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="crg_micro"/>
+            </not>
+        </preConditions>
+        <createTable tableName="crg_micro">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_crg_micro_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+            <column name="data" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="61-alter-customer-loan-add-crg_micro" author="Amulya">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_loan" columnName="crg_micro_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_loan">
+            <column name="crg_micro_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_customer_loan_crg_micro_id"
+                             referencedTableName="crg_micro"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="62-alter-reporting-info-add-type" author="Sulav">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="reporting_info" columnName="type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="reporting_info">
+            <column name="type" type="CHAR">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
