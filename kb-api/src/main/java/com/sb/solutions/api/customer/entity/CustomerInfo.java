@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sb.solutions.api.previouremark.entity.PreviousRemarks;
 import com.sb.solutions.core.enums.Gender;
 import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.AllArgsConstructor;
@@ -146,6 +147,9 @@ public class CustomerInfo extends BaseEntity<Long> {
 
     @OneToOne
     private CreditChecklist creditChecklist;
+
+    @OneToOne
+    private PreviousRemarks previousRemarks;
 
     @Transient
     private String subSectorDetailCode ;

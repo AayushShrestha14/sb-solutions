@@ -22,6 +22,8 @@ import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
 import com.sb.solutions.api.netTradingAssets.entity.NetTradingAssets;
 import com.sb.solutions.api.netTradingAssets.service.NetTradingAssetsService;
 
+import com.sb.solutions.api.previouremark.entity.PreviousRemarks;
+import com.sb.solutions.api.previouremark.service.PreviousRemarkService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +108,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final IncomeFromAccountServices incomeFromAccountServices;
     private final NetTradingAssetsService netTradingAssetsService;
     private final CreditChecklistService creditChecklistService;
+    private final PreviousRemarkService previousRemarkService;
 
     public CustomerInfoServiceImpl(
         @Autowired CustomerInfoRepository customerInfoRepository,
@@ -123,7 +126,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         IncomeFromAccountServices incomeFromAccountServices,
         NetTradingAssetsService netTradingAssetsService,
         CIclService cIclService,
-        CreditChecklistService creditChecklistService
+        CreditChecklistService creditChecklistService,
+        PreviousRemarkService previousRemarkService
     ) {
         super(customerInfoRepository);
         this.customerInfoRepository = customerInfoRepository;
@@ -142,6 +146,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         this.incomeFromAccountServices = incomeFromAccountServices;
         this.netTradingAssetsService = netTradingAssetsService;
         this.creditChecklistService = creditChecklistService;
+        this.previousRemarkService = previousRemarkService;
     }
 
 
@@ -281,6 +286,10 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             final CreditChecklist creditChecklist = creditChecklistService
                 .save(objectMapper().convertValue(o, CreditChecklist.class));
             customerInfo1.setCreditChecklist(creditChecklist);
+        } else if ((template.equalsIgnoreCase(TemplateNameConstant.PREVIOUS_REMARKS))) {
+            final PreviousRemarks previousRemarks = previousRemarkService
+                    .save(objectMapper().convertValue(o, PreviousRemarks.class));
+            customerInfo1.setPreviousRemarks(previousRemarks);
         }
         customerInfo1.setLoanFlags(loanFlagService.findAllByCustomerInfoId(customerInfoId));
         return customerInfoRepository.save(customerInfo1);
