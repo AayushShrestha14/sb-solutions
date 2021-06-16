@@ -98,52 +98,52 @@ public class StageMapper {
         if (makers == null || makers.isEmpty()) {
             throw new RuntimeException("No active Maker User Exists");
         }
-
-        UserDto targetMakerUser = null;
-        RoleDto targerMakerRole = null;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        int size = previousList.size();
+        int previousListSize = previousList.size();
         if (makers.size() == 1) {
             // single maker user exists
-            targetMakerUser = objectMapper.convertValue(makers.get(0), UserDto.class);
-            targerMakerRole =
-                objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class);
             logger.info("Single maker user exists");
-        } else {
-            for (int i = size - 1; i >= 0; i--) {
-                StageDto stage = objectMapper.convertValue(previousList.get(i), StageDto.class);
-                UserDto userDto = getActiveMakerOrNull(stage.getToUser(), stage.getToRole(), makers);
-                if (userDto != null) {
-                    currentStage.setToUser(stage.getToUser());
-                    currentStage.setToRole(stage.getToRole());
-                    logger.info("ToRole maker and active");
-                    return currentStage;
-                }
-                userDto = getActiveMakerOrNull(stage.getFromUser(), stage.getFromRole(), makers);
-                if (userDto != null) {
-                    currentStage.setToUser(stage.getFromUser());
-                    currentStage.setToRole(stage.getFromRole());
-                    logger.info("FromRole maker and active");
-                    return currentStage;
-                }
-            }
-            // no active maker found in the previous stages, set random active maker
-            targetMakerUser = objectMapper
-                .convertValue(makers.get(0), UserDto.class);
-            targerMakerRole =
-                objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class);
-            logger.info("No active maker exist in stages. Set random active maker.");
+            return setUserDtoAndRoleDtoToCurrentStage(currentStage,
+                objectMapper.convertValue(makers.get(0), UserDto.class),
+                objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class));
         }
-        currentStage.setToUser(targetMakerUser);
-        currentStage.setToRole(targerMakerRole);
-        return currentStage;
+        for (int i = previousListSize - 1; i >= 0; i--) {
+            StageDto stage = objectMapper.convertValue(previousList.get(i), StageDto.class);
+            Optional<UserDto> userDto = getActiveMakerOrNull(stage.getToUser(), stage.getToRole(),
+                makers);
+            if (userDto.isPresent()) {
+                logger.info("ToRole maker and active");
+                return setUserDtoAndRoleDtoToCurrentStage(currentStage, stage.getToUser(),
+                    stage.getToRole());
+            }
+            userDto = getActiveMakerOrNull(stage.getFromUser(), stage.getFromRole(), makers);
+            if (userDto.isPresent()) {
+                logger.info("FromRole maker and active");
+                return setUserDtoAndRoleDtoToCurrentStage(currentStage, stage.getFromUser(),
+                    stage.getFromRole());
+            }
+        }
+        // no active maker found in the previous stages, set random active maker
+        logger.info("No active maker exist in stages. Set random active maker.");
+        return setUserDtoAndRoleDtoToCurrentStage(currentStage,
+            objectMapper.convertValue(makers.get(0), UserDto.class),
+            objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class));
     }
 
-    private UserDto getActiveMakerOrNull(UserDto userDto, RoleDto roleDto, List<User> makers){
+    private Optional<UserDto> getActiveMakerOrNull(UserDto userDto, RoleDto roleDto,
+        List<User> makers) {
         return ((roleDto.getRoleType() == RoleType.MAKER) && (makers.stream()
-            .anyMatch(user -> user.getId() == userDto.getId()))) ? userDto : null;
+            .anyMatch(user -> user.getId() == userDto.getId()))) ? Optional.of(userDto)
+            : Optional.empty();
+    }
+
+    private StageDto setUserDtoAndRoleDtoToCurrentStage(StageDto currentStage, UserDto userDto,
+        RoleDto roleDto) {
+        currentStage.setToUser(userDto);
+        currentStage.setToRole(roleDto);
+        return currentStage;
     }
 
     private StageDto approvedCloseReject(StageDto currentStage, UserDto currentUser) {
