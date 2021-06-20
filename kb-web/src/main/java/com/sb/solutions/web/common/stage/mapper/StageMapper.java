@@ -1,6 +1,7 @@
 package com.sb.solutions.web.common.stage.mapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -63,7 +64,7 @@ public class StageMapper {
             currentStage.setComment("PULLED");
             currentStage.setToUser(currentUser);
             currentStage.setToRole(currentUser.getRole());
-            logger.info("pulled document {}", customerLoan, currentStage);
+            logger.info("Pulled document {}", customerLoan, currentStage);
         } else {
             currentStage.setToUser(stageDto.getToUser());
             currentStage.setToRole(stageDto.getToRole());
@@ -104,7 +105,7 @@ public class StageMapper {
         int previousListSize = previousList.size();
         if (makers.size() == 1) {
             // single maker user exists
-            logger.info("Single maker user exists");
+            logger.info("Return : Single maker user exists");
             return setUserDtoAndRoleDtoToCurrentStage(currentStage,
                 objectMapper.convertValue(makers.get(0), UserDto.class),
                 objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class));
@@ -114,19 +115,19 @@ public class StageMapper {
             Optional<UserDto> userDto = getActiveMakerOrNull(stage.getToUser(), stage.getToRole(),
                 makers);
             if (userDto.isPresent()) {
-                logger.info("ToRole maker and active");
+                logger.info("Return : ToRole maker and active");
                 return setUserDtoAndRoleDtoToCurrentStage(currentStage, stage.getToUser(),
                     stage.getToRole());
             }
             userDto = getActiveMakerOrNull(stage.getFromUser(), stage.getFromRole(), makers);
             if (userDto.isPresent()) {
-                logger.info("FromRole maker and active");
+                logger.info("Return : FromRole maker and active");
                 return setUserDtoAndRoleDtoToCurrentStage(currentStage, stage.getFromUser(),
                     stage.getFromRole());
             }
         }
         // no active maker found in the previous stages, set random active maker
-        logger.info("No active maker exist in stages. Set random active maker.");
+        logger.info("Return : No active maker exist in stages. Set random active maker.");
         return setUserDtoAndRoleDtoToCurrentStage(currentStage,
             objectMapper.convertValue(makers.get(0), UserDto.class),
             objectMapper.convertValue(makers.get(0).getRole(), RoleDto.class));
@@ -135,7 +136,7 @@ public class StageMapper {
     private Optional<UserDto> getActiveMakerOrNull(UserDto userDto, RoleDto roleDto,
         List<User> makers) {
         return ((roleDto.getRoleType() == RoleType.MAKER) && (makers.stream()
-            .anyMatch(user -> user.getId() == userDto.getId()))) ? Optional.of(userDto)
+            .anyMatch(user -> Objects.equals(user.getId(), userDto.getId())))) ? Optional.of(userDto)
             : Optional.empty();
     }
 
