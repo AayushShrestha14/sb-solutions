@@ -3,6 +3,7 @@ package com.sb.solutions.api.nepseCompany.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -44,6 +45,7 @@ public class NepseExcelReader {
         Workbook wb = null;
         String excelFileName = multipartFile.getOriginalFilename();
 
+        AtomicReference<Integer> readingRow = new AtomicReference<>(0);
         try {
             if (excelFileName.contains(".xlsx")) {
                 wb = new XSSFWorkbook(multipartFile.getInputStream());
@@ -54,6 +56,7 @@ public class NepseExcelReader {
             Sheet workSheet = wb.getSheetAt(0);
             IntStream.rangeClosed(1, workSheet.getLastRowNum()).forEach(value -> {
                 Row row = workSheet.getRow(value);
+                readingRow.set(row.getRowNum());
                 NepseCompany nepseCompany = new NepseCompany();
 
                 if (row.getCell(COMPANY_NAME_COLUMN_POS).toString() != null) {
@@ -98,8 +101,10 @@ public class NepseExcelReader {
                 nepseCompanyList.add(nepseCompany);
             });
         } catch (Exception e) {
-            logger.error("invalid file format {}", e.getMessage());
-            throw new ServiceValidationException("File format is not valid");
+            logger
+                .error("Failed Reading Excel Row " + (readingRow.get() + 1) + " " + e.getMessage());
+            throw new ServiceValidationException(
+                "Failed Reading Excel Row " + (readingRow.get() + 1) + " " + e.getMessage());
         } finally {
             if (null != wb) {
                 try {
