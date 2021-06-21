@@ -135,8 +135,9 @@ public class StageMapper {
 
     private Optional<UserDto> getActiveMakerOrNull(UserDto userDto, RoleDto roleDto,
         List<User> makers) {
+        logger.info("Return : userDto.getId= {}", userDto.getId());
         return ((roleDto.getRoleType() == RoleType.MAKER) && (makers.stream()
-            .anyMatch(user -> Objects.equals(user.getId(), userDto.getId())))) ? Optional.of(userDto)
+            .anyMatch(user -> Objects.equals(user.getId().longValue(), userDto.getId().longValue())))) ? Optional.of(userDto)
             : Optional.empty();
     }
 
