@@ -140,7 +140,4 @@ public class CollateralSiteVisitController {
         return new RestResponseDto().successModel(service.getCollateralSiteVisitBySecurityId(id));
     }
 
-    private String getFileNameFromUrl(String url) {
-        return url.substring(url.lastIndexOf("/")+1);
-    }
 }
