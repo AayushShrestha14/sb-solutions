@@ -69,15 +69,14 @@ public class CollateralSiteVisitController {
         collateralSiteVisit.setSiteVisitJsonData(siteVisitJsonData);
         collateralSiteVisit.setSecurityName(securityName);
         CollateralSiteVisit collateralSiteVisit1 = service.saveCollateralSiteVisit(securityId, collateralSiteVisit);
-        String basePath = new PathBuilder(UploadDir.initialDocument)
-                .buildCustomerSiteVisitPaths(Long.parseLong(customerId), customerType,
-                        securityId, collateralSiteVisit1.getId());
-        String uploadPath = new StringBuilder(basePath).toString();
-        System.out.println("docSize "+docNames.size()+" multipartSize "+ multipartFiles.size());
-        List<SiteVisitDocument> tempSiteVisitDocuments = new ArrayList<>();
-        if (docNames.size()>0) {
+        if (docNames != null && docNames.size()>0) {
             int index = 0;
             int fileIndex = 0;
+            String basePath = new PathBuilder(UploadDir.initialDocument)
+                    .buildCustomerSiteVisitPaths(Long.parseLong(customerId), customerType,
+                            securityId, collateralSiteVisit1.getId());
+            String uploadPath = new StringBuilder(basePath).toString();
+            List<SiteVisitDocument> tempSiteVisitDocuments = new ArrayList<>();
             for (String docName: docNames) {
                 SiteVisitDocument siteVisitDocument = new SiteVisitDocument();
                 Long ids = Long.parseLong(docId.get(index));
