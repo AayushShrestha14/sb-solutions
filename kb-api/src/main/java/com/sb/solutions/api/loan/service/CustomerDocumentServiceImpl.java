@@ -1,8 +1,14 @@
 package com.sb.solutions.api.loan.service;
 
+import java.sql.Array;
+import java.sql.ResultSet;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gson.Gson;
+import com.sb.solutions.api.loan.entity.CustomerLoan;
+import com.sb.solutions.api.loan.repository.CustomerLoanRepository;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +24,15 @@ import com.sb.solutions.api.loan.repository.CustomerDocumentRepository;
 public class CustomerDocumentServiceImpl implements CustomerDocumentService {
 
     private final CustomerDocumentRepository customerDocumentRepository;
+    private final CustomerLoanService customerLoanService;
+    private final CustomerLoanRepository customerLoanRepository;
     private Gson gson;
 
     public CustomerDocumentServiceImpl(
-        @Autowired CustomerDocumentRepository customerDocumentRepository) {
+            @Autowired CustomerDocumentRepository customerDocumentRepository, CustomerLoanService customerLoanService, CustomerLoanRepository customerLoanRepository) {
         this.customerDocumentRepository = customerDocumentRepository;
+        this.customerLoanService = customerLoanService;
+        this.customerLoanRepository = customerLoanRepository;
     }
 
     @Override
@@ -48,5 +58,35 @@ public class CustomerDocumentServiceImpl implements CustomerDocumentService {
     @Override
     public List<CustomerDocument> saveAll(List<CustomerDocument> list) {
         return null;
+    }
+
+    @Override
+    public String deleteById(Long customerDocId, String path, Long actualLoanId) {
+//        Optional<CustomerDocument> optionalCustomerDocument = customerDocumentRepository.findById(actualLoanId);
+
+//        CustomerDocument docId=customerDocumentRepository.findById(customerDocId).get();
+        if ((null != actualLoanId) && (null != actualLoanId)) {
+              customerLoanRepository.deleteFromChildTable(customerDocId);
+
+
+                customerDocumentRepository.deleteById(customerDocId);
+
+        }
+//            Optional<CustomerDocument> optionalCustomerDocument = customerLoan.getCustomerDocument().stream().filter( d -> d.getId() == customerDocId).findAny();
+////            for (CustomerDocument doc : customerLoan.getCustomerDocument()) {
+////                doc.re
+////            }
+//            if (!optionalCustomerDocument.isPresent()) {
+//                List<CustomerDocument> newCustomerDocuments = customerLoan.getCustomerDocument();
+//                optionalCustomerDocument.get();
+////                newCustomerDocuments.retainAll();
+//                tempCustomerDoc = newCustomerDocuments;
+//            }
+////            customerLoan.setCustomerDocument(tempCustomerDoc);
+//            customerDocumentRepository.deleteById(customerDocId);
+//        }
+
+        DeleteFileUtils.deleteFile(path);
+        return "SUCCESSFULLY DELETED";
     }
 }

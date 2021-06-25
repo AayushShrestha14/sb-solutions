@@ -1,17 +1,17 @@
 package com.sb.solutions.web.loan.v1;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
+import com.sb.solutions.api.loan.service.CustomerDocumentService;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,21 +75,23 @@ public class CustomerLoanController {
     private final UserService userService;
     private final Mapper mapper;
     private final CombinedLoanService combinedLoanService;
+    private final CustomerDocumentService customerDocumentService;
 
     @Value("${bank.affiliateId}")
     private String affiliateId;
 
     public CustomerLoanController(
-        CustomerLoanService service,
-        Mapper mapper,
-        UserService userService,
-        CombinedLoanService combinedLoanService
-    ) {
+            CustomerLoanService service,
+            Mapper mapper,
+            UserService userService,
+            CombinedLoanService combinedLoanService,
+            CustomerDocumentService customerDocumentService) {
 
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
         this.combinedLoanService = combinedLoanService;
+        this.customerDocumentService = customerDocumentService;
     }
 
     @PostMapping(value = "/action")
@@ -276,7 +278,7 @@ public class CustomerLoanController {
         @RequestParam("documentId") Long documentId,
         @RequestParam("loanHolderId") Long loanHolderId,
         @RequestParam("customerType") String customerType,
-        @RequestParam(required = false, defaultValue = "") String actualLoanId,
+        @RequestParam(name = "actualLoanId", required = false, defaultValue = "") String actualLoanId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
         CustomerDocument customerDocument = new CustomerDocument();
@@ -310,13 +312,21 @@ public class CustomerLoanController {
                     .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
 
         } else {
-            String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                    .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
-                            branchId,
-                            customerType,
-                            action,
-                            loanId, actualLoanId);
-
+            String uploadPath;
+            CustomerLoan customerLoan = service.findOne(Long.parseLong(actualLoanId));
+            Optional<CustomerDocument> optionalCustomerDocument = customerLoan.getCustomerDocument().stream().filter(d -> d.getDocument().getDisplayName().equals(documentName)).findAny();
+            if (optionalCustomerDocument.isPresent()) {
+                CustomerDocument customerDocument1 = optionalCustomerDocument.get();
+                String tempPath = customerDocument1.getDocumentPath();
+                uploadPath = tempPath.substring(0, tempPath.lastIndexOf("/")) + "/";
+            } else {
+                uploadPath = new PathBuilder(UploadDir.initialDocument)
+                        .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
+                                branchId,
+                                customerType,
+                                action,
+                                loanId, actualLoanId);
+            }
             logger.info("File Upload Path {}", uploadPath);
             ResponseEntity<?> responseEntity = FileUploadUtils
                     .uploadFile(multipartFile, uploadPath, documentName);
@@ -506,5 +516,12 @@ public class CustomerLoanController {
             default:
                 return "";
         }
+    }
+
+    @PostMapping("/delete-document/{docId}/{customerDocId}/{actualLoanId}")
+    public ResponseEntity deleteDocument(@RequestBody String path, @PathVariable("docId") Long docId,
+                                         @PathVariable("customerDocId") Long customerDocId, @PathVariable("actualLoanId") Long actualLoanId) {
+        return new RestResponseDto()
+                .successModel(customerDocumentService.deleteById(customerDocId, path, actualLoanId));
     }
 }

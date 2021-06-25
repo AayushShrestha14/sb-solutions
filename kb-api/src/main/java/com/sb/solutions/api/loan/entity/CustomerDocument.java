@@ -1,5 +1,6 @@
 package com.sb.solutions.api.loan.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.OneToOne;
@@ -30,7 +31,7 @@ public class CustomerDocument extends BaseEntity<Long> {
     private String documentPath;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private Document document;
 
 }
