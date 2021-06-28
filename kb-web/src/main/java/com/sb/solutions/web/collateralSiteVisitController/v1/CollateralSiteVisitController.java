@@ -109,6 +109,7 @@ public class CollateralSiteVisitController {
                 siteVisitDocument.setDocName(docName);
                 siteVisitDocument.setDocPath(uploadPath);
                 siteVisitDocument.setIsPrintable(isPrintable.get(index));
+                siteVisitDocument.setSecurityName(securityName);
                 // edit case update version and add document to list
                 if (!ObjectUtils.isEmpty(siteVisitDocument.getId())) {
                     siteVisitDocument.setVersion(siteVisitDocument.getVersion()+1);

@@ -7075,6 +7075,7 @@
             <column name="doc_name" type="VARCHAR(256)"/>
             <column name="is_printable" type="VARCHAR(25)"/>
             <column name="doc_path" type="LONGTEXT"/>
+            <column name="security_name" type="VARCHAR(50)"/>
             <column name="created_by_id" type="BIGINT">
                 <constraints nullable="true"
                              foreignKeyName="fk_collateral_site_visit_document_created_by_id"
