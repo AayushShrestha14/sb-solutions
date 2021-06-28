@@ -21,7 +21,7 @@ public class CustomerDocumentServiceImpl implements CustomerDocumentService {
     private Gson gson;
 
     public CustomerDocumentServiceImpl(
-            @Autowired CustomerDocumentRepository customerDocumentRepository) {
+        @Autowired CustomerDocumentRepository customerDocumentRepository) {
         this.customerDocumentRepository = customerDocumentRepository;
     }
 

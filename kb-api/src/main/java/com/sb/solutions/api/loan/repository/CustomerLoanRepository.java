@@ -1,6 +1,5 @@
 package com.sb.solutions.api.loan.repository;
 
-import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -279,9 +278,4 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.loan = :loanConfig,c.currentStage=:currentStage,c.previousStageList=:previousList   WHERE c.id = :id")
     void updateLoanConfigByCustomerLoanId(@Param("loanConfig") LoanConfig loanConfig, @Param("id") Long id,@Param("currentStage")LoanStage currentStage,@Param("previousList")String previousList);
-
-    @Modifying
-    @Transactional
-    @Query(value="delete from customer_document_path_customer_loan where customer_document_id=?", nativeQuery = true)
-    void deleteFromChildTable(Long id);
 }

@@ -6,12 +6,9 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.loan.service.CustomerDocumentService;
-import com.sb.solutions.core.utils.file.DeleteFileUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
