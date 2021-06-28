@@ -8,6 +8,8 @@ import com.sb.solutions.core.service.BaseService;
  */
 public interface CustomerDocumentService extends BaseService<CustomerDocument> {
 
-    String deleteById(Long customerDocId, String path, Long actualLoanId);
+    String deleteDocPath(String path);
+
+    void deleteById(Long customerDocId);
 
 }

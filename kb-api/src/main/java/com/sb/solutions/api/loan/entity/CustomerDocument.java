@@ -31,7 +31,7 @@ public class CustomerDocument extends BaseEntity<Long> {
     private String documentPath;
 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne
     private Document document;
 
 }

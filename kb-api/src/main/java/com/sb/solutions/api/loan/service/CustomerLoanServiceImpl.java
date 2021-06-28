@@ -243,6 +243,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
     private final BranchService branchService;
+    private final CustomerDocumentService customerDocumentService;
 
     @Autowired
     EntityManager em;
@@ -280,8 +281,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             CustomerGeneralDocumentService customerGeneralDocumentService,
             CadDocumentService cadDocumentService,
             LoanConfigService loanConfigService,
-            BranchService branchService
-    ) {
+            BranchService branchService,
+            CustomerDocumentService customerDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -312,6 +313,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.cadDocumentService = cadDocumentService;
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
+        this.customerDocumentService = customerDocumentService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -541,6 +543,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getInsurance() != null) {
             customerLoan.setInsurance(customerLoan.getLoanHolder().getInsurance());
+        }
+
+        if (!isNewLoan) {
+            CustomerLoan actualLoan = customerLoanRepository.findById(customerLoan.getId()).get();
+            List<CustomerDocument> actualDocuments = actualLoan.getCustomerDocument();
+            List<CustomerDocument> updatedDocuments = customerLoan.getCustomerDocument();
+
+            for (CustomerDocument doc : actualDocuments) {
+                Optional<CustomerDocument> optionalCustomerDocument = updatedDocuments.stream().filter(d -> Objects.equals(d.getId(), doc.getId())).findAny();
+                if (!optionalCustomerDocument.isPresent()) {
+                    customerDocumentService.deleteById(doc.getId());
+                }
+            }
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);

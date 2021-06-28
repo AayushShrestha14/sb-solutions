@@ -281,22 +281,23 @@ public class CustomerLoanController {
         @RequestParam(name = "actualLoanId", required = false, defaultValue = "") String actualLoanId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
 
+        Preconditions.checkNotNull(loanHolderId, "Loan Holder cannot be null");
+        Preconditions.checkNotNull(customerType, "CustomerType cannot be null");
+        Preconditions.checkNotNull(loanId, "LoanConfig cannot be null");
+
+        Long branchId;
+        List<Branch> branches = userService.getAuthenticatedUser().getBranch();
+        if (branches.size() != 1) {
+            throw new ServiceValidationException("You do not have permission to upload file!");
+        } else {
+            branchId = branches.get(0).getId();
+        }
+        Preconditions.checkNotNull(branchId, "Branch cannot be null");
+
         CustomerDocument customerDocument = new CustomerDocument();
         Document document = new Document();
         document.setId(documentId);
         customerDocument.setDocument(document);
-        Long branchId;
-        List<Branch> branches = userService.getAuthenticatedUser().getBranch();
-        if (branches.size() != 1) {
-            throw new ServiceValidationException("You do not have Permission to upload File!");
-        } else {
-            branchId = branches.get(0).getId();
-        }
-
-        Preconditions.checkNotNull(loanHolderId, "Loan Holder Cannot be null");
-        Preconditions.checkNotNull(branchId, "Branch Cannot be null");
-        Preconditions.checkNotNull(customerType, "Customer Type Cannot be null");
-        Preconditions.checkNotNull(loanId, "Loan  Cannot be null");
 
         if (StringUtils.isEmpty(actualLoanId)) {
             String uploadPath = new PathBuilder(UploadDir.initialDocument)
@@ -310,7 +311,6 @@ public class CustomerLoanController {
                     .uploadFile(multipartFile, uploadPath, documentName);
             customerDocument
                     .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
-
         } else {
             String uploadPath;
             CustomerLoan customerLoan = service.findOne(Long.parseLong(actualLoanId));
@@ -319,6 +319,9 @@ public class CustomerLoanController {
                 CustomerDocument customerDocument1 = optionalCustomerDocument.get();
                 String tempPath = customerDocument1.getDocumentPath();
                 uploadPath = tempPath.substring(0, tempPath.lastIndexOf("/")) + "/";
+                customerDocument.setId(customerDocument1.getId());
+                int version = customerDocument1.getVersion();
+                customerDocument.setVersion(version);
             } else {
                 uploadPath = new PathBuilder(UploadDir.initialDocument)
                         .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
@@ -518,10 +521,9 @@ public class CustomerLoanController {
         }
     }
 
-    @PostMapping("/delete-document/{docId}/{customerDocId}/{actualLoanId}")
-    public ResponseEntity deleteDocument(@RequestBody String path, @PathVariable("docId") Long docId,
-                                         @PathVariable("customerDocId") Long customerDocId, @PathVariable("actualLoanId") Long actualLoanId) {
+    @PostMapping("/delete-document/")
+    public ResponseEntity deleteDocument(@RequestBody String path) {
         return new RestResponseDto()
-                .successModel(customerDocumentService.deleteById(customerDocId, path, actualLoanId));
+                .successModel(customerDocumentService.deleteDocPath(path));
     }
 }
