@@ -30,4 +30,8 @@ public class CollateralSiteVisit extends BaseEntity<Long> {
     @JoinColumn(name = "security_id")
     @JsonIgnore
     private Security security;
+
+    @OneToMany
+    @JsonIgnore
+    private List<SiteVisitDocument> siteVisitDocuments;
 }

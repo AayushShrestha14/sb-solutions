@@ -316,6 +316,24 @@ public class PathBuilder {
             .toString();
     }
 
+    public String buildCustomerSiteVisitPaths(Long customerInfoId,
+                                                  String customerType, Long securityId,
+                                              Long collateralId) {
+        return new StringBuilder(this.basePath)
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Security-"+securityId)
+                .append(FILE_SEPARATOR)
+                .append("collateral-"+collateralId)
+                .append(FILE_SEPARATOR)
+                .append("sitevisitdocument")
+                .append(FILE_SEPARATOR)
+                .toString();
+    }
 
 
 }
