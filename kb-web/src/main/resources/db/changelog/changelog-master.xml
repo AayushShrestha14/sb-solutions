@@ -7116,4 +7116,14 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="65-alter-table-site-visit-document-add-column-is-approved" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="site_visit_document" columnName="is_approved"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="site_visit_document">
+            <column name="is_approved" type="BOOLEAN" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
