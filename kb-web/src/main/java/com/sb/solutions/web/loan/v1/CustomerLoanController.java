@@ -311,7 +311,7 @@ public class CustomerLoanController {
         } else {
             String uploadPath;
             CustomerLoan customerLoan = service.findOne(Long.parseLong(actualLoanId));
-            Optional<CustomerDocument> optionalCustomerDocument = customerLoan.getCustomerDocument().stream().filter(d -> d.getDocument().getDisplayName().equals(documentName)).findAny();
+            Optional<CustomerDocument> optionalCustomerDocument = customerLoan.getCustomerDocument().stream().filter(d -> d.getDocument().getName().equalsIgnoreCase(documentName)).findAny();
             if (optionalCustomerDocument.isPresent()) {
                 CustomerDocument customerDocument1 = optionalCustomerDocument.get();
                 String tempPath = customerDocument1.getDocumentPath();
