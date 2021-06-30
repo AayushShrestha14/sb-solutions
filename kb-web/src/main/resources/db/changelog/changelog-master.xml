@@ -7062,4 +7062,58 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="63-create-table-site-visit-document" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="site_visit_document"/>
+            </not>
+        </preConditions>
+        <createTable tableName="site_visit_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="doc_name" type="VARCHAR(256)"/>
+            <column name="is_printable" type="VARCHAR(25)"/>
+            <column name="doc_path" type="LONGTEXT"/>
+            <column name="security_name" type="VARCHAR(50)"/>
+            <column name="created_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_document_created_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="modified_by_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_collateral_site_visit_document_modified_by_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="created_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_at" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="64-create-third-table-collateral-site-visit-site-visit-document" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="collateral_site_visit_site_visit_documents"/>
+            </not>
+        </preConditions>
+        <createTable tableName="collateral_site_visit_site_visit_documents">
+            <column name="collateral_site_visit_id" type="BIGINT">
+                <constraints foreignKeyName="fk_collateral_site_visit_site_visit_document_collateral_site_visit_id"
+                             referencedTableName="collateral_site_visit"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="site_visit_documents_id" type="BIGINT">
+                <constraints foreignKeyName="fk_collateral_site_visit_site_visit_documents_id"
+                             referencedTableName="site_visit_document"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
