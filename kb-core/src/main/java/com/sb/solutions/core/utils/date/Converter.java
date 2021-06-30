@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 public class Converter {
 
     //Change this when you get more previous database.
-    public static final int START_ENGLISH_YEAR = 1943;
+    public static final int START_ENGLISH_YEAR = 1923;
     public static final int START_ENGLISH_MONTH = 4;
-    public static final int START_ENGLISH_DAY = 14;
+    public static final int START_ENGLISH_DAY = 13;
 
     //Change this to equivalent nepali start date
-    public static final int START_NEPALI_YEAR = 2000;
+    public static final int START_NEPALI_YEAR = 1980;
     public static final int START_NEPALI_MONTH = 1;
     public static final int START_NEPALI_DAY = 1;
 
