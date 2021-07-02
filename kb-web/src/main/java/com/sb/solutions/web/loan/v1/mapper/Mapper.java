@@ -154,8 +154,10 @@ public class Mapper {
                 currentUserDto, customerLoan);
         customerLoan.setCurrentStage(loanStage);
         customerLoan.setPreviousList(previousListTemp);
-        if ((loanActionDto.getDocAction() == DocAction.FORWARD) && currentUser.getRole()
-            .getRoleType() == RoleType.MAKER) {
+        if (((loanActionDto.getDocAction() == DocAction.FORWARD) && currentUser.getRole()
+            .getRoleType() == RoleType.MAKER) ||
+                (loanActionDto.getDocAction() == DocAction.TRANSFER) &&
+                        (currentUser.getRole().getRoleType() == RoleType.MAKER || currentUser.getRole().getRoleType() == RoleType.COMMITTEE)) {
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
