@@ -653,13 +653,15 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                                 filePath, e);
                     }
                 }).start();
-                List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService.getCollateralSiteVisitBySecurityId(customerLoan1.getSecurity().getId());
-                if (collateralSiteVisits.size() > 0) {
-                    for (CollateralSiteVisit collateralSiteVisit: collateralSiteVisits) {
-                        List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
-                        if (siteVisitDocuments.size() > 0) {
-                            for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
-                                siteVisitDocument.setIsApproved(true);
+                if (customerLoan1.getSecurity().getId() != null) {
+                    List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService.getCollateralSiteVisitBySecurityId(customerLoan1.getSecurity().getId());
+                    if (collateralSiteVisits.size() > 0) {
+                        for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
+                            List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
+                            if (siteVisitDocuments.size() > 0) {
+                                for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
+                                    siteVisitDocument.setIsApproved(true);
+                                }
                             }
                         }
                     }
