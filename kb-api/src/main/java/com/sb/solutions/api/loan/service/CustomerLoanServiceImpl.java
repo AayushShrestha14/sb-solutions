@@ -537,7 +537,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             List<CustomerDocument> customerDocuments = savedCustomerLoan.getCustomerDocument();
             customerDocuments.forEach(customerDocument -> {
                 String docPath = customerDocument.getDocumentPath();
-                String documentPath[] = docPath.split("document");
+                String documentPath[] = docPath.split("tempDocument");
                 documentPath[0] =
                         documentPath[0] + "loan-loan-" + savedCustomerLoan.getId() + "/" + "doc";
                 String newDocPath = documentPath[0] + documentPath[1];

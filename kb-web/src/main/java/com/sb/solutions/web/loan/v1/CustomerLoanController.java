@@ -309,7 +309,7 @@ public class CustomerLoanController {
 
         if (StringUtils.isEmpty(actualLoanId)) {
             String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                    .buildLoanDocumentUploadBasePathWithId(loanHolderId,
+                    .buildTempLoanDocumentUploadBasePathForNewLoan(loanHolderId,
                             branchId,
                             customerType,
                             action,
