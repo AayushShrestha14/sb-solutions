@@ -244,8 +244,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             CustomerGeneralDocumentService customerGeneralDocumentService,
             CadDocumentService cadDocumentService,
             LoanConfigService loanConfigService,
-            CollateralSiteVisitService collateralSiteVisitService, BranchService branchService
-    ) {
+            CollateralSiteVisitService collateralSiteVisitService,
             BranchService branchService,
             CustomerDocumentService customerDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
