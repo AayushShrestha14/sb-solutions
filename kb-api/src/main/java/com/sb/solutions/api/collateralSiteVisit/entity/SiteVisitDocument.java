@@ -29,4 +29,5 @@ public class SiteVisitDocument extends BaseEntity<Long> {
     private String isPrintable;
     private String docPath;
     private String securityName;
+    private Boolean isApproved;
 }

@@ -44,6 +44,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
+import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
+import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +59,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.builders.GroupBuilder;
 import ar.com.fdvs.dj.domain.constants.GroupLayout;
 import ar.com.fdvs.dj.domain.entities.DJGroup;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
-import com.sb.solutions.api.approvallimit.emuns.LoanApprovalType;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
@@ -155,47 +156,8 @@ import com.sb.solutions.report.core.enums.ExportType;
 import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
 import com.sb.solutions.report.core.model.Report;
-import com.sb.solutions.report.core.util.StyleUtil;
 
-import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileReader;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
-import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
 
 
 /**
@@ -236,6 +198,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
     private final LoanConfigService loanConfigService;
+    private final CollateralSiteVisitService collateralSiteVisitService;
     private long countCustomer, countBranch;
     private BigDecimal totalLoan;
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -281,6 +244,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             CustomerGeneralDocumentService customerGeneralDocumentService,
             CadDocumentService cadDocumentService,
             LoanConfigService loanConfigService,
+            CollateralSiteVisitService collateralSiteVisitService, BranchService branchService
+    ) {
             BranchService branchService,
             CustomerDocumentService customerDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
@@ -311,6 +276,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.cadDocumentService = cadDocumentService;
+        this.collateralSiteVisitService = collateralSiteVisitService;
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
         this.customerDocumentService = customerDocumentService;
@@ -704,6 +670,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                                 filePath, e);
                     }
                 }).start();
+                if (customerLoan1.getSecurity().getId() != null) {
+                    List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService.getCollateralSiteVisitBySecurityId(customerLoan1.getSecurity().getId());
+                    if (collateralSiteVisits.size() > 0) {
+                        for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
+                            List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
+                            if (siteVisitDocuments.size() > 0) {
+                                for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
+                                    siteVisitDocument.setIsApproved(true);
+                                }
+                            }
+                        }
+                    }
+                }
                 CustomerActivity customerActivity = CustomerActivity.builder()
                         .customerLoanId(customerLoan1.getId())
                         .activityType(ActivityType.MANUAL)
