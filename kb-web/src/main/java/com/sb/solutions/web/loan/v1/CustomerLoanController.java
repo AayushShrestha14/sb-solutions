@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -106,14 +105,9 @@ public class CustomerLoanController {
     public ResponseEntity<?> loanAction(@Valid @RequestBody List<StageDto> actionDtoList,
         @RequestParam boolean stageSingle) {
         User user = userService.getAuthenticatedUser();
-//        List<CustomerLoan> loans = actionDtoList.stream()
-//            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
-//            .collect(Collectors.toList());
-        List<CustomerLoan> loans = new ArrayList<>();
-        for (StageDto stageDto: actionDtoList) {
-            CustomerLoan customerLoan = mapper.actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()), user);
-            loans.add(service.save(customerLoan));
-        }
+        List<CustomerLoan> loans = actionDtoList.stream()
+            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
+            .collect(Collectors.toList());
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
         // remove from combined loan if loans are staged individually
         // or loans are combined and approved

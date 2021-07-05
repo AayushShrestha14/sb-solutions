@@ -26,7 +26,7 @@ public class CollateralSiteVisit extends BaseEntity<Long> {
     private String securityName;
     private String siteVisitJsonData;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "security_id")
     @JsonIgnore
     private Security security;

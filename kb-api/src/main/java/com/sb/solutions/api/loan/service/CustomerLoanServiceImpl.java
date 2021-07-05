@@ -44,8 +44,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
-import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
 import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -198,7 +196,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
     private final LoanConfigService loanConfigService;
-    private final CollateralSiteVisitService collateralSiteVisitService;
     private long countCustomer, countBranch;
     private BigDecimal totalLoan;
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -243,7 +240,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             CustomerGeneralDocumentService customerGeneralDocumentService,
             CadDocumentService cadDocumentService,
             LoanConfigService loanConfigService,
-            CollateralSiteVisitService collateralSiteVisitService, BranchService branchService
+            BranchService branchService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -273,7 +270,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.cadDocumentService = cadDocumentService;
-        this.collateralSiteVisitService = collateralSiteVisitService;
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
     }
@@ -653,19 +649,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                                 filePath, e);
                     }
                 }).start();
-                if (customerLoan1.getSecurity().getId() != null) {
-                    List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService.getCollateralSiteVisitBySecurityId(customerLoan1.getSecurity().getId());
-                    if (collateralSiteVisits.size() > 0) {
-                        for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
-                            List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
-                            if (siteVisitDocuments.size() > 0) {
-                                for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
-                                    siteVisitDocument.setIsApproved(true);
-                                }
-                            }
-                        }
-                    }
-                }
                 CustomerActivity customerActivity = CustomerActivity.builder()
                         .customerLoanId(customerLoan1.getId())
                         .activityType(ActivityType.MANUAL)
