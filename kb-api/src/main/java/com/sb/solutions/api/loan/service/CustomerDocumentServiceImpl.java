@@ -51,7 +51,7 @@ public class CustomerDocumentServiceImpl implements CustomerDocumentService {
     }
 
     @Override
-    public String deleteDocPath(String path) {
+    public String deleteCustomerDocFromSystem(String path) {
         DeleteFileUtils.deleteFile(path);
         return "SUCCESSFULLY DELETED";
     }

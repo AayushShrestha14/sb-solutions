@@ -524,8 +524,8 @@ public class CustomerLoanController {
     }
 
     @PostMapping("/delete-document/")
-    public ResponseEntity deleteDocument(@RequestBody String path) {
+    public ResponseEntity deleteCustomerDocFromSystem(@RequestBody String path) {
         return new RestResponseDto()
-                .successModel(customerDocumentService.deleteDocPath(path));
+                .successModel(customerDocumentService.deleteCustomerDocFromSystem(path));
     }
 }

@@ -8,7 +8,7 @@ import com.sb.solutions.core.service.BaseService;
  */
 public interface CustomerDocumentService extends BaseService<CustomerDocument> {
 
-    String deleteDocPath(String path);
+    String deleteCustomerDocFromSystem(String path);
 
     void deleteById(Long customerDocId);
 
