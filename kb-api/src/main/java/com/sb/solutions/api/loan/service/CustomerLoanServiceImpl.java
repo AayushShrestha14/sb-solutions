@@ -64,9 +64,6 @@ import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import ar.com.fdvs.dj.domain.entities.columns.PropertyColumn;
 import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
-import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
-import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
-import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import com.sb.solutions.api.companyInfo.model.entity.CompanyInfo;
 import com.sb.solutions.api.companyInfo.model.service.CompanyInfoService;
 import com.sb.solutions.api.creditRiskGrading.service.CreditRiskGradingService;
@@ -196,7 +193,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     private final CustomerGeneralDocumentService customerGeneralDocumentService;
     private final CadDocumentService cadDocumentService;
     private final LoanConfigService loanConfigService;
-    private final CollateralSiteVisitService collateralSiteVisitService;
     private long countCustomer, countBranch;
     private BigDecimal totalLoan;
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -241,7 +237,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerGeneralDocumentService customerGeneralDocumentService,
         CadDocumentService cadDocumentService,
         LoanConfigService loanConfigService,
-        CollateralSiteVisitService collateralSiteVisitService, BranchService branchService
+        BranchService branchService
     ) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
@@ -271,7 +267,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.customerLoanRepositoryJdbcTemplate = customerLoanRepositoryJdbcTemplate;
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.cadDocumentService = cadDocumentService;
-        this.collateralSiteVisitService = collateralSiteVisitService;
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
     }
@@ -651,21 +646,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                             filePath, e);
                     }
                 }).start();
-                if (customerLoan1.getSecurity().getId() != null) {
-                    List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService
-                        .getCollateralSiteVisitBySecurityId(customerLoan1.getSecurity().getId());
-                    if (collateralSiteVisits.size() > 0) {
-                        for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
-                            List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit
-                                .getSiteVisitDocuments();
-                            if (siteVisitDocuments.size() > 0) {
-                                for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
-                                    siteVisitDocument.setIsApproved(true);
-                                }
-                            }
-                        }
-                    }
-                }
                 CustomerActivity customerActivity = CustomerActivity.builder()
                     .customerLoanId(customerLoan1.getId())
                     .activityType(ActivityType.MANUAL)
