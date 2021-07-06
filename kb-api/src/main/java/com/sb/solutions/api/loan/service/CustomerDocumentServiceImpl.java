@@ -1,8 +1,8 @@
 package com.sb.solutions.api.loan.service;
 
 import java.util.List;
-
 import com.google.gson.Gson;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,5 +48,16 @@ public class CustomerDocumentServiceImpl implements CustomerDocumentService {
     @Override
     public List<CustomerDocument> saveAll(List<CustomerDocument> list) {
         return null;
+    }
+
+    @Override
+    public String deleteCustomerDocFromSystem(String path) {
+        DeleteFileUtils.deleteFile(path);
+        return "Successfully deleted";
+    }
+
+    @Override
+    public void deleteById(Long customerDocId) {
+        customerDocumentRepository.deleteById(customerDocId);
     }
 }

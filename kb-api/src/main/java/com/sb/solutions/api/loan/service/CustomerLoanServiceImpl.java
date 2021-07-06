@@ -200,6 +200,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
     private final BranchService branchService;
+    private final CustomerDocumentService customerDocumentService;
 
     @Autowired
     EntityManager em;
@@ -208,37 +209,37 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
 
     public CustomerLoanServiceImpl(
-        CustomerLoanRepository customerLoanRepository,
-        UserService userService,
-        CustomerService customerService,
-        CompanyInfoService companyInfoService,
-        DmsLoanFileService dmsLoanFileService,
-        SiteVisitService siteVisitService,
-        FinancialService financialService,
-        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-        CrgMicroService crgMicroService,
-        CreditRiskGradingLambdaService creditRiskGradingLambdaService,
-        SecurityService securityservice,
-        ProposalService proposalService,
-        CustomerOfferService customerOfferService,
-        CreditRiskGradingService creditRiskGradingService,
-        CrgGammaService crgGammaService,
-        GroupServices groupService,
-        VehicleSecurityService vehicleSecurityService,
-        ShareSecurityService shareSecurityService,
-        NepaliTemplateService nepaliTemplateService,
-        NepaliTemplateMapper nepaliTemplateMapper,
-        InsuranceService insuranceService,
-        NotificationMasterService notificationMasterService,
-        CustomerLoanFlagService customerLoanFlagService,
-        CustomerInfoService customerInfoService,
-        ActivityService activityService,
-        CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
-        CustomerGeneralDocumentService customerGeneralDocumentService,
-        CadDocumentService cadDocumentService,
-        LoanConfigService loanConfigService,
-        BranchService branchService
-    ) {
+            CustomerLoanRepository customerLoanRepository,
+            UserService userService,
+            CustomerService customerService,
+            CompanyInfoService companyInfoService,
+            DmsLoanFileService dmsLoanFileService,
+            SiteVisitService siteVisitService,
+            FinancialService financialService,
+            CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+            CrgMicroService crgMicroService,
+            CreditRiskGradingLambdaService creditRiskGradingLambdaService,
+            SecurityService securityservice,
+            ProposalService proposalService,
+            CustomerOfferService customerOfferService,
+            CreditRiskGradingService creditRiskGradingService,
+            CrgGammaService crgGammaService,
+            GroupServices groupService,
+            VehicleSecurityService vehicleSecurityService,
+            ShareSecurityService shareSecurityService,
+            NepaliTemplateService nepaliTemplateService,
+            NepaliTemplateMapper nepaliTemplateMapper,
+            InsuranceService insuranceService,
+            NotificationMasterService notificationMasterService,
+            CustomerLoanFlagService customerLoanFlagService,
+            CustomerInfoService customerInfoService,
+            ActivityService activityService,
+            CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
+            CustomerGeneralDocumentService customerGeneralDocumentService,
+            CadDocumentService cadDocumentService,
+            LoanConfigService loanConfigService,
+            BranchService branchService,
+            CustomerDocumentService customerDocumentService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -269,6 +270,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.cadDocumentService = cadDocumentService;
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
+        this.customerDocumentService = customerDocumentService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -498,6 +500,19 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         if (customerLoan.getInsurance() != null) {
             customerLoan.setInsurance(customerLoan.getLoanHolder().getInsurance());
+        }
+
+        if (!isNewLoan) {
+            CustomerLoan actualLoan = customerLoanRepository.findById(customerLoan.getId()).get();
+            List<CustomerDocument> actualDocuments = actualLoan.getCustomerDocument();
+            List<CustomerDocument> updatedDocuments = customerLoan.getCustomerDocument();
+
+            for (CustomerDocument doc : actualDocuments) {
+                Optional<CustomerDocument> optionalCustomerDocument = updatedDocuments.stream().filter(d -> Objects.equals(d.getId(), doc.getId())).findAny();
+                if (!optionalCustomerDocument.isPresent()) {
+                    customerDocumentService.deleteById(doc.getId());
+                }
+            }
         }
 
         CustomerLoan savedCustomerLoan = customerLoanRepository.save(customerLoan);
