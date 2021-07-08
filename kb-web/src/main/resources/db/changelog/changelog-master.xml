@@ -7126,4 +7126,14 @@
             <column name="is_approved" type="BOOLEAN" defaultValue="false"/>
         </addColumn>
     </changeSet>
+    <changeSet id="66-alter-table-customer-info-add-column-data" author="Mohammad">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_info" columnName="data"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_info">
+            <column name="data" type="NVARCHAR(MAX)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
