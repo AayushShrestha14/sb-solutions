@@ -1,6 +1,5 @@
 package com.sb.solutions.web;
 
-import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
@@ -14,7 +13,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.AuditorAware;
@@ -34,6 +32,7 @@ import com.sb.solutions.core.config.security.SpringSecurityAuditorAware;
 import com.sb.solutions.core.config.security.property.FileStorageProperties;
 import com.sb.solutions.core.config.security.property.MailProperties;
 import com.sb.solutions.core.constant.BaseConfigurationPatchUtils;
+import com.sb.solutions.core.enums.ClientAffiliate;
 import com.sb.solutions.core.utils.BankUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 
@@ -173,14 +172,23 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                 cadPopulator.execute(dataSource);
             }
 
-            if (affiliateId.equals("mega")){
-                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(baseServerFolder + "/general_patch/cad_template_checkList_doc.sql");
-                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(dataResourceCheckListDoc);
+            if (affiliateId.equals("mega")) {
+                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(
+                    baseServerFolder + "/general_patch/cad_template_checkList_doc.sql");
+                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(
+                    dataResourceCheckListDoc);
 
                 cadCheckListTemplateDocument.execute(dataSource);
             }
 
+            if (affiliateId.equals(ClientAffiliate.PROGRESSIVE)) {
+                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(
+                    baseServerFolder + "/general_patch/progressive_cad_template_checkList_doc.sql");
+                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(
+                    dataResourceCheckListDoc);
 
+                cadCheckListTemplateDocument.execute(dataSource);
+            }
 
             if (ProductUtils.LAS) {
                 ClassPathResource dataResource = new ClassPathResource(
@@ -193,24 +201,22 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
             }
             if (ProductUtils.FULL_CAD) {
                 ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/loan_sql/cad/cad-menu.sql");
+                    baseServerFolder + "/loan_sql/cad/cad-menu.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                        dataResource);
+                    dataResource);
                 populator.execute(dataSource);
-            }
-
-            else  {
+            } else {
                 ClassPathResource dataResource = new ClassPathResource(
-                        baseServerFolder + "/loan_sql/cad/remove-cad-menu.sql");
+                    baseServerFolder + "/loan_sql/cad/remove-cad-menu.sql");
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-                        dataResource);
+                    dataResource);
                 populator.execute(dataSource);
             }
 
             this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
                 baseServerFolder);
-                this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
-                    baseServerFolder);
+            this.permissionRemoveForDMSandLAS(ProductUtils.DMS, ProductUtils.LAS,
+                baseServerFolder);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("cannot load patch file");
