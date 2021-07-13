@@ -165,6 +165,32 @@ public class PathBuilder {
                 .toString();
     }
 
+    public String buildTempLoanDocumentUploadBasePathForNewLoan(Long customerInfoId,
+                                                        Long branchId,
+                                                        String customerType,
+                                                        String action,
+                                                        Long loanConfigId) {
+        return new StringBuilder(this.basePath)
+                .append("customers")
+                .append(FILE_SEPARATOR)
+                .append("Branch-" + branchId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(customerType).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("customer-" + customerInfoId)
+                .append(FILE_SEPARATOR)
+                .append("Loan_Document")
+                .append(FILE_SEPARATOR)
+                .append("Loan-" + loanConfigId)
+                .append(FILE_SEPARATOR)
+                .append(StringUtils.deleteWhitespace(action).toUpperCase())
+                .append(FILE_SEPARATOR)
+                .append("tempDocument")
+                .append(FILE_SEPARATOR)
+                .toString();
+    }
+
+
     public String buildLoanDocumentUploadBasePathWithLoanId(Long customerInfoId,
                                                         Long branchId,
                                                         String customerType,

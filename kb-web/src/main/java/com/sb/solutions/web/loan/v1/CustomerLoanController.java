@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
+import com.sb.solutions.api.loan.service.CustomerDocumentService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,21 +77,23 @@ public class CustomerLoanController {
     private final UserService userService;
     private final Mapper mapper;
     private final CombinedLoanService combinedLoanService;
+    private final CustomerDocumentService customerDocumentService;
 
     @Value("${bank.affiliateId}")
     private String affiliateId;
 
     public CustomerLoanController(
-        CustomerLoanService service,
-        Mapper mapper,
-        UserService userService,
-        CombinedLoanService combinedLoanService
-    ) {
+            CustomerLoanService service,
+            Mapper mapper,
+            UserService userService,
+            CombinedLoanService combinedLoanService,
+            CustomerDocumentService customerDocumentService) {
 
         this.service = service;
         this.mapper = mapper;
         this.userService = userService;
         this.combinedLoanService = combinedLoanService;
+        this.customerDocumentService = customerDocumentService;
     }
 
     @PostMapping(value = "/action")
@@ -106,14 +109,9 @@ public class CustomerLoanController {
     public ResponseEntity<?> loanAction(@Valid @RequestBody List<StageDto> actionDtoList,
         @RequestParam boolean stageSingle) {
         User user = userService.getAuthenticatedUser();
-//        List<CustomerLoan> loans = actionDtoList.stream()
-//            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
-//            .collect(Collectors.toList());
-        List<CustomerLoan> loans = new ArrayList<>();
-        for (StageDto stageDto: actionDtoList) {
-            CustomerLoan customerLoan = mapper.actionMapper(stageDto, service.findOne(stageDto.getCustomerLoanId()), user);
-            loans.add(service.save(customerLoan));
-        }
+        List<CustomerLoan> loans = actionDtoList.stream()
+            .map(dto -> mapper.actionMapper(dto, service.findOne(dto.getCustomerLoanId()), user))
+            .collect(Collectors.toList());
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
         // remove from combined loan if loans are staged individually
         // or loans are combined and approved
@@ -282,29 +280,30 @@ public class CustomerLoanController {
         @RequestParam("documentId") Long documentId,
         @RequestParam("loanHolderId") Long loanHolderId,
         @RequestParam("customerType") String customerType,
-        @RequestParam(required = false, defaultValue = "") String actualLoanId,
+        @RequestParam(name = "actualLoanId", required = false, defaultValue = "") String actualLoanId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
+
+        Preconditions.checkNotNull(loanHolderId, "Loan Holder cannot be null");
+        Preconditions.checkNotNull(customerType, "CustomerType cannot be null");
+        Preconditions.checkNotNull(loanId, "LoanConfig cannot be null");
+
+        Long branchId;
+        List<Branch> branches = userService.getAuthenticatedUser().getBranch();
+        if (branches.size() != 1) {
+            throw new ServiceValidationException("You do not have permission to upload file!");
+        } else {
+            branchId = branches.get(0).getId();
+        }
+        Preconditions.checkNotNull(branchId, "Branch cannot be null");
 
         CustomerDocument customerDocument = new CustomerDocument();
         Document document = new Document();
         document.setId(documentId);
         customerDocument.setDocument(document);
-        Long branchId;
-        List<Branch> branches = userService.getAuthenticatedUser().getBranch();
-        if (branches.size() != 1) {
-            throw new ServiceValidationException("You do not have Permission to upload File!");
-        } else {
-            branchId = branches.get(0).getId();
-        }
-
-        Preconditions.checkNotNull(loanHolderId, "Loan Holder Cannot be null");
-        Preconditions.checkNotNull(branchId, "Branch Cannot be null");
-        Preconditions.checkNotNull(customerType, "Customer Type Cannot be null");
-        Preconditions.checkNotNull(loanId, "Loan  Cannot be null");
 
         if (StringUtils.isEmpty(actualLoanId)) {
             String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                    .buildLoanDocumentUploadBasePathWithId(loanHolderId,
+                    .buildTempLoanDocumentUploadBasePathForNewLoan(loanHolderId,
                             branchId,
                             customerType,
                             action,
@@ -314,15 +313,25 @@ public class CustomerLoanController {
                     .uploadFile(multipartFile, uploadPath, documentName);
             customerDocument
                     .setDocumentPath(((RestResponseDto) responseEntity.getBody()).getDetail().toString());
-
         } else {
-            String uploadPath = new PathBuilder(UploadDir.initialDocument)
-                    .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
-                            branchId,
-                            customerType,
-                            action,
-                            loanId, actualLoanId);
-
+            String uploadPath;
+            CustomerLoan customerLoan = service.findOne(Long.parseLong(actualLoanId));
+            Optional<CustomerDocument> optionalCustomerDocument = customerLoan.getCustomerDocument().stream().filter(d -> d.getDocument().getName().equalsIgnoreCase(documentName)).findAny();
+            if (optionalCustomerDocument.isPresent()) {
+                CustomerDocument customerDocument1 = optionalCustomerDocument.get();
+                String tempPath = customerDocument1.getDocumentPath();
+                uploadPath = tempPath.substring(0, tempPath.lastIndexOf("/")) + "/";
+                customerDocument.setId(customerDocument1.getId());
+                int version = customerDocument1.getVersion();
+                customerDocument.setVersion(version);
+            } else {
+                uploadPath = new PathBuilder(UploadDir.initialDocument)
+                        .buildLoanDocumentUploadBasePathWithLoanId(loanHolderId,
+                                branchId,
+                                customerType,
+                                action,
+                                loanId, actualLoanId);
+            }
             logger.info("File Upload Path {}", uploadPath);
             ResponseEntity<?> responseEntity = FileUploadUtils
                     .uploadFile(multipartFile, uploadPath, documentName);
@@ -512,5 +521,11 @@ public class CustomerLoanController {
             default:
                 return "";
         }
+    }
+
+    @PostMapping("/delete-document/")
+    public ResponseEntity deleteCustomerDocFromSystem(@RequestBody String path) {
+        return new RestResponseDto()
+                .successModel(customerDocumentService.deleteCustomerDocFromSystem(path));
     }
 }
