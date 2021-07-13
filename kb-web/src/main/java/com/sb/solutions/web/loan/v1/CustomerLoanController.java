@@ -133,7 +133,15 @@ public class CustomerLoanController {
     public ResponseEntity<?> save(@Valid @RequestBody CustomerLoan customerLoan) {
 
         logger.debug("saving Customer Loan {}", customerLoan);
-
+        if (customerLoan.getId() == null) {
+            if (customerLoan.getProposal() == null) {
+                return new RestResponseDto().failureModel("Proposal can not be null");
+            } else {
+                if (customerLoan.getProposal().getProposedLimit() == null) {
+                    return new RestResponseDto().failureModel("Proposal limit can not be null");
+                }
+            }
+        }
         return new RestResponseDto().successModel(service.save(customerLoan));
     }
 
