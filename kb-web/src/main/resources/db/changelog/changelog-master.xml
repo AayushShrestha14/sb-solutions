@@ -7136,4 +7136,16 @@
             <column name="data" type="NVARCHAR(MAX)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="454-alter-proposal-add-column-group_exposure" author="Karma">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="proposal" columnName="group_exposure"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="proposal">
+            <column name="group_exposure" type="NVARCHAR(MAX)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
