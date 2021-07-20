@@ -53,6 +53,7 @@ public class CustomerLoanFilterDto {
     private LoanConfig loan;
     private Boolean pulled = false;
 
+    private Long loanHolderId;
     public CustomerLoanFilterDto(Long id, String loanName,
         LoanType loanType, DocStatus documentStatus, LoanStage currentStage,
         Priority priority, String previousStageList,
@@ -68,6 +69,24 @@ public class CustomerLoanFilterDto {
         this.combinedLoan = combinedLoan;
         this.proposal = proposal;
         this.loanId = loanId;
+    }
+
+    public CustomerLoanFilterDto(Long id, String loanName,
+        LoanType loanType, DocStatus documentStatus, LoanStage currentStage,
+        Priority priority, String previousStageList,
+        CombinedLoan combinedLoan,
+        Proposal proposal,Long loanId,Long loanHolderId) {
+        this.id = id;
+        this.loanName = loanName;
+        this.loanType = loanType;
+        this.documentStatus = documentStatus;
+        this.currentStage = currentStage;
+        this.priority = priority;
+        this.previousStageList = previousStageList;
+        this.combinedLoan = combinedLoan;
+        this.proposal = proposal;
+        this.loanId = loanId;
+        this.loanHolderId = loanHolderId;
     }
 
     public List<LoanStageDto> getPreviousList() {
