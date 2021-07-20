@@ -2,6 +2,8 @@ package com.sb.solutions.api.branch.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +126,11 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public List<Branch> getAccessBranchByCurrentUser() {
         if (userService.getAuthenticatedUser().getRole().getRoleAccess().equals(RoleAccess.ALL)) {
-            return branchRepository.findAll();
+            List<Branch> list = branchRepository.findAll();
+            if (list.size() > 0) {
+                list.sort(Comparator.comparing(Branch::getName));
+            }
+            return list;
         }
         return userService.getAuthenticatedUser().getBranch();
     }

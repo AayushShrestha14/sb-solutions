@@ -47,6 +47,7 @@ import com.sb.solutions.core.exception.ServiceValidationException;
 import com.sb.solutions.core.repository.customCriteria.BaseCriteriaQuery;
 import com.sb.solutions.core.repository.customCriteria.dto.CriteriaDto;
 import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.CustomerLoanDto;
@@ -140,7 +141,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
         s.put("documentStatus", DocStatus.APPROVED.name());
         if (!assignedCustomerLoanIds.isEmpty()) {
-          assignedLoanId = assignedCustomerLoanIds.stream()
+            assignedLoanId = assignedCustomerLoanIds.stream()
                 .map(String::valueOf).collect(Collectors.joining(","));
             s.put("notLoanIds", assignedLoanId);
         }
@@ -425,7 +426,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         if (!user.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)) {
             String branchAccess = userService.getRoleAccessFilterByBranch().stream()
                 .map(Object::toString).collect(Collectors.joining(","));
-            if (filterParams.containsKey("branchIds") && !ObjectUtils.isEmpty(filterParams.get("branchIds"))) {
+            if (filterParams.containsKey("branchIds") && !ObjectUtils
+                .isEmpty(filterParams.get("branchIds"))) {
                 branchAccess = filterParams.get("branchIds");
             }
             filterParams.put("branchIds", branchAccess);
@@ -575,7 +577,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
             customerLoanList.add(customerLoan);
         });
-        return customerLoanList;
+        return customerLoanList.stream().filter(FilterJsonUtils.distinctByKey(CustomerLoan::getId))
+            .collect(Collectors.toList());
     }
 
 }
