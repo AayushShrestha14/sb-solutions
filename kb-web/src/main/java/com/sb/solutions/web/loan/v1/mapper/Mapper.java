@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
+import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
+import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +53,16 @@ public class Mapper {
     private final StageMapper stageMapper;
     private final ApprovalLimitService approvalLimitService;
     private final UserService userService;
+    private final CollateralSiteVisitService collateralSiteVisitService;
     Gson gson = new Gson();
 
     public Mapper(@Autowired StageMapper stageMapper,
-        @Autowired ApprovalLimitService approvalLimitService,
-        UserService userService) {
+                  @Autowired ApprovalLimitService approvalLimitService,
+                  UserService userService, CollateralSiteVisitService collateralSiteVisitService) {
         this.stageMapper = stageMapper;
         this.approvalLimitService = approvalLimitService;
         this.userService = userService;
+        this.collateralSiteVisitService = collateralSiteVisitService;
     }
 
     public CustomerLoan actionMapper(StageDto loanActionDto, CustomerLoan customerLoan,
@@ -106,6 +111,19 @@ public class Mapper {
                 Preconditions.checkArgument(
                     customerLoan.getSolUser().getId() == currentUser.getId(),
                     "You don't have permission to Approve this file!!");
+            }
+            if (customerLoan.getSecurity() != null && customerLoan.getSecurity().getId() != null) {
+                List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitService.getCollateralSiteVisitBySecurityId(customerLoan.getSecurity().getId());
+                if (collateralSiteVisits.size() > 0) {
+                    for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
+                        List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
+                        if (siteVisitDocuments.size() > 0) {
+                            for (SiteVisitDocument siteVisitDocument : siteVisitDocuments) {
+                                siteVisitDocument.setIsApproved(true);
+                            }
+                        }
+                    }
+                }
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
@@ -157,7 +175,8 @@ public class Mapper {
         if (((loanActionDto.getDocAction() == DocAction.FORWARD) && currentUser.getRole()
             .getRoleType() == RoleType.MAKER) ||
                 (loanActionDto.getDocAction() == DocAction.TRANSFER) &&
-                        (currentUser.getRole().getRoleType() == RoleType.MAKER || currentUser.getRole().getRoleType() == RoleType.COMMITTEE)) {
+                        (currentUser.getRole().getRoleType() == RoleType.MAKER ||
+                                currentUser.getRole().getRoleType() == RoleType.COMMITTEE)) {
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),

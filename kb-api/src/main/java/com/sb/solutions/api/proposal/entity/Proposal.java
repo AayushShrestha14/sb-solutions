@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,6 +56,10 @@ public class Proposal extends BaseEntity<Long> {
     private String cashMarginMethod;
     @NotAudited
     private BigDecimal enhanceLimitAmount;
+
+    @NotAudited
+    @JsonProperty("groupExposure")
+    private String groupExposure;
 
 
     @Transient
