@@ -4,10 +4,8 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.graalvm.compiler.core.common.SuppressFBWarnings;
 
 @Data
-@SuppressFBWarnings(value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" }, justification = "I prefer to suppress these FindBugs warnings")
 public abstract class BaseDto<PK> {
 
     private PK id;
