@@ -48,4 +48,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long>,
 
     Branch findByName( String name);
 
+    @Query(value = "SELECT b.id FROM branch b ",nativeQuery = true)
+    List<Long>  getAllIdOfBranch();
+
 }
