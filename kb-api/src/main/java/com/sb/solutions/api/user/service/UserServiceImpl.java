@@ -259,9 +259,7 @@ public class UserServiceImpl implements UserService {
             }
 
             if (u.getRole().getRoleAccess().equals(RoleAccess.ALL)) {
-                for (Branch b : this.branchRepository.findAll()) {
-                    branchIdList.add(b.getId());
-                }
+               branchIdList = branchRepository.getAllIdOfBranch();
             }
 
         }

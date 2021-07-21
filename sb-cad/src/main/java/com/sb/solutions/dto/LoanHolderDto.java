@@ -22,12 +22,31 @@ public class LoanHolderDto {
     private Long id = 0L;
     private CustomerType customerType;
     private String name;
-    private Branch branch;
+
     private Long associateId;
     private String idNumber;
     private Date idRegDate;
     private String idRegPlace;
+    private String branchName;
+    private String provinceName;
+    private Long branchId;
     private List<CustomerLoanDto> customerLoanDtoList = new ArrayList<>();
     private Long totalLoan = 0L;
     private Long cadId;
+    private Branch branch;
+
+    public LoanHolderDto(Long id, CustomerType customerType, String name, Long associateId,
+        String idNumber, Date idRegDate, String idRegPlace, String branchName,
+        String provinceName,Long branchId) {
+        this.id = id;
+        this.customerType = customerType;
+        this.name = name;
+        this.associateId = associateId;
+        this.idNumber = idNumber;
+        this.idRegDate = idRegDate;
+        this.idRegPlace = idRegPlace;
+        this.branchName = branchName;
+        this.provinceName = provinceName;
+        this.branchId = branchId;
+    }
 }
