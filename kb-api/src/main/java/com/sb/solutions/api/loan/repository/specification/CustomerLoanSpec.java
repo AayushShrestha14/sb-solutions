@@ -71,6 +71,7 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
     public static final String FILTER_BY_USER = "users";
     public static final String FILTER_BY_BUSINESS_UNIT = "clientType";
     public static final String FILTER_BY_LOAN_HOLDER_CODE = "customerCode";
+    public static final String FILTER_BY_LOAN_HOLDER_ID_IN = "loanHolderIdIn";
 
     public static final String FILTER_BY_LOAN_TAG = "loanTag";
     private final String property;
@@ -346,6 +347,15 @@ public class CustomerLoanSpec implements Specification<CustomerLoan> {
                         value.toLowerCase() + "%");
             case FILTER_BY_LOAN_TAG:
                 return  criteriaBuilder.equal(root.join("loan").get("loanTag") , LoanTag.valueOf(value));
+
+            case FILTER_BY_LOAN_HOLDER_ID_IN:
+                Pattern pattern11 = Pattern.compile(",");
+                List<Long> list11= pattern11.splitAsStream(value)
+                    .map(Long::valueOf)
+                    .collect(Collectors.toList());
+                Expression<String> exp11 = root.get("loanHolder").get("id");
+                Predicate predicate11 = exp11.in(list11);
+                return criteriaBuilder.and(predicate11);
 
             default:
                 return null;

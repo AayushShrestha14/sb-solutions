@@ -264,7 +264,12 @@ public class CadStageMapper {
 
         } catch (Exception e) {
             log.error("unable to get users for backward ", e);
-
+            final List<User> usersMaker = userService
+                .findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, branchID);
+            if (!usersMaker.isEmpty()) {
+                map.put(USER_ID, usersMaker.get(0).getId());
+                map.put(ROLE_ID, usersMaker.get(0).getRole().getId());
+            }
         }
         return map;
     }

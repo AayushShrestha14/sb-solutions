@@ -27,4 +27,7 @@ public interface CustomerCadRepository extends
 
     @Query(value = "SELECT c.assignedLoan FROM CustomerApprovedLoanCadDocumentation c")
     List<CustomerLoan> findAllAssignedLoan();
+
+    @Query(value = "SELECT assigned_loan_id from assigned_loan",nativeQuery = true )
+    List<Long> findAllAssignedLoanIds();
 }
