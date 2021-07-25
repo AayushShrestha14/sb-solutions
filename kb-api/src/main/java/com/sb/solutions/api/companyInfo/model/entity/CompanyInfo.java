@@ -3,6 +3,7 @@ package com.sb.solutions.api.companyInfo.model.entity;
 import com.sb.solutions.api.companyInfo.capital.entity.Capital;
 import com.sb.solutions.api.companyInfo.companyLocations.entity.CompanyLocations;
 import com.sb.solutions.api.companyInfo.legalStatus.entity.LegalStatus;
+import com.sb.solutions.api.companyInfo.model.enums.MicroCustomerType;
 import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.core.enitity.BaseEntity;
 import com.sb.solutions.core.enitity.EntityValidator;
@@ -82,6 +83,9 @@ public class CompanyInfo extends BaseEntity<Long> implements EntityValidator {
 
     @NotAudited
     private Boolean isMicroCustomer;
+
+    @NotAudited
+    private MicroCustomerType microCustomerType;
 
     @Override
     public Pair<Boolean, String> valid() {
