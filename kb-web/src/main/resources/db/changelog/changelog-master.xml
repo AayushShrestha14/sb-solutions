@@ -7147,5 +7147,14 @@
             <column name="group_exposure" type="NVARCHAR(MAX)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet id="428-alter-table-company-info-add-column-micro-customer-type" author="bibash">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="company_info" columnName="micro_customer_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="company_info">
+            <column name="micro_customer_type" type="INT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
