@@ -27,6 +27,7 @@ import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.navigation.dto.MenuDto;
+import com.sb.solutions.web.navigation.mapper.MenuCreatorCAD;
 import com.sb.solutions.web.navigation.mapper.MenuMapper;
 
 /**
@@ -127,11 +128,7 @@ public class NavigationController {
 
 
     private MenuDto getMenuForCADFULL(User u) {
-        RolePermissionRights rolePermissionRights = new RolePermissionRights();
-        Permission permission = permissionService.findByName("Credit Administration");
-        rolePermissionRights.setRole(u.getRole());
-        rolePermissionRights.setPermission(permission);
-        MenuDto menuDto = menuMapper.menuDto(rolePermissionRights);
+        MenuDto menuDto = MenuCreatorCAD.cadNav();
         if (!(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || u.getRole().getRoleType()
             .equals(RoleType.CAD_ADMIN))) {
             menuDto.setChildren(
