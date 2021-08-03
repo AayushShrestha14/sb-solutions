@@ -3,6 +3,13 @@ package com.sb.solutions.web.navigation;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION;
 import static com.sb.solutions.core.constant.AppConstant.ELIGIBILITY_PERMISSION_SUBNAV_QUESTION;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.ALL_CAD_FILE;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.CREDIT_ADMINISTRATION;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.DISBURSEMENT_APPROVED;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.DISBURSEMENT_PENDING;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.OFFER_LETTER_APPROVED;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.OFFER_LETTER_PENDING;
+import static com.sb.solutions.web.navigation.mapper.MenuCreatorCAD.UNASSIGNED_APPROVED_LOAN;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
-import com.sb.solutions.api.authorization.entity.Permission;
 import com.sb.solutions.api.authorization.entity.RolePermissionRights;
-import com.sb.solutions.api.authorization.service.PermissionService;
 import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
@@ -27,6 +32,7 @@ import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.web.navigation.dto.MenuDto;
+import com.sb.solutions.web.navigation.mapper.MenuCreatorCAD;
 import com.sb.solutions.web.navigation.mapper.MenuMapper;
 
 /**
@@ -40,22 +46,22 @@ public class NavigationController {
 
     private final ApprovalRoleHierarchyService approvalRoleHierarchyService;
 
-    private final PermissionService permissionService;
 
     private final UserService userService;
 
     private final MenuMapper menuMapper;
 
+    private static final String POST_APPROVAL_DOCUMENTATION = "Post Approval Documentation";
+    private static final String POST_APPROVAL_DOCUMENTATION_LINK = "/home/loan/loan-offer-letter";
+    private static final String POST_APPROVAL_DOCUMENTATION_ICON = "arrowhead-down-outline";
 
     public NavigationController(
         RolePermissionRightService rolePermissionRightService,
         ApprovalRoleHierarchyService approvalRoleHierarchyService,
-        PermissionService permissionService,
         UserService userService,
         MenuMapper menuMapper) {
         this.rolePermissionRightService = rolePermissionRightService;
         this.approvalRoleHierarchyService = approvalRoleHierarchyService;
-        this.permissionService = permissionService;
         this.userService = userService;
         this.menuMapper = menuMapper;
     }
@@ -95,13 +101,13 @@ public class NavigationController {
             if ((isPresentInCadHierarchy || u.getRole().getRoleType().equals(RoleType.CAD_ADMIN))
                 && (!ProductUtils.FULL_CAD) && !ProductUtils.CAD_LITE_VERSION) {
                 MenuDto menuDto = new MenuDto();
-                menuDto.setTitle("Post Approval Documentation");
-                menuDto.setLink("/home/loan/loan-offer-letter");
-                menuDto.setIcon("arrowhead-down-outline");
+                menuDto.setTitle(POST_APPROVAL_DOCUMENTATION);
+                menuDto.setLink(POST_APPROVAL_DOCUMENTATION_LINK);
+                menuDto.setIcon(POST_APPROVAL_DOCUMENTATION_ICON);
                 menuList.add(menuDto);
             }
             List<MenuDto> menuDtos = menuList.stream()
-                .filter(menuDto -> menuDto.getTitle().equalsIgnoreCase("Credit Administration"))
+                .filter(menuDto -> menuDto.getTitle().equalsIgnoreCase(CREDIT_ADMINISTRATION))
                 .collect(
                     Collectors.toList());
 
@@ -114,7 +120,8 @@ public class NavigationController {
             }
             if (ProductUtils.FULL_CAD && (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
                 || u.getRole().getRoleType()
-                .equals(RoleType.CAD_ADMIN))) {
+                .equals(RoleType.CAD_ADMIN) || u.getRole().getRoleType()
+                .equals(RoleType.ADMIN))) {
                 menuList.add(getMenuForCADFULL(u));
             }
 
@@ -127,26 +134,30 @@ public class NavigationController {
 
 
     private MenuDto getMenuForCADFULL(User u) {
-        RolePermissionRights rolePermissionRights = new RolePermissionRights();
-        Permission permission = permissionService.findByName("Credit Administration");
-        rolePermissionRights.setRole(u.getRole());
-        rolePermissionRights.setPermission(permission);
-        MenuDto menuDto = menuMapper.menuDto(rolePermissionRights);
+        MenuDto menuDto = MenuCreatorCAD.cadNav();
         if (!(u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR) || u.getRole().getRoleType()
             .equals(RoleType.CAD_ADMIN))) {
             menuDto.setChildren(
                 menuDto.getChildren().stream()
-                    .filter(f -> !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")))
+                    .filter(f -> !(f.getTitle().equalsIgnoreCase(UNASSIGNED_APPROVED_LOAN)))
                     .collect(Collectors.toList()));
         }
         if (u.getRole().getRoleType().equals(RoleType.CAD_LEGAL)) {
             menuDto.setChildren(
                 menuDto.getChildren().stream().filter(f ->
-                    !(f.getTitle().equalsIgnoreCase("Unassigned Approved Loan")
-                        || f.getTitle().equalsIgnoreCase("Offer Letter Pending")
-                        || f.getTitle().equalsIgnoreCase("Offer Letter Approved")
-                        || f.getTitle().equalsIgnoreCase("Disbursement Pending")
-                        || f.getTitle().equalsIgnoreCase("Disbursement Approved")
+                    !(f.getTitle().equalsIgnoreCase(UNASSIGNED_APPROVED_LOAN)
+                        || f.getTitle().equalsIgnoreCase(OFFER_LETTER_PENDING)
+                        || f.getTitle().equalsIgnoreCase(OFFER_LETTER_APPROVED)
+                        || f.getTitle().equalsIgnoreCase(DISBURSEMENT_PENDING)
+                        || f.getTitle().equalsIgnoreCase(DISBURSEMENT_APPROVED)
+                    ))
+                    .collect(Collectors.toList()));
+        }
+        if (u.getRole().getRoleType().equals(RoleType.ADMIN)) {
+            menuDto.setChildren(
+                menuDto.getChildren().stream().filter(f ->
+                    (f.getTitle().equalsIgnoreCase(ALL_CAD_FILE)
+
                     ))
                     .collect(Collectors.toList()));
         }
