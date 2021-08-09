@@ -53,19 +53,25 @@ public class RoleServiceImpl implements RoleService {
         logger.info("saving role {}", role);
         role.setRoleName(role.getRoleName().toUpperCase());
         final Role r = roleRepository.save(role);
-        if (role.getId() != null && role.getRoleType().equals(RoleType.COMMITTEE)) {
-            User u = new User();
-            u.setRole(r);
-            u.setName(u.getRole().getRoleName().concat("- default"));
-            u.setUsername(u.getRole().getRoleName().concat("- default"));
-            u.setPassword(u.getRole().getRoleName());
-            u.setBranch(new ArrayList<Branch>());
-            u.setEmail(u.getRole().getRoleName() + "@admin.com");
-            u.setStatus(Status.ACTIVE);
-            u.setIsDefaultCommittee(true);
-            userService.save(u);
-            logger.info("saving committee default user {}", u);
+        // check default user already exists or not
+        User defaultCommunityUser = userService.getByUsername(r.getRoleName().concat("- default"));
+        if (defaultCommunityUser == null) {
 
+            if (role.getId() != null && role.getRoleType().equals(RoleType.COMMITTEE)) {
+                User u = new User();
+                u.setRole(r);
+
+                u.setName(u.getRole().getRoleName().concat("- default"));
+                u.setUsername(u.getRole().getRoleName().concat("- default"));
+                u.setPassword(u.getRole().getRoleName());
+                u.setBranch(new ArrayList<Branch>());
+                u.setEmail(u.getRole().getRoleName() + "@admin.com");
+                u.setStatus(Status.ACTIVE);
+                u.setIsDefaultCommittee(true);
+                userService.save(u);
+                logger.info("saving committee default user");
+
+            }
         }
         return r;
     }
