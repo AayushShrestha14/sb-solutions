@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sb.solutions.api.loan.entity.CustomerLoan;
 import com.sb.solutions.core.repository.BaseRepository;
+import com.sb.solutions.dto.CadAssignedLoanDto;
 import com.sb.solutions.entity.CadStage;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.enums.CadDocStatus;
@@ -25,9 +25,9 @@ public interface CustomerCadRepository extends
     void updateAction(@Param("id") Long id, @Param("docStatus") CadDocStatus docStatus,
         @Param("cadStage") CadStage cadStage, @Param("previousList") String previousList);
 
-    @Query(value = "SELECT c.assignedLoan FROM CustomerApprovedLoanCadDocumentation c")
-    List<CustomerLoan> findAllAssignedLoan();
-
-    @Query(value = "SELECT assigned_loan_id from assigned_loan",nativeQuery = true )
+    @Query(value = "SELECT assigned_loan_id from assigned_loan", nativeQuery = true)
     List<Long> findAllAssignedLoanIds();
+
+    @Query(value = "SELECT new com.sb.solutions.dto.CadAssignedLoanDto(a.currentStage,a.loanType,c.id,a.id,a.proposal,a.loan.name,a.loan.id,a.previousStageList) FROM CustomerApprovedLoanCadDocumentation c inner join c.assignedLoan a  where c.id in (:ids)")
+    List<CadAssignedLoanDto> findAssignedLoanByIdIn(@Param("ids") List<Long> ids);
 }

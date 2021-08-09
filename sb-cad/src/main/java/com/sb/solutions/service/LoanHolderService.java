@@ -28,7 +28,7 @@ public interface LoanHolderService {
 
     CustomerApprovedLoanCadDocumentation getByID(Long id);
 
-    Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
+    Page<?> getAllByFilterParams(
         Map<String, String> filterParams, Pageable pageable);
 
     Map<String , Object> getCadDocumentCount(Map<String , String> param);

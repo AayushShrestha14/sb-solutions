@@ -49,6 +49,8 @@ import com.sb.solutions.core.repository.customCriteria.dto.CriteriaDto;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.FilterJsonUtils;
 import com.sb.solutions.core.utils.ProductUtils;
+import com.sb.solutions.dto.CadAssignedLoanDto;
+import com.sb.solutions.dto.CadListDto;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.dto.CustomerLoanDto;
 import com.sb.solutions.dto.LoanHolderDto;
@@ -74,6 +76,11 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         "documentStatus", "currentStage.toUser.name", "currentStage.lastModifiedAt",
         "priority", "previousStageList", "combinedLoan", "proposal.proposedLimit", "loan.id",
         "loanHolder.id"};
+
+    private static final String[] CAD_FILTER_COLUMN = {"id", "cadCurrentStage", "cadStageList",
+        "docStatus","loanHolder.branch.id", "loanHolder.branch.name", "loanHolder.branch.province.name", "loanHolder.name",
+        "loanHolder.customerType", "loanHolder.clientType"};
+    private static final String[] CAD_FILTER_JOIN_COLUMN = {"assignedLoan"};
 
     private static final String[] CAD_CUSTOMER_LOAN_JOIN = {"combinedLoan", "proposal",
         "currentStage", "loan", "loanHolder"};
@@ -275,7 +282,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
 
     @Override
-    public Page<CustomerApprovedLoanCadDocumentation> getAllByFilterParams(
+    public Page<?> getAllByFilterParams(
         Map<String, String> filterParams, Pageable pageable) {
         filterParams.values().removeIf(Objects::isNull);
         return filterCADbyParams(filterParams, pageable);
@@ -460,13 +467,28 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         return filterParams;
     }
 
-    private Page<CustomerApprovedLoanCadDocumentation> filterCADbyParams(
+    private Page<?> filterCADbyParams(
         Map<String, String> filterParams, Pageable pageable) {
         final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
             branchAccessAndUserAccess(filterParams));
         final Specification<CustomerApprovedLoanCadDocumentation> specification = customerCadSpecBuilder
             .build();
-        return customerCadRepository.findAll(specification, pageable);
+        CriteriaDto<CustomerApprovedLoanCadDocumentation, CadListDto> criteriaDto = new CriteriaDto<>(
+            CustomerApprovedLoanCadDocumentation.class, CadListDto.class, specification,
+            CAD_FILTER_COLUMN,
+            CAD_FILTER_JOIN_COLUMN);
+        BaseCriteriaQuery<CustomerApprovedLoanCadDocumentation, CadListDto> baseCriteriaQuery = new BaseCriteriaQuery<>();
+        Page<CadListDto> cadListDtoPage = baseCriteriaQuery.getListPage(criteriaDto, em, pageable);
+        List<Long> ids = cadListDtoPage.getContent().stream().map(CadListDto::getId)
+            .collect(Collectors.toList());
+        List<CadAssignedLoanDto> testData = customerCadRepository.findAssignedLoanByIdIn(ids);
+        cadListDtoPage.getContent().forEach(cadListDto -> {
+            cadListDto.setAssignedLoan(CadAssignedLoanDto.getAssigned(testData.stream()
+                .filter(t -> cadListDto.getId().equals(t.getCadId()))
+                .collect(Collectors.toList()), cadListDto.getLoanHolder()));
+        });
+        return cadListDtoPage;
+        //return customerCadRepository.findAll(specification, pageable);
     }
 
 

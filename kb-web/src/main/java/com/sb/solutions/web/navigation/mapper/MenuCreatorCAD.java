@@ -22,6 +22,7 @@ public class MenuCreatorCAD {
     public static final String ALL_CAD_FILE = "All CAD Files";
     public static final String CREDIT_ADMINISTRATION = "Credit Administration";
     public static final String BOOK_OPEN_ICON = "book-open-outline";
+    public static final String CREDIT_ADMINISTRATION_BASE_LINK = "/home/credit";
 
     public static MenuDto cadNav() {
         MenuDto menuDto = new MenuDto();
@@ -39,7 +40,7 @@ public class MenuCreatorCAD {
         MenuDto menuDto = new MenuDto();
         menuDto.setTitle(UNASSIGNED_APPROVED_LOAN);
         menuDto.setIcon(FILE_ICON);
-        menuDto.setLink("/home/credit");
+        menuDto.setLink(CREDIT_ADMINISTRATION_BASE_LINK);
         menuDtoList.add(menuDto);
 
         menuDto = new MenuDto();
