@@ -1,5 +1,7 @@
 package com.sb.solutions.api.authorization.service;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchy;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.entity.RoleHierarchy;
 import com.sb.solutions.api.authorization.repository.RoleHierarchyRepository;
+import com.sb.solutions.core.utils.ApprovalType;
 
 /**
  * @author Rujan Maharjan on 5/13/2019
@@ -51,6 +56,10 @@ public class RoleHierarchyServiceImpl implements RoleHierarchyService {
 
     @Override
     public List<RoleHierarchy> roleHierarchyByCurrentRoleForward(Long id) {
+        // check for admin
+        if(id.intValue() == 1) {
+            return roleHierarchyRepository.roleHierarchyAdminRoleForward();
+        }
         RoleHierarchy r = roleHierarchyRepository.findByRole(id);
         return roleHierarchyRepository.roleHierarchyByCurrentRoleForward(r.getRoleOrder());
     }
