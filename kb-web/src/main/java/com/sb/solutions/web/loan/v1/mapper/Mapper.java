@@ -176,7 +176,7 @@ public class Mapper {
             .getRoleType() == RoleType.MAKER) ||
                 (loanActionDto.getDocAction() == DocAction.TRANSFER) &&
                         (currentUser.getRole().getRoleType() == RoleType.MAKER ||
-                                currentUser.getRole().getRoleType() == RoleType.COMMITTEE)) {
+                                currentUser.getRole().getRoleType() == RoleType.COMMITTEE || currentUser.getRole().getRoleType() == RoleType.ADMIN)) {
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
