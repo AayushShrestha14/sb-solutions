@@ -185,8 +185,10 @@ public class Mapper {
                 customerLoan.setIsSol(Boolean.TRUE);
                 customerLoan.setSolUser(user);
             } else {
-                customerLoan.setIsSol(Boolean.FALSE);
-                customerLoan.setSolUser(null);
+                if (!customerLoan.getIsSol()) {
+                    customerLoan.setIsSol(Boolean.FALSE);
+                    customerLoan.setSolUser(null);
+                }
             }
         }
         return customerLoan;
