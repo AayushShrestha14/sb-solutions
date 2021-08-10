@@ -1,5 +1,6 @@
 package com.sb.solutions.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -52,12 +53,13 @@ public class CadListDto {
     private long count;
     private List<CustomerLoan> assignedLoan;
     private Boolean isAdditionalDisbursement;
+    private Date lastModifiedAt;
 
     public CadListDto(Long id,
         CadStage cadCurrentStage, String cadStageList, CadDocStatus docStatus, Long branchId,
         String branchName,
         String provinceName, String customerName, CustomerType customerType,
-        ClientType clientType,  Boolean isAdditionalDisbursement
+        ClientType clientType,  Boolean isAdditionalDisbursement,Date lastModifiedAt
     ) {
         this.id = id;
         this.cadCurrentStage = cadCurrentStage;
@@ -71,6 +73,7 @@ public class CadListDto {
         this.customerType = customerType;
         this.clientType = clientType;
         this.isAdditionalDisbursement = isAdditionalDisbursement;
+        this.lastModifiedAt = lastModifiedAt;
     }
 
 

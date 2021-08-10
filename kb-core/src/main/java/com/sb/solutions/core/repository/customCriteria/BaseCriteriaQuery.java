@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.sb.solutions.core.repository.customCriteria.dto.CriteriaDto;
 import com.sb.solutions.core.repository.customCriteria.dto.InitQuery;
@@ -26,6 +29,8 @@ import com.sb.solutions.core.repository.customCriteria.dto.InitQuery;
 @Component
 public class BaseCriteriaQuery<E, D> {
 
+    public static final String ASC = "ASC";
+    private static final String DESC = "DESC";
 
     public List<D> getList(CriteriaDto<E, D> criteriaDto, EntityManager entityManager) {
         InitQuery<E, D> initQuery = initializeQuery(criteriaDto, entityManager);
@@ -123,15 +128,38 @@ public class BaseCriteriaQuery<E, D> {
     }
 
     public Page<D> getListPage(CriteriaDto<E, D> criteriaDto, EntityManager entityManager,
-        Pageable pageable) {
+        Pageable pageable, String sortBy, String orderBy) {
+        Order o = null;
         InitQuery<E, D> initQuery = initializeQuery(criteriaDto, entityManager);
+        if (!StringUtils.isEmpty(sortBy)) {
+            Selection[] s = getSelection(new String[]{sortBy}, initQuery.getRoot(),
+                initQuery.getCriteriaBuilder());
 
-        TypedQuery<D> typedQuery = entityManager
-            .createQuery(
-                initQuery.getCriteriaQuery().where(criteriaDto.getSpecification()
-                    .toPredicate(initQuery.getRoot(), initQuery.getCriteriaQuery(),
-                        initQuery.getCriteriaBuilder())).distinct(true)
-            ).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize());
+            if (orderBy.equalsIgnoreCase(ASC)) {
+                o = initQuery.getCriteriaBuilder().asc(
+                    (Expression<?>) Arrays.stream(s).findFirst().get());
+            } else {
+                o = initQuery.getCriteriaBuilder()
+                    .desc((Expression<?>) Arrays.stream(s).findFirst().get());
+            }
+        }
+        TypedQuery<D> typedQuery;
+
+        if (!ObjectUtils.isEmpty(o)) {
+            typedQuery = entityManager
+                .createQuery(
+                    initQuery.getCriteriaQuery().where(criteriaDto.getSpecification()
+                        .toPredicate(initQuery.getRoot(), initQuery.getCriteriaQuery(),
+                            initQuery.getCriteriaBuilder())).orderBy(o).distinct(true)
+                ).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize());
+        } else {
+            typedQuery = entityManager
+                .createQuery(
+                    initQuery.getCriteriaQuery().where(criteriaDto.getSpecification()
+                        .toPredicate(initQuery.getRoot(), initQuery.getCriteriaQuery(),
+                            initQuery.getCriteriaBuilder())).distinct(true)
+                ).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize());
+        }
 
         List<D> resultList = typedQuery.getResultList();
 
