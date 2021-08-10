@@ -147,9 +147,7 @@ public class CustomerLoanController {
 
     @PostMapping("/close-renew-customer-loan")
     public ResponseEntity<?> closeRenew(@Valid @RequestBody CustomerLoan customerLoan) {
-
         logger.debug("saving Customer Loan {}", customerLoan);
-
         return new RestResponseDto().successModel(service.renewCloseEntity(customerLoan));
     }
 
