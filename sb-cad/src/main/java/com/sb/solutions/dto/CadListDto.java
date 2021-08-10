@@ -51,12 +51,14 @@ public class CadListDto {
 
     private long count;
     private List<CustomerLoan> assignedLoan;
+    private Boolean isAdditionalDisbursement;
 
     public CadListDto(Long id,
         CadStage cadCurrentStage, String cadStageList, CadDocStatus docStatus, Long branchId,
         String branchName,
         String provinceName, String customerName, CustomerType customerType,
-        ClientType clientType) {
+        ClientType clientType,  Boolean isAdditionalDisbursement
+    ) {
         this.id = id;
         this.cadCurrentStage = cadCurrentStage;
         this.cadStageList = cadStageList;
@@ -68,6 +70,7 @@ public class CadListDto {
         this.customerName = customerName;
         this.customerType = customerType;
         this.clientType = clientType;
+        this.isAdditionalDisbursement = isAdditionalDisbursement;
     }
 
 

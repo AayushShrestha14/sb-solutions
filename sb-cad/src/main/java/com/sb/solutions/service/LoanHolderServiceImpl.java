@@ -79,7 +79,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private static final String[] CAD_FILTER_COLUMN = {"id", "cadCurrentStage", "cadStageList",
         "docStatus","loanHolder.branch.id", "loanHolder.branch.name", "loanHolder.branch.province.name", "loanHolder.name",
-        "loanHolder.customerType", "loanHolder.clientType"};
+        "loanHolder.customerType", "loanHolder.clientType","isAdditionalDisbursement"};
     private static final String[] CAD_FILTER_JOIN_COLUMN = {"assignedLoan"};
 
     private static final String[] CAD_CUSTOMER_LOAN_JOIN = {"combinedLoan", "proposal",
