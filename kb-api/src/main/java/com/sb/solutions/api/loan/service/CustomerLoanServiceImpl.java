@@ -972,16 +972,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
-            if (previousLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN
-                || previousLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
-                Map<String, Object> proposalData = gson
-                    .fromJson(previousLoan.getProposal().getData(), HashMap.class);
-                proposalData
-                    .replace("existingLimit", previousLoan.getProposal().getProposedLimit());
+            if (previousLoan.getLoanType() != LoanType.NEW_LOAN) {
+                Map<String , Object> proposalData = gson.fromJson(previousLoan.getProposal().getData() , HashMap.class);
+                proposalData.replace("existingLimit" , previousLoan.getProposal().getProposedLimit());
                 proposalData.replace("enhanceLimitAmount", 0);
                 previousLoan.getProposal().setData(gson.toJson(proposalData));
-                previousLoan.getProposal()
-                    .setExistingLimit(previousLoan.getProposal().getProposedLimit());
+                previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
                 previousLoan.getProposal().setEnhanceLimitAmount(BigDecimal.ZERO);
             }
         }
