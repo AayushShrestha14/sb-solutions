@@ -340,12 +340,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoan.setCadDocument(cadDocument);
             }
         }
-        if (BankUtils.AFFILIATED_ID.equals("srdb")) {
-            CustomerLoan customer1 = customerLoanRepository.findById(id).get();
-            if (!ObjectUtils.isEmpty(customer1.getCbsLoanFileNumber())) {
-                customerLoan.setCbsLoanFileNumber(customer1.getCbsLoanFileNumber());
-            }
-        }
         if (ProductUtils.OFFER_LETTER) {
             CustomerOfferLetter customerOfferLetter = customerOfferService
                 .findByCustomerLoanId(customerLoan.getId());
