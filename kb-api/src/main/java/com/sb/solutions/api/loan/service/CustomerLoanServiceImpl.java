@@ -1615,6 +1615,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (customerLoan == null) {
             throw new ServiceValidationException("No customer loan found!!!");
         }
+
+        List<CadDocument> actualDocuments = customerLoan.getCadDocument();
+        List<CadDocument> updatedDocuments = cadDocuments;
+        for (CadDocument doc : actualDocuments) {
+            Optional<CadDocument> optionalCadDocument = updatedDocuments.stream().filter(d -> Objects.equals(d.getId(), doc.getId())).findAny();
+            if (!optionalCadDocument.isPresent()) {
+                cadDocumentService.deleteByLoanIdAndDocument(loanId, doc.getId());
+                cadDocumentService.deleteById(doc.getId());
+            }
+        }
         customerLoan.setData(data);
         customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));
         return customerLoanRepository.save(customerLoan);
