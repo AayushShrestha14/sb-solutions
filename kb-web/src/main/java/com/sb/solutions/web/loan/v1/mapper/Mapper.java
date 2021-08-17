@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
 import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
 import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
+import com.sb.solutions.core.enums.LoanType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,10 +81,14 @@ public class Mapper {
                 "Re-initiate failed: Document status should be REJECTED!");
         }
         if (loanActionDto.getDocAction() == DocAction.APPROVED) {
-               Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
-               proposalData.replace("existingLimit" , customerLoan.getProposal().getProposedLimit());
-               customerLoan.getProposal().setData(gson.toJson(proposalData));
-               customerLoan.getProposal().setExistingLimit(customerLoan.getProposal().getProposedLimit());
+            if (customerLoan.getLoanType() == LoanType.NEW_LOAN) {
+                Map<String, Object> proposalData = gson.fromJson(customerLoan.getProposal().getData(), HashMap.class);
+                proposalData.replace("existingLimit", 0);
+                customerLoan.getProposal().setData(gson.toJson(proposalData));
+            } else {
+                Map<String , Object> proposalData = gson.fromJson(customerLoan.getProposal().getData() , HashMap.class);
+                customerLoan.getProposal().setData(gson.toJson(proposalData));
+            }
             if (ProductUtils.LAS) {
                 ApprovalLimit approvalLimit = approvalLimitService
                     .getByRoleAndLoan(currentUser.getRole().getId(),
@@ -176,7 +181,7 @@ public class Mapper {
             .getRoleType() == RoleType.MAKER) ||
                 (loanActionDto.getDocAction() == DocAction.TRANSFER) &&
                         (currentUser.getRole().getRoleType() == RoleType.MAKER ||
-                                currentUser.getRole().getRoleType() == RoleType.COMMITTEE)) {
+                                currentUser.getRole().getRoleType() == RoleType.COMMITTEE || currentUser.getRole().getRoleType() == RoleType.ADMIN)) {
             if (loanActionDto.getIsSol()) {
                 User user = new User();
                 Preconditions.checkNotNull(loanActionDto.getSolUser(),
@@ -185,8 +190,10 @@ public class Mapper {
                 customerLoan.setIsSol(Boolean.TRUE);
                 customerLoan.setSolUser(user);
             } else {
-                customerLoan.setIsSol(Boolean.FALSE);
-                customerLoan.setSolUser(null);
+                if (!customerLoan.getIsSol()) {
+                    customerLoan.setIsSol(Boolean.FALSE);
+                    customerLoan.setSolUser(null);
+                }
             }
         }
         return customerLoan;
