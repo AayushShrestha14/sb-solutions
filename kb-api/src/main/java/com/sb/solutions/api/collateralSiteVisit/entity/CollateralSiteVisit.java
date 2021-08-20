@@ -31,7 +31,7 @@ public class CollateralSiteVisit extends BaseEntity<Long> {
     @JsonIgnore
     private Security security;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<SiteVisitDocument> siteVisitDocuments;
 }

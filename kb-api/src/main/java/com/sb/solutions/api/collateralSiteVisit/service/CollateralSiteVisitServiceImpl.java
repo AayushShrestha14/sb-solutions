@@ -1,24 +1,39 @@
 package com.sb.solutions.api.collateralSiteVisit.service;
 
 import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
+import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
 import com.sb.solutions.api.collateralSiteVisit.repository.CollateralSiteVisitRepository;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.api.security.service.SecurityService;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mohammad Hussain on May, 2021
  */
 @Service
-public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitService{
+public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitService {
 
     private final CollateralSiteVisitRepository repository;
     private final SecurityService securityService;
+    public final Logger logger = LoggerFactory.getLogger(CollateralSiteVisitServiceImpl.class);
+    static final String FILE_TYPE = ".jpg";
 
     public CollateralSiteVisitServiceImpl(CollateralSiteVisitRepository repository,
                                           SecurityService securityService) {
@@ -73,5 +88,43 @@ public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitServic
     @Override
     public List<CollateralSiteVisit> getCollateralSiteVisitBySecurityId(Long Id) {
         return repository.findCollateralSiteVisitBySecurity_Id(Id);
+    }
+
+    @Override
+    public void deleteSiteVisit(CollateralSiteVisit collateralSiteVisit) {
+        if (collateralSiteVisit != null) {
+            List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
+            if (siteVisitDocuments.size() > 0) {
+                String fullPath = "";
+                for (SiteVisitDocument siteVisitDocument: siteVisitDocuments) {
+                    String filePath = siteVisitDocument.getDocPath();
+                    String docName = siteVisitDocument.getDocName().concat(FILE_TYPE);
+                    fullPath = filePath+docName;
+                    DeleteFileUtils.deleteFile(fullPath);
+                }
+            }
+            repository.delete(collateralSiteVisit);
+        }
+    }
+
+    @Override
+    public List<CollateralSiteVisit> deleteAllSiteVisit(Long securityId, String securityName) {
+        if (securityId != null && securityName != null) {
+            List<CollateralSiteVisit> collateralSiteVisits1 = repository.findCollateralSiteVisitBySecurityNameAndSecurity_Id(securityName, securityId);
+            List<SiteVisitDocument> siteVisitDocuments = new ArrayList<>();
+            for (CollateralSiteVisit collateralSiteVisit: collateralSiteVisits1) {
+                siteVisitDocuments.addAll(collateralSiteVisit.getSiteVisitDocuments());
+            }
+            if (siteVisitDocuments.size()> 0) {
+                for (SiteVisitDocument siteVisitDocument: siteVisitDocuments) {
+                    String filePath = siteVisitDocument.getDocPath();
+                    String docName = siteVisitDocument.getDocName().concat(FILE_TYPE);
+                    String fullPath = filePath+docName;
+                    DeleteFileUtils.deleteFile(fullPath);
+                }
+            }
+            repository.deleteAll(collateralSiteVisits1);
+        }
+        return null;
     }
 }
