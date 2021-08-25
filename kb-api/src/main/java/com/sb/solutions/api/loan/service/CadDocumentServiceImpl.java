@@ -43,4 +43,14 @@ public class CadDocumentServiceImpl implements CadDocumentService{
     public List<CadDocument> saveAll(List<CadDocument> list) {
         return cadDocumentRepository.saveAll(list);
     }
+
+    @Override
+    public int deleteByLoanIdAndDocument(Long longId, Long docId) {
+        return cadDocumentRepository.deleteByLoanIdAndDocument(longId, docId);
+    }
+
+    @Override
+    public void deleteById(Long customerDocId) {
+        cadDocumentRepository.deleteById(customerDocId);
+    }
 }
