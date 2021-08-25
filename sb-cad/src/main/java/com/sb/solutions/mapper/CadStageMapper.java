@@ -291,9 +291,9 @@ public class CadStageMapper {
                     Collectors.toList());
             final List<Long> userIdList = activeUser.stream().map(User::getId)
                 .collect(Collectors.toList());
-            if (userIdList.contains(makerList.get(0).getFromUser().getId())) {
-                map.put(USER_ID, makerList.get(0).getFromUser().getId());
-                map.put(ROLE_ID, makerList.get(0).getFromRole().getId());
+            if (userIdList.contains(makerList.get(makerList.size() - 1).getFromUser().getId())) {
+                map.put(USER_ID, makerList.get(makerList.size() - 1).getFromUser().getId());
+                map.put(ROLE_ID, makerList.get(makerList.size() - 1).getFromRole().getId());
             } else {
                 map.put(USER_ID, users.get(0).getId());
                 map.put(ROLE_ID, users.get(0).getRole().getId());
@@ -312,16 +312,16 @@ public class CadStageMapper {
         Map<String, Long> map = new HashMap<>();
         try {
             List<CadStage> mapPreviousList = list;
-            List<CadStage> makerList = mapPreviousList.stream()
+            List<CadStage> cadUserList = mapPreviousList.stream()
                 .filter(a -> a.getFromRole().getRoleName().equalsIgnoreCase("CAD")).collect(
                     Collectors.toList());
-            if (makerList.isEmpty() || ObjectUtils.isEmpty(makerList)) {
+            if (cadUserList.isEmpty() || ObjectUtils.isEmpty(cadUserList)) {
                 List<UserDto> userByRoleCad = userService.getUserByRoleCad();
                 map.put(USER_ID, userByRoleCad.get(0).getId());
                 map.put(ROLE_ID, userByRoleCad.get(0).getRole().getId());
             } else {
-                map.put(USER_ID, makerList.get(0).getFromUser().getId());
-                map.put(ROLE_ID, makerList.get(0).getFromRole().getId());
+                map.put(USER_ID, cadUserList.get(0).getFromUser().getId());
+                map.put(ROLE_ID, cadUserList.get(0).getFromRole().getId());
             }
 
 
