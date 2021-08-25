@@ -81,7 +81,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
     private static final String[] CAD_FILTER_COLUMN = {"id", "cadCurrentStage", "cadStageList",
         "docStatus", "loanHolder.branch.id", "loanHolder.branch.name",
         "loanHolder.branch.province.name", "loanHolder.name",
-        "loanHolder.customerType", "loanHolder.clientType", "isAdditionalDisbursement","lastModifiedAt"};
+        "loanHolder.customerType", "loanHolder.clientType", "isAdditionalDisbursement",
+        "lastModifiedAt","cadCurrentStage.toUser.name"};
     private static final String[] CAD_FILTER_JOIN_COLUMN = {"assignedLoan"};
 
     private static final String[] CAD_CUSTOMER_LOAN_JOIN = {"combinedLoan", "proposal",
@@ -147,6 +148,7 @@ public class LoanHolderServiceImpl implements LoanHolderService {
             filterParams.put("provinceIds", provienceList);
 
         }
+
 
         s.put("documentStatus", DocStatus.APPROVED.name());
         if (!assignedCustomerLoanIds.isEmpty()) {
@@ -471,8 +473,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
 
     private Page<?> filterCADbyParams(
         Map<String, String> filterParams, Pageable pageable) {
-        String sortBy = null;
-        String orderBy = null;
+        String sortBy = "cadCurrentStage.toUser.name";
+        String orderBy = BaseCriteriaQuery.ASC;
         final CustomerCadSpecBuilder customerCadSpecBuilder = new CustomerCadSpecBuilder(
             branchAccessAndUserAccess(filterParams));
         final Specification<CustomerApprovedLoanCadDocumentation> specification = customerCadSpecBuilder
@@ -484,7 +486,8 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         if (filterParams.containsKey(PaginationUtils.SORT_BY)) {
             sortBy = ObjectUtils.isEmpty(filterParams.get(PaginationUtils.SORT_BY)) ? "docStatus"
                 : filterParams.get(PaginationUtils.SORT_BY);
-            orderBy = ObjectUtils.isEmpty(filterParams.get(PaginationUtils.SORT_ORDER)) ? BaseCriteriaQuery.ASC
+            orderBy = ObjectUtils.isEmpty(filterParams.get(PaginationUtils.SORT_ORDER))
+                ? BaseCriteriaQuery.ASC
                 : filterParams.get(PaginationUtils.SORT_ORDER);
         }
         BaseCriteriaQuery<CustomerApprovedLoanCadDocumentation, CadListDto> baseCriteriaQuery = new BaseCriteriaQuery<>();
@@ -612,6 +615,12 @@ public class LoanHolderServiceImpl implements LoanHolderService {
         });
         return customerLoanList.stream().filter(FilterJsonUtils.distinctByKey(CustomerLoan::getId))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getStat() {
+        System.out.println();
+        return customerCadRepository.getStat();
     }
 
 }
