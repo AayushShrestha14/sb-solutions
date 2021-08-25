@@ -312,8 +312,8 @@ public class CadStageMapper {
                 map.put(USER_ID, uId);
                 map.put(ROLE_ID, rId);
             } else {
-                map.put(USER_ID, users.get(0).getId());
-                map.put(ROLE_ID, users.get(0).getRole().getId());
+                map.put(USER_ID, activeUser.get(0).getId());
+                map.put(ROLE_ID, activeUser.get(0).getRole().getId());
             }
 
 
