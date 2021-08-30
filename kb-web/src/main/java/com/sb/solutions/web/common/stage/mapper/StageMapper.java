@@ -1,5 +1,6 @@
 package com.sb.solutions.web.common.stage.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -85,6 +86,9 @@ public class StageMapper {
             || stageDto.getDocAction() == DocAction.CLOSED
             || stageDto.getDocAction() == DocAction.REJECT
             || stageDto.getDocAction() == DocAction.NOTED) {
+            if (stageDto.getDocAction() == DocAction.APPROVED) {
+                currentStage.setLastModifiedAt(new Date());
+            }
             currentStage = this.approvedCloseReject(currentStage, currentUser);
         }
         return objectMapper.convertValue(currentStage, classType);

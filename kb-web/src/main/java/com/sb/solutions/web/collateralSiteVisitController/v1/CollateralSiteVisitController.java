@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.sb.solutions.constant.SuccessMessage.DELETE_SUCCESS;
+
 /**
  * Created by Mohammad Hussain on May, 2021
  */
@@ -139,6 +141,20 @@ public class CollateralSiteVisitController {
     @GetMapping("/site-visit/{id}")
     public ResponseEntity<?> getCollateralSiteVisitBySecurityId(@PathVariable("id") Long id) {
         return new RestResponseDto().successModel(service.getCollateralSiteVisitBySecurityId(id));
+    }
+
+    @DeleteMapping("/delete-site-visit/{id}/{date}")
+    public ResponseEntity<?> deleteSiteVisit(@PathVariable("id") Long id, @PathVariable String date) {
+        LocalDate date1 = LocalDate.parse(date);
+        CollateralSiteVisit collateralSiteVisit = service.getCollateralBySiteVisitDateAndId(date1, id);
+        service.deleteSiteVisit(collateralSiteVisit);
+        return new RestResponseDto().successModel(DELETE_SUCCESS);
+    }
+
+    @DeleteMapping("/delete-all-site-visit/{id}/{name}")
+    public ResponseEntity<?> deleteAllSiteVisit(@PathVariable("id") Long id, @PathVariable String name) {
+        service.deleteAllSiteVisit(id, name);
+        return new RestResponseDto().successModel(DELETE_SUCCESS);
     }
 
 }

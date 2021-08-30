@@ -18,4 +18,8 @@ public interface CollateralSiteVisitService extends BaseService<CollateralSiteVi
     CollateralSiteVisit getCollateralBySiteVisitDateAndId(LocalDate siteVisitDate, Long Id);
 
     List<CollateralSiteVisit> getCollateralSiteVisitBySecurityId(Long Id);
+
+    void deleteSiteVisit(CollateralSiteVisit collateralSiteVisit);
+
+    List<CollateralSiteVisit> deleteAllSiteVisit(Long id, String securityName);
 }

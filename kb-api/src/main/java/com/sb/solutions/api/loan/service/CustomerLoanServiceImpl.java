@@ -972,16 +972,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         if (previousLoan.getProposal() != null) {
             previousLoan.getProposal().setId(null);
             previousLoan.setProposal(proposalService.save(previousLoan.getProposal()));
-            if (previousLoan.getLoanType() == LoanType.PARTIAL_SETTLEMENT_LOAN
-                || previousLoan.getLoanType() == LoanType.ENHANCED_LOAN) {
-                Map<String, Object> proposalData = gson
-                    .fromJson(previousLoan.getProposal().getData(), HashMap.class);
-                proposalData
-                    .replace("existingLimit", previousLoan.getProposal().getProposedLimit());
+            if (previousLoan.getLoanType() != LoanType.NEW_LOAN) {
+                Map<String , Object> proposalData = gson.fromJson(previousLoan.getProposal().getData() , HashMap.class);
+                proposalData.replace("existingLimit" , previousLoan.getProposal().getProposedLimit());
                 proposalData.replace("enhanceLimitAmount", 0);
                 previousLoan.getProposal().setData(gson.toJson(proposalData));
-                previousLoan.getProposal()
-                    .setExistingLimit(previousLoan.getProposal().getProposedLimit());
+                previousLoan.getProposal().setExistingLimit(previousLoan.getProposal().getProposedLimit());
                 previousLoan.getProposal().setEnhanceLimitAmount(BigDecimal.ZERO);
             }
         }
@@ -1624,6 +1620,16 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CustomerLoan customerLoan = customerLoanRepository.findById(loanId).orElse(null);
         if (customerLoan == null) {
             throw new ServiceValidationException("No customer loan found!!!");
+        }
+
+        List<CadDocument> actualDocuments = customerLoan.getCadDocument();
+        List<CadDocument> updatedDocuments = cadDocuments;
+        for (CadDocument doc : actualDocuments) {
+            Optional<CadDocument> optionalCadDocument = updatedDocuments.stream().filter(d -> Objects.equals(d.getId(), doc.getId())).findAny();
+            if (!optionalCadDocument.isPresent()) {
+                cadDocumentService.deleteByLoanIdAndDocument(loanId, doc.getId());
+                cadDocumentService.deleteById(doc.getId());
+            }
         }
         customerLoan.setData(data);
         customerLoan.setCadDocument(cadDocumentService.saveAll(cadDocuments));

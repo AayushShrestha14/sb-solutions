@@ -83,6 +83,7 @@ public class ApprovalRoleHierarchyController {
         @PathVariable("roleId") long roleId,
         @PathVariable("type") ApprovalType type,
         @PathVariable("refId") long refId) {
+
         final List<ApprovalRoleHierarchyDto> dtos = mapper.mapEntitiesToDtos(service
             .getForwardRolesForRoleWithType(roleId, type, refId));
 
