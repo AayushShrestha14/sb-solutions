@@ -10,6 +10,8 @@ import com.sb.solutions.api.fiscalyear.service.FiscalYearService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 
+import java.util.List;
+
 
 /**
  * @author Bibash Bogati on 8/10/2020
@@ -38,7 +40,8 @@ public class FiscalYearController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllFiscalYear() {
         logger.info("getting all fiscal year");
-        return new RestResponseDto().successModel(fiscalYearService.findAll());
+        List<FiscalYear> fiscalYearList = fiscalYearService.findAll();
+        return new RestResponseDto().successModel(fiscalYearList);
     }
 
     @GetMapping("/{id}")

@@ -16,4 +16,6 @@ public interface FiscalYearRepository extends JpaRepository<FiscalYear, Long> {
     void deActivePreviousFiscalYear();
 
     List<FiscalYear> findAllByOrderByIsCurrentYearDesc();
+
+    List<FiscalYear> findAllByOrderByYear();
 }
