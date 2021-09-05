@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
 import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
 import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
@@ -190,7 +191,7 @@ public class Mapper {
                 customerLoan.setIsSol(Boolean.TRUE);
                 customerLoan.setSolUser(user);
             } else {
-                if (!customerLoan.getIsSol()) {
+                if ((loanActionDto.getDocAction() == DocAction.FORWARD) && currentUser.getRole().getRoleType() == RoleType.MAKER) {
                     customerLoan.setIsSol(Boolean.FALSE);
                     customerLoan.setSolUser(null);
                 }
