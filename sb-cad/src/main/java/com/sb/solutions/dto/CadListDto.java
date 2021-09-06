@@ -54,12 +54,13 @@ public class CadListDto {
     private List<CustomerLoan> assignedLoan;
     private Boolean isAdditionalDisbursement;
     private Date lastModifiedAt;
+    private String name;
 
     public CadListDto(Long id,
         CadStage cadCurrentStage, String cadStageList, CadDocStatus docStatus, Long branchId,
         String branchName,
         String provinceName, String customerName, CustomerType customerType,
-        ClientType clientType,  Boolean isAdditionalDisbursement,Date lastModifiedAt
+        ClientType clientType,  Boolean isAdditionalDisbursement,Date lastModifiedAt,String name
     ) {
         this.id = id;
         this.cadCurrentStage = cadCurrentStage;
@@ -74,6 +75,7 @@ public class CadListDto {
         this.clientType = clientType;
         this.isAdditionalDisbursement = isAdditionalDisbursement;
         this.lastModifiedAt = lastModifiedAt;
+        this.name = name;
     }
 
 

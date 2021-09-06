@@ -38,4 +38,6 @@ public interface LoanHolderService {
 
     @Transactional
     String saveAdditionalDisbursement(CustomerApprovedLoanCadDocumentation c, Long roleId);
+
+    List<Map<String,Object>>  getStat();
 }
