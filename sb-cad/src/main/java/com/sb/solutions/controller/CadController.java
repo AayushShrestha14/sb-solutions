@@ -222,4 +222,9 @@ public class CadController {
         return new RestResponseDto().successModel(reportService.reportPath(filterParams));
     }
 
+    @GetMapping(value = ApiConstants.GET_STAT)
+    public ResponseEntity<?> getStat() {
+        return new RestResponseDto().successModel(loanHolderService.getStat());
+    }
+
 }

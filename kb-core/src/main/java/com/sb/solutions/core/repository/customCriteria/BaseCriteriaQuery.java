@@ -54,7 +54,17 @@ public class BaseCriteriaQuery<E, D> {
         initQuery.setRoot(root);
         initQuery.setCriteriaQuery(q);
         for (String joinCol : criteriaDto.getJoinColumn()) {
-            initQuery.getRoot().join(joinCol, JoinType.LEFT);
+            if (!joinCol.contains(".")) {
+                initQuery.getRoot().join(joinCol, JoinType.LEFT);
+            } else {
+                List<String> stringList = columnSplitter(joinCol);
+
+                if (stringList.size() == 2) {
+                    initQuery.getRoot().join(stringList.get(0), JoinType.LEFT)
+                        .join(stringList.get(1), JoinType.LEFT);
+                }
+
+            }
         }
 
         initQuery.getCriteriaQuery().select(
@@ -83,8 +93,14 @@ public class BaseCriteriaQuery<E, D> {
                     selections.add(root.get(stringList.get(0)).get(stringList.get(1)));
                 }
                 if (stringList.size() == 3) {
+                    Expression e = c.selectCase()
+                        .when(root.join(stringList.get(0), JoinType.INNER)
+                                .join(stringList.get(1), JoinType.LEFT).isNotNull(),
+                            root.join(stringList.get(0), JoinType.INNER)
+                                .join(stringList.get(1), JoinType.LEFT)
+                                .get(stringList.get(2))).otherwise("");
                     selections.add(
-                        root.get(stringList.get(0)).get(stringList.get(1)).get(stringList.get(2)));
+                        e);
                 }
 
                 if (stringList.size() == 4) {
@@ -132,16 +148,19 @@ public class BaseCriteriaQuery<E, D> {
         Order o = null;
         InitQuery<E, D> initQuery = initializeQuery(criteriaDto, entityManager);
         if (!StringUtils.isEmpty(sortBy)) {
-            Selection[] s = getSelection(new String[]{sortBy}, initQuery.getRoot(),
-                initQuery.getCriteriaBuilder());
-
-            if (orderBy.equalsIgnoreCase(ASC)) {
-                o = initQuery.getCriteriaBuilder().asc(
-                    (Expression<?>) Arrays.stream(s).findFirst().get());
-            } else {
-                o = initQuery.getCriteriaBuilder()
-                    .desc((Expression<?>) Arrays.stream(s).findFirst().get());
+            int indexOrderColumn = 0;
+            for (int i = 0; i < criteriaDto.getColumns().length; i++) {
+                if (sortBy.equals(criteriaDto.getColumns()[i])) {
+                    indexOrderColumn = i + 1;
+                    break;
+                }
             }
+            o = orderBy.equalsIgnoreCase(ASC) ? initQuery.getCriteriaBuilder()
+                .asc(initQuery.getCriteriaBuilder().literal(indexOrderColumn)
+                )
+                : initQuery.getCriteriaBuilder()
+                    .desc(initQuery.getCriteriaBuilder().literal(indexOrderColumn));
+
         }
         TypedQuery<D> typedQuery;
 
