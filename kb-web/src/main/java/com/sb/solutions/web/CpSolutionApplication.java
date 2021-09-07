@@ -181,15 +181,6 @@ public class CpSolutionApplication extends SpringBootServletInitializer {
                 cadCheckListTemplateDocument.execute(dataSource);
             }
 
-            if (affiliateId.equals(ClientAffiliate.PROGRESSIVE)) {
-                ClassPathResource dataResourceCheckListDoc = new ClassPathResource(
-                    baseServerFolder + "/general_patch/progressive_cad_template_checkList_doc.sql");
-                ResourceDatabasePopulator cadCheckListTemplateDocument = new ResourceDatabasePopulator(
-                    dataResourceCheckListDoc);
-
-                cadCheckListTemplateDocument.execute(dataSource);
-            }
-
             if (ProductUtils.LAS) {
                 ClassPathResource dataResource = new ClassPathResource(
                     baseServerFolder + "/loan_sql/patch_las_permission.sql");
