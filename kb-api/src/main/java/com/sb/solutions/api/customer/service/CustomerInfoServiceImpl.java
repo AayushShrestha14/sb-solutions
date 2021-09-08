@@ -111,11 +111,11 @@ import javax.persistence.EntityManager;
 @Slf4j
 public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long> implements
         CustomerInfoService {
-    private static String[] columns = {"id", "name", "idNumber",
+    private static final String[] columns = {"id", "name", "idNumber",
             "customerType", "contactNo",
             "email", "idRegPlace", "idRegDate", "createdAt", "associateId",
             "branch.province.id", "customerGroup.id"};
-    private static String[] joinColumn = {"branch", "customerGroup"};
+    private static final String[] joinColumn = {"branch", "customerGroup"};
 
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
