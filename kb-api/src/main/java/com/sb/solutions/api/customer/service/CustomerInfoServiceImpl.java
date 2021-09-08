@@ -577,7 +577,7 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
 
         BaseCriteriaQuery<CustomerInfo, CustomerListDto> baseCriteriaQuery = new BaseCriteriaQuery<>();
 
-        return  baseCriteriaQuery.getListPage(criteriaDto, em, pageable, "name",BaseCriteriaQuery.ASC);
+        return  baseCriteriaQuery.getListPage(criteriaDto, em, pageable, "createdAt",BaseCriteriaQuery.ASC);
 
     }
 
