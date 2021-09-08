@@ -5,9 +5,7 @@ package com.sb.solutions.core.enums;
  */
 public enum ClientAffiliate {
 
-    MEGA("mega"),
-    ICFC("icfc"),
-    PROGRESSIVE("Progressive");
+    MEGA("mega");
 
     private String ClientAffiliate;
 
