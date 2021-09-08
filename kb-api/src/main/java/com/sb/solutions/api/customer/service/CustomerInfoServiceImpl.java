@@ -568,8 +568,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private Page<CustomerListDto> getCustomerDtoList(Specification<CustomerInfo> innerSpec, Pageable pageable){
         String[] columns = {"id",  "name",  "idNumber",
                  "customerType",  "contactNo",
-                 "email",  "idRegPlace",  "idRegDate", "createdAt", "associateId"};
-        String[] joinColumn = { };
+                 "email",  "idRegPlace",  "idRegDate", "createdAt", "associateId",
+        "branch.province.id", "customerGroup.id"};
+        String[] joinColumn = {"branch", "customerGroup"};
         CriteriaDto<CustomerInfo, CustomerListDto> criteriaDto = new CriteriaDto<>(
                 CustomerInfo.class, CustomerListDto.class, innerSpec, columns,joinColumn
         );
