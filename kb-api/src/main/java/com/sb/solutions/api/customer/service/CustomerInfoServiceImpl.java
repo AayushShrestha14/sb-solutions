@@ -23,6 +23,8 @@ import com.sb.solutions.api.borrowerPortfolio.service.BorrowerPortFolioService;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.api.creditChecklist.entity.CreditChecklist;
 import com.sb.solutions.api.creditChecklist.service.CreditChecklistService;
+import com.sb.solutions.api.customer.repository.specification.CustomerInfoSpec;
+import com.sb.solutions.api.loan.dto.CustomerListDto;
 import com.sb.solutions.api.marketingActivities.MarketingActivities;
 import com.sb.solutions.api.marketingActivities.service.MarketingActivitiesService;
 import com.sb.solutions.api.microBorrowerFinancial.MicroBorrowerFinancial;
@@ -38,9 +40,13 @@ import com.sb.solutions.api.reportinginfo.entity.ReportingInfoLevel;
 import com.sb.solutions.api.reportinginfo.service.ReportingInfoLevelService;
 import com.sb.solutions.api.synopsisOfCreditwothiness.entity.SynopsisCreditworthiness;
 import com.sb.solutions.api.synopsisOfCreditwothiness.service.SynopsisCreditworthinessService;
+import com.sb.solutions.core.repository.customCriteria.BaseCriteriaQuery;
+import com.sb.solutions.core.repository.customCriteria.dto.CriteriaDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +102,8 @@ import com.sb.solutions.report.core.enums.ReportType;
 import com.sb.solutions.report.core.factory.ReportFactory;
 import com.sb.solutions.report.core.model.Report;
 
+import javax.persistence.EntityManager;
+
 /**
  * @author : Rujan Maharjan on  8/10/2020
  **/
@@ -130,6 +138,9 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     private final MarketingActivitiesService marketingActivitiesService;
     private final ReportingInfoLevelService reportingInfoLevelService;
     private final BranchService branchService;
+
+    @Autowired
+    EntityManager em;
 
     public CustomerInfoServiceImpl(
             @Autowired CustomerInfoRepository customerInfoRepository,
@@ -408,6 +419,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         return customerInfoRepository.save(customerInfo);
     }
 
+
+
     @Override
     protected BaseSpecBuilder<CustomerInfo> getSpec(Map<String, String> filterParams) {
         filterParams.values().removeIf(Objects::isNull);
@@ -533,6 +546,37 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
         Report report = ReportFactory.getReport(populate(Optional.of(searchDto)));
         return new PathBuilder(UploadDir.initialDocument)
                 .buildBuildFormDownloadPath("customer") + report.getFileName();
+
+    }
+
+    @Override
+    public Page<CustomerListDto> getCustomerListDto(Object searchDto, Pageable pageable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, String> s = objectMapper.convertValue(searchDto, Map.class);
+        String branchAccess = userService.getRoleAccessFilterByBranch().stream()
+                .map(Object::toString).collect(Collectors.joining(","));
+        if (s.containsKey("branchIds")) {
+            branchAccess = s.get("branchIds");
+        }
+        s.put("branchIds", branchAccess);
+        s.values().removeIf(Objects::isNull);
+        final CustomerInfoSpecBuilder customerInfoSpecBuilder = new CustomerInfoSpecBuilder(s);
+        final Specification<CustomerInfo> specification = customerInfoSpecBuilder.build();
+        return getCustomerDtoList(specification, pageable);
+    }
+
+    private Page<CustomerListDto> getCustomerDtoList(Specification<CustomerInfo> innerSpec, Pageable pageable){
+        String[] columns = {"id",  "name",  "idNumber",
+                 "customerType",  "contactNo",
+                 "email",  "idRegPlace",  "idRegDate", "createdAt", "associateId"};
+        String[] joinColumn = { };
+        CriteriaDto<CustomerInfo, CustomerListDto> criteriaDto = new CriteriaDto<>(
+                CustomerInfo.class, CustomerListDto.class, innerSpec, columns,joinColumn
+        );
+
+        BaseCriteriaQuery<CustomerInfo, CustomerListDto> baseCriteriaQuery = new BaseCriteriaQuery<>();
+
+        return  baseCriteriaQuery.getListPage(criteriaDto, em, pageable, "name",BaseCriteriaQuery.ASC);
 
     }
 

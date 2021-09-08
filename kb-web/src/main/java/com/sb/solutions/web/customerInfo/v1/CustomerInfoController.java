@@ -259,4 +259,11 @@ public class CustomerInfoController {
                     "Failure: Action other than transfer detected!!!");
         }
     }
+
+    @PostMapping("/customerInfoDtoList")
+    public ResponseEntity<?> getCustomerInfoDto(@RequestBody Object searchDto,
+                                        @RequestParam("page") int page, @RequestParam("size") int size){
+        return new RestResponseDto().successModel(customerInfoService.
+                getCustomerListDto(searchDto, PaginationUtils.pageable(page,size)));
+    }
 }
