@@ -111,6 +111,11 @@ import javax.persistence.EntityManager;
 @Slf4j
 public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long> implements
         CustomerInfoService {
+    private static String[] columns = {"id", "name", "idNumber",
+            "customerType", "contactNo",
+            "email", "idRegPlace", "idRegDate", "createdAt", "associateId",
+            "branch.province.id", "customerGroup.id"};
+    private static String[] joinColumn = {"branch", "customerGroup"};
 
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
 
@@ -566,11 +571,6 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
     }
 
     private Page<CustomerListDto> getCustomerDtoList(Specification<CustomerInfo> innerSpec, Pageable pageable){
-        String[] columns = {"id",  "name",  "idNumber",
-                 "customerType",  "contactNo",
-                 "email",  "idRegPlace",  "idRegDate", "createdAt", "associateId",
-        "branch.province.id", "customerGroup.id"};
-        String[] joinColumn = {"branch", "customerGroup"};
         CriteriaDto<CustomerInfo, CustomerListDto> criteriaDto = new CriteriaDto<>(
                 CustomerInfo.class, CustomerListDto.class, innerSpec, columns,joinColumn
         );

@@ -74,9 +74,8 @@ public class CustomerInfoController {
     @PostMapping("/list")
     public ResponseEntity<?> getPageable(@RequestBody Map<String, String> searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
-        return new RestResponseDto()
-            .successModel(customerInfoService.findPageableBySpec(searchDto, PaginationUtils
-                .pageable(page, size)));
+        return new RestResponseDto().successModel(customerInfoService.
+                getCustomerListDto(searchDto, PaginationUtils.pageable(page,size)));
     }
 
     @CustomerActivityLog(Activity.CUSTOMER_UPDATE)
@@ -260,10 +259,5 @@ public class CustomerInfoController {
         }
     }
 
-    @PostMapping("/customerInfoDtoList")
-    public ResponseEntity<?> getCustomerInfoDto(@RequestBody Object searchDto,
-                                        @RequestParam("page") int page, @RequestParam("size") int size){
-        return new RestResponseDto().successModel(customerInfoService.
-                getCustomerListDto(searchDto, PaginationUtils.pageable(page,size)));
-    }
+
 }
