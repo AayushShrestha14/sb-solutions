@@ -4,6 +4,8 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
+import com.sb.solutions.core.enums.Gender;
+import com.sb.solutions.core.enums.MaritalStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,12 +33,16 @@ public class CustomerListDto {
     private String subsectorDetail;
     private String customerCode;
     private String bankingRelationship;
+    private Gender gender;
+    private MaritalStatus maritalStatus;
+    private String customerLegalDocumentAddress;
     public CustomerListDto(Long id, String name, String idNumber,
                            CustomerType customerType, String contactNo,
                            String email, String idRegPlace, Date idRegDate,
                            Date createdAt, Long associateId,Long provinceId, Long groupId,
                            ClientType clientType,
-                            String subsectorDetail, String customerCode, String bankingRelationship) {
+                            String subsectorDetail, String customerCode, String bankingRelationship,
+                           Gender gender,MaritalStatus maritalStatus, String customerLegalDocumentAddress ) {
         this.id = id;
         this.name = name;
         this.idNumber = idNumber;
@@ -53,5 +59,8 @@ public class CustomerListDto {
         this.subsectorDetail = subsectorDetail;
         this.customerCode = customerCode;
         this.bankingRelationship = bankingRelationship;
+        this.gender = gender;
+        this.maritalStatus = maritalStatus;
+        this.customerLegalDocumentAddress = customerLegalDocumentAddress;
     }
 }
