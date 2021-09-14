@@ -1,6 +1,7 @@
 package com.sb.solutions.api.loan.dto;
 
 import com.sb.solutions.api.branch.entity.Branch;
+import com.sb.solutions.api.customer.enums.ClientType;
 import com.sb.solutions.api.customer.enums.CustomerType;
 import com.sb.solutions.api.customerGroup.CustomerGroup;
 import lombok.Data;
@@ -26,10 +27,16 @@ public class CustomerListDto {
     private Long provinceId;
     private CustomerGroup customerGroup;
     private Branch branch;
+    private ClientType clientType;
+    private String subsectorDetail;
+    private String customerCode;
+    private String bankingRelationship;
     public CustomerListDto(Long id, String name, String idNumber,
                            CustomerType customerType, String contactNo,
                            String email, String idRegPlace, Date idRegDate,
-                           Date createdAt, Long associateId,Long provinceId, Long groupId) {
+                           Date createdAt, Long associateId,Long provinceId, Long groupId,
+                           ClientType clientType,
+                            String subsectorDetail, String customerCode, String bankingRelationship) {
         this.id = id;
         this.name = name;
         this.idNumber = idNumber;
@@ -42,5 +49,9 @@ public class CustomerListDto {
         this.associateId = associateId;
         this.provinceId = provinceId;
         this.groupId = groupId;
+        this.clientType = clientType;
+        this.subsectorDetail = subsectorDetail;
+        this.customerCode = customerCode;
+        this.bankingRelationship = bankingRelationship;
     }
 }
