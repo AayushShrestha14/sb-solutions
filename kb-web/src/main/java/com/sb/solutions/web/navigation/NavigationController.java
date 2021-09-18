@@ -117,12 +117,21 @@ public class NavigationController {
             }
             if ((isPresentInCadHierarchy && ProductUtils.FULL_CAD)) {
                 menuList.add(getMenuForCADFULL(u));
-            }
-            if (ProductUtils.FULL_CAD && (u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
-                || u.getRole().getRoleType()
-                .equals(RoleType.CAD_ADMIN) || u.getRole().getRoleType()
-                .equals(RoleType.ADMIN))) {
+            } else if (ProductUtils.FULL_CAD && (
+                u.getRole().getRoleType().equals(RoleType.CAD_SUPERVISOR)
+                    || u.getRole().getRoleType()
+                    .equals(RoleType.CAD_ADMIN) || u.getRole().getRoleType()
+                    .equals(RoleType.ADMIN))) {
                 menuList.add(getMenuForCADFULL(u));
+            } else if ((!isPresentInCadHierarchy && ProductUtils.FULL_CAD)) {
+                MenuDto menuDto = MenuCreatorCAD.cadNav();
+                menuDto.setChildren(
+                    menuDto.getChildren().stream().filter(f ->
+                        (f.getTitle().equalsIgnoreCase(ALL_CAD_FILE)
+
+                        ))
+                        .collect(Collectors.toList()));
+                menuList.add(menuDto);
             }
 
 
