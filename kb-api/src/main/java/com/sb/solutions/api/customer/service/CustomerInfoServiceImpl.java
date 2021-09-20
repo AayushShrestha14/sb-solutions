@@ -115,7 +115,8 @@ public class CustomerInfoServiceImpl extends BaseServiceImpl<CustomerInfo, Long>
             "customerType", "contactNo",
             "email", "idRegPlace", "idRegDate", "createdAt", "associateId",
             "branch.province.id", "customerGroup.id", "clientType","subsectorDetail",
-    "customerCode", "bankingRelationship","gender","maritalStatus", "customerLegalDocumentAddress"};
+    "customerCode", "bankingRelationship","gender","maritalStatus", "customerLegalDocumentAddress",
+    "branch"};
     private static final String[] joinColumn = {"branch", "customerGroup"};
 
     private static final String NULL_MESSAGE = "Invalid customer info id,Data does not exist";
