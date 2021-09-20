@@ -36,6 +36,7 @@ public class CustomerListDto {
     private Gender gender;
     private MaritalStatus maritalStatus;
     private String customerLegalDocumentAddress;
+    private Long branchIds;
     public CustomerListDto(Long id, String name, String idNumber,
                            CustomerType customerType, String contactNo,
                            String email, String idRegPlace, Date idRegDate,
@@ -43,7 +44,7 @@ public class CustomerListDto {
                            ClientType clientType,
                             String subsectorDetail, String customerCode, String bankingRelationship,
                            Gender gender,MaritalStatus maritalStatus, String customerLegalDocumentAddress,
-                          Branch branch ) {
+                          Branch branch , Long branchIds) {
         this.id = id;
         this.name = name;
         this.idNumber = idNumber;
@@ -64,5 +65,6 @@ public class CustomerListDto {
         this.maritalStatus = maritalStatus;
         this.customerLegalDocumentAddress = customerLegalDocumentAddress;
         this.branch = branch;
+        this.branchIds = branchIds;
     }
 }
