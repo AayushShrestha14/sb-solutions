@@ -168,7 +168,7 @@ public class ShareSecurityServiceImpl implements ShareSecurityService {
                                 String companyCode = customerShareData.getCompanyCode();
                                 if (marketPriceMap.containsKey(companyCode)) {
                                     BigDecimal newValue = reCalculateAmount.get()
-                                        .add(BigDecimal.valueOf(marketPriceMap.get(companyCode))
+                                        .add(BigDecimal.valueOf(customerShareData.getAmountPerUnit())
                                             .multiply(
                                                 BigDecimal.valueOf(customerShareData.getTotalShareUnit()))
                                             .multiply(BigDecimal
