@@ -15,6 +15,7 @@ import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.loan.LoanStage;
 import com.sb.solutions.api.loan.PieChartDto;
 import com.sb.solutions.api.loan.StatisticDto;
+import com.sb.solutions.api.loan.dto.CustomerLoanFilterDto;
 import com.sb.solutions.api.loan.dto.CustomerLoanGroupDto;
 import com.sb.solutions.api.loan.dto.LoanStageDto;
 import com.sb.solutions.api.loan.entity.CustomerLoan;
@@ -278,4 +279,7 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.loan = :loanConfig,c.currentStage=:currentStage,c.previousStageList=:previousList   WHERE c.id = :id")
     void updateLoanConfigByCustomerLoanId(@Param("loanConfig") LoanConfig loanConfig, @Param("id") Long id,@Param("currentStage")LoanStage currentStage,@Param("previousList")String previousList);
+
+    @Query("SELECT new com.sb.solutions.api.loan.dto.CustomerLoanFilterDto(c.id,c.loan.name,c.loanType,c.documentStatus,c.currentStage.toUser.name,c.currentStage.lastModifiedAt,c.priority,c.previousStageList,c.combinedLoan,c.proposal.proposedLimit,c.loan.id,c.loanHolder.id) FROM CustomerLoan c LEFT JOIN c.combinedLoan WHERE c.id in (:id)")
+    List<CustomerLoanFilterDto>  getCustomerLoanFilterDtoINLoan(@Param("id")   List<Long>  id);
 }
