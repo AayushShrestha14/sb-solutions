@@ -131,7 +131,8 @@ public class SecurityServiceImpl implements SecurityService {
                     case "VEHICLE":
                         Boolean vehicleSecurity = array.stream()
                             .anyMatch(a -> a.equals("VehicleSecurity"));
-                        BigDecimal requiredCollateralRequired =  (loan.getProposal().getProposedLimit().multiply(BigDecimal.valueOf(loanConfigDetail.getCollateralRequirement()))).divide(new BigDecimal(100));
+                        BigDecimal requiredCollateralRequired =  (loan.getProposal().getProposedLimit()
+                            .multiply(BigDecimal.valueOf(loan.getProposal().getCollateralRequirement()))).divide(new BigDecimal(100));
                         if (vehicleSecurity) {
                             JSONObject initialForm = (JSONObject) json.get("initialForm");
                             JSONArray vehicleDetailsArray = (JSONArray) initialForm
@@ -162,7 +163,8 @@ public class SecurityServiceImpl implements SecurityService {
                     case "FIXED_DEPOSIT":
                         Boolean fixedDeposit = array.stream()
                             .anyMatch(a -> a.equals("FixedDeposit"));
-                        BigDecimal requiredFixedCollateralRequired =  (loan.getProposal().getProposedLimit().multiply(BigDecimal.valueOf(loanConfigDetail.getCollateralRequirement()))).divide(new BigDecimal(100));
+                        BigDecimal requiredFixedCollateralRequired =  (loan.getProposal().getProposedLimit()
+                            .multiply(BigDecimal.valueOf(loan.getProposal().getCollateralRequirement()))).divide(new BigDecimal(100));
 
                         if (fixedDeposit) {
                             JSONObject initialForm = (JSONObject) json.get("initialForm");
