@@ -33,8 +33,10 @@ public class RequestExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<?> nullPointerHandler(MethodArgumentNotValidException error) {
+    public ResponseEntity<?> nullPointerHandler(NullPointerException error) {
         RestResponseDto restResponseDto = new RestResponseDto();
+
+        logger.error("Validation Error", error);
         return restResponseDto.failureModel("There is null value in some of the field. Please Verify");
     }
 

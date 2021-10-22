@@ -97,10 +97,10 @@ public class Mapper {
                 if (approvalLimit != null) {
                     if (Double.valueOf(approvalLimit.getAmount().toString()) < Double
                         .valueOf(customerLoan.getProposal().getProposedLimit().toString())) {
-                        throw new RuntimeException("Authority Limit Exceed");
+                        throw new ServiceValidationException("Authority Limit Exceed");
                     }
                 } else {
-                    throw new RuntimeException("Authority Limit Is not set yet for this loan");
+                    throw new ServiceValidationException("Authority Limit Is not set yet for this loan");
                 }
                 if (customerLoan.getDmsLoanFile() != null) {
                     if (customerLoan.getDmsLoanFile().getProposedAmount().compareTo(approvalLimit
