@@ -146,7 +146,7 @@ public class CustomerInfoController {
         ResponseEntity responseEntity = FileUploadUtils
             .uploadFile(multipartFile, uploadPath,
                 formattedDateTime + "-" + StringUtil
-                    .getStringWithoutWhiteSpaceAndWithCapitalize(name)
+                    .getStringWithoutWhiteSpaceAndWithCapitalize(name.replaceAll("\\/","-"))
                     .toLowerCase());
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Object body = responseEntity.getBody();
