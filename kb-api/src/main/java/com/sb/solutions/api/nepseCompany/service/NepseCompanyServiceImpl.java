@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.sb.solutions.api.nepseCompany.entity.NepsePriceInfo;
 import com.sb.solutions.api.nepseCompany.util.NepseExcelReader;
+import com.sb.solutions.core.utils.FilterJsonUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,9 +89,15 @@ public class NepseCompanyServiceImpl implements NepseCompanyService {
     @Override
     public void saveList(List<NepseCompany> newNepseList) {
         List<NepseCompany> existingNepseList = nepseCompanyRepository.findAll();
-        // Get latest Company code list
+
+        // Get unique list from excel
+        newNepseList = newNepseList.stream()
+                .filter(FilterJsonUtils.distinctByKey(n -> n.getCompanyCode()))
+                .collect(Collectors.toList());
+
+        // Get Company code list
         List<String> newCompanyCodeList = newNepseList.stream()
-            .map(NepseCompany::getCompanyCode).collect(Collectors.toList());
+                .map(NepseCompany::getCompanyCode).collect(Collectors.toList());
 
         // get list company that is  in new nepse list
         existingNepseList = existingNepseList.stream()
