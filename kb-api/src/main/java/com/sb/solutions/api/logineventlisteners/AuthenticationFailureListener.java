@@ -12,7 +12,7 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
     @Autowired
     private LoginDetailService loginDetailService;
 
-    private final Integer ALLOWED_ATTEMPTS = 3;
+    private final Integer ALLOWED_ATTEMPTS = 6;
 
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
