@@ -3,8 +3,7 @@ package com.sb.solutions.api.loan.service;
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_BLANK;
 import static com.sb.solutions.core.constant.AppConstant.SEPERATOR_FRONT_SLASH;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +12,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -201,6 +202,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         .setDateFormat(new SimpleDateFormat(AppConstant.DATE_FORMAT));
     private final BranchService branchService;
     private final CustomerDocumentService customerDocumentService;
+    private final CollateralSiteVisitService collateralSiteVisitService;
 
     @Autowired
     EntityManager em;
@@ -209,37 +211,38 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
 
     public CustomerLoanServiceImpl(
-            CustomerLoanRepository customerLoanRepository,
-            UserService userService,
-            CustomerService customerService,
-            CompanyInfoService companyInfoService,
-            DmsLoanFileService dmsLoanFileService,
-            SiteVisitService siteVisitService,
-            FinancialService financialService,
-            CreditRiskGradingAlphaService creditRiskGradingAlphaService,
-            CrgMicroService crgMicroService,
-            CreditRiskGradingLambdaService creditRiskGradingLambdaService,
-            SecurityService securityservice,
-            ProposalService proposalService,
-            CustomerOfferService customerOfferService,
-            CreditRiskGradingService creditRiskGradingService,
-            CrgGammaService crgGammaService,
-            GroupServices groupService,
-            VehicleSecurityService vehicleSecurityService,
-            ShareSecurityService shareSecurityService,
-            NepaliTemplateService nepaliTemplateService,
-            NepaliTemplateMapper nepaliTemplateMapper,
-            InsuranceService insuranceService,
-            NotificationMasterService notificationMasterService,
-            CustomerLoanFlagService customerLoanFlagService,
-            CustomerInfoService customerInfoService,
-            ActivityService activityService,
-            CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
-            CustomerGeneralDocumentService customerGeneralDocumentService,
-            CadDocumentService cadDocumentService,
-            LoanConfigService loanConfigService,
-            BranchService branchService,
-            CustomerDocumentService customerDocumentService) {
+        CustomerLoanRepository customerLoanRepository,
+        UserService userService,
+        CustomerService customerService,
+        CompanyInfoService companyInfoService,
+        DmsLoanFileService dmsLoanFileService,
+        SiteVisitService siteVisitService,
+        FinancialService financialService,
+        CreditRiskGradingAlphaService creditRiskGradingAlphaService,
+        CrgMicroService crgMicroService,
+        CreditRiskGradingLambdaService creditRiskGradingLambdaService,
+        SecurityService securityservice,
+        ProposalService proposalService,
+        CustomerOfferService customerOfferService,
+        CreditRiskGradingService creditRiskGradingService,
+        CrgGammaService crgGammaService,
+        GroupServices groupService,
+        VehicleSecurityService vehicleSecurityService,
+        ShareSecurityService shareSecurityService,
+        NepaliTemplateService nepaliTemplateService,
+        NepaliTemplateMapper nepaliTemplateMapper,
+        InsuranceService insuranceService,
+        NotificationMasterService notificationMasterService,
+        CustomerLoanFlagService customerLoanFlagService,
+        CustomerInfoService customerInfoService,
+        ActivityService activityService,
+        CustomerLoanRepositoryJdbcTemplate customerLoanRepositoryJdbcTemplate,
+        CustomerGeneralDocumentService customerGeneralDocumentService,
+        CadDocumentService cadDocumentService,
+        LoanConfigService loanConfigService,
+        BranchService branchService,
+        CustomerDocumentService customerDocumentService,
+        CollateralSiteVisitService collateralSiteVisitService) {
         this.customerLoanRepository = customerLoanRepository;
         this.userService = userService;
         this.customerService = customerService;
@@ -271,6 +274,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         this.branchService = branchService;
         this.loanConfigService = loanConfigService;
         this.customerDocumentService = customerDocumentService;
+        this.collateralSiteVisitService = collateralSiteVisitService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -350,10 +354,12 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 customerLoan.setCustomerOfferLetter(customerOfferLetterDto);
             }
         }
-        List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
-            .findByCustomerInfoId(customerLoan.getLoanHolder().getId());
-        if (!generalDocuments.isEmpty()) {
-            customerLoan.getLoanHolder().setCustomerGeneralDocuments(generalDocuments);
+        if (!customerLoan.getDocumentStatus().equals(DocStatus.APPROVED)) {
+            List<CustomerGeneralDocument> generalDocuments = customerGeneralDocumentService
+                    .findByCustomerInfoId(customerLoan.getLoanHolder().getId());
+            if (!generalDocuments.isEmpty()) {
+                customerLoan.getLoanHolder().setCustomerGeneralDocuments(generalDocuments);
+            }
         }
         // skip insurace , pan expiry for loan forward and approve
         customerLoan.getLoanHolder().setLoanFlags(customerLoan.getLoanHolder().getLoanFlags()
@@ -374,21 +380,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         }
         CompanyInfo companyInfo = null;
         boolean isNewLoan = false;
-//        Customer customer = customerLoan.getCustomerInfo();
-//        if (customerLoan.getLoanCategory() == LoanApprovalType.INSTITUTION) {
-//            companyInfo = customerLoan.getCompanyInfo();
-//            if (!companyInfo.isValid()) {
-//                throw new ServiceValidationException(
-//                    companyInfo.getValidationMsg());
-//            }
-//        } else {
-//            if (!customer.isValid()) {
-//                throw new ServiceValidationException(
-//                    customer.getValidationMsg());
-//            }
-//        }
-
-        // validation end
 
         if (customerLoan.getId() == null) {
             isNewLoan = true;
@@ -616,7 +607,6 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                         logger.error("unable to parse reporting Info");
                     }
                 }
-
                 String basePath = new PathBuilder(UploadDir.initialDocument)
                     .buildLoanDocumentUploadBasePathWithId(customerLoan1.getLoanHolder().getId(),
                         customerLoan1.getLoanHolder().getBranch().getId(),
@@ -645,8 +635,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 new Thread(() -> {
                     try {
                         objectMapper.writeValue(
-                            Paths.get(filePath + customerLoan1.getId() + "-approved.json")
-                                .toFile(), customerLoan1);
+                                Paths.get(filePath + customerLoan1.getId() + "-approved.json")
+                                        .toFile(), customerLoan1);
                     } catch (Exception e) {
                         logger.error(
                             "unable to write json file of customer {} loan {} with path {} with ex ::{}",

@@ -1,5 +1,6 @@
 package com.sb.solutions.api.collateralSiteVisit.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sb.solutions.api.security.entity.Security;
 import com.sb.solutions.core.enitity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CollateralSiteVisit extends BaseEntity<Long> {
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="GMT")
     private LocalDate siteVisitDate;
     private String securityName;
     private String siteVisitJsonData;
@@ -34,4 +37,6 @@ public class CollateralSiteVisit extends BaseEntity<Long> {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<SiteVisitDocument> siteVisitDocuments;
+
+    private Integer collateralDeleted = 0;
 }
