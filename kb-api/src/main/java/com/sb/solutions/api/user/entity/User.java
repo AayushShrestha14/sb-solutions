@@ -109,7 +109,8 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     @NotAudited
     private Long primaryUserId;
 
-    private int numOfAttempts;
+    @NotAudited
+    private Integer numOfAttempts;
 
 
     @Override
