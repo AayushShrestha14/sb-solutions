@@ -109,6 +109,10 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     @NotAudited
     private Long primaryUserId;
 
+    @NotAudited
+    private Integer numOfAttempts;
+
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -136,7 +140,7 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !status.equals(Status.LOCKED);
     }
 
     @Override
@@ -148,4 +152,5 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
     public boolean isEnabled() {
         return true;
     }
+
 }
