@@ -54,7 +54,7 @@ public class LoginDetailServiceImpl implements LoginDetailService{
         lock.writeLock().lock();
          try {
              User user = userRepository.getUsersByUsername(userName);
-             if (user != null) {
+             if (user != null  && !user.getStatus().equals(Status.LOCKED)) {
                  user.setStatus(Status.ACTIVE);
                  user.setNumOfAttempts(0);
                  userRepository.save(user);
