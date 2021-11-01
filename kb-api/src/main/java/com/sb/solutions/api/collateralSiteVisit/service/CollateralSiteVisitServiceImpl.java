@@ -93,17 +93,14 @@ public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitServic
     @Override
     public void deleteSiteVisit(CollateralSiteVisit collateralSiteVisit) {
         if (collateralSiteVisit != null) {
+            collateralSiteVisit.setCollateralDeleted(1);
             List<SiteVisitDocument> siteVisitDocuments = collateralSiteVisit.getSiteVisitDocuments();
             if (siteVisitDocuments.size() > 0) {
-                String fullPath = "";
                 for (SiteVisitDocument siteVisitDocument: siteVisitDocuments) {
-                    String filePath = siteVisitDocument.getDocPath();
-                    String docName = siteVisitDocument.getDocName().concat(FILE_TYPE);
-                    fullPath = filePath+docName;
-                    DeleteFileUtils.deleteFile(fullPath);
+                    siteVisitDocument.setDocDeleted(1);
                 }
             }
-            repository.delete(collateralSiteVisit);
+            repository.save(collateralSiteVisit);
         }
     }
 
@@ -113,17 +110,15 @@ public class CollateralSiteVisitServiceImpl implements CollateralSiteVisitServic
             List<CollateralSiteVisit> collateralSiteVisits1 = repository.findCollateralSiteVisitBySecurityNameAndSecurity_Id(securityName, securityId);
             List<SiteVisitDocument> siteVisitDocuments = new ArrayList<>();
             for (CollateralSiteVisit collateralSiteVisit: collateralSiteVisits1) {
+                collateralSiteVisit.setCollateralDeleted(1);
                 siteVisitDocuments.addAll(collateralSiteVisit.getSiteVisitDocuments());
             }
             if (siteVisitDocuments.size()> 0) {
                 for (SiteVisitDocument siteVisitDocument: siteVisitDocuments) {
-                    String filePath = siteVisitDocument.getDocPath();
-                    String docName = siteVisitDocument.getDocName().concat(FILE_TYPE);
-                    String fullPath = filePath+docName;
-                    DeleteFileUtils.deleteFile(fullPath);
+                    siteVisitDocument.setDocDeleted(1);
                 }
             }
-            repository.deleteAll(collateralSiteVisits1);
+            repository.saveAll(collateralSiteVisits1);
         }
         return null;
     }
