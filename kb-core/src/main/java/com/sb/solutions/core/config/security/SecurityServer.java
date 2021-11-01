@@ -73,25 +73,34 @@ public class SecurityServer extends AuthorizationServerConfigurerAdapter {
         endpoints
             .authenticationManager(authenticationManager)
             .tokenStore(tokenStore())
-
             .userDetailsService(userDetailsService)
             .tokenServices(customTokenServices())
             .exceptionTranslator(e -> {
-                if (e instanceof OAuth2Exception) {
+                if(e instanceof AccountLockedException) {
+                    AccountLockedException accountLockedException = new AccountLockedException();
+                    CustomOauthException customOauthException = new CustomOauthException(accountLockedException.getMessage());
+                    customOauthException.setCustomMessage(accountLockedException.getMessage());
+                    return ResponseEntity
+                            .status(403)
+                            .body(customOauthException);
+                }
+                else if (e instanceof OAuth2Exception) {
                     final OAuth2Exception oauthException = (OAuth2Exception) e;
-
+                    CustomOauthException customOauthException = new CustomOauthException(oauthException.getMessage());
+                    customOauthException.setCustomMessage("Wrong Credentials");
                     return ResponseEntity
                         .status(oauthException.getHttpErrorCode())
-                        .body(new CustomOauthException(oauthException.getMessage()));
+                        .body(customOauthException);
                 } else if (e instanceof InternalAuthenticationServiceException) {
                     final InternalAuthenticationServiceException serviceException
                         = (InternalAuthenticationServiceException) e;
+                    CustomOauthException customOauthException = new CustomOauthException(
+                            serviceException.getMessage());
+                    customOauthException.setCustomMessage("Wrong Credentials");
                     return ResponseEntity
                         .status(401)
-                        .body(new CustomOauthException(
-                            serviceException.getMessage()));
+                        .body(customOauthException);
                 }
-
                 throw e;
             });
     }

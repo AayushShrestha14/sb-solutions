@@ -19,7 +19,7 @@ public class CustomOauthExceptionSerializer extends StdSerializer<CustomOauthExc
         SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("custom_error", value.getOAuth2ErrorCode());
-        gen.writeStringField("errorDescription", "Wrong Credentials");
+        gen.writeStringField("errorDescription", value.getCustomMessage());
         if (value.getAdditionalInformation() != null) {
             for (Map.Entry<String, String> entry : value.getAdditionalInformation().entrySet()) {
                 String key = entry.getKey();
