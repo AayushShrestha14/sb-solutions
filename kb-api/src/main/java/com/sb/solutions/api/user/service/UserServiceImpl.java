@@ -153,6 +153,10 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        if(user.getStatus().equals(Status.LOCKED)){
+            user.setNumOfAttempts(0);
+        }
+
         return userRepository.save(user);
 
 

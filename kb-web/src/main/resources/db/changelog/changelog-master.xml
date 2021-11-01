@@ -7139,4 +7139,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="429-alter-table-users-add-column-num-of-attempts" author="abishek">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="users" columnName="num_of_attempts"/>
+            </not>
+        </preConditions>
+       <addColumn tableName="users">
+           <column name="num_of_attempts" type="INT" />
+       </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
