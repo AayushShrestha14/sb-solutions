@@ -1,13 +1,7 @@
 package com.sb.solutions.api.user.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.sb.solutions.core.config.security.AccountLockedException;
@@ -154,8 +148,13 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if(user.getStatus().equals(Status.LOCKED)){
-            user.setNumOfAttempts(0);
+        Optional<User> oldOptUser = userRepository.findById(user.getId());
+
+        if (!ObjectUtils.isEmpty(oldOptUser)) {
+            logger.info("Status: {}", oldOptUser.get().getStatus());
+            if (oldOptUser.get().getStatus().equals(Status.LOCKED) && user.getStatus().equals(Status.ACTIVE)){
+                user.setNumOfAttempts(0);
+            }
         }
 
         return userRepository.save(user);
