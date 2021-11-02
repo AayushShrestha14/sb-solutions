@@ -19,10 +19,6 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 public class MGroupInfo extends BaseEntity<Long> {
 
-    @NotNull(message = FieldErrorConstant.NOT_NULL)
-    @NotBlank(message = FieldErrorConstant.NOT_BLANK)
-    @Size(min = StringConstants.DEFAULT_MIN_SIZE_4)
     private String groupCode;
-
     private String detailInformation;
 }

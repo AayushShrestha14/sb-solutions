@@ -29,7 +29,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.sb.solutions.api.collateralSiteVisit.dto.CollateralSiteVisitDto;
 import com.sb.solutions.api.crgMicro.entity.CrgMicro;
+import com.sb.solutions.api.loan.dto.CustomerLoanDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -339,4 +341,14 @@ public class CustomerLoan extends BaseEntity<Long> {
         }
         return LoanApprovalType.INSTITUTION;
     }
+
+    @Transient
+    private String zipPath;
+
+    @Transient
+    private List<CustomerLoanDto> customerLoanDtoList;
+
+    @NotAudited
+    @Transient
+    private List<CollateralSiteVisitDto> collateralSiteVisits;
 }

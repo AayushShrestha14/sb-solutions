@@ -7117,6 +7117,28 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="431-alter-table-collateral-site-visit-add-column-collateral-deleted" author="Karma">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="collateral_site_visit" columnName="collateral_deleted"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="collateral_site_visit">
+            <column name="collateral_deleted" type="INT(2)" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="432-alter-table-site-visit-document-add-column-doc-deleted" author="Karma">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="site_visit_document" columnName="doc_deleted"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="site_visit_document">
+            <column name="doc_deleted" type="INT(2)" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="429-alter-table-users-add-column-num-of-attempts" author="abishek">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -7127,7 +7149,5 @@
            <column name="num_of_attempts" type="INT" />
        </addColumn>
     </changeSet>
-
-
 
 </databaseChangeLog>

@@ -30,4 +30,5 @@ public class SiteVisitDocument extends BaseEntity<Long> {
     private String docPath;
     private String securityName;
     private Boolean isApproved;
+    private Integer docDeleted = 0;
 }

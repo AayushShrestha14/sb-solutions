@@ -1,11 +1,12 @@
 package com.sb.solutions.api.security.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import com.sb.solutions.api.collateralSiteVisit.entity.CollateralSiteVisit;
+import com.sb.solutions.api.collateralSiteVisit.entity.SiteVisitDocument;
+import com.sb.solutions.api.collateralSiteVisit.repository.CollateralSiteVisitRepository;
+import com.sb.solutions.core.utils.file.DeleteFileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -37,21 +38,20 @@ public class SecurityServiceImpl implements SecurityService {
     final CustomerLoanRepository customerLoanRepository;
     final CustomerLoanFlagService customerLoanFlagService;
     final LoanConfigService loanConfigService;
-
-
-
-
+    final CollateralSiteVisitRepository collateralSiteVisitRepository;
+    static final String FILE_TYPE = ".jpg";
 
     @Autowired
     public SecurityServiceImpl(SecurityRepository securityRepository,
-        GuarantorService guarantorService,CustomerLoanRepository customerLoanRepository,
-        CustomerLoanFlagService customerLoanFlagService,
-        LoanConfigService loanConfigService) {
+                               GuarantorService guarantorService, CustomerLoanRepository customerLoanRepository,
+                               CustomerLoanFlagService customerLoanFlagService,
+                               LoanConfigService loanConfigService, CollateralSiteVisitRepository collateralSiteVisitRepository) {
         this.securityRepository = securityRepository;
         this.guarantorService = guarantorService;
         this.customerLoanRepository = customerLoanRepository;
         this.customerLoanFlagService = customerLoanFlagService;
         this.loanConfigService = loanConfigService;
+        this.collateralSiteVisitRepository = collateralSiteVisitRepository;
     }
 
     @Override
@@ -118,6 +118,30 @@ public class SecurityServiceImpl implements SecurityService {
                     e.printStackTrace();
                 }
                 JSONArray array = (JSONArray) json.get("selectedArray");
+
+                List<CollateralSiteVisit> collateralSiteVisit12 = new ArrayList<>();
+                if (loan.getLoanHolder().getSecurity().getId() != null) {
+                    // Find collateral data through security Id
+                    final List<CollateralSiteVisit> collateralSiteVisits = collateralSiteVisitRepository.findCollateralSiteVisitBySecurity_Id(loan.getLoanHolder().getSecurity().getId());
+                    List<CollateralSiteVisit> finalCollateralSiteVisits = collateralSiteVisits;
+                    array.forEach((selectedArray) -> {
+                        String newS = selectedArray.toString().replace(" ","");
+                        for(int i = 0; i< finalCollateralSiteVisits.size() ; i++) {
+                            if (finalCollateralSiteVisits.get(i).getSecurityName().replace(" ", "").replaceAll("\\d","").toLowerCase().contains(newS.toLowerCase())) {
+                                collateralSiteVisit12.add(finalCollateralSiteVisits.get(i));
+                            }
+                        }
+                    });
+
+                    for (CollateralSiteVisit collateralSiteVisit : collateralSiteVisits) {
+                        // Filter collateral data with selected Array and delete if not found
+                        Optional<CollateralSiteVisit> optionalCollateralSiteVisit = collateralSiteVisit12.stream().filter(d ->
+                                Objects.equals(d.getSecurityName(), collateralSiteVisit.getSecurityName())).findAny();
+                        if (!optionalCollateralSiteVisit.isPresent()) {
+                            deleteAllSiteVisit(loan.getLoanHolder().getSecurity().getId(), collateralSiteVisit.getSecurityName());
+                        }
+                    }
+                }
 
                 switch (loanConfigDetail.getLoanTag().name()) {
                     case "GENERAL":
@@ -214,5 +238,23 @@ public class SecurityServiceImpl implements SecurityService {
             customerLoanFlagService
                 .deleteCustomerLoanFlagById(loanFlag.getId());
         }
+    }
+
+    @Override
+    public List<CollateralSiteVisit> deleteAllSiteVisit(Long securityId, String securityName) {
+        if (securityId != null && securityName != null) {
+            List<CollateralSiteVisit> collateralSiteVisits1 = collateralSiteVisitRepository.findCollateralSiteVisitBySecurityNameAndSecurity_Id(securityName, securityId);
+            List<SiteVisitDocument> siteVisitDocuments = new ArrayList<>();
+            for (CollateralSiteVisit collateralSiteVisit: collateralSiteVisits1) {
+                collateralSiteVisit.setCollateralDeleted(1);
+                siteVisitDocuments.addAll(collateralSiteVisit.getSiteVisitDocuments());
+            }
+            if (siteVisitDocuments.size()> 0) {
+                for (SiteVisitDocument siteVisitDocument: siteVisitDocuments) {
+                    siteVisitDocument.setDocDeleted(1);
+                }
+            }
+        }
+        return null;
     }
 }
