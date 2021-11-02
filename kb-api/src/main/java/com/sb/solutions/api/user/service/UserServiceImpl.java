@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.core.config.security.AccountLockedException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -309,6 +310,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User u = userRepository.getUsersByUsernameAndStatus(username, Status.ACTIVE);
+        User locked = userRepository.getUsersByUsernameAndStatus(username,Status.LOCKED);
+        if (locked!=null){
+           throw new AccountLockedException();
+        }
         return this.authDetail(u);
     }
 
