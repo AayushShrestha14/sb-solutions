@@ -151,7 +151,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> oldOptUser = userRepository.findById(user.getId());
 
         if (!ObjectUtils.isEmpty(oldOptUser)) {
-            logger.info("Status: {}", oldOptUser.get().getStatus());
             if (oldOptUser.get().getStatus().equals(Status.LOCKED) && user.getStatus().equals(Status.ACTIVE)){
                 user.setNumOfAttempts(0);
             }
