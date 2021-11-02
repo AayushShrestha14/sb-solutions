@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ import com.sb.solutions.core.enums.RoleType;
 import com.sb.solutions.core.enums.Status;
 import com.sb.solutions.core.utils.ApprovalType;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.dto.CadStageDto;
 import com.sb.solutions.entity.CustomerApprovedLoanCadDocumentation;
 import com.sb.solutions.service.LoanHolderService;
@@ -45,6 +47,7 @@ import com.sb.solutions.validation.constraint.CadValid;
  **/
 
 @RestController
+@Validated
 @RequestMapping(value = ApiConstants.CAD_BASE_API)
 public class CadController {
 
@@ -120,7 +123,7 @@ public class CadController {
     }
 
     @PostMapping(path = ApiConstants.UPLOAD_FILE)
-    public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
         @RequestParam("offerLetterId") Long offerLetterId,
         @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
@@ -131,7 +134,7 @@ public class CadController {
 
 
     @PostMapping(value = ApiConstants.UPLOAD_LEGAL_FILE)
-    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("customerInfoId") Long customerInfoId, @RequestParam("loanID") Long loanId,
         @RequestParam("customerApprovedDocId") Long customerApprovedDocId,
         @RequestParam("documentName") String documentName,
@@ -144,7 +147,7 @@ public class CadController {
     }
 
     @PostMapping(value = ApiConstants.UPLOAD_ADDITIONAL_FILE)
-    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> cadCheckListDoc(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("cadId") Long cadId,
         @RequestParam("documentName") String documentName,
         @RequestParam("branchId") Long branchId,
@@ -164,7 +167,7 @@ public class CadController {
     }
 
     @PostMapping(value = ApiConstants.UPLOAD_SCC_FILE)
-    public ResponseEntity<?> sccFilePath(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> sccFilePath(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("cadId") Long cadId,
         @RequestParam("branchId") Long branchId,
         @RequestParam("customerInfoId") Long customerInfoId

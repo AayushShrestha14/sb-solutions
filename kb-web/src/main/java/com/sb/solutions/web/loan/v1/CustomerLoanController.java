@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +57,7 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.ProductUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.common.stage.dto.StageDto;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
 
@@ -64,6 +66,7 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
  */
 
 @RestController
+@Validated
 @RequestMapping(CustomerLoanController.URL)
 public class CustomerLoanController {
 
@@ -280,7 +283,7 @@ public class CustomerLoanController {
     }
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<?> uploadLoanFile(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadLoanFile(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("loanId") Long loanId,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") Long documentId,
@@ -288,7 +291,6 @@ public class CustomerLoanController {
         @RequestParam("customerType") String customerType,
         @RequestParam(name = "actualLoanId", required = false, defaultValue = "") String actualLoanId,
         @RequestParam(name = "action", required = false, defaultValue = "new") String action) {
-
         Preconditions.checkNotNull(loanHolderId, "Loan Holder cannot be null");
         Preconditions.checkNotNull(customerType, "CustomerType cannot be null");
         Preconditions.checkNotNull(loanId, "LoanConfig cannot be null");
@@ -445,11 +447,10 @@ public class CustomerLoanController {
     }
 
     @PostMapping("/cad-document/upload")
-    public ResponseEntity<?> uploadLoanCadFile(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadLoanCadFile(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") Long documentId,
         @RequestParam("customerLoanId") Long customerLoanId) {
-
         CadDocument cadDocument = new CadDocument();
         Document document = new Document();
         document.setId(documentId);

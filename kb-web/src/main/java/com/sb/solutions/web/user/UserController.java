@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,12 +36,14 @@ import com.sb.solutions.core.utils.date.DateManipulator;
 import com.sb.solutions.core.utils.email.Email;
 import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.user.dto.ChangePasswordDto;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
  */
 @RestController
+@Validated
 @RequestMapping("/v1/user")
 public class UserController {
 
@@ -78,7 +81,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/uploadFile")
-    public ResponseEntity<?> saveUserFile(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> saveUserFile(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("type") String type) {
         return FileUploadUtils.uploadFile(multipartFile, type);
     }

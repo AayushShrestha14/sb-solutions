@@ -5,6 +5,7 @@ import com.sb.solutions.api.authorization.approval.ApprovalRoleHierarchyService;
 import com.sb.solutions.api.loan.service.CustomerOfferLetterPathService;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.ApprovalType;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.loan.v1.dto.AssignOfferLetter;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +36,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 
+
 @RestController
+@Validated
 @RequestMapping(CustomerOfferController.URL)
 public class CustomerOfferController {
 
@@ -71,10 +75,12 @@ public class CustomerOfferController {
     }
 
     @PostMapping(path = "/uploadFile")
-    public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadOfferLetter(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
                                                @RequestParam("customerLoanId") Long customerLoanId,
                                                @RequestParam("offerLetterId") Long offerLetterId,
                                                @RequestParam(name = "type", required = true, defaultValue = "DRAFT") String type) {
+
+
         logger.info("uploading offer letter{}", multipartFile.getOriginalFilename());
         return new RestResponseDto().successModel(
                 customerOfferService
