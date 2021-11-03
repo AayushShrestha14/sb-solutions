@@ -61,7 +61,7 @@ bank:
   affiliateId: mega
   name: United Finance Ltd
   website: http://www.ufl.com.np/
-  frontaddress: ""
+  frontaddress: "localhost:4200/"
 
 mailproperty:
   additionalHeaders:
