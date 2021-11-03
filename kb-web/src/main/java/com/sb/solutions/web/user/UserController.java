@@ -4,6 +4,7 @@ import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.RoleType;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,15 +50,17 @@ public class UserController {
 
     @Value("${bank.frontaddress}")
     private String frontAddress;
+    private final CustomJdbcTokenStore customJdbcTokenStore;
 
     @Autowired
     public UserController(
-        UserService userService,
-        RoleService roleService,
-        MailSenderService mailSenderService) {
+            UserService userService,
+            RoleService roleService,
+            MailSenderService mailSenderService, CustomJdbcTokenStore customJdbcTokenStore) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailSenderService = mailSenderService;
+        this.customJdbcTokenStore = customJdbcTokenStore;
     }
 
     @GetMapping(path = "/authenticated")
@@ -76,33 +80,33 @@ public class UserController {
 
     @PostMapping(value = "/uploadFile")
     public ResponseEntity<?> saveUserFile(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
-        @RequestParam("type") String type) {
+                                          @RequestParam("type") String type) {
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "/list")
     public ResponseEntity<?> sergetAll(@RequestBody Object searchDto,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                       @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findAllPageable(searchDto, PaginationUtils
-                .pageable(page, size)));
+                .successModel(userService.findAllPageable(searchDto, PaginationUtils
+                        .pageable(page, size)));
     }
 
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "Results page you want to retrieve (0..N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "Number of records per page.")})
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "Results page you want to retrieve (0..N)"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "Number of records per page.")})
     @PostMapping(value = "listByRole")
     public ResponseEntity<?> getUserByRole(@RequestBody Collection<Role> roles,
-        @RequestParam("page") int page, @RequestParam("size") int size) {
+                                           @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto()
-            .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
+                .successModel(userService.findByRole(roles, PaginationUtils.pageable(page, size)));
     }
 
     @GetMapping(value = "listRole")
@@ -156,6 +160,7 @@ public class UserController {
             email.setAffiliateId(this.affiliateId);
             mailSenderService.send(Template.RESET_PASSWORD, email);
 
+
             return new RestResponseDto().successModel("SUCCESS");
         }
     }
@@ -167,9 +172,9 @@ public class UserController {
 
     @GetMapping(path = "/get-all-doc-transfer/{id}/branch/{branchId}")
     public ResponseEntity<?> getAllForDocTransfer(@PathVariable Long id,
-        @PathVariable Long branchId) {
+                                                  @PathVariable Long branchId) {
         return new RestResponseDto()
-            .successModel(userService.getRoleWiseBranchWiseUserList(null, branchId, id));
+                .successModel(userService.getRoleWiseBranchWiseUserList(null, branchId, id));
     }
 
     @PostMapping(value = "/resetPassword")
@@ -181,7 +186,7 @@ public class UserController {
             if (user.getResetPasswordToken() != null) {
                 if (user.getResetPasswordTokenExpiry().before(new Date())) {
                     return new RestResponseDto()
-                        .failureModel("Reset Token has been expired already");
+                            .failureModel("Reset Token has been expired already");
                 } else {
                     User updatedUser = userService.updatePassword(u.getUsername(), u.getPassword());
                     Email email = new Email();
@@ -192,13 +197,19 @@ public class UserController {
                     mailSenderService.send(Template.RESET_PASSWORD_SUCCESS, email);
                     if (ObjectUtils.isEmpty(updatedUser.getPrimaryUserId())) {
                         List<User> secondaryUser = userService
-                            .getSecondaryUserByPrimaryUserID(updatedUser.getId());
+                                .getSecondaryUserByPrimaryUserID(updatedUser.getId());
                         secondaryUser.forEach(user1 -> {
                             userService.updatePassword(user1.getUsername(), u.getPassword());
                         });
                     }
+                    Collection<OAuth2AccessToken> token = customJdbcTokenStore
+                            .findTokensByUserName(user.getUsername());
+                    for (OAuth2AccessToken tempToken : token) {
+                        customJdbcTokenStore.removeAccessToken(tempToken);
+                        customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+                    }
                     return new RestResponseDto()
-                        .successModel(updatedUser);
+                            .successModel(updatedUser);
                 }
             } else {
                 return new RestResponseDto().failureModel("Initiate Reset Password Process first");
@@ -216,10 +227,16 @@ public class UserController {
         userService.updatePassword(user.getUsername(), passwordDto.getNewPassword());
         if (ObjectUtils.isEmpty(user.getPrimaryUserId())) {
             List<User> secondaryUser = userService
-                .getSecondaryUserByPrimaryUserID(user.getId());
+                    .getSecondaryUserByPrimaryUserID(user.getId());
             secondaryUser.forEach(user1 -> {
                 userService.updatePassword(user1.getUsername(), passwordDto.getNewPassword());
             });
+        }
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore
+                .findTokensByUserName(user.getUsername());
+        for (OAuth2AccessToken tempToken : token) {
+            customJdbcTokenStore.removeAccessToken(tempToken);
+            customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
         }
         return new RestResponseDto().successModel("Password Changed Successfully");
     }
@@ -228,33 +245,33 @@ public class UserController {
     public ResponseEntity<?> getUserCad() {
 
         return new RestResponseDto()
-            .successModel(userService.getUserByRoleCad());
+                .successModel(userService.getUserByRoleCad());
     }
 
     @GetMapping("/branch/all")
     public ResponseEntity<?> getAuthenticatedUserBranches() {
         return new RestResponseDto().successModel(
-            userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
-                Collectors.joining(",")));
+                userService.getRoleAccessFilterByBranch().stream().map(Object::toString).collect(
+                        Collectors.joining(",")));
     }
 
     @GetMapping(value = "/{id}/users/branch/{bId}")
     public ResponseEntity<?> getUserListForDocument(@PathVariable Long id, @PathVariable Long bId) {
         return new RestResponseDto()
-            .successModel(userService.findByRoleIdAndBranchIdForDocumentAction(id, bId));
+                .successModel(userService.findByRoleIdAndBranchIdForDocumentAction(id, bId));
     }
 
     @PostMapping(value = "/role-list/branch/{bId}")
     public ResponseEntity<?> getUserListForSolByRoleIdInAndBranchId(@RequestBody List<Long> roleIds,
-        @PathVariable Long bId) {
+                                                                    @PathVariable Long bId) {
         return new RestResponseDto()
-            .successModel(userService.findUserListForSolByRoleIdInAndBranchId(roleIds, bId));
+                .successModel(userService.findUserListForSolByRoleIdInAndBranchId(roleIds, bId));
     }
 
     @GetMapping(value = "/allUser")
     public ResponseEntity<?> allUser() {
         return new RestResponseDto()
-            .successModel(userService.getAllUserByCurrentRoleBranchAccess());
+                .successModel(userService.getAllUserByCurrentRoleBranchAccess());
     }
 
     @GetMapping(value = "/logout")
@@ -264,7 +281,7 @@ public class UserController {
 
     @PostMapping(value = "/update-roles/{id}")
     public ResponseEntity<?> logout(@PathVariable("id") Long id,
-        @RequestBody List<Long> roleIDList) {
+                                    @RequestBody List<Long> roleIDList) {
         return new RestResponseDto().successModel(userService.updateSecondaryRole(roleIDList, id));
     }
 
@@ -276,7 +293,7 @@ public class UserController {
     @GetMapping(value = "/users/branch/{bId}/maker-active")
     public ResponseEntity<?> getUserListByBranchIdAndMakerActive(@PathVariable("bId") Long bId) {
         return new RestResponseDto()
-            .successModel(userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, bId));
+                .successModel(userService.findByRoleTypeAndBranchIdAndStatusActive(RoleType.MAKER, bId));
     }
 
 }
