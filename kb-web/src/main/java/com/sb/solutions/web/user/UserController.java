@@ -4,6 +4,7 @@ import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
 import com.sb.solutions.api.user.service.UserService;
+import com.sb.solutions.core.config.security.CustomJdbcTokenStore;
 import com.sb.solutions.core.constant.EmailConstant.Template;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.enums.RoleType;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -50,13 +52,17 @@ public class UserController {
     private String frontAddress;
 
     @Autowired
+    private final CustomJdbcTokenStore customJdbcTokenStore;
+
+    @Autowired
     public UserController(
-        UserService userService,
-        RoleService roleService,
-        MailSenderService mailSenderService) {
+            UserService userService,
+            RoleService roleService,
+            MailSenderService mailSenderService, CustomJdbcTokenStore customJdbcTokenStore) {
         this.userService = userService;
         this.roleService = roleService;
         this.mailSenderService = mailSenderService;
+        this.customJdbcTokenStore = customJdbcTokenStore;
     }
 
     @GetMapping(path = "/authenticated")
@@ -197,6 +203,12 @@ public class UserController {
                             userService.updatePassword(user1.getUsername(), u.getPassword());
                         });
                     }
+                    Collection<OAuth2AccessToken> token = customJdbcTokenStore
+                            .findTokensByUserName(user.getUsername());
+                    for (OAuth2AccessToken tempToken : token) {
+                        customJdbcTokenStore.removeAccessToken(tempToken);
+                        customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+                    }
                     return new RestResponseDto()
                         .successModel(updatedUser);
                 }
@@ -221,6 +233,14 @@ public class UserController {
                 userService.updatePassword(user1.getUsername(), passwordDto.getNewPassword());
             });
         }
+        Collection<OAuth2AccessToken> token = customJdbcTokenStore
+                .findTokensByUserName(user.getUsername());
+        for (OAuth2AccessToken tempToken : token) {
+            customJdbcTokenStore.removeAccessToken(tempToken);
+            customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
+        }
+
+
         return new RestResponseDto().successModel("Password Changed Successfully");
     }
 
