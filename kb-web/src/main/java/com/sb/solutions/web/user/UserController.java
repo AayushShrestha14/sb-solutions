@@ -1,29 +1,5 @@
 package com.sb.solutions.web.user;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.authorization.service.RoleService;
 import com.sb.solutions.api.user.entity.User;
@@ -38,6 +14,21 @@ import com.sb.solutions.core.utils.email.MailSenderService;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.user.dto.ChangePasswordDto;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Sunil Babu Shrestha on 12/27/2018
@@ -54,6 +45,9 @@ public class UserController {
     private String bankName;
     @Value("${bank.affiliateId}")
     private String affiliateId;
+
+    @Value("${bank.frontaddress}")
+    private String frontAddress;
 
     @Autowired
     public UserController(
@@ -138,8 +132,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/forgotPassword")
-    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username,
-        @RequestHeader("referer") final String referer) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("username") String username) {
         User user = userService.getByUsername(username);
         if (user == null) {
             return new RestResponseDto().failureModel("User not found!");
@@ -157,7 +150,7 @@ public class UserController {
             email.setTo(savedUser.getEmail());
             email.setToName(savedUser.getName());
             email.setResetPasswordLink(
-                referer + "#/newPassword?username=" + username + "&reset=" + resetToken);
+                    frontAddress + "#/newPassword?username=" + username + "&reset=" + resetToken);
             email.setExpiry(savedUser.getResetPasswordTokenExpiry().toString());
             email.setBankName(this.bankName);
             email.setAffiliateId(this.affiliateId);
