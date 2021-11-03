@@ -175,4 +175,11 @@ public class RequestExceptionHandler {
         return new ResponseEntity<>(restResponseDto, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> illegalArgumentExceptionHandler(IllegalArgumentException error) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setMessage(error.getMessage());
+        return new ResponseEntity<>(restResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +40,7 @@ import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
 import com.sb.solutions.core.utils.string.StringUtil;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.customerInfo.v1.dto.CustomerTransferDTO;
 import com.sb.solutions.web.loan.v1.mapper.Mapper;
 
@@ -46,6 +48,7 @@ import com.sb.solutions.web.loan.v1.mapper.Mapper;
  * @author : Rujan Maharjan on  8/10/2020
  **/
 @RestController
+@Validated
 @RequestMapping(CustomerInfoController.URL)
 public class CustomerInfoController {
 
@@ -119,7 +122,7 @@ public class CustomerInfoController {
 
     @PostMapping("/upload-photo")
     public ResponseEntity profilePicUploader(
-        @RequestParam("file") MultipartFile multipartFile,
+        @RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("customerInfoId") Long customerInfoId,
         @RequestParam("name") String name,
         @RequestParam("branch") String branch,
@@ -167,7 +170,7 @@ public class CustomerInfoController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> upload(@RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
         @RequestParam("customerInfoId") Long id,

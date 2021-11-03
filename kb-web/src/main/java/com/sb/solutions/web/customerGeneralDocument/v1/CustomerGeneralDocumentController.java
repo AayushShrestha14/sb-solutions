@@ -1,11 +1,13 @@
 package com.sb.solutions.web.customerGeneralDocument.v1;
 
+import javax.validation.Valid;
+
 import com.google.common.base.Preconditions;
-import com.sb.solutions.api.document.service.DocumentService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,11 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sb.solutions.api.customer.entity.CustomerGeneralDocument;
 import com.sb.solutions.api.customer.service.CustomerGeneralDocumentService;
 import com.sb.solutions.api.document.entity.Document;
+import com.sb.solutions.api.document.service.DocumentService;
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PathBuilder;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.customerInfo.v1.CustomerInfoController;
 
 /**
@@ -30,6 +34,7 @@ import com.sb.solutions.web.customerInfo.v1.CustomerInfoController;
  **/
 
 @RestController
+@Validated
 @RequestMapping(CustomerGeneralDocumentController.URL)
 public class CustomerGeneralDocumentController {
 
@@ -41,8 +46,8 @@ public class CustomerGeneralDocumentController {
     private final DocumentService documentService;
 
     public CustomerGeneralDocumentController(
-            CustomerGeneralDocumentService customerGeneralDocumentService,
-            UserService userService, DocumentService documentService) {
+        CustomerGeneralDocumentService customerGeneralDocumentService,
+        UserService userService, DocumentService documentService) {
         this.customerGeneralDocumentService = customerGeneralDocumentService;
         this.userService = userService;
         this.documentService = documentService;
@@ -55,7 +60,8 @@ public class CustomerGeneralDocumentController {
     }
 
     @PostMapping("/upload-document")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadPhoto(
+        @RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("customerName") String name,
         @RequestParam("documentName") String documentName,
         @RequestParam("documentId") String documentId,
@@ -64,14 +70,14 @@ public class CustomerGeneralDocumentController {
     ) {
         Long customerInfoId = Long.valueOf(id);
         Long docId = Long.valueOf(documentId);
-        CustomerGeneralDocument customerGeneralDocument = customerGeneralDocumentService.findByCustomerInfoIdAndDocumentId(customerInfoId, docId);
+        CustomerGeneralDocument customerGeneralDocument = customerGeneralDocumentService.findByCustomerInfoIdAndDocumentId(
+            customerInfoId, docId);
         if (customerGeneralDocument == null) {
             customerGeneralDocument = new CustomerGeneralDocument();
             Document document = documentService.findOne(docId);
             customerGeneralDocument.setDocument(document);
             customerGeneralDocument.setCustomerInfoId(customerInfoId);
-        }
-        else {
+        } else {
             int version = customerGeneralDocument.getVersion();
             customerGeneralDocument.setVersion(version + 1);
         }

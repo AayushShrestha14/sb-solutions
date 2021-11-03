@@ -3,10 +3,12 @@ package com.sb.solutions.web.branch.v1;
 import java.util.List;
 import javax.validation.Valid;
 
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import com.sb.solutions.api.branch.entity.Branch;
 import com.sb.solutions.api.branch.service.BranchService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 import com.sb.solutions.web.branch.v1.dto.BranchCustomerEndDto;
 import com.sb.solutions.web.branch.v1.mapper.BranchCustomerEndMapper;
 
@@ -30,6 +33,7 @@ import com.sb.solutions.web.branch.v1.mapper.BranchCustomerEndMapper;
  */
 
 @RestController
+@Validated
 @RequestMapping("/v1/branch")
 public class BranchController {
 
@@ -56,9 +60,8 @@ public class BranchController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/upload")
-    public ResponseEntity<?> uploadBranchExcel(@RequestParam("file") MultipartFile multipartFile) {
+    public ResponseEntity<?> uploadBranchExcel(@RequestParam("file") @FileFormatValid MultipartFile multipartFile) {
         branchService.saveExcel(multipartFile);
-
         return new RestResponseDto().successModel(null);
     }
 

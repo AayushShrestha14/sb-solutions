@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +19,12 @@ import com.sb.solutions.api.nepseCompany.service.NepseMasterService;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.dto.SearchDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 
 import java.io.IOException;
 
 @RestController
+@Validated
 @RequestMapping(value = "/v1/nepse-company")
 public class NepseCompanyController {
 
@@ -42,7 +45,7 @@ public class NepseCompanyController {
 
     @PostMapping(value = "/uploadNepseFile")
     public ResponseEntity<?> saveNepseExcel(
-            @RequestPart("excelFile") MultipartFile excelFile,
+            @RequestParam("excelFile") @FileFormatValid MultipartFile excelFile,
             @RequestPart("nepsePriceInfo") String nepsePriceInfo) throws IOException {
         nepseCompanyService.uploadNepseData(excelFile , new ObjectMapper().
                 readValue(nepsePriceInfo, NepsePriceInfo.class));

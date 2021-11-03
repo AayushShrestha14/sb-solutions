@@ -28,8 +28,11 @@ import com.sb.solutions.core.constant.UploadDir;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
 import com.sb.solutions.core.utils.file.FileUploadUtils;
+import org.springframework.validation.annotation.Validated;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 
 @RestController
+@Validated
 @RequestMapping("/v1/customer")
 public class CustomerController {
 
@@ -101,12 +104,11 @@ public class CustomerController {
 
 
     @PostMapping("/upload-photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity<?> uploadPhoto(
+        @RequestParam("file") @FileFormatValid MultipartFile multipartFile,
         @RequestParam("citizenNumber") String citizenNumber,
         @RequestParam("customerName") String name
-
     ) {
-
         Preconditions.checkNotNull(citizenNumber.equals("null") ? null
                 : (StringUtils.isEmpty(citizenNumber) ? null : citizenNumber),
             "Citizenship Number is required to upload file.");

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,9 +16,11 @@ import com.sb.solutions.api.preference.blacklist.service.BlackListService;
 import com.sb.solutions.api.preference.blacklist.util.BlackListExcelReader;
 import com.sb.solutions.core.dto.RestResponseDto;
 import com.sb.solutions.core.utils.PaginationUtils;
+import com.sb.solutions.core.validation.constraint.FileFormatValid;
 
 
 @RestController
+@Validated
 @RequestMapping("/v1/blacklist")
 public class BlackListController {
     private final BlackListService blackListService;
@@ -47,7 +50,7 @@ public class BlackListController {
 
     @PostMapping(value = "/uploadBlackList")
     public ResponseEntity<?> saveBlackListExcel(
-            @RequestParam("excelFile") MultipartFile multipartFile) {
+            @RequestParam("excelFile") @FileFormatValid MultipartFile multipartFile) {
 
         List<BlackList> blackList = BlackListExcelReader.parseBlackListFile(multipartFile);
         if (blackList == null) {
