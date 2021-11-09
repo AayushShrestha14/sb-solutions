@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,7 @@ public class CompanyController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
+    @PreAuthorize("hasAuthority('Company')")
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllPage(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
@@ -48,6 +50,8 @@ public class CompanyController {
         return new RestResponseDto().successModel(companyService.companyStatusCount());
     }
 
+
+    @PreAuthorize("hasAuthority('Company')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllCompany() {
         return new RestResponseDto().successModel(companyService.findAll());

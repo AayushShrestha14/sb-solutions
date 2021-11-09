@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sb.solutions.api.authorization.entity.RolePermissionRights;
+import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import com.sb.solutions.core.config.security.AccountLockedException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -63,6 +65,8 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    private final RolePermissionRightService rolePermissionRightService;
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final BranchRepository branchRepository;
@@ -72,13 +76,15 @@ public class UserServiceImpl implements UserService {
     private final CustomerApprovedLoanDao customerApprovedLoanDao;
 
     public UserServiceImpl(
-        @Autowired UserRepository userRepository,
-        @Autowired BranchRepository branchRepository,
-        @Autowired RoleRepository roleRepository,
-        @Autowired CustomJdbcTokenStore customJdbcTokenStore,
-        @Autowired BCryptPasswordEncoder passwordEncoder,
-        @Autowired CustomerLoanRepository customerLoanRepository,
-        CustomerApprovedLoanDao customerApprovedLoanDao) {
+            @Autowired RolePermissionRightService rolePermissionRightService,
+            @Autowired UserRepository userRepository,
+            @Autowired BranchRepository branchRepository,
+            @Autowired RoleRepository roleRepository,
+            @Autowired CustomJdbcTokenStore customJdbcTokenStore,
+            @Autowired BCryptPasswordEncoder passwordEncoder,
+            @Autowired CustomerLoanRepository customerLoanRepository,
+            CustomerApprovedLoanDao customerApprovedLoanDao) {
+        this.rolePermissionRightService = rolePermissionRightService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.branchRepository = branchRepository;
@@ -615,9 +621,20 @@ public class UserServiceImpl implements UserService {
             Collection<GrantedAuthority> oldAuthorities = (Collection<GrantedAuthority>) SecurityContextHolder
                 .getContext().getAuthentication().getAuthorities();
             List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
+
+            List<RolePermissionRights> rolePermissionRights = rolePermissionRightService
+                    .getByRoleId(u.getRole().getId());
+
+            List<String> permissions = rolePermissionRights.stream()
+                    .map(rolePermission -> rolePermission.getPermission().getPermissionName())
+                    .collect(Collectors.toList());
+
+            authorityList.addAll(permissions);
+
             for (String a : authorityList) {
                 updatedAuthorities.add(new SimpleGrantedAuthority(a));
             }
+
             updatedAuthorities.addAll(oldAuthorities);
             SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
@@ -625,9 +642,7 @@ public class UserServiceImpl implements UserService {
                     u.getPassword(),
                     updatedAuthorities)
             );
-
             u.setAuthorityList(authorityList);
-
         }
         return u;
     }
@@ -640,7 +655,6 @@ public class UserServiceImpl implements UserService {
             User createNewUser = new User();
             List<Branch> branchList = new ArrayList<>();
             List<Province> provinces = new ArrayList<>();
-
             BeanUtils.copyProperties(u, createNewUser);
             createNewUser.setId(null);
             createNewUser.setVersion(0);

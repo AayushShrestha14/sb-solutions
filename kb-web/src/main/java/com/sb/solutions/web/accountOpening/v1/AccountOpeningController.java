@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -169,6 +170,7 @@ public class AccountOpeningController {
         return new RestResponseDto().successModel(openingFormService.findAll());
     }
 
+    @PreAuthorize("hasAuthority('Account Opening')")
     @PostMapping(value = "/list")
     public ResponseEntity<?> getPageable(@RequestBody Object searchObject,
         @RequestParam("page") int page, @RequestParam("size") int size) {

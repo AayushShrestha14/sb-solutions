@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,6 +73,7 @@ public class DocumentController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
+    @PreAuthorize("hasAuthority('Document')")
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAllByPagination(@RequestBody SearchDto searchDto,
                                                 @RequestParam("page") int page, @RequestParam("size") int size) {
@@ -107,6 +109,7 @@ public class DocumentController {
         return new RestResponseDto().successModel(documentService.saveList(integers, loanCycle));
     }
 
+    @PreAuthorize("hasAuthority('Document')")
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAll() {
         return new RestResponseDto().successModel(documentService.findAll());
