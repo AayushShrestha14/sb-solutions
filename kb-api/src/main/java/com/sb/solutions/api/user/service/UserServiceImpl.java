@@ -522,14 +522,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String logout() {
+        invalidateTokenForUser(getAuthenticatedUser());
+        return "SUCCESSFULLY LOGOUT";
+    }
+
+    private void invalidateTokenForUser(User user) {
         Collection<OAuth2AccessToken> token = customJdbcTokenStore
-            .findTokensByUserName(getAuthenticatedUser().getUsername());
+            .findTokensByUserName(user.getUsername());
         for (OAuth2AccessToken tempToken : token) {
             customJdbcTokenStore.removeAccessToken(tempToken);
             customJdbcTokenStore.removeRefreshToken(tempToken.getRefreshToken());
         }
-        return "SUCCESSFULLY LOGOUT";
     }
+
+    @Override
+    public void logoutAllUserByRole(Long roleId){
+       List<User> users = findByRoleId(roleId);
+       if(Objects.nonNull(users)){
+           for(User user :users){
+             invalidateTokenForUser(user);
+           }
+       }
+    }
+
 
     @Override
     public String updateSecondaryRole(List<Long> roleIDList, Long id) {

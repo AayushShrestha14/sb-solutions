@@ -3,6 +3,7 @@ package com.sb.solutions.web.user;
 import java.util.List;
 import javax.validation.Valid;
 
+import com.sb.solutions.api.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,23 @@ public class RoleRightPermissionController {
 
     private final RightService rightService;
 
+    private final UserService userService;
+
     public RoleRightPermissionController(
-        @Autowired RolePermissionRightService rolePermissionRightService,
-        @Autowired RightService rightService) {
+            @Autowired RolePermissionRightService rolePermissionRightService,
+            @Autowired RightService rightService,
+            UserService userService) {
         this.rolePermissionRightService = rolePermissionRightService;
         this.rightService = rightService;
+        this.userService = userService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> saveRolePermRight(@Valid @RequestBody List<RolePermissionRights> rpr) {
         rolePermissionRightService.saveList(rpr);
+        for(RolePermissionRights rights : rpr){
+            userService.logoutAllUserByRole(rights.getRole().getId());
+        }
         return new RestResponseDto().successModel(null);
     }
 
