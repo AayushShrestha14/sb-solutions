@@ -82,22 +82,13 @@ public class NavigationController {
         Beside admin user, no other user can set question for eligibility
         below logic is to guard
          */
-        boolean hasEligibilityPermission = rolePermissionRights.stream()
-            .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
-        if (!u.getRole().getRoleName().equals(AppConstant.ADMIN_ROLE) && hasEligibilityPermission) {
-            rolePermissionRights.stream().forEach(role -> {
-                if (role.getPermission().getId() == ELIGIBILITY_PERMISSION) {
-                    role.getPermission().getSubNavs()
-                        .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
-                            || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
-                }
-            });
+        setUpElibilityPermission(u, rolePermissionRights);
 
-        }
         List<MenuDto> menuList = menuMapper.menuDtoList(rolePermissionRights);
         if (ProductUtils.OFFER_LETTER) {
-            boolean isPresentInCadHierarchy = approvalRoleHierarchyService
-                .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
+           boolean isPresentInCadHierarchy = approvalRoleHierarchyService
+                    .checkRoleContainInHierarchies(u.getRole().getId(), ApprovalType.CAD, 0l);
+
             if ((isPresentInCadHierarchy || u.getRole().getRoleType().equals(RoleType.CAD_ADMIN))
                 && (!ProductUtils.FULL_CAD) && !ProductUtils.CAD_LITE_VERSION) {
                 MenuDto menuDto = new MenuDto();
@@ -106,6 +97,7 @@ public class NavigationController {
                 menuDto.setIcon(POST_APPROVAL_DOCUMENTATION_ICON);
                 menuList.add(menuDto);
             }
+
             List<MenuDto> menuDtos = menuList.stream()
                 .filter(menuDto -> menuDto.getTitle().equalsIgnoreCase(CREDIT_ADMINISTRATION))
                 .collect(
@@ -133,12 +125,27 @@ public class NavigationController {
                         .collect(Collectors.toList()));
                 menuList.add(menuDto);
             }
-
-
         }
         return new RestResponseDto().successModel(
-            menuList.stream().filter(FilterJsonUtils.distinctByKey(MenuDto::getTitle)).collect(
+            menuList.stream()
+                    .filter(FilterJsonUtils.distinctByKey(MenuDto::getTitle))
+                    .collect(
                 Collectors.toList()));
+    }
+
+    private void setUpElibilityPermission(User u, List<RolePermissionRights> rolePermissionRights) {
+        boolean hasEligibilityPermission = rolePermissionRights.stream()
+            .anyMatch(r -> r.getPermission().getId() == ELIGIBILITY_PERMISSION);
+        if (!u.getRole().getRoleName().equals(AppConstant.ADMIN_ROLE) && hasEligibilityPermission) {
+            rolePermissionRights.stream().forEach(role -> {
+                if (role.getPermission().getId() == ELIGIBILITY_PERMISSION) {
+                    role.getPermission().getSubNavs()
+                        .removeIf(subNav -> subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_QUESTION
+                            || subNav.getId() == ELIGIBILITY_PERMISSION_SUBNAV_GENERAL_QUESTION);
+                }
+            });
+
+        }
     }
 
 
@@ -166,12 +173,10 @@ public class NavigationController {
             menuDto.setChildren(
                 menuDto.getChildren().stream().filter(f ->
                     (f.getTitle().equalsIgnoreCase(ALL_CAD_FILE)
-
                     ))
                     .collect(Collectors.toList()));
         }
         return menuDto;
     }
-
 
 }

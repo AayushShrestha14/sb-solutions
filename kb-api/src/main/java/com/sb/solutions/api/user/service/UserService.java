@@ -78,5 +78,7 @@ public interface UserService extends BaseService<User>, UserDetailsService {
 
     List<User>  getSecondaryUserByPrimaryUserID(Long id);
 
+    void logoutAllUserByRole(Long roleId);
+
 
 }

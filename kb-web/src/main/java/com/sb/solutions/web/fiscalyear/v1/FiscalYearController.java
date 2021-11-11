@@ -3,6 +3,7 @@ package com.sb.solutions.web.fiscalyear.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.fiscalyear.entity.FiscalYear;
@@ -50,6 +51,7 @@ public class FiscalYearController {
     }
 
     @PostMapping(value = "/list")
+    @PreAuthorize("hasAuthority('Preference Master')")
     public ResponseEntity<?> getAllByPagination(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         logger.info("getting fiscal year in pageable form");

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,7 @@ public class BlackListController {
                 .findAllBlackList(PaginationUtils.pageable(page, size)));
     }
     @PostMapping(value = "/list")
+    @PreAuthorize("hasAuthority('Preference Master')")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
                                     @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(blackListService

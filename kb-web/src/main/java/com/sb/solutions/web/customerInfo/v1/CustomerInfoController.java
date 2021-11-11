@@ -75,6 +75,7 @@ public class CustomerInfoController {
     }
 
     @PostMapping("/list")
+    @PreAuthorize("hasAuthority('Customer')")
     public ResponseEntity<?> getPageable(@RequestBody Map<String, String> searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(customerInfoService.

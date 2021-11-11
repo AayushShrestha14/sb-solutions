@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
@@ -86,6 +87,7 @@ public class UserController {
         return FileUploadUtils.uploadFile(multipartFile, type);
     }
 
+    @PreAuthorize("hasAuthority('Users')")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "Results page you want to retrieve (0..N)"),
