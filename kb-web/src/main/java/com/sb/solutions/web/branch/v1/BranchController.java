@@ -79,6 +79,7 @@ public class BranchController {
             branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
+    @PreAuthorize("hasAuthority('Branch')")
     @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());
