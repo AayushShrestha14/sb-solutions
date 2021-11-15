@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +57,6 @@ public class NepseCompanyController {
                     value = "Results page you want to retrieve (0..N)"),
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")})
-    @PreAuthorize("hasAuthority('Preference Master')")
     @PostMapping(value = "/list")
     public ResponseEntity<?> getAll(@RequestBody SearchDto searchDto,
                                     @RequestParam("page") int page, @RequestParam("size") int size) {

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +64,6 @@ public class LoanConfigController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @PreAuthorize("hasAuthority('Loan Configuration')")
     @RequestMapping(method = RequestMethod.POST, path = "/list")
     public ResponseEntity<?> getPageableLoanConfig(@RequestBody SearchDto searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {

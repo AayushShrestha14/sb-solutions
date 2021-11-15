@@ -3,12 +3,10 @@ package com.sb.solutions.web.branch.v1;
 import java.util.List;
 import javax.validation.Valid;
 
-import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,14 +70,12 @@ public class BranchController {
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
     @RequestMapping(method = RequestMethod.POST, path = "/list")
-    @PreAuthorize("hasAuthority('Branch')")
     public ResponseEntity<?> getPageableBranch(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(
             branchService.findAllPageable(searchDto, PaginationUtils.pageable(page, size)));
     }
 
-    @PreAuthorize("hasAuthority('Branch')")
     @RequestMapping(method = RequestMethod.GET, path = "/statusCount")
     public ResponseEntity<?> getBranchStatusCount() {
         return new RestResponseDto().successModel(branchService.branchStatusCount());

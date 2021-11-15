@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -233,7 +232,6 @@ public class CustomerLoanController {
             value = "Results page you want to retrieve (0..N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "Number of records per page.")})
-    @PreAuthorize("hasAuthority('Catalogue')")
     @PostMapping(value = "/catalogue")
     public ResponseEntity<?> getCatalogues(@RequestBody Object searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
