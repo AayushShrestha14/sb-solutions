@@ -16,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +74,6 @@ public class CustomerInfoController {
     }
 
     @PostMapping("/list")
-    @PreAuthorize("hasAuthority('Customer')")
     public ResponseEntity<?> getPageable(@RequestBody Map<String, String> searchDto,
         @RequestParam("page") int page, @RequestParam("size") int size) {
         return new RestResponseDto().successModel(customerInfoService.
@@ -230,7 +228,6 @@ public class CustomerInfoController {
 
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/transfer-customer-other-branch")
     public ResponseEntity<?> transferCustomerWithLoansToOtherBranch(
         @Valid @RequestBody CustomerTransferDTO transferDto) {

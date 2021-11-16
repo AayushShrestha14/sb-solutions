@@ -10,7 +10,6 @@ import com.sb.solutions.api.authorization.entity.RolePermissionRights;
 import com.sb.solutions.api.authorization.service.RolePermissionRightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,7 +108,6 @@ public class RoleController {
         return new RestResponseDto().successModel(roleService.findOne(id));
     }
 
-    @PreAuthorize("hasAuthority('Role and Permission')")
     @RequestMapping(method = RequestMethod.GET, path = "/active")
     public ResponseEntity<?> getActiveRole() {
         return new RestResponseDto().successModel(roleService.activeRole());
