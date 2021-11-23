@@ -140,6 +140,8 @@ public class User extends BaseEntity<Long> implements UserDetails, Serializable 
 
     @Override
     public boolean isAccountNonLocked() {
+        if(null == status)
+            return true;
         return !status.equals(Status.LOCKED);
     }
 
