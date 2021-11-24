@@ -131,6 +131,15 @@ public class UserServiceImpl implements UserService {
             user.setStatus(Status.ACTIVE);
         } else {
             user.setPassword(userRepository.getOne(user.getId()).getPassword());
+
+            // Set number_of_attempts to 0 after status change
+            Optional<User> oldOptUser = userRepository.findById(user.getId());
+
+            if (!ObjectUtils.isEmpty(oldOptUser)) {
+                if (oldOptUser.get().getStatus().equals(Status.LOCKED) && user.getStatus().equals(Status.ACTIVE)){
+                    user.setNumOfAttempts(0);
+                }
+            }
         }
         if (user.getRole().getRoleAccess().equals(RoleAccess.OWN)) {
             if (user.getBranch().isEmpty() || (user.getBranch().size() > 1)) {
@@ -151,14 +160,6 @@ public class UserServiceImpl implements UserService {
 
                 throw new InvalidPropertyException(User.class, "Branch",
                     "Branch can not be selected For role");
-            }
-        }
-
-        Optional<User> oldOptUser = userRepository.findById(user.getId());
-
-        if (!ObjectUtils.isEmpty(oldOptUser)) {
-            if (oldOptUser.get().getStatus().equals(Status.LOCKED) && user.getStatus().equals(Status.ACTIVE)){
-                user.setNumOfAttempts(0);
             }
         }
 
