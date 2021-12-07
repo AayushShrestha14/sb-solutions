@@ -283,12 +283,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String dismissAllBranchAndRole(User user) {
-        Integer i = customerLoanRepository
-            .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
-                DocStatus.PENDING);
+        Integer i = 0;
+        if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                user.getRole().getRoleName().equalsIgnoreCase("CAD")) {
+            i = customerLoanRepository.chkCadUserContainCustomerLoan1(user.getId());
+        } else {
+            List<DocStatus> statusList = new ArrayList<>();
+            statusList.add(DocStatus.PENDING);
+            statusList.add(DocStatus.UNDER_REVIEW);
+            statusList.add(DocStatus.DOCUMENTATION);
+            statusList.add(DocStatus.VALUATION);
+            statusList.add(DocStatus.DISCUSSION);
+
+            for (DocStatus s : statusList) {
+                i += customerLoanRepository
+                        .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(), s);
+            }
+        }
+//        Integer i = customerLoanRepository
+//            .chkUserContainCustomerLoan(user.getId(), user.getRole().getId(),
+//                DocStatus.PENDING);
         if (i > 0) {
             throw new ServiceValidationException("This user have " + i
-                + " Customer Loan pending  Please transfer the loan before dismiss.");
+                + " Customer Loan. Please transfer the loan before dismiss.");
         }
         user.setBranch(new ArrayList<Branch>());
         user.setStatus(Status.INACTIVE);

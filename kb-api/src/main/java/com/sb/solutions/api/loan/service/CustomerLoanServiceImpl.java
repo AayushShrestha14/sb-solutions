@@ -879,8 +879,24 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Override
     public Map<String, String> chkUserContainCustomerLoan(Long id) {
         User u = userService.findOne(id);
-        Integer count = customerLoanRepository
-            .chkUserContainCustomerLoan(id, u.getRole().getId(), DocStatus.PENDING);
+        Integer count = 0;
+        if (u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                u.getRole().getRoleName().equalsIgnoreCase("CAD")) {
+            count = customerLoanRepository.chkCadUserContainCustomerLoan1(id);
+        } else {
+            List<DocStatus> statusList = new ArrayList<>();
+            statusList.add(DocStatus.PENDING);
+            statusList.add(DocStatus.UNDER_REVIEW);
+            statusList.add(DocStatus.DOCUMENTATION);
+            statusList.add(DocStatus.VALUATION);
+            statusList.add(DocStatus.DISCUSSION);
+            for (DocStatus s : statusList) {
+                count += customerLoanRepository
+                        .chkUserContainCustomerLoan(id, u.getRole().getId(), s);
+            }
+        }
         Map<String, String> map = new HashMap<>();
         map.put("count", String.valueOf(count));
         map.put("status", count == 0 ? "false" : "true");
