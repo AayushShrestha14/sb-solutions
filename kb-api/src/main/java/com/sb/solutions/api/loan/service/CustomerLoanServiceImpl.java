@@ -882,7 +882,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         Integer count = 0;
         if (u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
-                u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                u.getRole().getRoleType().equals(RoleType.CAD_LEGAL) ||
                 u.getRole().getRoleName().equalsIgnoreCase("CAD")) {
             count = customerLoanRepository.chkCadUserContainCustomerLoan(id);
         } else {

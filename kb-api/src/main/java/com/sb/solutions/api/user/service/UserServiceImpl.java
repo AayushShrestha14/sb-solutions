@@ -286,7 +286,7 @@ public class UserServiceImpl implements UserService {
         Integer i = 0;
         if (user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
-                user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
+                user.getRole().getRoleType().equals(RoleType.CAD_LEGAL) ||
                 user.getRole().getRoleName().equalsIgnoreCase("CAD")) {
             i = customerLoanRepository.chkCadUserContainCustomerLoan(user.getId());
         } else {
