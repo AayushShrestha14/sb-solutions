@@ -288,7 +288,7 @@ public class UserServiceImpl implements UserService {
                 user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 user.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 user.getRole().getRoleName().equalsIgnoreCase("CAD")) {
-            i = customerLoanRepository.chkCadUserContainCustomerLoan1(user.getId());
+            i = customerLoanRepository.chkCadUserContainCustomerLoan(user.getId());
         } else {
             List<DocStatus> statusList = new ArrayList<>();
             statusList.add(DocStatus.PENDING);

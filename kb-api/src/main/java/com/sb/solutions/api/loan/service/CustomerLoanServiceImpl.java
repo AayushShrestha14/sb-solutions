@@ -884,7 +884,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                 u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 u.getRole().getRoleType().equals(RoleType.CAD_ADMIN) ||
                 u.getRole().getRoleName().equalsIgnoreCase("CAD")) {
-            count = customerLoanRepository.chkCadUserContainCustomerLoan1(id);
+            count = customerLoanRepository.chkCadUserContainCustomerLoan(id);
         } else {
             List<DocStatus> statusList = new ArrayList<>();
             statusList.add(DocStatus.PENDING);

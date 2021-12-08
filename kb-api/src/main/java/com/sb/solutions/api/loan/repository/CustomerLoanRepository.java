@@ -190,8 +190,8 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
         @Param("docStatus") DocStatus docStatus);
 
     @Query("SELECT COUNT(c) FROM CustomerApprovedLoanCadDocumentation c, CadStage cs"
-            + " WHERE c.cadCurrentStage = cs.id AND cs.toUser=:id AND (c.docStatus = 0 OR c.docStatus = 1 OR c.docStatus = 2) ")
-    Integer chkCadUserContainCustomerLoan1(@Param("id") Long id);
+            + " WHERE c.cadCurrentStage = cs.id AND cs.toUser.id=:id AND (c.docStatus = 0 OR c.docStatus = 1 OR c.docStatus = 2) ")
+    Integer chkCadUserContainCustomerLoan(@Param("id") Long id);
 
     @Modifying
     @Transactional
