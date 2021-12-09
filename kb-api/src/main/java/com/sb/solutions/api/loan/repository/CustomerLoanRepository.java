@@ -189,6 +189,10 @@ public interface CustomerLoanRepository extends JpaRepository<CustomerLoan, Long
     Integer chkUserContainCustomerLoan(@Param("id") Long id, @Param("rId") Long rId,
         @Param("docStatus") DocStatus docStatus);
 
+    @Query("SELECT COUNT(c) FROM CustomerApprovedLoanCadDocumentation c, CadStage cs"
+            + " WHERE c.cadCurrentStage = cs.id AND cs.toUser.id=:id AND (c.docStatus = 0 OR c.docStatus = 1 OR c.docStatus = 2) ")
+    Integer chkCadUserContainCustomerLoan(@Param("id") Long id);
+
     @Modifying
     @Transactional
     @Query("UPDATE CustomerLoan c SET c.isCloseRenew = :isCloseRenew ,c.childId = :cId  WHERE c.id = :id")
