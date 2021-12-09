@@ -374,6 +374,9 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
     @Transactional
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
+        if (!userService.getAuthenticatedUser().getRole().getRoleType().equals(RoleType.MAKER)) {
+            throw new ServiceValidationException("You don't have privilege to save loan");
+        }
         // validation start
         if (customerLoan.getLoan() == null) {
             throw new ServiceValidationException("Loan can not be null");
