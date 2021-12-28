@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import com.google.common.base.Preconditions;
 import com.sb.solutions.api.loan.service.CustomerDocumentService;
+
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.commons.lang3.StringUtils;
@@ -118,14 +119,18 @@ public class CustomerLoanController {
         Long combinedLoanId = loans.get(0).getCombinedLoan().getId();
         // remove from combined loan if loans are staged individually
         // or loans are combined and approved
-        boolean removeCombined = stageSingle || actionDtoList.stream()
+        boolean removeCombinedApproved = stageSingle || actionDtoList.stream()
             .anyMatch(a -> a.getDocAction().equals(DocAction.APPROVED));
-        if (removeCombined) {
+        boolean removeCombinedReject = stageSingle || actionDtoList.stream()
+                .anyMatch(a ->a.getDocAction().equals(DocAction.REJECT));
+        boolean removeCombinedClosed = stageSingle || actionDtoList.stream()
+                .anyMatch(a ->a.getDocAction().equals(DocAction.CLOSED));
+        if (removeCombinedApproved || removeCombinedReject || removeCombinedClosed) {
             loans.forEach(l -> l.setCombinedLoan(null));
         }
         service.sendForwardBackwardLoan(loans);
         // remove unassociated combined loan entry
-        if (removeCombined) {
+        if (removeCombinedApproved || removeCombinedReject || removeCombinedClosed) {
             combinedLoanService.deleteById(combinedLoanId);
         }
         return new RestResponseDto().successModel(actionDtoList);
