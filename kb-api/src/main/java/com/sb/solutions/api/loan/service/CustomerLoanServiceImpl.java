@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sb.solutions.api.authorization.entity.Role;
 import com.sb.solutions.api.collateralSiteVisit.service.CollateralSiteVisitService;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -371,12 +372,17 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         return mapLoanHolderToCustomerLoan(customerLoan);
     }
 
+    Boolean isLoanEditable(CustomerLoan customerLoan) {
+        User processionUser = customerLoan.getCurrentStage().getToUser();
+        Role processionRole = customerLoan.getCurrentStage().getToRole();
+        User loggedInUser = userService.getAuthenticatedUser();
+        return processionUser.getId().longValue() == loggedInUser.getId().longValue()
+            && processionRole.getId().longValue() == loggedInUser.getRole().getId().longValue();
+    }
+
     @Transactional
     @Override
     public CustomerLoan save(CustomerLoan customerLoan) {
-        if (!userService.getAuthenticatedUser().getRole().getRoleType().equals(RoleType.MAKER)) {
-            throw new ServiceValidationException("You don't have privilege to save loan");
-        }
         // validation start
         if (customerLoan.getLoan() == null) {
             throw new ServiceValidationException("Loan can not be null");
@@ -396,48 +402,13 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
             stage.setDocAction(DocAction.DRAFT);
             customerLoan.setCurrentStage(stage);
         }
-
-//        if (null != companyInfo) {
-//            customerLoan
-//                .setCompanyInfo(
-//                    this.companyInfoService.findOne(customerLoan.getLoanHolder().getAssociateId()));
-
-            /*
-            if business loan , business pan/vat number will be citizenship number , companay name will be customer name
-            and establishment date will be issue date
-             */
-
-//            customer.setCustomerName(companyInfo.getCompanyName());
-//            customer.setCitizenshipNumber(companyInfo.getPanNumber());
-//            customer.setCitizenshipIssuedDate(companyInfo.getEstablishmentDate());
-//            customer.setOccupation(companyInfo.getBusinessType().toString());
-//            // look whether customer already exists
-//            try {
-//                Customer existingCustomer = customerService
-//                    .findCustomerByCustomerNameAndCitizenshipNumberAndCitizenshipIssuedDate(
-//                        customer.getCustomerName(), customer.getCitizenshipNumber(),
-//                        customer.getCitizenshipIssuedDate()
-//                    );
-//                if (existingCustomer != null) {
-//
-//                    customer.setId(existingCustomer.getId());
-//                }
-//            } catch (Exception e) {
-//                logger.debug(" No customer {} with pan {} exists", customer.getCustomerName(),
-//                    customer.getCitizenshipNumber());
-//            }
-//
-
-//        }
-
-//        if (customer != null) {
-//            Customer c = this.customerService
-//                .findOne(customerLoan.getLoanHolder().getAssociateId());
-//            customerLoan.setCustomerInfo(c);
-//            customerLoan
-//                .setLoanHolder(customerInfoService.findByAssociateIdAndCustomerType(c.getId(),
-//                    CustomerType.INDIVIDUAL));
-//        }
+        User loggedInUser = userService.getAuthenticatedUser();
+        if(!isNewLoan && !isLoanEditable(customerLoan)){
+            throw new ServiceValidationException("Loan is not editable. It is not in your custody");
+        }
+        if (isNewLoan && loggedInUser.getRole().getRoleType() != RoleType.MAKER) {
+            throw new ServiceValidationException("You don't have privilege to save loan");
+        }
 
         if (customerLoan.getFinancial() != null) {
             customerLoan.setFinancial(customerLoan.getLoanHolder().getFinancial());
