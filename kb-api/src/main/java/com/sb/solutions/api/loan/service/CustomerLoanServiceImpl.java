@@ -463,6 +463,7 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
 
         if (!isNewLoan) {
             CustomerLoan actualLoan = customerLoanRepository.findById(customerLoan.getId()).get();
+            customerLoan.setVersion(actualLoan.getVersion());
             List<CustomerDocument> actualDocuments = actualLoan.getCustomerDocument();
             List<CustomerDocument> updatedDocuments = customerLoan.getCustomerDocument();
 
