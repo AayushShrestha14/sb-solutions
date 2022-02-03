@@ -104,3 +104,9 @@ app:
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     tableName: cbs_group
     uniqueKey: obligor
+
+
+backup:
+  rollBack: 5
+  threadPool: 20
+
