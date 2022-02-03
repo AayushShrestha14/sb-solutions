@@ -66,7 +66,7 @@ public class BackupDatabase {
             new File(getBackupDir()).mkdirs();
         }
         String fileName = this.databaseName() + System.currentTimeMillis() + ".BAK";
-        String filePathName = getBackupDir() +"/"+ fileName;
+        String filePathName = getBackupDir() + "/" + fileName;
         logger.info("backup dir {} ", filePathName);
         Map<String, Object> inp = new HashMap<>();
         inp.put("filePathName", filePathName);
