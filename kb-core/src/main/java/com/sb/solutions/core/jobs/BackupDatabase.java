@@ -1,49 +1,54 @@
 package com.sb.solutions.core.jobs;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-
+import com.sb.solutions.core.config.security.property.BackupProperties;
+import com.sb.solutions.core.utils.file.FileUploadUtils;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.GenericStoredProcedure;
 import org.springframework.jdbc.object.StoredProcedure;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.sb.solutions.core.constant.FilePath;
-import com.sb.solutions.core.utils.file.FileUploadUtils;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author : Rujan Maharjan on  3/16/2020
  **/
 @Component
+@RequiredArgsConstructor
 public class BackupDatabase {
 
     private static final Logger logger = LoggerFactory.getLogger(BackupDatabase.class);
 
-    private static final String ROOT_BACKUP_DIR = FilePath.getOSPath() + "backup";
+    private final DataSource dataSource;
 
-    @Autowired
-    private DataSource dataSource;
+    private final String getOSPath;
 
-    @Value("${spring.datasource.url}")
-    private String datasourceUrl;
+    private final BackupProperties backupProperties;
 
+    private static final String BACKUP_PROC_NAME = "db_backup";
 
     @Scheduled(cron = "0 0 20 * * ?")
     public void backup() {
-        String procName = "db_backup";
+
+        String procName = BACKUP_PROC_NAME;
         StoredProcedure storedProcedure = new GenericStoredProcedure();
         storedProcedure.setDataSource(dataSource);
         storedProcedure.setSql(procName);
@@ -51,18 +56,18 @@ public class BackupDatabase {
 
         SqlParameter[] sqlParameters = {
 
-            new SqlParameter("filePathName", Types.VARCHAR),
-            new SqlParameter("db", Types.VARCHAR),
+                new SqlParameter("filePathName", Types.VARCHAR),
+                new SqlParameter("db", Types.VARCHAR),
 
 
         };
-        Path path = Paths.get(ROOT_BACKUP_DIR);
+        Path path = Paths.get(getBackupDir());
         if (!Files.exists(path)) {
-            new File(ROOT_BACKUP_DIR).mkdirs();
+            new File(getBackupDir()).mkdirs();
         }
         String fileName = this.databaseName() + System.currentTimeMillis() + ".BAK";
-        String filePathName = ROOT_BACKUP_DIR + File.separator + fileName;
-        logger.info("backup dir{}", filePathName);
+        String filePathName = getBackupDir() + "/" + fileName;
+        logger.info("backup dir {} ", filePathName);
         Map<String, Object> inp = new HashMap<>();
         inp.put("filePathName", filePathName);
         inp.put("db", this.databaseName());
@@ -76,7 +81,12 @@ public class BackupDatabase {
     }
 
     private String databaseName() {
-        return this.datasourceUrl.split("=")[1].toLowerCase();
+        try {
+            return dataSource.getConnection().getCatalog();
+        } catch (SQLException r) {
+            return null;
+        }
+
     }
 
     //zip folder end of the month
@@ -84,11 +94,82 @@ public class BackupDatabase {
     private void zipBackup() throws IOException {
         LocalDate localDate = LocalDate.now();
         String currentYearMonth =
-            String.valueOf(localDate.getDayOfMonth()) + localDate.getMonth() + localDate.getYear();
+                String.valueOf(localDate.getDayOfMonth()) + localDate.getMonth() + localDate.getYear();
         String destination =
-            ROOT_BACKUP_DIR + File.separator + this.databaseName() + currentYearMonth + ".zip";
-        FileUploadUtils.createZip(ROOT_BACKUP_DIR, destination);
+                getBackupDir() + "/" + this.databaseName() + currentYearMonth + ".zip";
+        FileUploadUtils.createZip(getBackupDir(), destination);
         logger.info("back up database succeed{}", currentYearMonth);
+    }
+
+    @Scheduled(cron = "0 0 23 * * ?")
+    public void deletePreviousBackup() {
+        ExecutorService executorService = getExecutorService();
+        File rootFolder = new File(getBackupDir());
+        if (rootFolder.exists()) {
+            List<File> fileList = listFilesForDeletion(rootFolder);
+            if (!fileList.isEmpty()) {
+                fileList.forEach(file ->
+                        executorService.submit(() ->
+                                deleteBackupFile(file)));
+
+            }
+        } else {
+            logger.info("folder does not exist {}", rootFolder);
+        }
+
+    }
+
+    private List<File> listFilesForDeletion(final File folder) {
+        List<File> fileList = new ArrayList<>();
+        LocalDateTime cutOff = LocalDateTime.now().minusDays(backupProperties.getRollBack());
+        logger.info("delete File before {} in folder {}", cutOff.toLocalDate(), folder);
+        Instant instant = cutOff.atZone(ZoneId.systemDefault()).toInstant();
+        long cutOffTimeInMS = instant.toEpochMilli();
+        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
+            if (fileEntry.isDirectory()) {
+                listFilesForDeletion(fileEntry);
+            } else {
+                Path path = fileEntry.toPath();
+                BasicFileAttributes attr;
+                try {
+                    attr = Files.readAttributes(path, BasicFileAttributes.class);
+
+                    if (attr.creationTime().toMillis() < cutOffTimeInMS) {
+                        fileList.add(fileEntry);
+                    }
+
+
+                } catch (IOException e) {
+                    logger.error("unable to get  Date of File {}", e.getMessage());
+
+                }
+
+            }
+        }
+
+        return fileList;
+    }
+
+    private void deleteBackupFile(File file) {
+        try {
+            logger.info("deleting file {} created on {}", file.getAbsolutePath(), Files.getLastModifiedTime(file.toPath()));
+            if (file.delete()) {
+                logger.info("successFully deleted file");
+
+            } else {
+                logger.info("unable to delete file");
+            }
+        } catch (Exception e) {
+            logger.info("unable to delete file {}",file);
+        }
+    }
+
+    public ExecutorService getExecutorService() {
+        return Executors.newFixedThreadPool(backupProperties.getThreadPool());
+    }
+
+    public String getBackupDir() {
+        return getOSPath + "backup";
     }
 
 }

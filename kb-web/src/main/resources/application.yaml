@@ -90,7 +90,7 @@ product:
   cbsEnable: false
   checklistLiteVersion: true
   microLoan: true
-  customerBaseLoan : true
+  customerBaseLoan: true
   configureLegalDocument: true #set true if check if checklistLiteVersion is true and config in cad dashboard by cad
 
 #this feature is enabled if cbsEnable is set true
@@ -104,3 +104,9 @@ app:
       driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
     tableName: cbs_group
     uniqueKey: obligor
+
+
+backup:
+  rollBack: 5
+  threadPool: 20
+
