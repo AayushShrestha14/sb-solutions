@@ -160,7 +160,7 @@ public class BackupDatabase {
                 logger.info("unable to delete file");
             }
         } catch (Exception e) {
-
+            logger.info("unable to delete file {}",file);
         }
     }
 
