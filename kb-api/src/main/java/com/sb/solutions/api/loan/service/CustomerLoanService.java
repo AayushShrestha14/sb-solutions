@@ -112,4 +112,6 @@ public interface CustomerLoanService extends BaseService<CustomerLoan>, FormRepo
 
     @Transactional
     void deleteLoanByMakerAndAdmin(Long customerLoanId);
+
+    CustomerLoan saveCustomerLoan(CustomerLoan customerLoan);
 }

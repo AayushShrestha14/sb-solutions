@@ -390,24 +390,31 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         CompanyInfo companyInfo = null;
         boolean isNewLoan = false;
 
+        User loggedInUser = userService.getAuthenticatedUser();
         if (customerLoan.getId() == null) {
             isNewLoan = true;
-            customerLoan.setBranch(userService.getAuthenticatedUser().getBranch().get(0));
-            LoanStage stage = new LoanStage();
-            stage.setToRole(userService.getAuthenticatedUser().getRole());
-            stage.setFromRole(userService.getAuthenticatedUser().getRole());
-            stage.setFromUser(userService.getAuthenticatedUser());
-            stage.setToUser(userService.getAuthenticatedUser());
-            stage.setComment(DocAction.DRAFT.name());
-            stage.setDocAction(DocAction.DRAFT);
-            customerLoan.setCurrentStage(stage);
+            if (loggedInUser.getRole().getRoleType().equals(RoleType.MAKER)) {
+                loggedInUser.getBranch().forEach(b -> {
+                    if (!b.getId().equals(customerLoan.getLoanHolder().getBranch().getId())) {
+                        throw new ServiceValidationException(
+                                customerLoan.getLoanHolder().getName() + " customer is not present at " + b.getName());
+                    }
+                });
+                customerLoan.setBranch(userService.getAuthenticatedUser().getBranch().get(0));
+                LoanStage stage = new LoanStage();
+                stage.setToRole(userService.getAuthenticatedUser().getRole());
+                stage.setFromRole(userService.getAuthenticatedUser().getRole());
+                stage.setFromUser(userService.getAuthenticatedUser());
+                stage.setToUser(userService.getAuthenticatedUser());
+                stage.setComment(DocAction.DRAFT.name());
+                stage.setDocAction(DocAction.DRAFT);
+                customerLoan.setCurrentStage(stage);
+            } else {
+                throw new ServiceValidationException("You don't have privilege to save loan");
+            }
         }
-        User loggedInUser = userService.getAuthenticatedUser();
         if(!isNewLoan && !isLoanEditable(customerLoan)){
             throw new ServiceValidationException("Loan is not editable. It is not in your custody");
-        }
-        if (isNewLoan && loggedInUser.getRole().getRoleType() != RoleType.MAKER) {
-            throw new ServiceValidationException("You don't have privilege to save loan");
         }
 
         if (customerLoan.getFinancial() != null) {
@@ -1971,6 +1978,11 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
         } else {
             throw new ServiceValidationException("You don't have Permission to delete this file");
         }
+    }
+
+    @Override
+    public CustomerLoan saveCustomerLoan(CustomerLoan customerLoan) {
+        return customerLoanRepository.save(customerLoan);
     }
 
     private List<CustomerLoanFilterDto> customerBaseLoanFetch(

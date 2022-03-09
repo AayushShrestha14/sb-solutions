@@ -240,7 +240,7 @@ public class CustomerInfoController {
                 customerLoans.forEach(customerLoan -> {
                     final CustomerLoan loan = mapper
                         .transferBranchMapper(transferDto, customerLoan, currentUser);
-                    CustomerLoan loan1 = customerLoanService.save(loan);
+                    CustomerLoan loan1 = customerLoanService.saveCustomerLoan(loan);
                     customerLoanService
                         .transferLoanToOtherBranch(loan1, transferDto.getToBranchId(),
                             currentUser);
