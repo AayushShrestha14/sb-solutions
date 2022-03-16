@@ -261,10 +261,12 @@ public class Mapper {
             if (loanActionDto.isNotify()) {
                 customerLoan.setNotify(true);
             }
-            if (customerLoan.getIsSol()) {
-                Preconditions.checkArgument(
-                        customerLoan.getSolUser().getId() == currentUser.getId(),
-                        "You don't have permission to Approve this file!!");
+            if (!ObjectUtils.isEmpty(customerLoan.getIsSol())) {
+                if (customerLoan.getIsSol()) {
+                    Preconditions.checkArgument(
+                            customerLoan.getSolUser().getId() == currentUser.getId(),
+                            "You don't have permission to Approve this file!!");
+                }
             }
             if (!ObjectUtils.isEmpty(customerLoan.getSecurity()) && !ObjectUtils.isEmpty(customerLoan.getSecurity().getId())) {
                 try {
