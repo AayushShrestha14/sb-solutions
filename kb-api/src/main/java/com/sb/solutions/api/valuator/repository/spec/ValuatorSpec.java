@@ -51,7 +51,9 @@ public class ValuatorSpec implements Specification<Valuator> {
                     .collect(Collectors.toList());
                 Expression<String> exp = root.join("branch").get("id");
                 Predicate predicate = exp.in(list);
-                return criteriaBuilder.and(predicate);
+                Predicate isAllBranch = criteriaBuilder.equal(root.get("isAllBranch"), true);
+                Predicate predicate2 = criteriaBuilder.or(predicate, isAllBranch);
+                return criteriaBuilder.and(predicate2);
             case FILTER_BY_STATUS:
                 return criteriaBuilder.equal(root.get(FILTER_BY_STATUS), Status.valueOf(value));
             case FILTER_BY_VALUATING_FIELD:
