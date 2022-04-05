@@ -39,6 +39,7 @@ public class ValuatorSpec implements Specification<Valuator> {
     @Override
     public Predicate toPredicate(Root<Valuator> root, CriteriaQuery<?> query,
         CriteriaBuilder criteriaBuilder) {
+        query.distinct(true);
         switch (property) {
             case FILTER_BY_NAME:
                 return criteriaBuilder

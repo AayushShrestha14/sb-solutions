@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import java.util.Set;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,8 +47,7 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
     private String streetName;
     private String wardNumber;
 
-    @Enumerated(EnumType.STRING)
-    private ValuatingField valuatingField;
+    private String valuatingField;
     private Date bankAssociateDate;
     private BigDecimal minAmount;
     private BigDecimal maxAmount;
@@ -60,6 +55,12 @@ public class Valuator extends BaseEntity<Long> implements Serializable {
 
     @ManyToMany
     private List<Branch> branch;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = ValuatingField.class, fetch = FetchType.EAGER)
+    @CollectionTable(name="valuator_valuating_fields", joinColumns = @JoinColumn(name = "valuator_id"))
+    @Column(name="valuator_fields")
+    private Set<ValuatingField> valuatingFields;
 
     private Boolean isAllBranch = false;
 }
