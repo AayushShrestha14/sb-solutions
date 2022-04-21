@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.valuator.entity.Valuator;
@@ -62,5 +63,11 @@ public class ValuatorController {
     public ResponseEntity<?> getValuatorListBySearch(@RequestBody Object search) {
         return new RestResponseDto()
             .successModel(valuatorService.getValuatorFilterBySearch(search));
+    }
+
+    @GetMapping("/{branchId}")
+    public ResponseEntity<?> getValuatorListByBranchId(@PathVariable("branchId") Long id) {
+        return new RestResponseDto()
+                .successModel(valuatorService.getValuatorFilterByBranchId(id));
     }
 }

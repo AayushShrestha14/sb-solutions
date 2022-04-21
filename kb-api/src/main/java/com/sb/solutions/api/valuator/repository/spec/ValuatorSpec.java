@@ -39,6 +39,7 @@ public class ValuatorSpec implements Specification<Valuator> {
     @Override
     public Predicate toPredicate(Root<Valuator> root, CriteriaQuery<?> query,
         CriteriaBuilder criteriaBuilder) {
+        query.distinct(true);
         switch (property) {
             case FILTER_BY_NAME:
                 return criteriaBuilder
@@ -57,7 +58,9 @@ public class ValuatorSpec implements Specification<Valuator> {
             case FILTER_BY_STATUS:
                 return criteriaBuilder.equal(root.get(FILTER_BY_STATUS), Status.valueOf(value));
             case FILTER_BY_VALUATING_FIELD:
-                return criteriaBuilder.equal(root.get(FILTER_BY_VALUATING_FIELD), ValuatingField.valueOf(value));
+                Expression<String> exp1 = root.join("valuatingFields");
+                Predicate predicate1 = exp1.in(ValuatingField.valueOf(value));
+                return criteriaBuilder.and(predicate1);
             case FILTER_BY_MINIMUM_AMOUNT:
                 return criteriaBuilder.greaterThanOrEqualTo(root.get(FILTER_BY_MINIMUM_AMOUNT),
                     BigDecimal.valueOf(Double.parseDouble(value)));

@@ -7150,4 +7150,25 @@
        </addColumn>
     </changeSet>
 
+    <changeSet id="433-create-table-valuator-valuating-field" author="Karma">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="valuator_valuating_fields"></tableExists>
+            </not>
+        </preConditions>
+        <createTable tableName="valuator_valuating_fields">
+            <column name="valuator_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valuator_fields" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="valuator_id"
+                                 baseTableName="valuator_valuating_fields"
+                                 constraintName="fk_valuator_valuating_field_valuator_type_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="valuator"/>
+    </changeSet>
+
 </databaseChangeLog>

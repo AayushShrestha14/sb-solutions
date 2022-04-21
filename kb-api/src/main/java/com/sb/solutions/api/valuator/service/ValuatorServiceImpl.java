@@ -69,4 +69,9 @@ public class ValuatorServiceImpl implements ValuatorService {
     public Map<Object, Object> valuatorStatusCount() {
         return valuatorRepository.valuatorStatusCount();
     }
+
+    @Override
+    public Collection<Valuator> getValuatorFilterByBranchId(Long id) {
+        return valuatorRepository.valuatorFilterByBranchId(id);
+    }
 }
