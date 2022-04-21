@@ -1,5 +1,6 @@
 package com.sb.solutions.api.valuator.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -23,6 +24,8 @@ public interface ValuatorRepository extends JpaRepository<Valuator, Long>,
     @Query(value = "select v from Valuator v where v.name like concat(:name,'%')")
     Page<Valuator> valuatorFilter(@Param("name") String name, Pageable pageable);
 
-
-
+    @Query(value = "select distinct valuator.* from valuator join valuator_valuating_fields" +
+            "    on valuator.id = valuator_valuating_fields.valuator_id join valuator_branch on valuator.id = valuator_branch.valuator_id" +
+            "    where (valuator_branch.branch_id = :Id or is_all_branch = 'true')", nativeQuery = true)
+    List<Valuator> valuatorFilterByBranchId(Long Id);
 }

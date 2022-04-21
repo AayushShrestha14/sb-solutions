@@ -12,4 +12,6 @@ public interface ValuatorService extends BaseService<Valuator> {
 
     Collection<Valuator> getValuatorFilterBySearch(Object search);
 
+    Collection<Valuator> getValuatorFilterByBranchId(Long id);
+
 }

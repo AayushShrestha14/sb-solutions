@@ -5,12 +5,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sb.solutions.api.user.service.UserService;
 import com.sb.solutions.api.valuator.entity.Valuator;
@@ -62,5 +57,11 @@ public class ValuatorController {
     public ResponseEntity<?> getValuatorListBySearch(@RequestBody Object search) {
         return new RestResponseDto()
             .successModel(valuatorService.getValuatorFilterBySearch(search));
+    }
+
+    @GetMapping("/{branchId}")
+    public ResponseEntity<?> getValuatorListByBranchId(@PathVariable("branchId") Long id) {
+        return new RestResponseDto()
+                .successModel(valuatorService.getValuatorFilterByBranchId(id));
     }
 }
