@@ -1249,7 +1249,8 @@ public class CustomerLoanServiceImpl implements CustomerLoanService {
                         && loanFlag.getCustomerLoanId().equals(loan.getId())
                 )).collect(CustomerLoanFlag.toSingleton());
 
-            boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0;
+            boolean flag = loan.getProposal().getProposedLimit().compareTo(BigDecimal.ZERO) <= 0
+                        && !loan.getLoanType().equals(LoanType.FULL_SETTLEMENT_LOAN) && !loan.getLoanType().equals(LoanType.CLOSURE_LOAN);
             if (flag && customerLoanFlag == null) {
                 customerLoanFlag = new CustomerLoanFlag();
                 customerLoanFlag.setCustomerInfo(loan.getLoanHolder());

@@ -390,7 +390,7 @@ public class Mapper {
                     .filter(f -> f.getCustomerLoanId() != null && f.getCustomerLoanId()
                             .equals(customerLoan.getId()))
                     .collect(Collectors.toList());
-            if (!loanFlags.isEmpty()) {
+            if (!loanFlags.isEmpty() && !customerLoan.getLoanType().equals(LoanType.FULL_SETTLEMENT_LOAN) && !customerLoan.getLoanType().equals(LoanType.CLOSURE_LOAN)) {
                 loanFlags.sort(Comparator.comparingInt(CustomerLoanFlag::getOrder));
                 logger.error(loanFlags.get(0).getDescription());
                 throw new RuntimeException(loanFlags.get(0).getDescription());
