@@ -113,7 +113,7 @@ public class CbsGroupServiceImpl implements CbsGroupService {
         return cbsGroupRepository.findCbsGroupByObligor(obligor);
     }
 
-    @Scheduled(cron = "0 0 20 * * ?")
+   // @Scheduled(cron = "0 0 20 * * ?")
     public void fetchData() {
         if (ProductUtils.CBS_ENABLE) {
             this.saveAll(new ArrayList<>());

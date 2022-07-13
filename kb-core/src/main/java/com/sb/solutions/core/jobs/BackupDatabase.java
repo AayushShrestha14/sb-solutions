@@ -45,7 +45,7 @@ public class BackupDatabase {
 
     private static final String BACKUP_PROC_NAME = "db_backup";
 
-    @Scheduled(cron = "0 0 20 * * ?")
+  //  @Scheduled(cron = "0 0 20 * * ?")
     public void backup() {
 
         String procName = BACKUP_PROC_NAME;
@@ -101,7 +101,7 @@ public class BackupDatabase {
         logger.info("back up database succeed{}", currentYearMonth);
     }
 
-    @Scheduled(cron = "0 0 23 * * ?")
+    //@Scheduled(cron = "0 0 23 * * ?")
     public void deletePreviousBackup() {
         ExecutorService executorService = getExecutorService();
         File rootFolder = new File(getBackupDir());
